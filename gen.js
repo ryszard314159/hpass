@@ -14,14 +14,14 @@ function get_parser() {
   });
   // parser.add_argument('-v', '--version', { action: 'version', version });
   parser.add_argument('hint', {help: "password hint; '' generates random passwd"});
+  parser.add_argument('-x', '--prefix', { help: 'password prefix', default: '<PREFIX>' });
   parser.add_argument('-k', '--sekret', { help: 'hint augmentation', default: '<SEKRET>' });
-  parser.add_argument('-s', '--salt', { help: 'hint augmentation', default: '0,1,2,3,4' });
-  parser.add_argument('-L', '--len', { help: 'password length', type: 'int', default: 15});
+  parser.add_argument('-b', '--burnin', { help: 'discard cycles', type: 'int', default: 0});
+  parser.add_argument('-L', '--length', { help: 'password length', type: 'int', default: '<LENGTH>'});
   parser.add_argument('-u', '--unicode', { help: 'use ALL unicode chars', action: "store_true"});
   parser.add_argument('-r', '--letters', { help: 'use ascii letters', action: "store_true"});
   parser.add_argument('-t', '--digits', { help: 'use digits', action: "store_true"});
   parser.add_argument('-p', '--punctuation', { help: 'use punctuation', action: "store_true"});
-  parser.add_argument('-x', '--prefix', { help: 'password prefix', default: '?' });
   parser.add_argument('-f', '--no-shuffle', { help: 'dont shuffle final string', action: "store_true"});
   parser.add_argument('-a', '--random', { help: 'create random password', action: "store_true"});
   parser.add_argument('-d', '--debug', { help: 'baz bar', action: "store_true"});
@@ -129,7 +129,7 @@ function getPass(args) {
   args.prefix      : prefix for generated password
   args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
-  args.len         : length of password
+  args.length      : length of password
   args.digits      : should digits be used?
   args.letters     : should letters be used?
   args.punctuation : should punctuation be used?
@@ -151,24 +151,36 @@ function getPass(args) {
 
   // let passwd;
   if (args.hint === '') { // generate and return random string from charset
-      passwd = get_random_string(args.len, charset)
+      passwd = get_random_string(args.length, charset)
   } else {
-      let hint = args.hint + args.sekret
+
       /*
       add to prefix one lower, one upper character and one digit
       to satisfy requirements of many sites
       one or more special characters can be provided in args.prefix (default='?')
       */
-      var salt = args.salt.split(',')
-      assert(salt.length == 5, 'salt must be 5 chars')
-      let lower = get_random_string(1, CHARS.lower,  rig(MP31, hint+salt[0]))
-      let upper = get_random_string(1, CHARS.upper,  rig(MP31, hint+salt[1]))
-      let digit = get_random_string(1, CHARS.digits, rig(MP31, hint+salt[2]))
-      const prefix = args.prefix + lower + upper + digit
-      passwd = get_random_string(args.len - prefix.length, charset, rig(MP31, hint+salt[3]))
-      passwd = prefix + passwd // augment password with prefix e.g. '?aZ9'
+      let hint = args.hint + args.sekret + args.prefix + args.length
+      let gint = rig(MP31, hint)
+      for (let k=0; k < args.burnin; k++) { gint.next().value }
+      let lower = get_random_string(1, CHARS.lower,  gint)
+      let upper = get_random_string(1, CHARS.upper,  gint)
+      let digit = get_random_string(1, CHARS.digits, gint)
+      // const prefix = args.prefix + lower + upper + digit
+      let n = args.length - args.prefix.length
+      if (args.debug) {
+        print(`DEBUG: args.hint= ${args.hint}`)
+        print(`DEBUG: args.sekret= ${args.sekret}`)
+        print(`DEBUG: args.prefix= ${args.prefix}`)
+        print(`DEBUG: args.prefix.length= ${args.prefix.length}`)
+        print(`DEBUG: args.length= ${args.length}`)
+        print(`DEBUG: n= ${n}`)
+        print(`DEBUG: hint= ${hint}`)
+      }
+      assert(n >= 0, `prefix too long: args.length= ${args.length} - args.prefix.length= ${args.prefix.length}`)
+      passwd = get_random_string(args.length - args.prefix.length, charset, gint)
+      passwd = args.prefix + passwd // augment password with prefix e.g. '?aZ9'
       if (!args.no_shuffle) {
-        passwd = shuffle_string(passwd, rig(MP31, hint+salt[4]))
+        passwd = shuffle_string(passwd, gint)
       }
   }
   copy_to_clipboard(passwd)
@@ -204,7 +216,7 @@ Nick Feltwell <nfeltwell@barringtonjames.com>
   if (args.debug) {
     print("DEBUG: getPass: passwd=" + passwd)
     print("DEBUG: getPass: passwd.length=" + passwd.length)
-    print("DEBUG: args.len=" + args.len)
+    print("DEBUG: args.length=" + args.length)
     print("DEBUG: args.prefix=" + args.prefix)
     print("DEBUG: prefix=" + prefix + ' (augmented)')
     print("DEBUG: prefix.length=" + prefix.length)
@@ -213,7 +225,6 @@ Nick Feltwell <nfeltwell@barringtonjames.com>
     print("DEBUG: digit=" + digit)
     print("DEBUG: args.sekret=" + args.sekret)
     print("DEBUG: hint=" + hint)
-    print("DEBUG: args.len=" + args.len)
     print("DEBUG: charset=" + charset)
   }
 

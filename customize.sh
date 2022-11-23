@@ -5,8 +5,7 @@ function usage() {
     echo
     echo "Usage example:"
     echo
-    echo "./customize.sh -k SEKRET -x PREFIX -L LENGTH < template.html > pass.html"
-    echo "./customize.sh --sekret SEKRET --prefix PREFIX -length LENGTH < template.html > pass.html"
+    echo "./customize.sh --sekret SEKRET --prefix PREFIX --length 8 < template.html > demo.html"
     echo
     echo SEKRET - can be any string
     echo "PREFIX - use one (or more) from ${special} to satisfy picky sites"
@@ -56,4 +55,5 @@ sed -e '/Password Generator/d' \
   -e '/<label>Sekret:<\/label>/d' -e '/<input id="sekret"/d' -e "s/args.sekret = .*$/args.sekret = '${SEKRET}'/" \
   -e '/<label>Prefix:<\/label>/d' -e '/<input id="prefix"/d' -e "s/args.prefix = .*$/args.prefix = '${PREFIX}'/" \
   -e '/<label>Length:<\/label>/d' -e '/<input id="length"/d' -e "s/args.length = .*$/args.length = ${LENGTH}/" \
+  -e '/<label>Spice:<\/label>/d' -e '/<input id="spice"/d' -e "s/args.spice = .*$/args.spice = ${SPICE}/" \
   -e '/<hr style/d' -e '/passwords/d'
