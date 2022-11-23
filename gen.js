@@ -171,8 +171,8 @@ function getPass(args) {
         print(`DEBUG: args.hint= ${args.hint}`)
         print(`DEBUG: args.sekret= ${args.sekret}`)
         print(`DEBUG: args.prefix= ${args.prefix}`)
-        print(`DEBUG: args.prefix.length= ${args.prefix.length}`)
         print(`DEBUG: args.length= ${args.length}`)
+        print(`DEBUG: args.burnin= ${args.burnin}`)
         print(`DEBUG: n= ${n}`)
         print(`DEBUG: hint= ${hint}`)
       }

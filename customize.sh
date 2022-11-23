@@ -7,8 +7,9 @@ function usage() {
     echo
     echo "./customize.sh --sekret SEKRET --prefix PREFIX --length 8 --burnin 9 < template.html > demo.html"
     echo
-    echo SEKRET - can be any string
+    echo SEKRET - string to make different passwords from the same hint
     echo "PREFIX - use one (or more) from ${special} to satisfy picky sites"
+    echo "         (one digit, one lower, one upper case chars are added automatically)"
     echo "LENGTH - length (4-64) of the password to generate"
     echo
 }

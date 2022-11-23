@@ -69,7 +69,7 @@ button {
 <div class="container" style="display:flex;"> <label>Length:</label>
   <input id="length" class="form-control" value="<LENGTH>"> </div>
 <div class="container" style="display:flex;"> <label>Burnin:</label>
-  <input id="length" class="form-control" value="<BURNIN>"> </div>
+  <input id="burnin" class="form-control" value="<BURNIN>"> </div>
 <div class="container" style="display:flex;">
   <button id="generate" class="btn btn-default"
         style="background-color:lightgreen;font-weight:900;width:100%;text-align:center">
@@ -208,6 +208,7 @@ function getPass(args) {
         print(`DEBUG: args.prefix= ${args.prefix}`)
         print(`DEBUG: args.prefix.length= ${args.prefix.length}`)
         print(`DEBUG: args.length= ${args.length}`)
+        print(`DEBUG: args.burnin= ${args.burnin}`)
         print(`DEBUG: n= ${n}`)
         print(`DEBUG: hint= ${hint}`)
       }
@@ -267,7 +268,7 @@ $("#generate").click(function() {
   args.sekret = $('#sekret').val()
   args.prefix = $('#prefix').val()
   args.length = $('#length').val()
-  args,burnin = $('#burnin').val()
+  args.burnin = $('#burnin').val()
   args.digits = false
   args.unicode = false
   args.digits = false
