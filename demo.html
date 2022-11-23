@@ -8,7 +8,6 @@ https://www.jqueryscript.net/tags.php?/Password%20Generator"
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=128">
 
-
 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
 <!--
@@ -148,17 +147,14 @@ function get_random_string(n, charset='', gint=rig(MP31, '')) { // seed=undefine
 
 function getPass(args) {
   /*
-  args.hint        : hint to generate password
-  args.sekret      : sekret to spice hint
   args.prefix      : prefix for generated password
-  args.length      : length of password to generate
+  args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
+  args.length      : length of password
   args.digits      : should digits be used?
   args.letters     : should letters be used?
   args.punctuation : should punctuation be used?
   */
-  n = args.length
-  assert(4 <= n && n <= 64 , `password length must be in 4-64 range, got ${n}`)
 
   const CHARS = {}
   CHARS.digits = '0123456789'
@@ -174,48 +170,46 @@ function getPass(args) {
     if (charset.length == 0) charset = CHARS.digits + CHARS.lower + CHARS.upper
   }
 
-  let hint, passwd, salt, lower, upper, digit, prefix;
-  hint = args.hint + args.sekret
-  /*
-  add to prefix one lower, one upper character and one digit
-  to satisfy requirements of many sites
-  one or more special characters can be provided in args.prefix (default='?')
-  */
-  salt = args.salt.split(',')
-  assert(salt.length == 5, 'salt must be 5 chars')
-  lower = get_random_string(1, CHARS.lower,  rig(MP31, hint+salt[0]))
-  upper = get_random_string(1, CHARS.upper,  rig(MP31, hint+salt[1]))
-  digit = get_random_string(1, CHARS.digits, rig(MP31, hint+salt[2]))
-  prefix = args.prefix + lower + upper + digit
-  passwd = get_random_string(args.length - prefix.length, charset, rig(MP31, hint+salt[3]))
-  passwd = prefix + passwd // augment password with prefix e.g. '?aZ9'
-  if (!args.no_shuffle) {
-    passwd = shuffle_string(passwd, rig(MP31, hint+salt[4]))
-  }
+  // let passwd;
   if (args.hint === '') { // generate and return random string from charset
       passwd = get_random_string(args.length, charset)
+  } else {
+
+      /*
+      add to prefix one lower, one upper character and one digit
+      to satisfy requirements of many sites
+      one or more special characters can be provided in args.prefix (default='?')
+      */
+      let hint = args.hint + args.sekret + args.prefix + args.length
+      let gint = rig(MP31, hint)
+      for (let k=0; k < args.burnin; k++) { gint.next().value }
+      let lower = get_random_string(1, CHARS.lower,  gint)
+      let upper = get_random_string(1, CHARS.upper,  gint)
+      let digit = get_random_string(1, CHARS.digits, gint)
+      // const prefix = args.prefix + lower + upper + digit
+      let n = args.length - args.prefix.length
+      if (args.debug) {
+        print(`DEBUG: args.hint= ${args.hint}`)
+        print(`DEBUG: args.sekret= ${args.sekret}`)
+        print(`DEBUG: args.prefix= ${args.prefix}`)
+        print(`DEBUG: args.prefix.length= ${args.prefix.length}`)
+        print(`DEBUG: args.length= ${args.length}`)
+        print(`DEBUG: n= ${n}`)
+        print(`DEBUG: hint= ${hint}`)
+      }
+      assert(n >= 0, `prefix too long: args.length= ${args.length} - args.prefix.length= ${args.prefix.length}`)
+      passwd = get_random_string(args.length - args.prefix.length, charset, gint)
+      passwd = args.prefix + passwd // augment password with prefix e.g. '?aZ9'
+      if (!args.no_shuffle) {
+        passwd = shuffle_string(passwd, gint)
+      }
   }
   copy_to_clipboard(passwd)
   if (args.verbose) {
-    // print(`password >>> ${passwd} <<< (copied to clipboard)`)
-    console.log(`password >>> ${passwd} <<< (copied to clipboard)`)
-    // console.log("password >>> ", passwd, " <<< (copied to clipboard)")
-  }
-  if (args.debug) {
-    print("DEBUG: getPass: passwd=" + passwd)
-    print("DEBUG: getPass: passwd.length=" + passwd.length)
-    print("DEBUG: args.length=" + args.length)
-    print("DEBUG: args.prefix=" + args.prefix)
-    print("DEBUG: prefix=" + prefix + ' (augmented)')
-    print("DEBUG: prefix.length=" + prefix.length)
-    print("DEBUG: lower= ", lower, " upper= ", upper, " digit= ", digit)
-    print("DEBUG: args.sekret=" + args.sekret)
-    print("DEBUG: hint=" + hint)
-    print("DEBUG: charset=" + charset)
+    print(`password >>> ${passwd} <<< (copied to clipboard)`)
   }
   return passwd
 }
-
 
 function copy_to_clipboard(x) {
     if (typeof window === "undefined") {
@@ -256,9 +250,10 @@ $("#generate").click(function() {
   // if (typeof window !== 'undefined') {
   // get args from window
   args.hint = $('#hint').val()
-  args.sekret = 'SEKRET'
-  args.prefix = 'PREFIX'
-  args.length = 15
+  args.sekret = '0'
+  args.prefix = '?'
+  args.length = 8
+  args.burnin = 9
   args.digits = false
   args.unicode = false
   args.digits = false
@@ -266,7 +261,6 @@ $("#generate").click(function() {
   args.upper = false
   args.punctuation = false
   args.no_shuffle = false
-  args.salt = '0,1,2,3,4'
   args.debug = true
   args.verbose = true
   let passwd = getPass(args);
