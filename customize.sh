@@ -5,7 +5,7 @@ function usage() {
     echo
     echo "Usage example:"
     echo
-    echo "./customize.sh --sekret SEKRET --prefix PREFIX --length 8 --burnin 9 < template.html > demo.html"
+    echo "./customize.sh --sekret SEKRET --prefix : --length 8 --burnin 32 < template.html > demo.html"
     echo
     echo SEKRET - string to make different passwords from the same hint
     echo "PREFIX - use one (or more) from ${special} to satisfy picky sites"
