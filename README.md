@@ -9,8 +9,9 @@ Build a password generator capable of deriving strong, random (and reproducible!
 One way to securely store and share passwords is by using a password manager. It is a recommended and widely used solution,
 but not without problems. Proposed generator is an alternative approach with two main advantages:
 (1) passwords are generated on demand and never stored - there is no danger of data breach (2) there is no master password to remember.
-Large number of sites and apps exist capable of generating strong random passwords,
-but despite some (not exhaustive!) search (see some links below) I was not able to locate any which offer generating reproducible, hint-based passwords.
+Large number of sites and apps offer strong random password generation,
+but despite some (not exhaustive!) search (see some links below)
+I was not able to locate any which would allow to generate reproducible, hint-based passwords.
 
 ## Simple Example
 
