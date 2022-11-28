@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 'use strict';
+// import clipboardy from "clipboardy";
 const MP31 = 2**31 - 1 // Mersenne prime
 // import assert from 'assert';
 const assert = require('assert');
+// import assert from "assert";
 const print = console.log
 
 function get_parser() {
   const { ArgumentParser,  ArgumentDefaultsHelpFormatter} = require('argparse');
+  // import {ArgumentParser,  ArgumentDefaultsHelpFormatter} from "argparse";
   const parser = new ArgumentParser({
     description: 'Seeded password generator - generates password from hint and sekret \
     ; it is augmented by one special character (prefix), one lower and upper char and a digit',
@@ -94,7 +97,11 @@ function get_random_string(n, charset='', gint=rig(MP31, '')) { // seed=undefine
 
 function copy_to_clipboard(x) {
     if (typeof window === "undefined") {
-      const CLIP = require('clipboardy');
+      // const CLIP = clipboardy
+      const CLIP = require('node-clipboardy');
+      // const CLIP = import('clipboardy');
+      // print(`DEBUG: copy_to_clipboard: typeof(CLIP)= ${typeof(CLIP)}`)
+      // import clipboardy from "clipboardy"
       CLIP.writeSync(x)
     } else {
       /*
