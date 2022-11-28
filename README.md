@@ -27,12 +27,16 @@ The table below illustrates how from the same hint, using easily customizable op
 
 * web browser plugin
 * native smartphone apps (Android, iOS)
+* [progressive web application](https://en.wikipedia.org/wiki/Progressive_web_app)
 
 Here are pointers to some resources:
 
 1. [Chrome extensions samples](https://github.com/GoogleChrome/chrome-extensions-samples)
 1. [How to make a Chrome browser extension from scratch | Understanding Chrome extension anatomy](https://medium.com/front-end-weekly/how-to-make-a-chrome-browser-extension-from-scratch-chrome-extension-development-basics-basic-ba1daee11123)
-1.
+1. https://web.dev/progressive-web-apps/
+1. https://github.com/hemanth/awesome-pwa
+1. https://github.com/mdn/pwa-examples
+1. https://github.com/vaadin/expense-manager-demo
 
 
 ## Password generators
