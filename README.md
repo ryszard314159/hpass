@@ -23,8 +23,22 @@ The table below illustrates how from the same hint, using easily customizable op
 | mos  | 0K4jTgOsdfA7c@yW |
 | mos  | nKxeTUvhXgNaN>qS6CUZmz8uSRocjbpA |
 
+## TODO
+
+* web browser plugin
+* native smartphone apps (Android, iOS)
+
+Here are pointers to some resources:
+
+1. [Chrome extensions samples](https://github.com/GoogleChrome/chrome-extensions-samples)
+1. [How to make a Chrome browser extension from scratch | Understanding Chrome extension anatomy](https://medium.com/front-end-weekly/how-to-make-a-chrome-browser-extension-from-scratch-chrome-extension-development-basics-basic-ba1daee11123)
+1.
+
 
 ## Password generators
+
+I could not find any password generators which would generate reproducible password given
+a hint, and possibly some other parameters.
 
 1. https://passgen.io/
 1. https://passgen.co/
