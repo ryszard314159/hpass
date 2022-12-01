@@ -20,7 +20,7 @@ function get_parser() {
   parser.add_argument('-x', '--prefix', { help: 'password prefix', default: '<PREFIX>' });
   parser.add_argument('-k', '--sekret', { help: 'hint augmentation', default: '<SEKRET>' });
   parser.add_argument('-b', '--burnin', { help: 'discard cycles', type: 'int', default: 0});
-  parser.add_argument('-L', '--length', { help: 'password length', type: 'int', default: '<LENGTH>'});
+  parser.add_argument('-L', '--plength', { help: 'password length', type: 'int', default: '<LENGTH>'});
   parser.add_argument('-u', '--unicode', { help: 'use ALL unicode chars', action: "store_true"});
   parser.add_argument('-r', '--letters', { help: 'use ascii letters', action: "store_true"});
   parser.add_argument('-t', '--digits', { help: 'use digits', action: "store_true"});
@@ -136,7 +136,7 @@ function getPass(args) {
   args.prefix      : prefix for generated password
   args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
-  args.length      : length of password
+  args.plength      : length of password
   args.digits      : should digits be used?
   args.letters     : should letters be used?
   args.punctuation : should punctuation be used?
@@ -158,34 +158,34 @@ function getPass(args) {
 
   // let passwd;
   if (args.hint === '') { // generate and return random string from charset
-      passwd = get_random_string(args.length, charset)
+      passwd = get_random_string(args.plength, charset)
   } else {
-
       /*
       add to prefix one lower, one upper character and one digit
       to satisfy requirements of many sites
       one or more special characters can be provided in args.prefix (default='?')
       */
-      let hint = args.hint + args.sekret + args.prefix + args.length
+      let hint = args.hint + args.sekret + args.prefix + args.plength
       let gint = rig(MP31, hint)
       for (let k=0; k < args.burnin; k++) { gint.next().value }
       let lower = get_random_string(1, CHARS.lower,  gint)
       let upper = get_random_string(1, CHARS.upper,  gint)
       let digit = get_random_string(1, CHARS.digits, gint)
-      // const prefix = args.prefix + lower + upper + digit
-      let n = args.length - args.prefix.length
+      const prefix = args.prefix + lower + upper + digit
+      let n = args.plength - prefix.length
       if (args.debug) {
         print(`DEBUG: args.hint= ${args.hint}`)
         print(`DEBUG: args.sekret= ${args.sekret}`)
         print(`DEBUG: args.prefix= ${args.prefix}`)
-        print(`DEBUG: args.length= ${args.length}`)
+        print(`DEBUG: prefix= ${prefix}`)
+        print(`DEBUG: args.plength= ${args.plength}`)
         print(`DEBUG: args.burnin= ${args.burnin}`)
         print(`DEBUG: n= ${n}`)
         print(`DEBUG: hint= ${hint}`)
       }
-      assert(n >= 0, `prefix too long: args.length= ${args.length} - args.prefix.length= ${args.prefix.length}`)
-      passwd = get_random_string(args.length - args.prefix.length, charset, gint)
-      passwd = args.prefix + passwd // augment password with prefix e.g. '?aZ9'
+      assert(n >= 0, `prefix too long: args.plength= ${args.plength}, prefix= ${prefix}`)
+      passwd = get_random_string(args.plength - prefix.length, charset, gint)
+      passwd = prefix + passwd // augment password with prefix e.g. '?aZ9'
       if (!args.no_shuffle) {
         passwd = shuffle_string(passwd, gint)
       }
@@ -223,7 +223,7 @@ Nick Feltwell <nfeltwell@barringtonjames.com>
   if (args.debug) {
     print("DEBUG: getPass: passwd=" + passwd)
     print("DEBUG: getPass: passwd.length=" + passwd.length)
-    print("DEBUG: args.length=" + args.length)
+    print("DEBUG: args.plength=" + args.plength)
     print("DEBUG: args.prefix=" + args.prefix)
     print("DEBUG: prefix=" + prefix + ' (augmented)')
     print("DEBUG: prefix.length=" + prefix.length)
@@ -234,5 +234,25 @@ Nick Feltwell <nfeltwell@barringtonjames.com>
     print("DEBUG: hint=" + hint)
     print("DEBUG: charset=" + charset)
   }
+
+function get_test_args() {
+  args = Object
+  args.hint = "johnhancock"
+  args.prefix = "?"
+  args.sekret = "0"
+  args.burnin = 0
+  args.plength = 15
+  args.unicode = false
+  args.letters = false
+  args.digits = false
+  args.punctuation = false
+  args.no_shuffle = false
+  args.verbose = true
+  args.debug = true
+  return args
+}
+
+args = parser.parse_args(["johnhancock", '-v'])
+
 
 */
