@@ -26,12 +26,19 @@ passwords with length defined length, etc.
 | mos  | 0K4jTgOsdfA7c@yW |
 | mos  | nKxeTUvhXgNaN>qS6CUZmz8uSRocjbpA |
 
+## Check it out!
+
+1. http://hpass.net/generate
+1. https://ryszard314159.github.io/template.html
+
+
 ## TODO
 
 * web browser plugin
 * native smartphone apps (Android, iOS)
 * [progressive web application](https://en.wikipedia.org/wiki/Progressive_web_app)
 * add logo e.g. ``icons/logo.png`` generated with [DALL-E](https://openai.com/dall-e-2/)
+* compile node js to byte-code
 
 Here are pointers to some resources:
 
@@ -42,6 +49,9 @@ Here are pointers to some resources:
 1. https://github.com/hemanth/awesome-pwa
 1. https://github.com/mdn/pwa-examples
 1. https://github.com/vaadin/expense-manager-demo
+1. [PWA Series: Hands-on, create your first PWA, step by step
+](https://medium.com/samsung-internet-dev/pwa-series-hands-on-create-your-first-pwa-step-by-step-5bb7a6605349)
+1. [Hello-pwa](https://github.com/jamesjohnson280/hello-pwa)
 
 
 ## Password generators
