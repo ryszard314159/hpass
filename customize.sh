@@ -60,6 +60,6 @@ done
 sed -e '/Password Generator/d' \
   -e '/<label>Sekret:<\/label>/d' -e '/<input id="sekret"/d' -e "s/args.sekret = .*$/args.sekret = '${SEKRET}'/" \
   -e '/<label>Prefix:<\/label>/d' -e '/<input id="prefix"/d' -e "s/args.prefix = .*$/args.prefix = '${PREFIX}'/" \
-  -e '/<label>Length:<\/label>/d' -e '/<input id="length"/d' -e "s/args.length = .*$/args.length = ${LENGTH}/" \
+  -e '/<label>Length:<\/label>/d' -e '/<input id="length"/d' -e "s/args.plength = .*$/args.plength = ${LENGTH}/" \
   -e '/<label>Burnin:<\/label>/d' -e '/<input id="burnin"/d' -e "s/args.burnin = .*$/args.burnin = ${BURNIN}/" \
   -e '/<hr style/d' -e '/passwords/d'

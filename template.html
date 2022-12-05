@@ -60,16 +60,16 @@ button {
   <input type="text" placeholder="enter input" title="Enter input here">
   <input id="hint" class="form-control" style="background-color:lightblue;" value='' />
   -->
-  <input id="hint" class="form-control" placeholder=" <PASSWORD HINT>" style="background-color:lightblue;" />
+  <input id="hint" class="form-control" placeholder="HINT" style="background-color:lightblue;" />
 </div>
 <div class="container" style="display:flex;"> <label>Sekret:</label>
-  <input id="sekret" class="form-control" value='<SEKRET>' /> </div>
+  <input id="sekret" class="form-control" placeholder='ANY STRING' /> </div>
 <div class="container" style="display:flex;"> <label>Prefix:</label>
-  <input id="prefix" class="form-control" value='<PREFIX>' /> </div>
+  <input id="prefix" class="form-control" placeholder='SPECIAL CHARACTER RECOMMENED' /> </div>
 <div class="container" style="display:flex;"> <label>Length:</label>
-  <input id="length" class="form-control" value="<LENGTH>"> </div>
+  <input id="length" class="form-control" value=32> </div>
 <div class="container" style="display:flex;"> <label>Burnin:</label>
-  <input id="burnin" class="form-control" value="<BURNIN>"> </div>
+  <input id="burnin" class="form-control" value=8> </div>
 <div class="container" style="display:flex;">
   <button id="generate" class="btn btn-default"
         style="background-color:lightgreen;font-weight:900;width:100%;text-align:center">
@@ -77,9 +77,9 @@ button {
   </button>
 </div>
 
-<hr style="background-color:red;height:1px;margin-left:4% !important; margin-right:4% !important;">
+<hr style="background-color:red;height:1px;margin-left:16% !important; margin-right:2% !important;">
 <div class="container" style="display:flex;"id="passwords"></div>
-<hr style="background-color:red;height:1px;margin-left:4% !important; margin-right:4% !important;">
+<hr style="background-color:red;height:1px;margin-left:16% !important; margin-right:2% !important;">
 
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 
@@ -164,7 +164,7 @@ function getPass(args) {
   args.prefix      : prefix for generated password
   args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
-  args.plength      : length of password
+  args.plength     : length of password
   args.digits      : should digits be used?
   args.letters     : should letters be used?
   args.punctuation : should punctuation be used?
@@ -184,11 +184,10 @@ function getPass(args) {
     if (charset.length == 0) charset = CHARS.digits + CHARS.lower + CHARS.upper
   }
 
-  // let passwd;
+  var passwd;
   if (args.hint === '') { // generate and return random string from charset
       passwd = get_random_string(args.plength, charset)
   } else {
-
       /*
       add to prefix one lower, one upper character and one digit
       to satisfy requirements of many sites
@@ -201,7 +200,7 @@ function getPass(args) {
       let upper = get_random_string(1, CHARS.upper,  gint)
       let digit = get_random_string(1, CHARS.digits, gint)
       const prefix = args.prefix + lower + upper + digit
-      let n = args.plength - prefix.length
+      let n = args.plength - args.prefix.length
       if (args.debug) {
         print(`DEBUG: args.hint= ${args.hint}`)
         print(`DEBUG: args.sekret= ${args.sekret}`)
@@ -212,9 +211,9 @@ function getPass(args) {
         print(`DEBUG: n= ${n}`)
         print(`DEBUG: hint= ${hint}`)
       }
-      assert(n >= 0, `prefix too long: args.plength= ${args.plength}, prefix= ${prefix}`)
-      passwd = get_random_string(args.plength - prefix.length, charset, gint)
-      passwd = prefix + passwd // augment password with prefix e.g. '?aZ9'
+      assert(n > 0, `prefix too long: args.plength= ${args.plength}, args.prefix= ${args.prefix}`)
+      passwd = get_random_string(n, charset, gint)
+      passwd = args.prefix + passwd // augment password with prefix e.g. ':'
       if (!args.no_shuffle) {
         passwd = shuffle_string(passwd, gint)
       }
@@ -279,7 +278,7 @@ $("#generate").click(function() {
   args.debug = true
   args.verbose = true
   let passwd = getPass(args);
-  $('#passwords').prepend(passwd + '<br/>');
+  $('#passwords').prepend(passwd + '<br>');
 });
 </script>
 
