@@ -65,9 +65,9 @@ button {
 <div class="container" style="display:flex;"> <label>Sekret:</label>
   <input id="sekret" class="form-control" placeholder='ANY STRING' /> </div>
 <div class="container" style="display:flex;"> <label>Prefix:</label>
-  <input id="prefix" class="form-control" placeholder='SPECIAL CHARACTER RECOMMENED' /> </div>
+  <input id="prefix" class="form-control" value=':' /> </div>
 <div class="container" style="display:flex;"> <label>Length:</label>
-  <input id="length" class="form-control" value=32> </div>
+  <input id="length" class="form-control" value=15> </div>
 <div class="container" style="display:flex;"> <label>Burnin:</label>
   <input id="burnin" class="form-control" value=8> </div>
 <div class="container" style="display:flex;">
@@ -200,7 +200,7 @@ function getPass(args) {
       let upper = get_random_string(1, CHARS.upper,  gint)
       let digit = get_random_string(1, CHARS.digits, gint)
       const prefix = args.prefix + lower + upper + digit
-      let n = args.plength - args.prefix.length
+      let n = args.plength - prefix.length
       if (args.debug) {
         print(`DEBUG: args.hint= ${args.hint}`)
         print(`DEBUG: args.sekret= ${args.sekret}`)
@@ -213,7 +213,7 @@ function getPass(args) {
       }
       assert(n > 0, `prefix too long: args.plength= ${args.plength}, args.prefix= ${args.prefix}`)
       passwd = get_random_string(n, charset, gint)
-      passwd = args.prefix + passwd // augment password with prefix e.g. ':'
+      passwd = prefix + passwd // augment password with prefix e.g. ':'
       if (!args.no_shuffle) {
         passwd = shuffle_string(passwd, gint)
       }
