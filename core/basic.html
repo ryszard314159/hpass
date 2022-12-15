@@ -1,4 +1,8 @@
 <!doctype html>
+<!---
+to create full.html from basic.html run:
+sed -e 's/value =.*getCookie/value = getCookie/' -e 's/ readonly / /' basic.html > full.html
+--->
 <!--based on
 https://www.jqueryscript.net/tags.php?/Password%20Generator"
 jQuery Password Generator
@@ -51,25 +55,69 @@ button {
 
 <body>
 <div class="container">
-  <h3 style="text-align:center;">Password Generator</h3>
+  <h4 style="text-align:center;">Password Generator // basic </h4>
 
 <div class="form-group" style="display:flex;"></div>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script>
+    // setCookie(), getCookie()
+    // see: https://www.w3schools.com/js/js_cookies.asp
+
+    function setCookie(name, value, days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days*24*3600*1000));
+      var append = `${name}=${value};expires=${date.toGMTString()};path=/`;
+      document.cookie = append;
+    }
+
+    function getCookie(name, default_value='default_cookie') {
+      let nameEQ = name + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      var value = default_value;
+      for(var i=0;i < ca.length; i++) {
+        let c = ca[i];
+        if (c.indexOf(nameEQ) > -1) {
+          value = c.substring(c.indexOf(nameEQ) + nameEQ.length)
+          break;
+        }
+      }
+      return value;
+    }
+</script>
+
 <p class="p3">
-<div class="container" style="display:flex;">
-  <!--- <label>Hint:</label>
-  <input type="text" placeholder="enter input" title="Enter input here">
-  <input id="hint" class="form-control" style="background-color:lightblue;" value='' />
-  -->
-  <input id="hint" class="form-control" placeholder="HINT" style="background-color:lightblue;" />
-</div>
-<div class="container" style="display:flex;"> <label>Sekret:</label>
-  <input id="sekret" class="form-control" value='sekret' /> </div>
-<div class="container" style="display:flex;"> <label>Prefix:</label>
-  <input id="prefix" class="form-control" value=':' /> </div>
-<div class="container" style="display:flex;"> <label>Length:</label>
-  <input id="length" class="form-control" value=15> </div>
+  <div class="container" style="display:flex;">
+    <!--- <label>Hint:</label>
+    <input type="text" placeholder="enter input" title="Enter input here">
+    <input id="hint" class="form-control" style="background-color:lightblue;" value='' />
+    -->
+    <input id="hint" class="form-control" placeholder="HINT" style="background-color:lightblue;" />
+  </div>
+  <div class="container" style="display:flex;"> <label>Salt:</label>
+    <input class="form-control" id="salt" readonly />
+    <script>
+      document.getElementById("salt").value = 'salt' // getCookie('salt', 'salt')
+    </script>
+  </div>
+  <div class="container" style="display:flex;"> <label>Mark:</label>
+    <input class="form-control" id="mark" readonly />
+    <script>
+      document.getElementById("mark").value = '!' // getCookie('mark', '!')
+   </script>    
+  </div>
+  <div class="container" style="display:flex;"> <label>Length:</label>
+    <input class="form-control" id="length" readonly />
+    <script>
+      document.getElementById("length").value = 8 // getCookie('length', 8)
+   </script>
+  </div>
+
+<!---
 <div class="container" style="display:flex;"> <label>Burnin:</label>
-  <input id="burnin" class="form-control" value=8> </div>
+  <input id="burnin" class="form-control" value=0> </div>
+---->
 <div class="container" style="display:flex;">
   <button id="generate" class="btn btn-default"
         style="background-color:lightgreen;font-weight:900;width:100%;text-align:center">
@@ -81,22 +129,11 @@ button {
 <div class="container" style="display:flex;"id="passwords"></div>
 <hr style="background-color:red;height:1px;margin-left:16% !important; margin-right:2% !important;">
 
-<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-
 <script>
 
 const MP31 = 2**31 - 1;
 const assert = console.assert;
 
-/*
-function print(msg) {
-  if (typeof window !== 'undefined') {
-    document.write(msg + "<br>")
-  } else {
-    console.log(msg)
-  }
-}
-*/
 print = console.log
 
 /* permute chars in string using Durstenfeld shuffle algorithm */
@@ -161,7 +198,7 @@ function get_random_string(n, charset='', gint=rig(MP31, '')) { // seed=undefine
 
 function getPass(args) {
   /*
-  args.prefix      : prefix for generated password
+  args.mark        : mark for generated password
   args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
   args.plength     : length of password
@@ -189,31 +226,31 @@ function getPass(args) {
       passwd = get_random_string(args.plength, charset)
   } else {
       /*
-      add to prefix one lower, one upper character and one digit
+      add to mark one lower, one upper character and one digit
       to satisfy requirements of many sites
-      one or more special characters can be provided in args.prefix (default='?')
+      one or more special characters can be provided in args.mark (default='!')
       */
-      let hint = args.hint + args.sekret + args.prefix + args.plength
+      let hint = args.hint + args.salt + args.mark + args.plength
       let gint = rig(MP31, hint)
       for (let k=0; k < args.burnin; k++) { gint.next().value }
       let lower = get_random_string(1, CHARS.lower,  gint)
       let upper = get_random_string(1, CHARS.upper,  gint)
       let digit = get_random_string(1, CHARS.digits, gint)
-      const prefix = args.prefix + lower + upper + digit
-      let n = args.plength - prefix.length
+      const mark = args.mark + lower + upper + digit
+      let n = args.plength - mark.length
       if (args.debug) {
-        print(`DEBUG: args.hint= ${args.hint}`)
-        print(`DEBUG: args.sekret= ${args.sekret}`)
-        print(`DEBUG: args.prefix= ${args.prefix}`)
-        print(`DEBUG: prefix= ${prefix}`)
-        print(`DEBUG: args.plength= ${args.plength}`)
-        print(`DEBUG: args.burnin= ${args.burnin}`)
-        print(`DEBUG: n= ${n}`)
-        print(`DEBUG: hint= ${hint}`)
+        print(`DEBUG: getPass: args.hint= ${args.hint}`)
+        print(`DEBUG: getPass: args.salt= ${args.salt}`)
+        print(`DEBUG: getPass: args.mark= ${args.mark}`)
+        print(`DEBUG: getPass: mark= ${mark}`)
+        print(`DEBUG: getPass: args.plength= ${args.plength}`)
+        print(`DEBUG: getPass: args.burnin= ${args.burnin}`)
+        print(`DEBUG: getPass: n= ${n}`)
+        print(`DEBUG: getPass: hint= ${hint}`)
       }
-      assert(n > 0, `prefix too long: args.plength= ${args.plength}, args.prefix= ${args.prefix}`)
+      assert(n > 0, `mark too long: args.plength= ${args.plength}, args.mark= ${args.mark}`)
       passwd = get_random_string(n, charset, gint)
-      passwd = prefix + passwd // augment password with prefix e.g. ':'
+      passwd = mark + passwd // augment password with mark e.g. '!'
       if (!args.no_shuffle) {
         passwd = shuffle_string(passwd, gint)
       }
@@ -264,10 +301,10 @@ $("#generate").click(function() {
   // if (typeof window !== 'undefined') {
   // get args from window
   args.hint = $('#hint').val()
-  args.sekret = $('#sekret').val()
-  args.prefix = $('#prefix').val()
+  args.salt = $('#salt').val()
+  args.mark = $('#mark').val()
   args.plength = $('#length').val()
-  args.burnin = $('#burnin').val()
+  args.burnin = 0 // $('#burnin').val()
   args.digits = false
   args.unicode = false
   args.digits = false
@@ -279,7 +316,11 @@ $("#generate").click(function() {
   args.verbose = true
   let passwd = getPass(args);
   $('#passwords').prepend(passwd + '<br>');
+  setCookie('salt', $('#salt').val(), 7)
+  setCookie('mark', $('#mark').val(), 7)
+  setCookie('length', $('#length').val(), 7)
 });
+
 </script>
 
 </body>
