@@ -1,7 +1,8 @@
 <!doctype html>
 <!---
-to create full.html from basic.html run:
-sed -e 's/value =.*getCookie/value = getCookie/' -e 's/ readonly / /' basic.html > full.html
+to create {weak,strong,mighty}.html from template.html run:
+declare -A aa=( [weak]=7 [strong]=15 [mighty]=64 )
+for x in "${!aa[@]}"; do sed -e "s/MAXLENGTH/${aa[$x]}/" template.html > $x.html; done
 --->
 <!--based on
 https://www.jqueryscript.net/tags.php?/Password%20Generator"
@@ -55,7 +56,7 @@ button {
 
 <body>
 <div class="container">
-  <h4 style="text-align:center;">Password Generator // basic </h4>
+  <h4 style="text-align:center;">Length in 1-MAXLENGTH range </h4>
 
 <div class="form-group" style="display:flex;"></div>
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
@@ -94,7 +95,7 @@ button {
     <input type="text" placeholder="enter input" title="Enter input here">
     <input id="hint" class="form-control" style="background-color:lightblue;" value='' />
     -->
-    <input id="hint" class="form-control" placeholder="HINT" style="background-color:lightblue;" />
+    <input id="hint" class="form-control" placeholder="hint to generate password" style="background-color:lightblue;" />
   </div>
   <div class="container" style="display:flex;"> <label>Salt:</label>
     <input class="form-control" id="salt" />
@@ -115,6 +116,11 @@ button {
       // console.log(`DEBUG: length from cookie: n= ${n}, MAXLENGTH= ${MAXLENGTH}`)
       n = Math.min(Math.max(1, n), MAXLENGTH + 1)
       document.getElementById("length").value = n
+      if (n < 1 || n > MAXLENGTH) {
+        alert("Length must be between 1 and MAXLENGTH!");
+      } // else {
+      //  alert("Valid number!");
+      // }
       // console.log(`DEBUG: length after min/max: n= ${n}, MAXLENGTH= ${MAXLENGTH}`)
    </script>
   </div>
@@ -308,7 +314,7 @@ $("#generate").click(function() {
   args.hint = $('#hint').val()
   args.salt = $('#salt').val()
   args.mark = $('#mark').val()
-  args.plength = $('#length').val()
+  args.plength = Math.min(Math.max(1, $('#length').val()), MAXLENGTH)
   args.burnin = 0 // $('#burnin').val()
   args.digits = false
   args.unicode = false
