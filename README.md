@@ -28,8 +28,9 @@ passwords with length defined length, etc.
 
 ## Check it out!
 
-1. http://hpass.net/generate
+1. http://hpass.net/full
 1. https://ryszard314159.github.io/template.html
+
 
 
 ## TODO
@@ -39,6 +40,20 @@ passwords with length defined length, etc.
 * [progressive web application](https://en.wikipedia.org/wiki/Progressive_web_app)
 * add logo e.g. ``icons/logo.png`` generated with [DALL-E](https://openai.com/dall-e-2/)
 * compile node js to byte-code
+* run local serer for testing e.g.: python -m http.server 8080
+* https://web.dev/how-to-use-local-https/
+* install local https server to facilitate pwa testing: https://github.com/FiloSottile/mkcert
+* https://www.arubacloud.com/tutorial/how-to-enable-https-protocol-with-apache-2-on-ubuntu-20-04.aspx
+* https://www.arubacloud.com/tutorial/how-to-create-a-self-signed-ssl-certificate-on-ubuntu-18-04.aspx
+
+```
+$ ./mkcert -install
+Created a new local CA 💥
+Sudo password:
+The local CA is now installed in the system trust store! ⚡️
+The local CA is now installed in the Firefox and/or Chrome/Chromium trust store (requires browser restart)! 🦊
+```
+
 
 Here are pointers to some resources:
 
@@ -52,6 +67,9 @@ Here are pointers to some resources:
 1. [PWA Series: Hands-on, create your first PWA, step by step
 ](https://medium.com/samsung-internet-dev/pwa-series-hands-on-create-your-first-pwa-step-by-step-5bb7a6605349)
 1. [Hello-pwa](https://github.com/jamesjohnson280/hello-pwa)
+1. https://web.dev/install-criteria/#criteria
+1. https://www.freecodecamp.org/news/publish-your-website-netlify-github/
+1. [Building & Deploying your first Progressive Web App](https://link.medium.com/eUnGrg6nCvb)
 
 
 ## Password generators
@@ -65,4 +83,6 @@ a hint, and possibly some other parameters.
 1. https://www.nexcess.net/web-tools/secure-password-generator/
 1. https://www.dashlane.com/features/password-generator
 1. https://www.grc.com/passwords.htm
+
+
 
