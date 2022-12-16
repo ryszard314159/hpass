@@ -11,16 +11,16 @@ function get_parser() {
   const { ArgumentParser,  ArgumentDefaultsHelpFormatter} = require('argparse');
   // import {ArgumentParser,  ArgumentDefaultsHelpFormatter} from "argparse";
   const parser = new ArgumentParser({
-    description: 'Seeded password generator - generates password from hint and sekret \
-    ; it is augmented by one special character (prefix), one lower and upper char and a digit',
+    description: 'Seeded password generator - generates password from hint and salt \
+    ; it is augmented by one special character (mark), one lower and upper char and a digit',
     formatter_class: ArgumentDefaultsHelpFormatter
   });
   // parser.add_argument('-v', '--version', { action: 'version', version });
   parser.add_argument('hint', {help: "password hint; '' generates random passwd"});
-  parser.add_argument('-x', '--prefix', { help: 'password prefix', default: '<PREFIX>' });
-  parser.add_argument('-k', '--sekret', { help: 'hint augmentation', default: '<SEKRET>' });
+  parser.add_argument('-m', '--mark', { help: 'punctuation mark to use', default: '!' });
+  parser.add_argument('-s', '--salt', { help: 'hint augmentation', default: 'SALT' });
   parser.add_argument('-b', '--burnin', { help: 'discard cycles', type: 'int', default: 0});
-  parser.add_argument('-L', '--plength', { help: 'password length', type: 'int', default: '<LENGTH>'});
+  parser.add_argument('-L', '--plength', { help: 'password length', type: 'int', default: 15});
   parser.add_argument('-u', '--unicode', { help: 'use ALL unicode chars', action: "store_true"});
   parser.add_argument('-r', '--letters', { help: 'use ascii letters', action: "store_true"});
   parser.add_argument('-t', '--digits', { help: 'use digits', action: "store_true"});
@@ -133,7 +133,7 @@ function copy_to_clipboard(x) {
 
 function getPass(args) {
   /*
-  args.prefix      : prefix for generated password
+  args.mark      : mark for generated password
   args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
   args.plength      : length of password
@@ -161,31 +161,31 @@ function getPass(args) {
       passwd = get_random_string(args.plength, charset)
   } else {
       /*
-      add to prefix one lower, one upper character and one digit
+      add to mark one lower, one upper character and one digit
       to satisfy requirements of many sites
-      one or more special characters can be provided in args.prefix (default='?')
+      one or more special characters can be provided in args.mark (default='?')
       */
-      let hint = args.hint + args.sekret + args.prefix + args.plength
+      let hint = args.hint + args.salt + args.mark + args.plength
       let gint = rig(MP31, hint)
       for (let k=0; k < args.burnin; k++) { gint.next().value }
       let lower = get_random_string(1, CHARS.lower,  gint)
       let upper = get_random_string(1, CHARS.upper,  gint)
       let digit = get_random_string(1, CHARS.digits, gint)
-      const prefix = args.prefix + lower + upper + digit
-      let n = args.plength - prefix.length
+      const mark = args.mark + lower + upper + digit
+      let n = args.plength - mark.length
       if (args.debug) {
         print(`DEBUG: args.hint= ${args.hint}`)
-        print(`DEBUG: args.sekret= ${args.sekret}`)
-        print(`DEBUG: args.prefix= ${args.prefix}`)
-        print(`DEBUG: prefix= ${prefix}`)
+        print(`DEBUG: args.salt= ${args.salt}`)
+        print(`DEBUG: args.mark= ${args.mark}`)
+        print(`DEBUG: mark= ${mark}`)
         print(`DEBUG: args.plength= ${args.plength}`)
         print(`DEBUG: args.burnin= ${args.burnin}`)
         print(`DEBUG: n= ${n}`)
         print(`DEBUG: hint= ${hint}`)
       }
-      assert(n >= 0, `prefix too long: args.plength= ${args.plength}, prefix= ${prefix}`)
-      passwd = get_random_string(args.plength - prefix.length, charset, gint)
-      passwd = prefix + passwd // augment password with prefix e.g. '?aZ9'
+      assert(n >= 0, `mark too long: args.plength= ${args.plength}, mark= ${mark}`)
+      passwd = get_random_string(args.plength - mark.length, charset, gint)
+      passwd = mark + passwd // augment password with mark e.g. '?aZ9'
       if (!args.no_shuffle) {
         passwd = shuffle_string(passwd, gint)
       }
@@ -224,13 +224,13 @@ Nick Feltwell <nfeltwell@barringtonjames.com>
     print("DEBUG: getPass: passwd=" + passwd)
     print("DEBUG: getPass: passwd.length=" + passwd.length)
     print("DEBUG: args.plength=" + args.plength)
-    print("DEBUG: args.prefix=" + args.prefix)
-    print("DEBUG: prefix=" + prefix + ' (augmented)')
-    print("DEBUG: prefix.length=" + prefix.length)
+    print("DEBUG: args.mark=" + args.mark)
+    print("DEBUG: mark=" + mark + ' (augmented)')
+    print("DEBUG: mark.length=" + mark.length)
     print("DEBUG: lower=" + lower)
     print("DEBUG: upper=" + upper)
     print("DEBUG: digit=" + digit)
-    print("DEBUG: args.sekret=" + args.sekret)
+    print("DEBUG: args.salt=" + args.salt)
     print("DEBUG: hint=" + hint)
     print("DEBUG: charset=" + charset)
   }
@@ -238,8 +238,8 @@ Nick Feltwell <nfeltwell@barringtonjames.com>
 function get_test_args() {
   args = Object
   args.hint = "johnhancock"
-  args.prefix = "?"
-  args.sekret = "0"
+  args.mark = "?"
+  args.salt = "0"
   args.burnin = 0
   args.plength = 15
   args.unicode = false
