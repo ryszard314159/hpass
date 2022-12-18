@@ -84,5 +84,20 @@ a hint, and possibly some other parameters.
 1. https://www.dashlane.com/features/password-generator
 1. https://www.grc.com/passwords.htm
 
+## Pasword testers
 
+1. https://www.security.org/how-secure-is-my-password/
+1. https://www.passwordmonster.com
 
+## JavaScript: Create reproducible UUIDs within a name space
+
+This can be useful to hash user emails e.g.
+
+```
+const { v5: uuidv5 } = require('uuid');
+const MY_NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341';
+uuidv5('alice@gmail.com', MY_NAMESPACE); // -> '28e0fb10-e6ba-5663-9eb4-54e0b9607643'
+uuidv5('bob@gmail.com', MY_NAMESPACE); // -> '5337ff34-e3d4-5234-bc8a-0baa84a4fb48'
+```
+
+This was we can check if user (i.e. email) is in the system witout actually storing emails
