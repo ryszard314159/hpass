@@ -8,6 +8,10 @@ Build a password generator capable of deriving strong, random (and reproducible!
 
 One way to securely store and share passwords is by using a password manager.
 It is a recommended and widely used solution, but not without problems.
+See for example:
+* [LastPass vault breach (2022-12-28)](
+https://www.theverge.com/2022/12/28/23529547/lastpass-vault-breach-disclosure-encryption-cybersecurity-rebuttal)
+
 Proposed generator is an alternative approach with two main advantages:
 (1) passwords are generated on demand and never stored - there is no danger of data breach
 (2) there is no master password to remember.
@@ -31,7 +35,10 @@ passwords with length defined length, etc.
 1. http://hpass.net/full
 1. https://ryszard314159.github.io/template.html
 
+## Useful tools
 
+1. bootstrap - JavaScript module (npm install bootstrap)
+1. [workbox](https://developer.chrome.com/docs/workbox/) - Production-ready service worker libraries and tooling
 
 ## TODO
 
@@ -70,6 +77,7 @@ Here are pointers to some resources:
 1. https://web.dev/install-criteria/#criteria
 1. https://www.freecodecamp.org/news/publish-your-website-netlify-github/
 1. [Building & Deploying your first Progressive Web App](https://link.medium.com/eUnGrg6nCvb)
+1. https://www.udemy.com/course/progressive-web-apps/learn/lecture/7171264
 
 
 ## Password generators
@@ -84,7 +92,7 @@ a hint, and possibly some other parameters.
 1. https://www.dashlane.com/features/password-generator
 1. https://www.grc.com/passwords.htm
 
-## Pasword testers
+## Password testers
 
 1. https://www.security.org/how-secure-is-my-password/
 1. https://www.passwordmonster.com
@@ -101,3 +109,6 @@ uuidv5('bob@gmail.com', MY_NAMESPACE); // -> '5337ff34-e3d4-5234-bc8a-0baa84a4fb
 ```
 
 This was we can check if user (i.e. email) is in the system witout actually storing emails
+
+***
+
