@@ -39,6 +39,10 @@ passwords with length defined length, etc.
 
 1. bootstrap - JavaScript module (npm install bootstrap)
 1. [workbox](https://developer.chrome.com/docs/workbox/) - Production-ready service worker libraries and tooling
+1. https://web.dev/progressive-web-apps/ - 
+1. https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps
+1. https://jakearchibald.github.io/isserviceworkerready/
+1. https://hnpwa.com/ - a lot of examples with code
 
 ## TODO
 
