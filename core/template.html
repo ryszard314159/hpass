@@ -103,10 +103,10 @@ button {
       document.getElementById("salt").value = getCookie('salt', 'salt')
     </script>
   </div>
-  <div class="container" style="display:flex;"> <label>Mark:</label>
-    <input class="form-control" id="mark" />
+  <div class="container" style="display:flex;"> <label>Pepper:</label>
+    <input class="form-control" id="pepper" />
     <script>
-      document.getElementById("mark").value = getCookie('mark', '!')
+      document.getElementById("pepper").value = getCookie('pepper', '!')
    </script>    
   </div>
   <div class="container" style="display:flex;"> <label>Length:</label>
@@ -209,7 +209,7 @@ function get_random_string(n, charset='', gint=rig(MP31, '')) { // seed=undefine
 
 function getPass(args) {
   /*
-  args.mark        : mark for generated password
+  args.pepper        : pepper for generated password
   args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
   args.plength     : length of password
@@ -237,31 +237,31 @@ function getPass(args) {
       passwd = get_random_string(args.plength, charset)
   } else {
       /*
-      add to mark one lower, one upper character and one digit
+      add to pepper one lower, one upper character and one digit
       to satisfy requirements of many sites
-      one or more special characters can be provided in args.mark (default='!')
+      one or more special characters can be provided in args.pepper (default='!')
       */
-      let hint = args.hint + args.salt + args.mark + args.plength
+      let hint = args.hint + args.salt + args.pepper + args.plength
       let gint = rig(MP31, hint)
       for (let k=0; k < args.burnin; k++) { gint.next().value }
       let lower = get_random_string(1, CHARS.lower,  gint)
       let upper = get_random_string(1, CHARS.upper,  gint)
       let digit = get_random_string(1, CHARS.digits, gint)
-      const mark = args.mark + lower + upper + digit
-      let n = args.plength - mark.length
+      const pepper = args.pepper + lower + upper + digit
+      let n = args.plength - pepper.length
       if (args.debug) {
         print(`DEBUG: getPass: args.hint= ${args.hint}`)
         print(`DEBUG: getPass: args.salt= ${args.salt}`)
-        print(`DEBUG: getPass: args.mark= ${args.mark}`)
-        print(`DEBUG: getPass: mark= ${mark}`)
+        print(`DEBUG: getPass: args.pepper= ${args.pepper}`)
+        print(`DEBUG: getPass: pepper= ${pepper}`)
         print(`DEBUG: getPass: args.plength= ${args.plength}`)
         print(`DEBUG: getPass: args.burnin= ${args.burnin}`)
         print(`DEBUG: getPass: n= ${n}`)
         print(`DEBUG: getPass: hint= ${hint}`)
       }
-      assert(n > 0, `mark too long: args.plength= ${args.plength}, args.mark= ${args.mark}`)
+      assert(n > 0, `pepper too long: args.plength= ${args.plength}, args.pepper= ${args.pepper}`)
       passwd = get_random_string(n, charset, gint)
-      passwd = mark + passwd // augment password with mark e.g. '!'
+      passwd = pepper + passwd // augment password with pepper e.g. '!'
       if (!args.no_shuffle) {
         passwd = shuffle_string(passwd, gint)
       }
@@ -313,7 +313,7 @@ $("#generate").click(function() {
   // get args from window
   args.hint = $('#hint').val()
   args.salt = $('#salt').val()
-  args.mark = $('#mark').val()
+  args.pepper = $('#pepper').val()
   args.plength = Math.min(Math.max(1, $('#length').val()), MAXLENGTH)
   args.burnin = 0 // $('#burnin').val()
   args.digits = false
@@ -328,7 +328,7 @@ $("#generate").click(function() {
   let passwd = getPass(args);
   $('#passwords').prepend(passwd + '<br>');
   setCookie('salt', $('#salt').val(), 7)
-  setCookie('mark', $('#mark').val(), 7)
+  setCookie('pepper', $('#pepper').val(), 7)
   setCookie('length', $('#length').val(), 7)
 });
 
