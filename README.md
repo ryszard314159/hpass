@@ -43,15 +43,20 @@ passwords with length defined length, etc.
 1. https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps
 1. https://jakearchibald.github.io/isserviceworkerready/
 1. https://hnpwa.com/ - a lot of examples with code
+1. https://www.pwabuilder.com
 
 ## TODO
 
-* web browser plugin
+* web browser plugin and PWA (progressive web app) -
+  these probably can use [content scripts](https://developer.chrome.com/docs/extensions/mv3/content_scripts/)
+  to detect that pointer is in the password input box... some related Stackoverlow items:
+    * [How to access the webpage DOM/HTML from an extension popup or background script?](https://stackoverflow.com/questions/4532236/how-to-access-the-webpage-dom-html-from-an-extension-popup-or-background-script)
+    * [How to determine which html page element has focus?](https://stackoverflow.com/questions/483741/how-to-determine-which-html-page-element-has-focus)
 * native smartphone apps (Android, iOS)
 * [progressive web application](https://en.wikipedia.org/wiki/Progressive_web_app)
 * add logo e.g. ``icons/logo.png`` generated with [DALL-E](https://openai.com/dall-e-2/)
 * compile node js to byte-code
-* run local serer for testing e.g.: python -m http.server 8080
+* run local server for testing e.g.: python -m http.server 8080
 * https://web.dev/how-to-use-local-https/
 * install local https server to facilitate pwa testing: https://github.com/FiloSottile/mkcert
 * https://www.arubacloud.com/tutorial/how-to-enable-https-protocol-with-apache-2-on-ubuntu-20-04.aspx
@@ -107,12 +112,24 @@ This can be useful to hash user emails e.g.
 
 ```
 const { v5: uuidv5 } = require('uuid');
-const MY_NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341';
-uuidv5('alice@gmail.com', MY_NAMESPACE); // -> '28e0fb10-e6ba-5663-9eb4-54e0b9607643'
-uuidv5('bob@gmail.com', MY_NAMESPACE); // -> '5337ff34-e3d4-5234-bc8a-0baa84a4fb48'
+const EMAIL_NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341';
+uuidv5('alice@gmail.com', EMAILS_NAMESPACE); // -> '28e0fb10-e6ba-5663-9eb4-54e0b9607643'
+uuidv5('bob@gmail.com', EMAILS_NAMESPACE); // -> '5337ff34-e3d4-5234-bc8a-0baa84a4fb48'
 ```
 
-This was we can check if user (i.e. email) is in the system witout actually storing emails
+This way we can check if user (i.e. email) is in the system without actually storing emails
 
-***
+## Password managers (bad) press
+
+1. [Norton LifeLock Accounts Targeted (2023-01-19)](https://www.cnet.com/tech/services-and-software/norton-lifelock-accounts-targeted-what-to-know-and-how-to-protect-your-passwords/)
+1. [Lastpass: Hackers stole customer vault data in cloud storage breach (2022-12-22)](https://www.bleepingcomputer.com/news/security/lastpass-hackers-stole-customer-vault-data-in-cloud-storage-breach/)
+
+
+## Notes
+
+* `document.querySelectorAll('input[type="password"]')` can be used to select input box (or boxes?) for password in the _active_ page (see [this](https://stackoverflow.com/questions/75238386/is-there-a-way-to-find-html-element-by-type/75238590#75238590) stackoverflow entry)
+* [Element.getClientRects()](https://developer.mozilla.org/en-US/docs/Web/API/Element/getClientRects) - might be useful to get coords of input box,
+maybe also jQuery [.position()](https://api.jquery.com/position/)?
+* [How to get access to DOM elements?](https://stackoverflow.com/questions/19758028/chrome-extension-get-dom-content) from popup?
+
 
