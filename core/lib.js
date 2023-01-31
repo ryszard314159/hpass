@@ -1,38 +1,32 @@
-#!/usr/bin/env node
-'use strict';
-// import clipboardy from "clipboardy";
-const MP31 = 2**31 - 1 // Mersenne prime
-// import assert from 'assert';
-const assert = require('assert');
-// import assert from "assert";
-const print = console.log
+/* HPASS - reproducible password generator.
+ * Copyright (C) 2023 Ryszard Czerminski
+ *
+ * This file is part of HPASS.
+ * HPASS is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HPASS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
-function get_parser() {
-  const { ArgumentParser,  ArgumentDefaultsHelpFormatter} = require('argparse');
-  // import {ArgumentParser,  ArgumentDefaultsHelpFormatter} from "argparse";
-  const parser = new ArgumentParser({
-    description: 'Seeded password generator - generates password from hint and salt \
-    ; it is augmented by one special character (pepper), one lower and upper char and a digit',
-    formatter_class: ArgumentDefaultsHelpFormatter
-  });
-  // parser.add_argument('-v', '--version', { action: 'version', version });
-  parser.add_argument('hint', {help: "password hint; '' generates random passwd"});
-  parser.add_argument('-m', '--pepper', { help: 'punctuation pepper to use', default: '!' });
-  parser.add_argument('-s', '--salt', { help: 'hint augmentation', default: 'SALT' });
-  parser.add_argument('-b', '--burnin', { help: 'discard cycles', type: 'int', default: 0});
-  parser.add_argument('-L', '--plength', { help: 'password length', type: 'int', default: 15});
-  parser.add_argument('-u', '--unicode', { help: 'use ALL unicode chars', action: "store_true"});
-  parser.add_argument('-r', '--letters', { help: 'use ascii letters', action: "store_true"});
-  parser.add_argument('-t', '--digits', { help: 'use digits', action: "store_true"});
-  parser.add_argument('-p', '--punctuation', { help: 'use punctuation', action: "store_true"});
-  parser.add_argument('-f', '--no-shuffle', { help: 'dont shuffle final string', action: "store_true"});
-  parser.add_argument('-a', '--random', { help: 'create random password', action: "store_true"});
-  parser.add_argument('-d', '--debug', { help: 'baz bar', action: "store_true"});
-  parser.add_argument('-v', '--verbose', { help: 'add output', action: "store_true"});
-  // let args =  parser.parse_args()
-  // if (args.debug) console.dir(args);
-  return parser
+'use strict';
+const MP31 = 2**31 - 1 // Mersenne prime
+let assert;
+if (typeof window !== 'undefined' && window) {
+  assert = console.assert;
+  // console.log(`lib:0: assert = ${assert}`)
+} else {
+  assert = require('assert');
+  // console.log(`lib:1: assert = ${assert}`)
 }
+// import assert from "assert";
 
 /* permute chars in string using Durstenfeld shuffle algorithm */
 function shuffle_string(string, gint=rig(MP31, seed)) {
@@ -46,7 +40,8 @@ function shuffle_string(string, gint=rig(MP31, seed)) {
 
 function hash_string(s) {
   assert(typeof(s) === 'string', `string expected, got ${s}`)
-  const p = 2**5 - 1, m = MP31 // 2**31 - 1; // Mersenne primes: 2^(2, 3, 5, 7, 13, 17, 19, 31, 67, 127, 257)
+  // Mersenne primes: 2^(2, 3, 5, 7, 13, 17, 19, 31, 67, 127, 257)
+  const p = 2**5 - 1, m = MP31 // 2**31 - 1
   var value = MP31 // 2**31 - 1;
   var pp = 1;
   for (var j=0; j < s.length; j++) {
@@ -100,7 +95,7 @@ function copy_to_clipboard(x) {
       // const CLIP = clipboardy
       const CLIP = require('node-clipboardy');
       // const CLIP = import('clipboardy');
-      // print(`DEBUG: copy_to_clipboard: typeof(CLIP)= ${typeof(CLIP)}`)
+      // console.log(`DEBUG: copy_to_clipboard: typeof(CLIP)= ${typeof(CLIP)}`)
       // import clipboardy from "clipboardy"
       CLIP.writeSync(x)
     } else {
@@ -120,6 +115,7 @@ function copy_to_clipboard(x) {
             ? document.getSelection().getRangeAt(0)
             : false;
         el.select();
+
         document.execCommand('copy');
         document.body.removeChild(el);
         if (selected) {
@@ -136,18 +132,16 @@ function getPass(args) {
   args.pepper      : pepper for generated password
   args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
-  args.plength      : length of password
+  args.plength     : length of the password to generate
   args.digits      : should digits be used?
   args.letters     : should letters be used?
   args.punctuation : should punctuation be used?
   */
-
   const CHARS = {}
   CHARS.digits = '0123456789'
   CHARS.lower = 'abcdefghijklmnopqrstuvwxyz'
   CHARS.upper = CHARS.lower.toUpperCase()
   CHARS.punctuation = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
-
   var charset = ''
   if (!args.unicode) {
     if (args.digits) charset += CHARS.digits
@@ -155,15 +149,14 @@ function getPass(args) {
     if (args.punctuation) charset += CHARS.punctuation
     if (charset.length == 0) charset = CHARS.digits + CHARS.lower + CHARS.upper
   }
-
-  // let passwd;
+  let passwd;
   if (args.hint === '') { // generate and return random string from charset
       passwd = get_random_string(args.plength, charset)
   } else {
       /*
       add to pepper one lower, one upper character and one digit
       to satisfy requirements of many sites
-      one or more special characters can be provided in args.pepper (default='?')
+      one or more special characters can be provided in args.pepper (default='!')
       */
       let hint = args.hint + args.salt + args.pepper + args.plength
       let gint = rig(MP31, hint)
@@ -174,85 +167,31 @@ function getPass(args) {
       const pepper = args.pepper + lower + upper + digit
       let n = args.plength - pepper.length
       if (args.debug) {
-        print(`DEBUG: args.hint= ${args.hint}`)
-        print(`DEBUG: args.salt= ${args.salt}`)
-        print(`DEBUG: args.pepper= ${args.pepper}`)
-        print(`DEBUG: pepper= ${pepper}`)
-        print(`DEBUG: args.plength= ${args.plength}`)
-        print(`DEBUG: args.burnin= ${args.burnin}`)
-        print(`DEBUG: n= ${n}`)
-        print(`DEBUG: hint= ${hint}`)
+        console.log(`DEBUG: args.hint= ${args.hint}`)
+        console.log(`DEBUG: args.salt= ${args.salt}`)
+        console.log(`DEBUG: args.pepper= ${args.pepper}`)
+        console.log(`DEBUG: pepper= ${pepper}`)
+        console.log(`DEBUG: args.plength= ${args.plength}`)
+        console.log(`DEBUG: args.burnin= ${args.burnin}`)
+        console.log(`DEBUG: n= ${n}`)
+        console.log(`DEBUG: hint= ${hint}`)
       }
       assert(n >= 0, `pepper too long: args.plength= ${args.plength}, pepper= ${pepper}`)
       passwd = get_random_string(args.plength - pepper.length, charset, gint)
-      passwd = pepper + passwd // augment password with pepper e.g. '?aZ9'
+      passwd = pepper + passwd // augment password with pepper e.g. '!aZ9'
       if (!args.no_shuffle) {
         passwd = shuffle_string(passwd, gint)
       }
   }
   copy_to_clipboard(passwd)
   if (args.verbose) {
-    print(`password >>> ${passwd} <<< (copied to clipboard)`)
+    console.log(`password= ${passwd} pepper= ${args.pepper} salt= ${args.salt} plength= ${args.plength}`)
   }
   return passwd
 }
 
-let parser = get_parser();
-let args, passwd;
-if (typeof process.env.BUILTIN !== 'undefined' || typeof window !== 'undefined') {
-  // get args from window s
-  print(`DEBUG: env.BUILTIN= ${process.env.BUILTIN}`)
-  args = parser.parse_args([$('#hint').val(), '-v'])
-} else {
-  // get args from command line
-  args = parser.parse_args()
+if (typeof window === 'undefined'){
+  module.exports = { getPass }
 }
-if (args.debug) console.dir(args);
-
-passwd = getPass(args)
-
-// <script type="text/javascript" src="pass.js"></script>
-
-/*
-let MAX_CODE_POINT = 1114111
-let v = new Set()
-for (let j=0; j<MAX_CODE_POINT; j++) v.add(String.fromCodePoint(j))
-
-Nick Feltwell <nfeltwell@barringtonjames.com>
-
-  if (args.debug) {
-    print("DEBUG: getPass: passwd=" + passwd)
-    print("DEBUG: getPass: passwd.length=" + passwd.length)
-    print("DEBUG: args.plength=" + args.plength)
-    print("DEBUG: args.pepper=" + args.pepper)
-    print("DEBUG: pepper=" + pepper + ' (augmented)')
-    print("DEBUG: pepper.length=" + pepper.length)
-    print("DEBUG: lower=" + lower)
-    print("DEBUG: upper=" + upper)
-    print("DEBUG: digit=" + digit)
-    print("DEBUG: args.salt=" + args.salt)
-    print("DEBUG: hint=" + hint)
-    print("DEBUG: charset=" + charset)
-  }
-
-function get_test_args() {
-  args = Object
-  args.hint = "johnhancock"
-  args.pepper = "?"
-  args.salt = "0"
-  args.burnin = 0
-  args.plength = 15
-  args.unicode = false
-  args.letters = false
-  args.digits = false
-  args.punctuation = false
-  args.no_shuffle = false
-  args.verbose = true
-  args.debug = true
-  return args
-}
-
-args = parser.parse_args(["johnhancock", '-v'])
-
-
-*/
+// export default getPass;
+// export { getPass };

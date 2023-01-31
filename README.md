@@ -2,37 +2,45 @@
 
 ## Purpose
 
-Build a password generator capable of deriving strong, random (and reproducible!) passwords from easy to remember hints.
+Build a password generator capable of deriving strong, reproducible passwords from easy to remember hints.
 
 ## Rationale
 
-One way to securely store and share passwords is by using a password manager.
-It is a recommended and widely used solution, but not without problems.
+One way to securely store and share passwords is by using a password manager. It is a recommended and widely used solution, but not without problems.
 See for example:
 * [LastPass vault breach (2022-12-28)](
 https://www.theverge.com/2022/12/28/23529547/lastpass-vault-breach-disclosure-encryption-cybersecurity-rebuttal)
 
 Proposed generator is an alternative approach with two main advantages:
-(1) passwords are generated on demand and never stored - there is no danger of data breach
+(1) passwords are generated on demand and never stored -
+there is no danger of data breach
 (2) there is no master password to remember.
-Large number of sites and apps offer strong random password generation,
-but despite some (not exhaustive!) search (see some links below)
-I was not able to locate any which would allow to generate reproducible, hint-based passwords.
+
 
 ## Simple Example
 
-The table below illustrates how from the same hint, using easily customizable options,
-passwords with length defined length, etc.
+The table below illustrates how from the same hint,
+using easily customizable `pepper` and `salt` options
+(here: `pepper` = '+', `salt` = 'salt')
+completely unrelated passwords with different length are generated
 
-| hint | generated password |
+| hint | length | generated password |
 | -----|------------------- |
-| mos  | JF8zuf?7 |
-| mos  | 0K4jTgOsdfA7c@yW |
-| mos  | nKxeTUvhXgNaN>qS6CUZmz8uSRocjbpA |
+| mos  |  8 | Xvyqf+0V |
+| mos  | 16 | xdBl3qU6bZvZ+A4X |
+| mos  | 32 | 1dtyBU1zuGBS+tPxrbZbppOqGrYaQJQH |
+
+Note: `pepper` string (1 or more characters) is used to provide special
+character typically required in passwords
+
+## Similar solutions
+
+1. https://passwordmaker.org (also [on Github](https://github.com/passwordmaker))
+1. http://passwordgen.org (also [on GitHub](https://github.com/eterevsky/passwordgen))
 
 ## Check it out!
 
-1. http://hpass.net/full
+1. https://hpass.net
 1. https://ryszard314159.github.io/template.html
 
 ## Useful tools
@@ -130,6 +138,12 @@ This way we can check if user (i.e. email) is in the system without actually sto
 * `document.querySelectorAll('input[type="password"]')` can be used to select input box (or boxes?) for password in the _active_ page (see [this](https://stackoverflow.com/questions/75238386/is-there-a-way-to-find-html-element-by-type/75238590#75238590) stackoverflow entry)
 * [Element.getClientRects()](https://developer.mozilla.org/en-US/docs/Web/API/Element/getClientRects) - might be useful to get coords of input box,
 maybe also jQuery [.position()](https://api.jquery.com/position/)?
-* [How to get access to DOM elements?](https://stackoverflow.com/questions/19758028/chrome-extension-get-dom-content) from popup?
+* [How to get access to DOM elements?](https://stackoverflow.com/questions/19758028/chrome-extension-get-dom-content) from popup? See also [Firefox version of chrome extensions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities)
+* [How to inspect source code of browser extension?](https://www.maketecheasier.com/view-source-code-chrome-extension/); go to:
+  1. `chrome://extensions/` to get ID of the extension
+  (e.g. ID=aeblfdkhhhdcdjpifhhbdiojplfjncoa for `1password`)
+  1. `chrome://version/` to get Profile Path (e.g. `$HOME/.config/google-chrome/Default`)
+  1. `$HOME/.config/google-chrome/Default/Extensions/<ID>` -
+  this is where the source code is located
 
 
