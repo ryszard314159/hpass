@@ -19,13 +19,14 @@ there is no danger of data breach
 
 ## Simple Example
 
+
 The table below illustrates how from the same hint,
 using easily customizable `pepper` and `salt` options
 (here: `pepper` = '+', `salt` = 'salt')
 completely unrelated passwords with different length are generated
 
 | hint | length | generated password |
-| -----|------------------- |
+| -----|------------------- | --- |
 | mos  |  8 | Xvyqf+0V |
 | mos  | 16 | xdBl3qU6bZvZ+A4X |
 | mos  | 32 | 1dtyBU1zuGBS+tPxrbZbppOqGrYaQJQH |
