@@ -1,4 +1,9 @@
 <!doctype html>
+<!---
+to create {weak,strong,mighty}.html from template.html run:
+declare -A aa=( [weak]=7 [strong]=15 [mighty]=64 )
+for x in "${!aa[@]}"; do sed -e "s/MAXLENGTH/${aa[$x]}/" template.html > $x.html; done
+--->
 <!--based on
 https://www.jqueryscript.net/tags.php?/Password%20Generator"
 jQuery Password Generator
@@ -51,25 +56,79 @@ button {
 
 <body>
 <div class="container">
-  <h3 style="text-align:center;">Password Generator</h3>
+  <h4 style="text-align:center;">Length in 1-MAXLENGTH range </h4>
 
 <div class="form-group" style="display:flex;"></div>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script>
+    // MAXLENGTH = 15
+    // setCookie(), getCookie()
+    // see: https://www.w3schools.com/js/js_cookies.asp
+
+    function setCookie(name, value, days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days*24*3600*1000));
+      var append = `${name}=${value};expires=${date.toGMTString()};path=/`;
+      document.cookie = append;
+    }
+
+    function getCookie(name, default_value='default_cookie') {
+      let nameEQ = name + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      var value = default_value;
+      for(var i=0;i < ca.length; i++) {
+        let c = ca[i];
+        if (c.indexOf(nameEQ) > -1) {
+          value = c.substring(c.indexOf(nameEQ) + nameEQ.length)
+          break;
+        }
+      }
+      return value;
+    }
+</script>
+
 <p class="p3">
-<div class="container" style="display:flex;">
-  <!--- <label>Hint:</label>
-  <input type="text" placeholder="enter input" title="Enter input here">
-  <input id="hint" class="form-control" style="background-color:lightblue;" value='' />
-  -->
-  <input id="hint" class="form-control" placeholder="HINT" style="background-color:lightblue;" />
-</div>
-<div class="container" style="display:flex;"> <label>Sekret:</label>
-  <input id="sekret" class="form-control" value='sekret' /> </div>
-<div class="container" style="display:flex;"> <label>Prefix:</label>
-  <input id="prefix" class="form-control" value=':' /> </div>
-<div class="container" style="display:flex;"> <label>Length:</label>
-  <input id="length" class="form-control" value=15> </div>
+  <div class="container" style="display:flex;">
+    <!--- <label>Hint:</label>
+    <input type="text" placeholder="enter input" title="Enter input here">
+    <input id="hint" class="form-control" style="background-color:lightblue;" value='' />
+    -->
+    <input id="hint" class="form-control" placeholder="hint to generate password" style="background-color:lightblue;" />
+  </div>
+  <div class="container" style="display:flex;"> <label>Salt:</label>
+    <input class="form-control" id="salt" />
+    <script>
+      document.getElementById("salt").value = getCookie('salt', 'salt')
+    </script>
+  </div>
+  <div class="container" style="display:flex;"> <label>Pepper:</label>
+    <input class="form-control" id="pepper" />
+    <script>
+      document.getElementById("pepper").value = getCookie('pepper', '!')
+   </script>    
+  </div>
+  <div class="container" style="display:flex;"> <label>Length:</label>
+    <input class="form-control" type="number" id="length" min="1" max="MAXLENGTH"/>
+    <script>
+      var n = getCookie('length', MAXLENGTH)
+      // console.log(`DEBUG: length from cookie: n= ${n}, MAXLENGTH= ${MAXLENGTH}`)
+      n = Math.min(Math.max(1, n), MAXLENGTH + 1)
+      document.getElementById("length").value = n
+      if (n < 1 || n > MAXLENGTH) {
+        alert("Length must be between 1 and MAXLENGTH!");
+      } // else {
+      //  alert("Valid number!");
+      // }
+      // console.log(`DEBUG: length after min/max: n= ${n}, MAXLENGTH= ${MAXLENGTH}`)
+   </script>
+  </div>
+
+<!---
 <div class="container" style="display:flex;"> <label>Burnin:</label>
-  <input id="burnin" class="form-control" value=8> </div>
+  <input id="burnin" class="form-control" value=0> </div>
+---->
 <div class="container" style="display:flex;">
   <button id="generate" class="btn btn-default"
         style="background-color:lightgreen;font-weight:900;width:100%;text-align:center">
@@ -81,22 +140,11 @@ button {
 <div class="container" style="display:flex;"id="passwords"></div>
 <hr style="background-color:red;height:1px;margin-left:16% !important; margin-right:2% !important;">
 
-<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-
 <script>
 
 const MP31 = 2**31 - 1;
 const assert = console.assert;
 
-/*
-function print(msg) {
-  if (typeof window !== 'undefined') {
-    document.write(msg + "<br>")
-  } else {
-    console.log(msg)
-  }
-}
-*/
 print = console.log
 
 /* permute chars in string using Durstenfeld shuffle algorithm */
@@ -161,7 +209,7 @@ function get_random_string(n, charset='', gint=rig(MP31, '')) { // seed=undefine
 
 function getPass(args) {
   /*
-  args.prefix      : prefix for generated password
+  args.pepper        : pepper for generated password
   args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
   args.plength     : length of password
@@ -189,31 +237,31 @@ function getPass(args) {
       passwd = get_random_string(args.plength, charset)
   } else {
       /*
-      add to prefix one lower, one upper character and one digit
+      add to pepper one lower, one upper character and one digit
       to satisfy requirements of many sites
-      one or more special characters can be provided in args.prefix (default='?')
+      one or more special characters can be provided in args.pepper (default='!')
       */
-      let hint = args.hint + args.sekret + args.prefix + args.plength
+      let hint = args.hint + args.salt + args.pepper + args.plength
       let gint = rig(MP31, hint)
       for (let k=0; k < args.burnin; k++) { gint.next().value }
       let lower = get_random_string(1, CHARS.lower,  gint)
       let upper = get_random_string(1, CHARS.upper,  gint)
       let digit = get_random_string(1, CHARS.digits, gint)
-      const prefix = args.prefix + lower + upper + digit
-      let n = args.plength - prefix.length
+      const pepper = args.pepper + lower + upper + digit
+      let n = args.plength - pepper.length
       if (args.debug) {
-        print(`DEBUG: args.hint= ${args.hint}`)
-        print(`DEBUG: args.sekret= ${args.sekret}`)
-        print(`DEBUG: args.prefix= ${args.prefix}`)
-        print(`DEBUG: prefix= ${prefix}`)
-        print(`DEBUG: args.plength= ${args.plength}`)
-        print(`DEBUG: args.burnin= ${args.burnin}`)
-        print(`DEBUG: n= ${n}`)
-        print(`DEBUG: hint= ${hint}`)
+        print(`DEBUG: getPass: args.hint= ${args.hint}`)
+        print(`DEBUG: getPass: args.salt= ${args.salt}`)
+        print(`DEBUG: getPass: args.pepper= ${args.pepper}`)
+        print(`DEBUG: getPass: pepper= ${pepper}`)
+        print(`DEBUG: getPass: args.plength= ${args.plength}`)
+        print(`DEBUG: getPass: args.burnin= ${args.burnin}`)
+        print(`DEBUG: getPass: n= ${n}`)
+        print(`DEBUG: getPass: hint= ${hint}`)
       }
-      assert(n > 0, `prefix too long: args.plength= ${args.plength}, args.prefix= ${args.prefix}`)
+      assert(n > 0, `pepper too long: args.plength= ${args.plength}, args.pepper= ${args.pepper}`)
       passwd = get_random_string(n, charset, gint)
-      passwd = prefix + passwd // augment password with prefix e.g. ':'
+      passwd = pepper + passwd // augment password with pepper e.g. '!'
       if (!args.no_shuffle) {
         passwd = shuffle_string(passwd, gint)
       }
@@ -264,10 +312,10 @@ $("#generate").click(function() {
   // if (typeof window !== 'undefined') {
   // get args from window
   args.hint = $('#hint').val()
-  args.sekret = $('#sekret').val()
-  args.prefix = $('#prefix').val()
-  args.plength = $('#length').val()
-  args.burnin = $('#burnin').val()
+  args.salt = $('#salt').val()
+  args.pepper = $('#pepper').val()
+  args.plength = Math.min(Math.max(1, $('#length').val()), MAXLENGTH)
+  args.burnin = 0 // $('#burnin').val()
   args.digits = false
   args.unicode = false
   args.digits = false
@@ -279,7 +327,11 @@ $("#generate").click(function() {
   args.verbose = true
   let passwd = getPass(args);
   $('#passwords').prepend(passwd + '<br>');
+  setCookie('salt', $('#salt').val(), 7)
+  setCookie('pepper', $('#pepper').val(), 7)
+  setCookie('length', $('#length').val(), 7)
 });
+
 </script>
 
 </body>
