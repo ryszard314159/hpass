@@ -1,0 +1,50 @@
+body {
+  font-family: "Arial";
+  background-color: rgb(224, 192, 144);
+}
+
+button {
+  margin: 0 auto;
+  display: block;
+}
+
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.container {
+  margin-top: 16px;
+  margin-left: 16px;
+  max-width: 256px;
+  justify-content: center;
+}
+
+.p1 {
+  font-family: "Times New Roman", Times, serif;
+}
+
+.p2 {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.p3 {
+  font-family: "Courier New", monospace;
+}
+
+div {
+  margin-bottom: 10px;
+}
+
+label {
+  display: inline-block;
+  width: 150px;
+  text-align: left;
+}

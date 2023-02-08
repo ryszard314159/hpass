@@ -16,53 +16,10 @@ jQuery Password Generator
   <meta name="viewport" content="width=device-width, initial-scale=128">
   <title>Password Generator</title>
 
+  <!---
   <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-
-  <!--
-.container {
-  margin-top:16px;
-  max-width:256px;
-}
--->
-
-  <style>
-    body {
-      font-family: "Arial";
-    }
-
-    button {
-      margin: 0 auto;
-      display: block;
-    }
-
-    .container {
-      margin-top: 16px;
-      max-width: 300px;
-      justify-content: center;
-    }
-
-    .p1 {
-      font-family: "Times New Roman", Times, serif;
-    }
-
-    .p2 {
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .p3 {
-      font-family: "Courier New", monospace;
-    }
-
-    div {
-      margin-bottom: 10px;
-    }
-
-    label {
-      display: inline-block;
-      width: 150px;
-      text-align: left;
-    }
-  </style>
+  --->
+  <link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -71,17 +28,14 @@ jQuery Password Generator
   <body>
     <script type="text/javascript" src="./lib.js"></script>
     <div class="container">
-      <h4 style="text-align:center;">Length in 1-MAXLENGTH range </h4>
-
+      <h4 style="text-align:center;" id="range">Length in 1-MAXLENGTH range
+      </h4>
       <div class="form-group" style="display:flex;"></div>
       <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 
       <p class="p3">
+    <!--- <form> --->
       <div class="container" style="display:flex;">
-        <!--- <label>Hint:</label>
-    <input type="text" placeholder="enter input" title="Enter input here">
-    <input id="hint" class="form-control" style="background-color:lightblue;" value='' />
-    -->
         <input id="hint" class="form-control" placeholder="hint to generate password"
           style="background-color:lightblue;" />
       </div>
@@ -91,26 +45,27 @@ jQuery Password Generator
           document.getElementById("salt").value = window.localStorage.getItem("hpass::salt")
         </script>
       </div>
-      <form class="container" style="display:flex;"> <label>Pepper:</label>
+      <div class="container" style="display:flex;"> <label>Pepper:</label>
         <input class="form-control" id="pepper" />
         <script>
           document.getElementById("pepper").value = window.localStorage.getItem("hpass::pepper")
         </script>
-      </form>
+      </div>
       <div class="container" style="display:flex;"> <label>Length:</label>
-        <input class="form-control" type="number" id="length" min="1" max="MAXLENGTH" />
+        <input class="form-control" type="number" id="length" min="1" max="ZZZ" />
         <script>
           var n = window.localStorage.getItem("hpass::length")
-          n = Math.min(Math.max(1, n), MAXLENGTH + 1)
+          n = Math.min(Math.max(1, n), MAXLENGTH)
           document.getElementById("length").value = n
-          if (n < 1 || n > MAXLENGTH) {
-            alert("Length must be between 1 and MAXLENGTH!");
-          } // else {
-      //  alert("Valid number!");
-      // }
-      // console.log(`DEBUG: length after min/max: n= ${n}, MAXLENGTH= ${MAXLENGTH}`)
+          document.getElementById("length").textContent = n
+          document.getElementById("length").max = 5
+          // document.getElementById("range").textContent = `Length in 1-${MAXLENGTH} range`
+          // if (n < 1 || n > MAXLENGTH) {
+          //   alert(`Length (=${n}) must be between 1 and MAXLENGTH= ${MAXLENGTH}!`);
+          // }
         </script>
       </div>
+    <!--- </form> --->
 
       <!---
 <div class="container" style="display:flex;"> <label>Burnin:</label>
