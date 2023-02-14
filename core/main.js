@@ -23,6 +23,7 @@
 const { ArgumentParser,  ArgumentDefaultsHelpFormatter} = require('argparse/argparse.js');
 const assert = require('assert');
 const lib = require("./lib.js")
+// import { getPass } from "./lib.js" // SyntaxError: Cannot use import statement outside a module
 
 const DESCRIPTION = 'Seeded password generator - generates password from hint and salt; \
 it is augmented by one special character (pepper), one lower and upper char and a digit. \
@@ -57,7 +58,7 @@ function get_parser() {
 }
 
 let parser = get_parser();
-let args, passwd;
+// let args, passwd;
 if (typeof process.env.BUILTIN !== 'undefined' || typeof window !== 'undefined') {
   // get args from window s
   print(`DEBUG: env.BUILTIN= ${process.env.BUILTIN}`)
@@ -68,4 +69,5 @@ if (typeof process.env.BUILTIN !== 'undefined' || typeof window !== 'undefined')
 }
 if (args.debug) console.dir(args);
 
-passwd = lib.getPass(args)
+passwd = lib.getPass(args);
+// passwd = getPass(args);
