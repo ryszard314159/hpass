@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <!---
 to create {demo,strong,mighty}.html from template.html run:
 declare -A aa=( [demo]=7 [strong]=15 [mighty]=64 )
@@ -9,113 +9,102 @@ https://www.jqueryscript.net/tags.php?/Password%20Generator"
 jQuery Password Generator
 -->
 <html>
+  <head>
+    <script
+      src="https://kit.fontawesome.com/f3c143cb4c.js"
+      crossorigin="anonymous"
+    ></script>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=128" />
+    <title>Password Generator</title>
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=128">
-  <title>Password Generator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
   <!---
-  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-  --->
-  <link rel="stylesheet" href="style.css">
 
-</head>
+        <link
+      rel="stylesheet"
+      href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"
+    />
 
-<p class="p3">
+  Crossed eye icon
+    https://icons.getbootstrap.com/icons/eye-slash/
+  <i class="bi bi-eye-slash"></i>
+  <i class="fa-duotone fa-eye-slash"></i>
+  -->
 
-  <body>
-    <script type="text/javascript" src="./lib.js"></script>
-    <div class="container">
-      <h4 style="text-align:center;" id="range">Length in 1-MAXLENGTH range
-      </h4>
-      <div class="form-group" style="display:flex;"></div>
-      <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <p class="p3">
+    <body>
+      <table
+        style="
+          width: 20%;
+          margin-top: 5%;
+          margin-left: 5%;
+          border: 0px solid black;
+        "
+      >
+        <tr id="row">
+          <th style="width: 40%;"><img src="icons/question.32.png" id="help"></img></th>
+          <th style="width: 60%;"><img src="icons/crossed-eye.32.png" id="toggle"></img></th>
+        </tr>
+        <tr>
+          <td colspan="2" style="width: 100%">
+            <input
+              id="hint"
+              type="password"
+              class="form-control"
+              placeholder="***"
+              style="background-color: lightblue; width: 97%"
+            />
+          </td>
+        </tr>
+        <tr id="pepperRow" class="hidden">
+          <td style="width: 80%;">Pepper:</td>
+          <td style="width: 20%;" ><input class="form-control" id="pepper" value="@" /></td>
+        </tr>
+        <tr id="saltRow" class="hidden">
+          <td style="width: 40%;">Salt:</td>
+          <td style="width: 60%;"><input class="form-control" id="salt" value="SALT" /></td>
+        </tr>
+        <tr id="lengthRow" class="hidden">
+          <td style="width: 40%;">Length:</td>
+          <td style="width: 60%;"><input class="form-control" id="length" value="15" /></td>
+        </tr>
+        <tr id="burninRow" class="hidden">
+          <td style="width: 80%;">Burnin:</td>
+          <td style="width: 20%;"><input class="form-control" id="burnin" value="9" /></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button
+              id="generate"
+              class="btn btn-default"
+              style="
+                background-color: lightgreen;
+                font-weight: 900;
+                width: 100%;
+                text-align: center;
+              "
+            >
+              Generate and Copy
+            </button>
+          </td>
+        </tr>
+        <tr id="passwordsRow" class="hidden">
+          <td colspan="2">
+            <p
+              class="scroll hidden"
+              style="display: flex; overflow-y: auto"
+              id="passwords"
+            ></p>
+          </td>
+        </tr>
+      </table>
 
-      <p class="p3">
-    <!--- <form> --->
-      <div class="container" style="display:flex;">
-        <input id="hint" class="form-control" placeholder="hint to generate password"
-          style="background-color:lightblue;" />
-      </div>
-      <div class="container" style="display:flex;"> <label>Salt:</label>
-        <input class="form-control" id="salt" />
-        <script>
-          document.getElementById("salt").value = window.localStorage.getItem("hpass::salt")
-        </script>
-      </div>
-      <div class="container" style="display:flex;"> <label>Pepper:</label>
-        <input class="form-control" id="pepper" />
-        <script>
-          document.getElementById("pepper").value = window.localStorage.getItem("hpass::pepper")
-        </script>
-      </div>
-      <div class="container" style="display:flex;"> <label>Length:</label>
-        <input class="form-control" type="number" id="length" min="1" max="ZZZ" />
-        <script>
-          var n = window.localStorage.getItem("hpass::length")
-          n = Math.min(Math.max(1, n), MAXLENGTH)
-          document.getElementById("length").value = n
-          document.getElementById("length").textContent = n
-          document.getElementById("length").max = 5
-          // document.getElementById("range").textContent = `Length in 1-${MAXLENGTH} range`
-          // if (n < 1 || n > MAXLENGTH) {
-          //   alert(`Length (=${n}) must be between 1 and MAXLENGTH= ${MAXLENGTH}!`);
-          // }
-        </script>
-      </div>
-    <!--- </form> --->
-
-      <!---
-<div class="container" style="display:flex;"> <label>Burnin:</label>
-  <input id="burnin" class="form-control" value=0> </div>
----->
-      <div class="container" style="display:flex;">
-        <button id="generate" class="btn btn-default"
-          style="background-color:lightgreen;font-weight:900;width:100%;text-align:center">
-          Generate and copy to clipboard
-        </button>
-      </div>
-
-      <hr style="background-color:red;height:1px;margin-left:16% !important; margin-right:2% !important;">
-      <div class="container" style="display:flex;" id="passwords"></div>
-      <hr style="background-color:red;height:1px;margin-left:16% !important; margin-right:2% !important;">
-
-
-      <script>
-        $("#reload").click(function () { location.reload() })
-        $("#generate").click(function () {
-          let args = {};
-          // if (typeof window !== 'undefined') {
-          // get args from window
-          args.hint = $('#hint').val()
-          args.salt = $('#salt').val()
-          args.pepper = $('#pepper').val()
-          args.plength = Math.min(Math.max(1, $('#length').val()), MAXLENGTH)
-          args.burnin = 0 // $('#burnin').val()
-          args.digits = false
-          args.unicode = false
-          args.digits = false
-          args.lower = false
-          args.upper = false
-          args.punctuation = false
-          args.no_shuffle = false
-          args.debug = true
-          args.verbose = true
-          let passwd = getPass(args);
-          // $("passwords") == document.getElementById("passwords")
-          $('#passwords').prepend(passwd + '<br>');
-          // setCookie('hpass::salt', $('#salt').val(), 7)
-          // setCookie('hpass::pepper', $('#pepper').val(), 7)
-          // setCookie('hpass::length', $('#length').val(), 7)
-          window.localStorage.setItem('hpass::salt', $('#salt').val())
-          window.localStorage.setItem('hpass::pepper', $('#pepper').val())
-          window.localStorage.setItem('hpass::length', $('#length').val())
-        });
-
-      </script>
-
-  </body>
-
+      <script type="text/javascript" src="./lib.js"></script>
+      <script type="text/javascript" src="./content.js"></script>
+    </body>
+  </p>
 </html>
