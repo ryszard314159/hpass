@@ -19,8 +19,9 @@ el.burnin = document.getElementById("burnin");
 el.range = document.getElementById("range");
 el.generate = document.getElementById("generate");
 el.passwords = document.getElementById("passwords");
-el.toggle = document.getElementById("toggle");
+el.hide = document.getElementById("hide");
 el.help = document.getElementById("help");
+el.info = document.getElementById("info");
 
 let opts = JSON.parse(window.localStorage.getItem("options"));
 console.log("from localStorage: opts= ", opts);
@@ -41,14 +42,17 @@ if (n < opts.minlength || n > opts.maxlength) {
   );
 }
 
-el.help.addEventListener("click", function () {
-  let h = screen.height;
-  let w = screen.width;
-  window.open(
-    "./info.html",
-    "popUpWindow",
-    `height=${h / 2}, width=${w / 2}, left=${w / 4}, top=${h / 4}`
-  );
+["help", "info"].forEach((x) => {
+  let e = el[x];
+  e.addEventListener("click", function () {
+    let h = screen.height;
+    let w = screen.width;
+    window.open(
+      `./${x}.html`,
+      "popUpWindow",
+      `height=${h / 2}, width=${w / 2}, left=${w / 4}, top=${h / 4}`
+    );
+  });
 });
 
 // ["click", "mousemove"].forEach((event) => {
@@ -75,14 +79,14 @@ el.burnin.addEventListener("mousemove", function () {
   });
 });
 
-el.toggle.addEventListener("click", function () {
+el.hide.addEventListener("click", function () {
   let els = ["saltRow", "pepperRow", "lengthRow", "burninRow", "passwordsRow"];
   for (let id of els) {
     // console.log("id= ", id);
     document.getElementById(id).classList.toggle("hidden");
   }
-  let src = el.toggle.src;
-  el.toggle.src = src.includes("crossed")
+  let src = el.hide.src;
+  el.hide.src = src.includes("crossed")
     ? src.replace("crossed", "open")
     : src.replace("open", "crossed");
   el.hint.type = el.hint.type === "password" ? "text" : "password";
