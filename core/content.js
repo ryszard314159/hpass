@@ -56,28 +56,28 @@ if (n < opts.minlength || n > opts.maxlength) {
 });
 
 // ["click", "mousemove"].forEach((event) => {
-["mousemove"].forEach((event) => {
-  el.salt.addEventListener(event, function () {
-    opts.salt = el.salt.value;
-  });
-});
+// ["click"].forEach((event) => {
+//   el.salt.addEventListener(event, function () {
+//     opts.salt = el.salt.value;
+//   });
+// });
 
-el.pepper.addEventListener("mousemove", function () {
-  console.log("el.pepper.value= ", el.pepper.value);
-  opts.pepper = el.pepper.value;
-});
+// el.pepper.addEventListener("click", function () {
+//   console.log("el.pepper.value= ", el.pepper.value);
+//   opts.pepper = el.pepper.value;
+// });
 
-el.burnin.addEventListener("mousemove", function () {
-  opts.burnin = el.burnin.value;
-});
+// el.burnin.addEventListener("click", function () {
+//   opts.burnin = el.burnin.value;
+// });
 
-["mousemove", "click"].forEach((event) => {
-  el.length.addEventListener(event, function () {
-    console.log("el.length.value= ", el.length.value);
-    let n = Math.min(Math.max(el.length.value, opts.minlength), opts.maxlength);
-    el.length.value = opts.length = n;
-  });
-});
+// ["click"].forEach((event) => {
+//   el.length.addEventListener(event, function () {
+//     console.log("el.length.value= ", el.length.value);
+//     let n = Math.min(Math.max(el.length.value, opts.minlength), opts.maxlength);
+//     el.length.value = opts.length = n;
+//   });
+// });
 
 el.hide.addEventListener("click", function () {
   let els = ["saltRow", "pepperRow", "lengthRow", "burninRow", "passwordsRow"];
@@ -94,11 +94,15 @@ el.hide.addEventListener("click", function () {
 
 el.generate.addEventListener("click", function () {
   console.log("generate:0: opts.burnin=", opts.burnin);
+  opts.pepper = el.pepper.value;
+  opts.salt = el.salt.value;
+  opts.length = el.length.value;
+  opts.burnin = el.burnin.value;
   window.localStorage.setItem("options", JSON.stringify(opts));
-  el.salt.value = opts.salt;
-  el.pepper.value = opts.pepper;
-  el.length.value = opts.length;
-  el.burnin.value = opts.burnin;
+  // el.salt.value = opts.salt;
+  // el.pepper.value = opts.pepper;
+  // el.length.value = opts.length;
+  // el.burnin.value = opts.burnin;
   // el.length.textContent = opts.length;
   let args = { ...opts }; // deep copy
   args.hint = el.hint.value;
