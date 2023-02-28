@@ -15,7 +15,20 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
-     id="defs91" />
+     id="defs91">
+    <rect
+       x="7.0782218"
+       y="12.456629"
+       width="16.263476"
+       height="7.1129182"
+       id="rect94083" />
+    <rect
+       x="7.5907683"
+       y="11.803439"
+       width="15.609046"
+       height="7.3821252"
+       id="rect74755" />
+  </defs>
   <sodipodi:namedview
      id="namedview89"
      pagecolor="#ffffff"
@@ -26,18 +39,18 @@
      inkscape:pagecheckerboard="0"
      showgrid="false"
      fit-margin-left="0"
-     inkscape:zoom="1.00875"
-     inkscape:cx="400"
-     inkscape:cy="126.39405"
-     inkscape:window-width="1850"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
+     inkscape:zoom="20.3125"
+     inkscape:cx="16"
+     inkscape:cy="16.344615"
+     inkscape:window-width="1551"
+     inkscape:window-height="991"
+     inkscape:window-x="26"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0"
      inkscape:current-layer="svg87" />
   <g
      id="g85"
-     transform="matrix(0.04203866,0,0,0.04748264,0.42026032,-1.0701052)">
+     transform="matrix(0.04137049,0,0,0.04516805,-0.34870968,-4.3283976)">
     <g
        fill="#231f20"
        id="g83">
@@ -49,4 +62,39 @@
          id="path81" />
     </g>
   </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="show" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:3.41333333px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.64"
+     x="5.2132835"
+     y="8.8620567"
+     id="text9028"><tspan
+       sodipodi:role="line"
+       id="tspan9026"
+       style="stroke-width:0.64;font-size:3.41333333px" /></text>
+  <text
+     xml:space="preserve"
+     style="font-size:6.82667px;line-height:0.45;font-family:sans-serif;stroke-width:1.17826"
+     x="2.4473999"
+     y="21.93264"
+     id="text48471"
+     transform="matrix(1.1134666,-0.0021947,-0.00533492,0.8981066,0,0)"><tspan
+       sodipodi:role="line"
+       id="tspan48469"
+       style="font-size:6.82667px;fill:#ff0000;stroke-width:1.17826"
+       x="2.4473999"
+       y="21.93264">hide</tspan></text>
+  <text
+     xml:space="preserve"
+     transform="scale(0.64)"
+     id="text74753"
+     style="line-height:0.45;font-family:sans-serif;font-size:5.33333333px;white-space:pre;shape-inside:url(#rect74755)" />
+  <text
+     xml:space="preserve"
+     transform="scale(0.64)"
+     id="text94081"
+     style="line-height:0.45;font-family:sans-serif;font-size:5.33333333px;white-space:pre;shape-inside:url(#rect94083);fill:#ff0000" />
 </svg>

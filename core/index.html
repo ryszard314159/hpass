@@ -26,20 +26,22 @@ jQuery Password Generator
 
   <p class="p3">
     <body>
+<!--
+      <div class="tooltip">Hover over me
+        <span class="tooltiptext">Tooltip text</span>
+      </div>
+      <span class="tooltiptext">Tooltip text</span>
 
-      <table
-        style="
-          width: 66%;
-          margin-top: 5%;
-          margin-left: 5%;
-          border: 0px solid black;
-        "
-      >
+table-layout: fixed as a property for table and width: calc(100%/3);
+
+-->
+
+      <table class="center" style="width:80%">
         <tr style="height:32px" id="row">
           <!-- <th style="width: 33%;"><img src="icons/help.svg" id="help"></img></th> -->
           <th style="width: 33%; height: 10%; text-align:left;">
             <button class="button circle" id="help">
-              <strong>&quest;</strong>
+              <strong>&quest; - help</strong>
             </button>
           </th>
           <th style="width: 33%; height: 10%;"><img src="icons/eye-crossed.svg" class="center" id="hide"></img></th>
@@ -47,12 +49,12 @@ jQuery Password Generator
           <!-- <th style="width: 33%;"><img src="icons/info.svg" width="auto" height="auto" id="info"></img></th> -->
           <th style="width: 33%; height: 10%; text-align:right; ">
             <button class="button circle" id="info">
-              <strong>&#105;</strong>
+              <strong>&#105; - info</strong>
             </button>
           </th>
         </tr>
         <tr>
-          <td colspan="3" style="width: 100%">
+          <td colspan="3" style="width: calc(100%/3);">
             <input
               id="hint"
               type="password"
@@ -63,26 +65,26 @@ jQuery Password Generator
           </td>
         </tr>
         <tr id="pepperRow" class="hidden">
-          <td style="width: 80%">Pepper:</td>
-          <td colspan="2" style="width: 20%">
+          <td>Pepper:</td>
+          <td colspan="2" style="width: 20%;">
             <input class="form-control" id="pepper" value="@" />
           </td>
         </tr>
         <tr id="saltRow" class="hidden">
-          <td style="width: 40%">Salt:</td>
-          <td colspan="2" style="width: 60%">
+          <td>Salt:</td>
+          <td colspan="2">
             <input class="form-control" id="salt" value="SALT" />
           </td>
         </tr>
         <tr id="lengthRow" class="hidden">
-          <td style="width: 40%">Length:</td>
-          <td colspan="2" style="width: 60%">
+          <td>Length:</td>
+          <td colspan="2" style="width: 60%; font-weight: 900;">
             <input class="form-control" id="length" value="15" />
           </td>
         </tr>
         <tr id="burninRow" class="hidden">
-          <td style="width: 80%">Burnin:</td>
-          <td colspan="2" style="width: 20%">
+          <td>Burnin:</td>
+          <td colspan="2">
             <input class="form-control" id="burnin" value="9" />
           </td>
         </tr>
@@ -103,10 +105,10 @@ jQuery Password Generator
           </td>
         </tr>
         <tr id="passwordsRow" class="hidden">
-          <td colspan="3">
+            <td colspan="3">
             <p
-              class="scroll hidden"
-              style="display: flex; overflow-y: auto"
+              class="scroll"
+              style="display: flex; overflow-y: auto;"
               id="passwords"
             ></p>
           </td>
