@@ -3,6 +3,10 @@ body {
   background-color: rgb(224, 192, 144);
 }
 
+help {
+  background-color: rgb(175, 231, 191);
+}
+
 button {
   margin: 0 auto;
   display: block;
@@ -19,6 +23,7 @@ button {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+  font-weight: 900;
 }
 
 .circle {
@@ -68,11 +73,32 @@ div {
   margin-bottom: 10px;
 }
 
-/* */
+/*
 table,
 th,
 td {
   border: 0px solid black;
+}
+  margin-top: 5%;
+  margin-left: 1%;
+    width: 100%;
+*/
+
+table {
+  table-layout: fixed;
+  margin-top: 5%;
+  border: 0px solid black;
+}
+
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+td {
+  border: 0px solid black;
+  width: calc(100% / 3);
+  font-weight: 900;
 }
 
 label {
@@ -115,17 +141,18 @@ span {
             width: 70%;
         }
     </style>
+      max-width: 500px;
 */
 
 .scroll {
-  margin-top: 16px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   margin-left: 0px;
-  max-width: 500px;
   width: 100%;
   height: 64px;
   white-space: pre;
   background-color: coral;
-  border: 1px solid;
+  border: 0px solid;
   overflow-y: auto;
   display: none;
   justify-content: center;
@@ -193,4 +220,33 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/*
+ul li {
+  background: url("icons/help.svg") no-repeat left center;
+  background: url("icons/info.svg") no-repeat left center;
+  padding: 5px 10px 5px 25px;
+  list-style: none;
+  margin: 0;
+  vertical-align: middle;
+}
+*/
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
