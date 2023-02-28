@@ -10,46 +10,46 @@ jQuery Password Generator
 -->
 <html>
   <head>
+    <!--
     <script
       src="https://kit.fontawesome.com/f3c143cb4c.js"
       crossorigin="anonymous"
     ></script>
+    -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=128" />
     <title>Password Generator</title>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="style.css" />
   </head>
-
-  <!---
-
-        <link
-      rel="stylesheet"
-      href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"
-    />
-
-  Crossed eye icon
-    https://icons.getbootstrap.com/icons/eye-slash/
-  <i class="bi bi-eye-slash"></i>
-  <i class="fa-duotone fa-eye-slash"></i>
-  -->
 
   <p class="p3">
     <body>
 
       <table
         style="
-          width: 20%;
+          width: 66%;
           margin-top: 5%;
           margin-left: 5%;
           border: 0px solid black;
         "
       >
-        <tr id="row">
-          <th style="width: 33%;"><img src="icons/help.svg" id="help"></img></th>
-          <th style="width: 33%;"><img src="icons/eye-crossed.svg" id="hide"></img></th>
-          <th style="width: 33%;"><img src="icons/info.svg" width="auto" height="auto" id="info"></img></th>
+        <tr style="height:32px" id="row">
+          <!-- <th style="width: 33%;"><img src="icons/help.svg" id="help"></img></th> -->
+          <th style="width: 33%; height: 10%; text-align:left;">
+            <button class="button circle" id="help">
+              <strong>&quest;</strong>
+            </button>
+          </th>
+          <th style="width: 33%; height: 10%;"><img src="icons/eye-crossed.svg" class="center" id="hide"></img></th>
+          <!-- <th style="width: 33%"><span class="glyphicon glyphicon-eye-close"></span></th> -->
+          <!-- <th style="width: 33%;"><img src="icons/info.svg" width="auto" height="auto" id="info"></img></th> -->
+          <th style="width: 33%; height: 10%; text-align:right; ">
+            <button class="button circle" id="info">
+              <strong>&#105;</strong>
+            </button>
+          </th>
         </tr>
         <tr>
           <td colspan="3" style="width: 100%">
@@ -57,26 +57,34 @@ jQuery Password Generator
               id="hint"
               type="password"
               class="form-control"
-              placeholder="***"
-              style="background-color: lightblue; width: 97%"
+              placeholder="hint / seed"
+              style="background-color: lightblue; width: 100%"
             />
           </td>
         </tr>
         <tr id="pepperRow" class="hidden">
-          <td style="width: 80%;">Pepper:</td>
-          <td colspan="2" style="width: 20%;" ><input class="form-control" id="pepper" value="@" /></td>
+          <td style="width: 80%">Pepper:</td>
+          <td colspan="2" style="width: 20%">
+            <input class="form-control" id="pepper" value="@" />
+          </td>
         </tr>
         <tr id="saltRow" class="hidden">
-          <td style="width: 40%;">Salt:</td>
-          <td colspan="2" style="width: 60%;"><input class="form-control" id="salt" value="SALT" /></td>
+          <td style="width: 40%">Salt:</td>
+          <td colspan="2" style="width: 60%">
+            <input class="form-control" id="salt" value="SALT" />
+          </td>
         </tr>
         <tr id="lengthRow" class="hidden">
-          <td style="width: 40%;">Length:</td>
-          <td colspan="2" style="width: 60%;"><input class="form-control" id="length" value="15" /></td>
+          <td style="width: 40%">Length:</td>
+          <td colspan="2" style="width: 60%">
+            <input class="form-control" id="length" value="15" />
+          </td>
         </tr>
         <tr id="burninRow" class="hidden">
-          <td style="width: 80%;">Burnin:</td>
-          <td colspan="2" style="width: 20%;"><input class="form-control" id="burnin" value="9" /></td>
+          <td style="width: 80%">Burnin:</td>
+          <td colspan="2" style="width: 20%">
+            <input class="form-control" id="burnin" value="9" />
+          </td>
         </tr>
         <tr>
           <td colspan="3">
