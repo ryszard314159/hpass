@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Help</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body style="background-color: rgb(175, 231, 191)">
+    <h1>Basic usage</h1>
+    <ol>
+      <li>Enter password seed in blue box</li>
+      <li>Click "Generate and copy" button</li>
+      <li>Paste generated password from clipboard</li>
+    </ol>
+    <h1>Icons</h1>
+    <ul>
+      <li><strong>help</strong> - shows this page</li>
+      <li><strong>hide/show</strong> - toggle visibility</li>
+      <li><strong>info</strong> - in depth background</li>
+    </ul>
+    <h1>Options</h1>
+    You should change default parameters (in parentheses below) in order to
+    generate passwords unique to you. The values you enter are saved locally and
+    reused between sessions. NOTE: These saved values will be erased when
+    browser cache/cookies are cleared.
+    <ol>
+      <li>
+        <strong>Pepper</strong> (!) -
+        <a
+          href="https://en.wikipedia.org/wiki/List_of_special_characters_for_passwords"
+          >special character</a
+        >
+        is recommended as these are required by most sites
+      </li>
+      <li><strong>Salt</strong> (SALT) - any secret you want</li>
+      <li>
+        <strong>Length</strong> (15) - longer passwords are more secure, but
+        some sites are limiting length. Default value 15 seems to be accepted by
+        most sites.
+      </li>
+      <li>
+        <strong>Burnin</strong> (9) - the number of initial (throw away) random
+        number generator cycles
+      </li>
+    </ol>
+  </body>
+</html>

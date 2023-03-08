@@ -58,6 +58,7 @@ character typically required in passwords
   - [stackoverlow](https://stackoverflow.com/questions/54039031/encrypting-and-decryption-local-storage-values)
   - https://nodejs.org/api/crypto.html
   - https://nodejs.org/api/webcrypto.html
+- automate publishing to [pages.github.io](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#creating-a-custom-github-actions-workflow-to-publish-your-site)
 - web browser plugin and PWA (progressive web app) -
   these probably can use [content scripts](https://developer.chrome.com/docs/extensions/mv3/content_scripts/)
   to detect that pointer is in the password input box... some related Stackoverlow items:
@@ -154,3 +155,14 @@ This way we can check if user (i.e. email) is in the system without actually sto
      the page e.g. popup icon like `1password` popping up
      in the password input box! using `.appendChild()`
 - [How to inject JavaScript?](https://www.freecodecamp.org/news/how-to-inject-javascript-code-to-manipulate-websites-automatically/)
+
+## Attributions
+
+1. [info icon](https://commons.wikimedia.org/wiki/File:Icons8_flat_info.svg)
+
+## References
+
+1. [NIST Password Guidelines and Best Practices for 2020](https://auth0.com/blog/dont-pass-on-the-new-nist-password-guidelines/)
+1. [NIST Digital Identity Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html)
+1. [8 chrome extensions](https://twitter.com/Prathkum/status/16301875113969336388)
+1. [Episode 552: Matt Frisbie on Browser Extensions](https://www.se-radio.net/2023/02/episode-552-matt-frisbie-on-browser-extensions/)

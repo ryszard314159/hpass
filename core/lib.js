@@ -18,7 +18,8 @@
 
 "use strict";
 
-const MAXLENGTH = 9;
+const MAXLENGTH = 64;
+// const PASSWORDS = []; // global storage
 const MP31 = 2 ** 31 - 1; // Mersenne prime
 let assert;
 if (typeof window !== "undefined" && window) {
@@ -86,7 +87,10 @@ function get_random_string(n, charset = "", gint = rig(MP31, "")) {
   gint    : random integer generator
   */
   const MAX_CODE_POINT = 1114111 + 1;
-  assert(0 < n && n < 65, `n must be in (0,65) range, got ${n}`);
+  assert(
+    0 < n && n < 65,
+    `get_random_string: n must be in (0,65) range, got ${n}`
+  );
   assert(
     charset.length < MAX_CODE_POINT,
     `too long charset, ${charset.length}`
@@ -148,7 +152,7 @@ function getPass(args) {
   args.pepper      : pepper for generated password
   args.hint        : hint to generate password
   args.burn        : number of 'burn' steps in rng
-  args.plength     : length of the password to generate
+  args.length     : length of the password to generate
   args.digits      : should digits be used?
   args.letters     : should letters be used?
   args.punctuation : should punctuation be used?
@@ -168,14 +172,14 @@ function getPass(args) {
   let passwd;
   if (args.hint === "") {
     // generate and return random string from charset
-    passwd = get_random_string(args.plength, charset);
+    passwd = get_random_string(args.length, charset);
   } else {
     /*
       add to pepper one lower, one upper character and one digit
       to satisfy requirements of many sites
       one or more special characters can be provided in args.pepper (default='!')
       */
-    let hint = args.hint + args.salt + args.pepper + args.plength;
+    let hint = args.hint + args.salt + args.pepper + args.length;
     let gint = rig(MP31, hint);
     for (let k = 0; k < args.burnin; k++) {
       gint.next().value;
@@ -184,22 +188,26 @@ function getPass(args) {
     let upper = get_random_string(1, CHARS.upper, gint);
     let digit = get_random_string(1, CHARS.digits, gint);
     const pepper = args.pepper + lower + upper + digit;
-    let n = args.plength - pepper.length;
+    let n = args.length - pepper.length;
     if (args.debug) {
       console.log(`DEBUG: args.hint= ${args.hint}`);
       console.log(`DEBUG: args.salt= ${args.salt}`);
       console.log(`DEBUG: args.pepper= ${args.pepper}`);
       console.log(`DEBUG: pepper= ${pepper}`);
-      console.log(`DEBUG: args.plength= ${args.plength}`);
+      console.log(`DEBUG: args.length= ${args.length}`);
       console.log(`DEBUG: args.burnin= ${args.burnin}`);
       console.log(`DEBUG: n= ${n}`);
       console.log(`DEBUG: hint= ${hint}`);
     }
     assert(
       n >= 0,
-      `pepper too long: args.plength= ${args.plength}, pepper= ${pepper}`
+      `pepper too long: args.length= ${args.length}, pepper= ${pepper}`
     );
-    passwd = get_random_string(args.plength - pepper.length, charset, gint);
+    if (args.debug)
+      console.log(
+        `DEBUG: args.length= ${args.length}, pepper.length= ${pepper.length}, pepper= ${pepper}`
+      );
+    passwd = get_random_string(args.length - pepper.length, charset, gint);
     passwd = pepper + passwd; // augment password with pepper e.g. '!aZ9'
     if (!args.no_shuffle) {
       passwd = shuffle_string(passwd, gint);
@@ -208,7 +216,7 @@ function getPass(args) {
   copy_to_clipboard(passwd);
   if (args.verbose) {
     console.log(
-      `password= ${passwd} pepper= ${args.pepper} salt= ${args.salt} plength= ${args.plength}`
+      `password= ${passwd} pepper= ${args.pepper} salt= ${args.salt} length= ${args.length}`
     );
   }
   return passwd;
