@@ -1,0 +1,17 @@
+{
+  "name": "hpass-extension",
+  "version": "1.0.0",
+  "description": "hpass browser extension",
+  "main": "content.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ryszard Czerminski",
+  "license": "ISC",
+  "dependencies": {
+    "@types/chrome": "^0.0.223",
+    "argparse": "^2.0.1",
+    "types": "^0.1.1"
+  }
+}
