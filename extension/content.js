@@ -1,37 +1,44 @@
 // Uncaught SyntaxError: Cannot use import statement outside a module
 // import { copyToClipboard, getHint } from "./config.js";
 // import { getPass } from "./lib.js";
+// let {hi, bye} = await import('./say.js');
+// Uncaught SyntaxError: await is only valid in async functions and the top level bodies of modules
+// let { getHint } = await import("./config.js");
+
+const DEBUG = false;
 
 // domain = "www.netflix.com" => "netflix.com"
+// domain = "www.netflix.com" => "netflix"
 function getHint(domain) {
-  return domain.split(".").slice(-2).join(".");
+  // return domain.split(".").slice(-2).join("."); // "www.netflix.com" => "netflix.com"
+  return domain.split(".").slice(-2, -1)[0]; // "www.netflix.com" => "netflix"
 }
 
-console.log("content: START");
-// chrome.storage.local.clear();
-chrome.storage.local.get(["options"], (opts) => {
-  console.log("contents.js: START: opts= ", opts);
-});
+// console.log("content: START");
+// // chrome.storage.local.clear();
+// chrome.storage.local.get(["options"], (opts) => {
+//   console.log("contents.js: START: opts= ", opts);
+// });
 
 window.onload = function () {
   console.log("content: onload: BEGIN");
-  if (document.URL.split("/").slice(-1)[0] === "popup.html") {
-    console.log("content: exit from popup.html");
-    return;
-  }
+  // if (document.URL.split("/").slice(-1)[0] === "popup.html") {
+  //   console.log("content: exit from popup.html");
+  //   return;
+  // }
   let h = getHint(document.domain);
-  alert(`content: domain= ${document.domain}, hint= ${h}`);
-  console.log("content: document= ", document.domain);
-  console.log("content: typeof(document.domain)= ", typeof document.domain);
-  chrome.storage.local.set({ domain: document.domain });
+  // if (DEBUG) alert(`content: domain= ${document.domain}, hint= ${h}`);
+  // console.log("content: document= ", document.domain);
+  // console.log("content: typeof(document.domain)= ", typeof document.domain);
+  // chrome.storage.local.set({ domain: document.domain });
   chrome.storage.local.set({ hint: h });
   // prettier-ignore
-  chrome.storage.local.get("domain", (result) => {
-    console.log(`content: after set: get domain: result.domain= ${result.domain}`);
-  });
-  chrome.storage.local.get("hint", (result) => {
-    console.log(`content: after set: get hint: result.hint= ${result.hint}`);
-  });
+  // chrome.storage.local.get("domain", (result) => {
+  //   console.log(`content: after set: get domain: result.domain= ${result.domain}`);
+  // });
+  // chrome.storage.local.get("hint", (result) => {
+  //   console.log(`content: after set: get hint: result.hint= ${result.hint}`);
+  // });
   let emailInput = document.querySelector('input[type="email"]');
   let passwordInput = document.querySelector('input[type="password"]');
   if (passwordInput === null && emailInput === null) {
@@ -51,19 +58,19 @@ window.onload = function () {
         let h = (opts.hint = getHint(document.domain)); // document.URL);
         let p = (passwordInput.value = lib.getPass(opts));
         let msg = `content: domain= ${document.domain}, hint= ${h}, password= ${p}`;
-        // prettier-ignore
-        navigator.clipboard.writeText(p).then(
-          () =>
-            console.log(`content: password >>${p}<< copied to clipboard!`),
-          () =>
-            console.log(`content: password >>${p}<< copy to clipboard FAILED!`)
-        );
         console.log(msg);
-        alert(msg);
+        if (DEBUG) alert(msg);
+        navigator.clipboard.writeText(p);
       });
     }
   });
 };
+
+// prettier-ignore
+// navigator.clipboard.writeText(p).then(
+//   () => console.log(`content: password >>${p}<< copied to clipboard!`),
+//   () => console.log(`content: password >>${p}<< copy to clipboard FAILED!`)
+// );
 
 // window.localStorage.setItem("url", document.URL);
 //   /*

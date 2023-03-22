@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "HPASS",
+  "name": "HPASS (BETA)",
   "version": "0.0.0.1",
   "description": "Generate reproducible passwords",
   "permissions": ["storage"],
@@ -13,7 +13,8 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["http://*/*", "https://*/*"],
+      "exclude_globes": ["chrome-extension://*/*"],
       "run_at": "document_start",
       "js": ["content.js"],
       "type": "module"
