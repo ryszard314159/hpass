@@ -13,42 +13,38 @@ const maxburnin = 9999;
 const optsKeys = Object.keys(default_opts);
 // ["pepper", "salt", "length", "burnin", "email", "username"];
 
+// domain = "www.netflix.com" => "netflix.com"
+// domain = "www.netflix.com" => "netflix"
+function getHint(domain) {
+  // return domain.split(".").slice(-2).join("."); // "www.netflix.com" => "netflix.com"
+  return domain.split(".").slice(-2, -1)[0]; // "www.netflix.com" => "netflix"
+}
+
+export { getHint, default_opts, optsKeys, minlength, maxlength, maxburnin };
+
 /*
       from: https://www.30secondsofcode.org/js/s/copy-to-clipboard
       see also: https://github.com/w3c/clipboard-apis/blob/master/explainer.adoc#writing-to-the-clipboard
 */
-function copyToClipboard(str) {
-  const el = document.createElement("textarea");
-  el.value = str;
-  el.setAttribute("readonly", "");
-  el.style.position = "absolute";
-  el.style.left = "-9999px";
-  document.body.appendChild(el);
-  const selected =
-    document.getSelection().rangeCount > 0
-      ? document.getSelection().getRangeAt(0)
-      : false;
-  el.select();
-  el.focus();
-  document.execCommand("copy");
-  document.body.removeChild(el);
-  if (selected) {
-    document.getSelection().removeAllRanges();
-    document.getSelection().addRange(selected);
-  }
-}
-
-// "www.mos.org" => "mos.org"
-function getHint(domain) {
-  return domain.split(".").slice(-2).join(".");
-}
-
-export {
-  getHint,
-  copyToClipboard,
-  default_opts,
-  optsKeys,
-  minlength,
-  maxlength,
-  maxburnin,
-};
+// NOTE: replaced with navigator.clipboard.writeText()
+// NOTE: keep it for now just-in-case ...
+// function copyToClipboard(str) {
+//   const el = document.createElement("textarea");
+//   el.value = str;
+//   el.setAttribute("readonly", "");
+//   el.style.position = "absolute";
+//   el.style.left = "-9999px";
+//   document.body.appendChild(el);
+//   const selected =
+//     document.getSelection().rangeCount > 0
+//       ? document.getSelection().getRangeAt(0)
+//       : false;
+//   el.select();
+//   el.focus();
+//   document.execCommand("copy");
+//   document.body.removeChild(el);
+//   if (selected) {
+//     document.getSelection().removeAllRanges();
+//     document.getSelection().addRange(selected);
+//   }
+// }

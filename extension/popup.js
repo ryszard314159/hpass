@@ -1,4 +1,5 @@
-import { copyToClipboard, default_opts, optsKeys, getHint } from "./config.js";
+// import { copyToClipboard, default_opts, optsKeys, getHint } from "./config.js";
+import { default_opts, optsKeys } from "./config.js";
 import { getPass } from "./lib.js";
 
 const el = {};
@@ -16,11 +17,11 @@ function setElements() {
     console.log(`popup: setElements: results.options= ${results.options}`);
     optsKeys.forEach((k) => (el[k].value = opts[k] = results.options[k]));
   });
-  chrome.storage.local.get(["domain"], (results) => {
-    // el.hint.value = `domain= ${results.domain}`;
-    el.hint.value = getHint(results.domain);
-    console.log(`popup: setElements: results.domain= ${results.domain}`);
-  });
+  // chrome.storage.local.get(["domain"], (results) => {
+  //   // el.hint.value = `domain= ${results.domain}`;
+  //   el.hint.value = getHint(results.domain);
+  //   console.log(`popup: setElements: results.domain= ${results.domain}`);
+  // });
   chrome.storage.local.get(["hint"], (results) => {
     // el.hint.value = `domain= ${results.domain}`;
     el.hint.value = results.hint;
@@ -61,7 +62,8 @@ document.getElementById("generate").addEventListener("click", () => {
   opts.hint = document.getElementById("hint").value;
   let p = (document.getElementById("password").value = getPass(opts));
   console.log(`popup: password= ${p}`);
-  copyToClipboard(p);
+  // copyToClipboard(p);
   alert(`popup: Password is set: ${p}`);
+  navigator.clipboard.writeText(p);
   // });
 });
