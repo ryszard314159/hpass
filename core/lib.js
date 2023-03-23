@@ -17,18 +17,21 @@
  */
 
 "use strict";
+// import { assert } from "assert";
+// import assert from "node:assert/strict";
+// let assert = require("assert");
 
 const MAXLENGTH = 64;
 // const PASSWORDS = []; // global storage
 const MP31 = 2 ** 31 - 1; // Mersenne prime
-let assert;
-if (typeof window !== "undefined" && window) {
-  assert = console.assert;
-  // console.log(`lib:0: assert = ${assert}`)
-} else {
-  assert = require("assert");
-  // console.log(`lib:1: assert = ${assert}`)
-}
+// let assert;
+// if (typeof window !== "undefined" && window) {
+//   assert = console.assert;
+//   // console.log(`lib:0: assert = ${assert}`)
+// } else {
+//   // import {assert} from  require("assert");
+//   // console.log(`lib:1: assert = ${assert}`)
+// }
 // import assert from "assert";
 
 /* permute chars in string using Durstenfeld shuffle algorithm */
@@ -44,7 +47,7 @@ function shuffle_string(string, gint = rig(MP31, seed)) {
 }
 
 function hash_string(s) {
-  assert(typeof s === "string", `string expected, got ${s}`);
+  console.assert(typeof s === "string", `string expected, got ${s}`);
   // Mersenne primes: 2^(2, 3, 5, 7, 13, 17, 19, 31, 67, 127, 257)
   const p = 2 ** 5 - 1,
     m = MP31; // 2**31 - 1
@@ -67,11 +70,14 @@ function* rig(max, hint) {
   let m = MP31,
     a = 2147483629,
     c = 2147483587;
-  assert(
+  console.assert(
     typeof max === "number" && 0 < max && max <= m,
     `rig: max (=${max}) must be number and has to be smaller than 2**31 - 1`
   );
-  assert(typeof hint === "string", `hint must be string, got ${typeof hint}`);
+  console.assert(
+    typeof hint === "string",
+    `hint must be string, got ${typeof hint}`
+  );
   var seed = hint == "" ? Date.now() : hash_string(hint);
   while (true) {
     seed = (a * seed + c) % m;
@@ -87,11 +93,11 @@ function get_random_string(n, charset = "", gint = rig(MP31, "")) {
   gint    : random integer generator
   */
   const MAX_CODE_POINT = 1114111 + 1;
-  assert(
+  console.assert(
     0 < n && n < 65,
     `get_random_string: n must be in (0,65) range, got ${n}`
   );
-  assert(
+  console.assert(
     charset.length < MAX_CODE_POINT,
     `too long charset, ${charset.length}`
   );
@@ -110,42 +116,42 @@ function get_random_string(n, charset = "", gint = rig(MP31, "")) {
   return z;
 }
 
-function copy_to_clipboard(x) {
-  if (typeof window === "undefined") {
-    // const CLIP = clipboardy
-    const CLIP = require("node-clipboardy");
-    // const CLIP = import('clipboardy');
-    // console.log(`DEBUG: copy_to_clipboard: typeof(CLIP)= ${typeof(CLIP)}`)
-    // import clipboardy from "clipboardy"
-    CLIP.writeSync(x);
-  } else {
-    /*
-      from: https://www.30secondsofcode.org/js/s/copy-to-clipboard
-      see also: https://github.com/w3c/clipboard-apis/blob/master/explainer.adoc#writing-to-the-clipboard
-      */
-    const copyToClipboard = (str) => {
-      const el = document.createElement("textarea");
-      el.value = str;
-      el.setAttribute("readonly", "");
-      el.style.position = "absolute";
-      el.style.left = "-9999px";
-      document.body.appendChild(el);
-      const selected =
-        document.getSelection().rangeCount > 0
-          ? document.getSelection().getRangeAt(0)
-          : false;
-      el.select();
+// function copy_to_clipboard(x) {
+//   if (typeof window === "undefined") {
+//     // const CLIP = clipboardy
+//     // const CLIP = require("node-clipboardy");
+//     // const CLIP = import('clipboardy');
+//     // console.log(`DEBUG: copy_to_clipboard: typeof(CLIP)= ${typeof(CLIP)}`)
+//     // import clipboardy from "clipboardy"
+//     CLIP.writeSync(x);
+//   } else {
+//     /*
+//       from: https://www.30secondsofcode.org/js/s/copy-to-clipboard
+//       see also: https://github.com/w3c/clipboard-apis/blob/master/explainer.adoc#writing-to-the-clipboard
+//       */
+//     const copyToClipboard = (str) => {
+//       const el = document.createElement("textarea");
+//       el.value = str;
+//       el.setAttribute("readonly", "");
+//       el.style.position = "absolute";
+//       el.style.left = "-9999px";
+//       document.body.appendChild(el);
+//       const selected =
+//         document.getSelection().rangeCount > 0
+//           ? document.getSelection().getRangeAt(0)
+//           : false;
+//       el.select();
 
-      document.execCommand("copy");
-      document.body.removeChild(el);
-      if (selected) {
-        document.getSelection().removeAllRanges();
-        document.getSelection().addRange(selected);
-      }
-    };
-    copyToClipboard(x);
-  }
-}
+//       document.execCommand("copy");
+//       document.body.removeChild(el);
+//       if (selected) {
+//         document.getSelection().removeAllRanges();
+//         document.getSelection().addRange(selected);
+//       }
+//     };
+//     copyToClipboard(x);
+//   }
+// }
 
 function getPass(args) {
   /*
@@ -199,7 +205,7 @@ function getPass(args) {
       console.log(`DEBUG: n= ${n}`);
       console.log(`DEBUG: hint= ${hint}`);
     }
-    assert(
+    console.assert(
       n >= 0,
       `pepper too long: args.length= ${args.length}, pepper= ${pepper}`
     );
@@ -213,7 +219,7 @@ function getPass(args) {
       passwd = shuffle_string(passwd, gint);
     }
   }
-  copy_to_clipboard(passwd);
+  // copy_to_clipboard(passwd);
   if (args.verbose) {
     console.log(
       `password= ${passwd} pepper= ${args.pepper} salt= ${args.salt} length= ${args.length}`
@@ -222,8 +228,8 @@ function getPass(args) {
   return passwd;
 }
 
-if (typeof window === "undefined") {
-  module.exports = { getPass, MAXLENGTH };
-}
+// if (typeof window === "undefined") {
+//   module.exports = { getPass, MAXLENGTH };
+// }
 // export default getPass;
-// export { getPass };
+export { getPass, MAXLENGTH };

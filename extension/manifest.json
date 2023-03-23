@@ -15,7 +15,7 @@
     {
       "matches": ["http://*/*", "https://*/*"],
       "exclude_globes": ["chrome-extension://*/*"],
-      "run_at": "document_start",
+      "run_at": "document_end",
       "js": ["content.js"],
       "type": "module"
     }

@@ -1,6 +1,6 @@
 // import { copyToClipboard, default_opts, optsKeys, getHint } from "./config.js";
 import { default_opts, optsKeys } from "./config.js";
-import { getPass } from "./lib.js";
+// import { getPass } from "./lib.js";
 
 const el = {};
 const opts = {};
@@ -17,16 +17,6 @@ function setElements() {
     console.log(`popup: setElements: results.options= ${results.options}`);
     optsKeys.forEach((k) => (el[k].value = opts[k] = results.options[k]));
   });
-  // chrome.storage.local.get(["domain"], (results) => {
-  //   // el.hint.value = `domain= ${results.domain}`;
-  //   el.hint.value = getHint(results.domain);
-  //   console.log(`popup: setElements: results.domain= ${results.domain}`);
-  // });
-  chrome.storage.local.get(["hint"], (results) => {
-    // el.hint.value = `domain= ${results.domain}`;
-    el.hint.value = results.hint;
-    console.log(`popup: setElements: results.hint= ${results.hint}`);
-  });
 }
 
 function onOpened() {
@@ -37,8 +27,6 @@ function onError(error) {
   console.log(`Error: ${error}`);
 }
 chrome.runtime.openOptionsPage().then(onOpened, onError);
-
-console.log("popup: START...");
 
 document.getElementById("save").addEventListener("click", () => {
   Object.keys(opts).forEach((x) => {
@@ -58,12 +46,14 @@ document.getElementById("reset").addEventListener("click", () => {
 });
 
 document.getElementById("generate").addEventListener("click", () => {
-  // import("/lib.js").then((module) => {
-  opts.hint = document.getElementById("hint").value;
-  let p = (document.getElementById("password").value = getPass(opts));
-  console.log(`popup: password= ${p}`);
-  // copyToClipboard(p);
-  alert(`popup: Password is set: ${p}`);
-  navigator.clipboard.writeText(p);
-  // });
+  const msg = { from: "popup", hint: el.hint.value };
+  console.log("popup: sending message to service worker: msg= ", msg);
+  chrome.runtime.sendMessage(msg);
+  chrome.runtime.onMessage.addListener((request) => {
+    console.log(`popup: password= ${request.password}, hint= ${request.hint}`);
+    let p = (el.password.value = request.password);
+    el.hint.value = request.hint;
+    console.log(`popup: password= ${p}`);
+    navigator.clipboard.writeText(p);
+  });
 });

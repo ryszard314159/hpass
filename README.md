@@ -166,3 +166,5 @@ This way we can check if user (i.e. email) is in the system without actually sto
 1. [NIST Digital Identity Guidelines](https://pages.nist.gov/800-63-3/sp800-63b.html)
 1. [8 chrome extensions](https://twitter.com/Prathkum/status/16301875113969336388)
 1. [Episode 552: Matt Frisbie on Browser Extensions](https://www.se-radio.net/2023/02/episode-552-matt-frisbie-on-browser-extensions/)
+1. [Android emulator](https://docs.waydro.id/usage/install-on-desktops)
+1. [Comparing Browser-based Password Managers: Is There Any Difference?](https://locker.io/blog/browser-based-password-managers)
