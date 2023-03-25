@@ -13,14 +13,14 @@ function addDomain(x) {
 
 // chrome.runtime.onMessage.addListener((request, sender, response) => {
 function contentHandler(msg) {
-  console.log("sw: contentMessageHandler: request= ", msg);
-  console.log("sw: contentMessageHandler: DOMAINS= ", DOMAINS);
+  console.log("sw: contentHandler: request= ", msg);
+  console.log("sw: contentHandler: DOMAINS= ", DOMAINS);
   chrome.storage.local.get(["options"], (results) => {
     const opts = results.options;
     opts.hint = getHint(DOMAINS[0]);
     const p = getPass(opts);
     const response = { email: opts.email, password: p, from: "sw" };
-    console.log("sw: contentMessageHandler: response= ", response);
+    console.log("sw: contentHandler: response= ", response);
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { email: opts.email, password: p });
     });

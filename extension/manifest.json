@@ -9,7 +9,7 @@
     "type": "module"
   },
   "options_ui": {
-    "page": "popup.html"
+    "page": "options.html"
   },
   "content_scripts": [
     {

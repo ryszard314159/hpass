@@ -5,7 +5,7 @@ function run() {
   const password = document.querySelector('input[type="password"]');
   const msg = { from: "content", domain: document.domain };
   chrome.runtime.sendMessage(msg);
-  console.log("content: sent message for sw: msg= ", msg);
+  console.log("content: message for sw: msg= ", msg);
   if ((email === null) & (password === null)) {
     console.log("content: no email or password input detected...");
     // return;
