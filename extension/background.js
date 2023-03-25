@@ -1,42 +1,53 @@
 import { default_opts, getHint } from "./config.js";
 import { getPass } from "./lib.js";
+const DOMAINS = [];
+const MAXDOMAINS = 9;
+const validSenders = new Set(["content", "popup"]);
 
-let DOMAIN, HINT; // store values obtained from content script
+function addDomain(x) {
+  console.log("sw: addDomain: domain= ", x);
+  if (x === undefined || x.indexOf(".") < 0) return;
+  if (DOMAINS.length > MAXDOMAINS) DOMAINS.pop();
+  if (DOMAINS.indexOf(x) < 0) DOMAINS.unshift(x); // prepend to DOMAINS
+}
 
 // chrome.runtime.onMessage.addListener((request, sender, response) => {
-chrome.runtime.onMessage.addListener((request) => {
-  if (request.from !== "content") return;
-  DOMAIN = request.domain;
-  HINT = getHint(DOMAIN);
-  console.log("sw: from content: request= ", request);
-  console.log(`sw: from content: DOMAIN= ${DOMAIN}, HINT= ${HINT}`);
+function contentHandler(msg) {
+  console.log("sw: contentMessageHandler: request= ", msg);
+  console.log("sw: contentMessageHandler: DOMAINS= ", DOMAINS);
   chrome.storage.local.get(["options"], (results) => {
     const opts = results.options;
-    opts.hint = HINT;
+    opts.hint = getHint(DOMAINS[0]);
     const p = getPass(opts);
+    const response = { email: opts.email, password: p, from: "sw" };
+    console.log("sw: contentMessageHandler: response= ", response);
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { email: opts.email, password: p });
     });
   });
-});
+}
 
-chrome.runtime.onMessage.addListener((request) => {
-  if (request.from !== "popup") return;
-  console.log("sw: from popup: request= ", request);
-  if (request.hint === "") {
-    HINT = getHint(DOMAIN);
-    console.log(`sw: HINT= ${HINT} set from DOMAIN= ${DOMAIN}`);
-  } else {
-    HINT = request.hint;
-    console.log(`sw: HINT= ${HINT} set from request`);
-  }
+function popupHandler(msg) {
+  console.log("sw: popupHandler: DOMAINS= ", DOMAINS);
+  console.log("sw: popupHandler: request= ", msg);
   chrome.storage.local.get(["options"], (results) => {
     const opts = results.options;
-    opts.hint = HINT;
+    opts.hint =
+      typeof msg.hint !== "string" || msg.hint.length < 1
+        ? getHint(DOMAINS[0])
+        : msg.hint;
     const p = getPass(opts);
-    console.log(`sw: from popup: pasword= ${p}`);
-    chrome.runtime.sendMessage({ hint: HINT, password: p });
+    chrome.runtime.sendMessage({ hint: opts.hint, password: p });
   });
+}
+
+const handlers = { content: contentHandler, popup: popupHandler };
+
+chrome.runtime.onMessage.addListener((msg) => {
+  if (!validSenders.has(msg.from)) return;
+  console.log("sw: msg= ", msg);
+  addDomain(msg.domain);
+  handlers[msg.from](msg);
 });
 
 // Check whether new version is installed

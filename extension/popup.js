@@ -1,6 +1,4 @@
-// import { copyToClipboard, default_opts, optsKeys, getHint } from "./config.js";
 import { default_opts, optsKeys } from "./config.js";
-// import { getPass } from "./lib.js";
 
 const el = {};
 const opts = {};
@@ -8,8 +6,10 @@ optsKeys.forEach((k) => {
   opts[k] = default_opts[k];
   el[k] = document.getElementById(k); // select popup.html web elements
 });
-el.hint = document.getElementById("hint");
-el.password = document.getElementById("password");
+// add other elements from popup page...
+["hint", "password", "generate", "reset", "save"].forEach((k) => {
+  el[k] = document.getElementById(k);
+});
 
 function setElements() {
   chrome.storage.local.get(["options"], (results) => {
@@ -22,22 +22,26 @@ function setElements() {
 function onOpened() {
   console.log(`popup: Options page opened`);
   setElements();
+  getPassAndHint();
 }
+
 function onError(error) {
   console.log(`Error: ${error}`);
 }
 chrome.runtime.openOptionsPage().then(onOpened, onError);
 
-document.getElementById("save").addEventListener("click", () => {
+// save options in local storage
+el.save.addEventListener("click", () => {
   Object.keys(opts).forEach((x) => {
-    opts[x] = document.getElementById(x).value;
+    opts[x] = el[x].value;
   });
   chrome.storage.local.set({ options: opts });
 });
 
-document.getElementById("reset").addEventListener("click", () => {
+// reset default options
+el.reset.addEventListener("click", () => {
   Object.keys(opts).forEach((key) => {
-    opts[key] = document.getElementById(key).value = default_opts[key];
+    opts[key] = el[key].value = default_opts[key];
     console.log(`popup: reset: opts[${key}]= ${opts[key]}$`);
   });
   chrome.storage.local.set({ options: opts });
@@ -45,15 +49,22 @@ document.getElementById("reset").addEventListener("click", () => {
   alert(`popup: reset: opts= ${opts}$`);
 });
 
-document.getElementById("generate").addEventListener("click", () => {
+function getPassAndHint() {
   const msg = { from: "popup", hint: el.hint.value };
-  console.log("popup: sending message to service worker: msg= ", msg);
+  console.log(
+    "popup: getPassAndHint: sending message to service worker: msg= ",
+    msg
+  );
   chrome.runtime.sendMessage(msg);
-  chrome.runtime.onMessage.addListener((request) => {
-    console.log(`popup: password= ${request.password}, hint= ${request.hint}`);
-    let p = (el.password.value = request.password);
-    el.hint.value = request.hint;
-    console.log(`popup: password= ${p}`);
+  chrome.runtime.onMessage.addListener((reply) => {
+    let x = `popup: getPassAndHint: password= ${reply.password}, hint= ${reply.hint}`;
+    console.log(x);
+    let p = (el.password.value = reply.password);
+    el.hint.value = reply.hint;
+    console.log(`popup: getPassAndHint: p= ${p} written to clipboard`);
     navigator.clipboard.writeText(p);
   });
-});
+}
+
+// get password and hint from service worker
+el.generate.addEventListener("click", getPassAndHint);

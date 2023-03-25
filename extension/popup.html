@@ -13,7 +13,7 @@
     </div> -->
     <!-- <form> -->
     <fieldset name="options">
-      <legend>Options</legend>
+      <legend align="center">Options</legend>
       <label for="pepper">Pepper:</label>
       <input type="text" id="pepper" placeholder="PEPPER!" /><br />
       <label for="pepper">Salt:</label>
@@ -25,20 +25,26 @@
       <label for="email">Email:</label>
       <input type="text" id="email" placeholder="EMAIL" /> <br />
       <label for="username">Username:</label>
-      <input type="text" id="username" placeholder="USERNAME" />
+      <input type="text" id="username" placeholder="USERNAME" /> <br />
       <!-- </fieldset> -->
       <!-- </form> -->
       <div class="container">
-        <button class="title" id="save">Save</button>
-        <button class="title" id="reset">Reset</button>
+        <div>
+          <button class="title" id="save">Save</button>
+          <!-- <img src="assets/save.128.svg" class="center" id="save"></img> -->
+        </div>
+        <div>
+          <button class="title" id="reset">Reset</button>
+          <!-- <img src="assets/reset.32.svg" class="center" id="reset"></img> -->
+        </div>
       </div>
     </fieldset>
     <fieldset>
-      <legend>Provide hint to generate password</legend>
+      <legend align="center">Provide hint to generate password</legend>
       <label for="hint">Hint:</label>
       <input type="text" id="hint" placeholder="HINT" /><br />
       <label for="password">Password:</label>
-      <input type="text" id="password" placeholder="PASSWORD" />
+      <input type="text" id="password" placeholder="PASSWORD" /> <br />
       <button class="title" id="generate">
         Generate and copy to clipboard
       </button>
