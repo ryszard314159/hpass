@@ -1,10 +1,9 @@
-import { default_opts, optsKeys } from "./config.js";
-
+const optsKeys = ["salt", "pepper", "length", "email", "username"];
 const el = {};
 const opts = {};
 optsKeys.forEach((k) => {
-  opts[k] = default_opts[k];
   el[k] = document.getElementById(k); // select options.html web elements
+  opts[k] = el[k].value;
 });
 // add other elements from options page...
 ["reset", "save"].forEach((k) => {
@@ -23,25 +22,20 @@ chrome.runtime
   .openOptionsPage()
   .then(setElements, (error) => console.log(`Error: ${error}`));
 
-// save options in local storage
+// save current options in local storage
 
 function saveOptions() {
-  Object.keys(opts).forEach((x) => {
+  optsKeys.forEach((x) => {
     opts[x] = el[x].value;
   });
   chrome.storage.local.set({ options: opts });
 }
 
 function resetOptions() {
-  Object.keys(opts).forEach((x) => {
-    el[x].value = default_opts[x];
+  optsKeys.forEach((x) => {
+    el[x].value = "";
   });
 }
 
 el.save.addEventListener("click", saveOptions);
-
-// reset default options
-el.reset.addEventListener("click", () => {
-  resetOptions();
-  saveOptions();
-});
+el.reset.addEventListener("click", resetOptions);

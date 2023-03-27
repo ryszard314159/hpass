@@ -1,8 +1,18 @@
-import { default_opts, getHint } from "./config.js";
+// import { getHint } from "./config.js";
 import { getPass } from "./lib.js";
 const DOMAINS = [];
 const MAXDOMAINS = 9;
 const validSenders = new Set(["content", "popup"]);
+
+function getHint(domain) {
+  let h;
+  try {
+    h = domain.split(".").slice(-2, -1)[0]; // "www.netflix.com" => "netflix"
+  } catch {
+    h = "";
+  }
+  return h;
+}
 
 function addDomain(x) {
   console.log("sw: addDomain: domain= ", x);
@@ -52,23 +62,13 @@ chrome.runtime.onMessage.addListener((msg) => {
 
 // Check whether new version is installed
 chrome.runtime.onInstalled.addListener(function (details) {
-  let p, opts;
+  // let p, opts;
   if (details.reason === "install") {
-    console.log("background: This is a first install!");
-    chrome.storage.local.set({ options: default_opts });
-    console.log("background: default options stored", default_opts);
-    opts = default_opts;
-    p = getPass(opts);
+    console.log("sw: This is a first install!");
   } else if (details.reason === "update") {
     const thisVersion = chrome.runtime.getManifest().version;
     console.log(
-      `background: Updated from ${details.previousVersion} to ${thisVersion} !`
+      `sw: Updated from ${details.previousVersion} to ${thisVersion} !`
     );
-    chrome.storage.local.get(["options"], function (results) {
-      opts = results.options;
-      p = getPass(opts);
-    });
-    console.log(`background: on ${details.reason}: opts= `, opts);
-    console.log(`background: on ${details.reason}: password= `, p);
   }
 });

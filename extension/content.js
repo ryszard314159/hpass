@@ -6,10 +6,9 @@ function run() {
   const msg = { from: "content", domain: document.domain };
   chrome.runtime.sendMessage(msg);
   console.log("content: message for sw: msg= ", msg);
-  if ((email === null) & (password === null)) {
-    console.log("content: no email or password input detected...");
-    // return;
-  }
+  // if ((email === null) & (password === null)) {
+  //   console.log("content: no email or password input detected...");
+  // }
   chrome.runtime.onMessage.addListener((msg) => {
     console.log("content: onMessage: msg= ", msg);
     if (email !== null) email.value = msg.email;
