@@ -21,7 +21,8 @@
 // import assert from "node:assert/strict";
 // let assert = require("assert");
 
-const MAXLENGTH = 64;
+const MINLENGTH = 4;
+const MAXLENGTH = 128;
 // const PASSWORDS = []; // global storage
 const MP31 = 2 ** 31 - 1; // Mersenne prime
 // let assert;
@@ -94,8 +95,8 @@ function get_random_string(n, charset = "", gint = rig(MP31, "")) {
   */
   const MAX_CODE_POINT = 1114111 + 1;
   console.assert(
-    0 < n && n < 65,
-    `get_random_string: n must be in (0,65) range, got ${n}`
+    0 < n && n < MAXLENGTH,
+    `get_random_string: n must be in (1,${MAXLENGTH}) range, got ${n}`
   );
   console.assert(
     charset.length < MAX_CODE_POINT,
@@ -232,4 +233,4 @@ function getPass(args) {
 //   module.exports = { getPass, MAXLENGTH };
 // }
 // export default getPass;
-export { getPass, MAXLENGTH };
+export { getPass, MAXLENGTH, MINLENGTH };

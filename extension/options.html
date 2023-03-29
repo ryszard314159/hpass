@@ -5,39 +5,64 @@
     <a href="https://hpass.net" target="_blank">
       <button>Visit HPASS homepage</button> <br /></a
     ><br />
-    <fieldset name="options">
+    <fieldset name="options" id="options">
       <legend align="center">Options</legend>
-      <label for="pepper">&#127798</label>
+      <label for="pepper" class="tooltip"
+        >&#127798;
+        <span class="tooltiptext"
+          >at least on special character to satisfy picky websites
+          requirements</span
+        >
+      </label>
       <input
-        type="text"
         id="pepper"
         placeholder="Special character e.g. #@%^&!? etc."
       /><br />
-      <label for="pepper">&#129323;</label>
+      <label for="salt" class="tooltip"
+        >&#129323;
+        <span class="tooltiptext"
+          >secret to make generated password unique</span
+        >
+      </label>
+      <input id="salt" placeholder="Your secret to make it unique" /><br />
+      <label for="length" class="tooltip"
+        >&#128207;
+        <span class="tooltiptext"
+          >password length in 4-128 characters range, 15 recommended</span
+        >
+      </label>
       <input
-        type="text"
-        id="salt"
-        placeholder="Your secret to make it unique"
+        id="length"
+        placeholder="in 4-128 characters range, 15 recommended"
       /><br />
-      <label for="length">&#128207;</label>
-      <input id="length" placeholder="15 recommended" /><br />
       <!-- <label for="burnin">Burnin:</label>
       <input type="text" id="burnin" placeholder="NINE" /><br /> -->
-      <label for="email">&#128231;</label>
-      <input type="email" id="email" placeholder="you@abc.xyz"/> <br />
-      <label for="username">&#128100;</label>
-      <input id="username" placeholder="username for login"/>
+      <label for="email" class="tooltip"
+        >&#128231; <span class="tooltiptext">email for login</span></label
+      >
+      <input type="email" id="email" placeholder="name@domain.tld" /> <br />
+      <label for="username" class="tooltip"
+        >&#128100; <span class="tooltiptext">username for login</span></label
+      >
+      <input id="username" placeholder="username for login" />
       <br />
       <div class="container">
         <div>
+          <!-- <button class="title" id="save">Save (&#128190)</button> -->
           <button class="title" id="save">Save</button>
-          <!-- <img src="assets/save.128.svg" class="center" id="save"></img> -->
         </div>
         <div>
-          <button class="title" id="reset">Reset</button>
-          <!-- <img src="assets/reset.32.svg" class="center" id="reset"></img> -->
+          <button class="title" id="defaults">Defaults</button>
         </div>
+        <div>
+          <!-- <button class="title" id="reset">Reset (&circlearrowleft;)</button> -->
+          <button class="title" id="reset">Reset</button>
+        </div>
+        <!-- <button id="ModalBtn">Open Modal</button> -->
       </div>
     </fieldset>
   </body>
 </html>
+
+DevTools was disconnected from the page. Once page is reloaded, DevTools wil
+automatically reconnect.

@@ -1,10 +1,16 @@
 // import { getHint } from "./config.js";
-import { getPass } from "./lib.js";
+import { getPass, MINLENGTH, MAXLENGTH } from "./lib.js";
+let DOMAIN;
 const DOMAINS = [];
 const MAXDOMAINS = 9;
 const validSenders = new Set(["content", "popup"]);
 
-function getHint(domain) {
+// typeof msg.hint !== "string" || msg.hint.length < 1
+// ? getHint(DOMAIN) // S[0])
+// : msg.hint;
+
+function getHint(domain, hint) {
+  if (typeof hint === "string" && hint.length > 0) return hint;
   let h;
   try {
     h = domain.split(".").slice(-2, -1)[0]; // "www.netflix.com" => "netflix"
@@ -14,20 +20,29 @@ function getHint(domain) {
   return h;
 }
 
-function addDomain(x) {
-  console.log("sw: addDomain: domain= ", x);
+function replaceDomain(x) {
+  function show(when) {
+    console.log(
+      `sw: replaceDomain:${when}: x= ${x}, DOMAIN= ${DOMAIN}`,
+      " DOMAINS= ",
+      DOMAINS
+    );
+  }
+  show(1);
   if (x === undefined || x.indexOf(".") < 0) return;
   if (DOMAINS.length > MAXDOMAINS) DOMAINS.pop();
-  if (DOMAINS.indexOf(x) < 0) DOMAINS.unshift(x); // prepend to DOMAINS
+  DOMAINS.unshift(x); // prepend to DOMAINS
+  DOMAIN = x;
+  show(2);
 }
 
-// chrome.runtime.onMessage.addListener((request, sender, response) => {
 function contentHandler(msg) {
   console.log("sw: contentHandler: request= ", msg);
-  console.log("sw: contentHandler: DOMAINS= ", DOMAINS);
+  console.log("sw: contentHandler: DOMAIN= ", DOMAIN);
   chrome.storage.local.get(["options"], (results) => {
+    console.log("sw: contentHandler: results= ", results);
     const opts = results.options;
-    opts.hint = getHint(DOMAINS[0]);
+    opts.hint = getHint(DOMAIN, ""); // S[0]);
     const p = getPass(opts);
     const response = { email: opts.email, password: p, from: "sw" };
     console.log("sw: contentHandler: response= ", response);
@@ -38,25 +53,37 @@ function contentHandler(msg) {
 }
 
 function popupHandler(msg) {
-  console.log("sw: popupHandler: DOMAINS= ", DOMAINS);
+  console.log("sw: popupHandler: DOMAIN= ", DOMAIN);
   console.log("sw: popupHandler: request= ", msg);
   chrome.storage.local.get(["options"], (results) => {
     const opts = results.options;
-    opts.hint =
-      typeof msg.hint !== "string" || msg.hint.length < 1
-        ? getHint(DOMAINS[0])
-        : msg.hint;
+    opts.hint = getHint(DOMAIN, msg.hint);
     const p = getPass(opts);
-    chrome.runtime.sendMessage({ hint: opts.hint, password: p });
+    chrome.runtime.sendMessage({
+      hint: opts.hint,
+      password: p,
+      domain: DOMAIN,
+      minlength: MINLENGTH,
+      maxlength: MAXLENGTH,
+    });
   });
 }
 
-const handlers = { content: contentHandler, popup: popupHandler };
+function optionsHandler(msg) {
+  console.log("sw: optionsHandler: msg= ", msg);
+  chrome.runtime.sendMessage({ min: MINLENGTH, max: MAXLENGTH });
+}
+
+const handlers = {
+  content: contentHandler,
+  popup: popupHandler,
+  options: optionsHandler,
+};
 
 chrome.runtime.onMessage.addListener((msg) => {
   if (!validSenders.has(msg.from)) return;
   console.log("sw: msg= ", msg);
-  addDomain(msg.domain);
+  replaceDomain(msg.domain);
   handlers[msg.from](msg);
 });
 
@@ -65,6 +92,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
   // let p, opts;
   if (details.reason === "install") {
     console.log("sw: This is a first install!");
+    chrome.runtime.openOptionsPage();
   } else if (details.reason === "update") {
     const thisVersion = chrome.runtime.getManifest().version;
     console.log(
