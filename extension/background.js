@@ -44,16 +44,25 @@ function contentHandler(msg) {
     const opts = results.options;
     opts.hint = getHint(DOMAIN, ""); // S[0]);
     const p = getPass(opts);
-    const response = { email: opts.email, password: p, from: "sw" };
+    // const hint = getHint(DOMAIN, "");
+    // const p = getPass(hint, opts);
+    console.log("sw: contentHandler: opts= ", opts);
+    const response = {
+      email: opts.email,
+      username: opts.username,
+      password: p,
+      from: "sw",
+    };
     console.log("sw: contentHandler: response= ", response);
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { email: opts.email, password: p });
+      // chrome.tabs.sendMessage(tabs[0].id, { email: opts.email, password: p });
+      chrome.tabs.sendMessage(tabs[0].id, response);
     });
   });
 }
 
 function popupHandler(msg) {
-  console.log("sw: popupHandler: DOMAIN= ", DOMAIN);
+  console.log("sw: popupHandler: DOMAIN= ", DOMAIN, " DOMAINS= ", DOMAINS);
   console.log("sw: popupHandler: request= ", msg);
   chrome.storage.local.get(["options"], (results) => {
     const opts = results.options;
@@ -82,7 +91,7 @@ const handlers = {
 
 chrome.runtime.onMessage.addListener((msg) => {
   if (!validSenders.has(msg.from)) return;
-  console.log("sw: msg= ", msg);
+  console.log("sw: onMessage: msg= ", msg);
   replaceDomain(msg.domain);
   handlers[msg.from](msg);
 });
@@ -90,6 +99,10 @@ chrome.runtime.onMessage.addListener((msg) => {
 // Check whether new version is installed
 chrome.runtime.onInstalled.addListener(function (details) {
   // let p, opts;
+  console.log("sw: onInstalled: details= ", details);
+  let cfg = { MAXLENGTH: MAXLENGTH, MINLENGTH: MINLENGTH };
+  chrome.storage.local.set({ config: cfg });
+  console.log("sw: config saved, cfg= ", cfg);
   if (details.reason === "install") {
     console.log("sw: This is a first install!");
     chrome.runtime.openOptionsPage();

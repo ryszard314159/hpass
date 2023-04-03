@@ -3,7 +3,7 @@ const MINLENGTH = 4;
 const optsDefaults = {};
 const optsKeys = ["salt", "pepper", "length", "email", "username"];
 optsDefaults.salt = { value: "top secret!", icon: "&#129323;" };
-optsDefaults.pepper = { value: "@", icon: "&#127798;" };
+optsDefaults.pepper = { value: "_", icon: "&#127798;" };
 optsDefaults.length = { value: 15, icon: "&#128207;" };
 optsDefaults.email = { value: "donkey@winnie.pooh", icon: "&#128231;" };
 optsDefaults.username = { value: "eeore", icon: "&#128100;" };
@@ -31,26 +31,44 @@ chrome.runtime
   .then(setElements, (error) => console.log(`Error: ${error}`));
 
 // save current options in local storage
+// const backgroundPage = chrome.extension.getBackgroundPage();
 
+// // Send a message to the background script
+// backgroundPage.chrome.runtime.sendMessage({ greeting: "Hello from the options page!" });
+
+/**
+ *
+ */
 function saveOptions() {
-  const MINLENGTH = 4;
-  const MAXLENGTH = 128;
+  // const MINLENGTH = 4;
+  // const MAXLENGTH = 128;
   optsKeys.forEach((x) => {
     opts[x] = el[x].value;
   });
   // let msg = { from: "options", get: "length range" };
   // console.log("options: saveOptions: sending msg= ", msg);
-  // chrome.runtime.sendMessage(msg);
+  // const backgroundPage = chrome.runtime.getBackgroundPage();
+  // console.log("options: saveOptions: backgroundPage= ", backgroundPage);
+  // backgroundPage.chrome.runtime.sendMessage(msg);
   // chrome.runtime.onMessage.addListener((length) => {
   //   console.log("options: saveOptions: from sw: length= ", length);
   // let x = `options: saveOptions: from sw: min= ${length.min}, max= ${length.max}`;
   // console.log(x);
   // let { MINLENGTH = min, MAXLENGTH = max } = length;
-  let corrected = Math.max(MINLENGTH, Math.min(opts.length, MAXLENGTH));
-  if (opts.length != corrected) {
-    el.length.value = opts.length = corrected;
-  }
-  chrome.storage.local.set({ options: opts });
+  chrome.storage.local.get(["config"], (results) => {
+    console.log("options: saveOptions: results= ", results);
+    let { MAXLENGTH, MINLENGTH } = results.config;
+    console.log(
+      `options: saveOptions: MAXLENGTH= ${MAXLENGTH}, MINLENGTH= ${MINLENGTH}`
+    );
+    let corrected = Math.max(MINLENGTH, Math.min(opts.length, MAXLENGTH));
+    let v = `options: saveOptions: opts.length= ${opts.length}, corrected= ${corrected}`;
+    console.log(v);
+    if (opts.length != corrected) {
+      el.length.value = opts.length = corrected;
+    }
+    chrome.storage.local.set({ options: opts });
+  });
   // });
   // checkOptions();
 }
