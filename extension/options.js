@@ -14,7 +14,7 @@ optsKeys.forEach((k) => {
   opts[k] = el[k].value;
 });
 // add other elements from options page...
-["reset", "save", "defaults"].forEach((k) => {
+["reset", "save", "demo"].forEach((k) => {
   el[k] = document.getElementById(k);
 });
 
