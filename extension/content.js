@@ -1,4 +1,4 @@
-window.addEventListener("load", run);
+window.addEventListener("load", setTimeout(run, 900)); // delay helps for some sites
 
 function findUserInputs(allInputs) {
   let v = allInputs.filter((e) => {
