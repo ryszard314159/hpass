@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "HPASS (BETA)",
-  "version": "0.0.0.1",
+  "version": "0.0.0.2",
   "description": "Generate reproducible passwords",
   "permissions": ["storage"],
   "background": {
@@ -14,24 +14,18 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "exclude_globes": ["chrome-extension://*/*"],
       "run_at": "document_end",
       "js": ["content.js"],
       "type": "module"
     }
   ],
-  "web_accessible_resources": [
-    {
-      "resources": ["lib.js"],
-      "matches": ["<all_urls>"]
-    }
-  ],
   "action": {
     "default_icon": {
-      "16": "assets/hpass.16.png",
-      "32": "assets/hpass.32.png",
-      "48": "assets/hpass.48.png",
-      "128": "assets/hpass.128.png"
+      "16": "icons/hpass.16.png",
+      "32": "icons/hpass.32.png",
+      "48": "icons/hpass.48.png",
+      "128": "icons/hpass.128.png",
+      "256": "icons/hpass.256.png"
     },
     "default_title": "HPASS",
     "default_popup": "popup.html"
