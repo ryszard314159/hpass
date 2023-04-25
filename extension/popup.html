@@ -1,6 +1,10 @@
 <html>
   <body>
-    <link href="style.css" rel="stylesheet" type="text/css" />
+    <!-- <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    /> -->
+    <link href="extension.css" rel="stylesheet" type="text/css" />
     <script type="module" src="popup.js"></script>
     <a href="https://hpass.net" target="_blank">
       <button>Visit HPASS homepage</button> <br /></a
@@ -9,9 +13,16 @@
       <legend align="center">Provide hint to generate password</legend>
       <label for="hint">Hint:</label>
       <input type="text" id="hint" placeholder="HINT" /><br />
-      <label for="password">Password:</label>
-      <input type="text" id="password" placeholder="PASSWORD" /> <br />
-      <button class="title" id="generate">
+      <br />
+      <label for="password">Password: &nbsp </label>
+      <input
+        class="input-box"
+        type="text"
+        id="password"
+        placeholder="PASSWORD"
+      />
+      <br />
+      <button class="title button" id="generate">
         Generate and copy to clipboard
       </button>
     </fieldset>

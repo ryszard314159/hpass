@@ -1,0 +1,158 @@
+<!-- #######  HEY, I AM THE SOURCE EDITOR! #########-->
+<body style="background-color: rgb(195, 223, 238)">
+  <h1 style="color: #60b5ea">
+    <strong><span style="color: #000000">What is it?</span></strong>
+  </h1>
+  <p style="color: #5e9ca0">
+    <span style="color: #000000"
+      >Simple to use generator to create strong passwords from easy to remember
+      hints.</span
+    >
+  </p>
+  <h1>
+    <span style="color: #000000">Rationale</span><strong><br /></strong>
+  </h1>
+  <p>
+    <span style="font-weight: 400"
+      >One way to securely store and share passwords is by using a </span
+    ><a href="https://en.wikipedia.org/wiki/Password_manager"
+      ><span style="font-weight: 400">password manager</span></a
+    ><span style="font-weight: 400"
+      >. It is an often recommended and widely used solution, but not without
+      problems.</span
+    >
+  </p>
+  <p>
+    <span style="font-weight: 400"
+      >HPASS(&trade;) uses an alternative approach with two main
+      advantages:</span
+    >
+  </p>
+  <ol>
+    <li style="font-weight: 400" aria-level="1">
+      <span style="font-weight: 400"
+        >Passwords are generated locally, on demand and never stored - there is
+        no danger of data breach.</span
+      >
+    </li>
+    <li style="font-weight: 400" aria-level="1">
+      <span style="font-weight: 400"
+        >There is no master password to remember.</span
+      >
+    </li>
+  </ol>
+  <p>
+    <span style="font-weight: 400"
+      >Large number of sites and apps offer strong random password generation, </span
+    ><span style="font-weight: 400"
+      >but despite some (not exhaustive!) search (see some links below) </span
+    ><span style="font-weight: 400"
+      >I was not able to locate any which would allow me to generate
+      reproducible, hint-based passwords.</span
+    >
+  </p>
+  <h1><strong>Simple Example</strong></h1>
+  <p>
+    <span style="font-weight: 400"
+      >The table below illustrates how from the same hint, using easily
+      customizable options passwords of varied complexity can be generated. As
+      an example, let&rsquo;s assume </span
+    ><a href="https://en.wikipedia.org/wiki/Alice_and_Bob"
+      ><span style="font-weight: 400">Alice and Bob</span></a
+    ><span style="font-weight: 400">
+      want to create individual passwords to access their respective netflix
+      accounts. As a hint they may use, well&hellip; netflix, and as a secret
+      they may use their first names (with default </span
+    ><span style="font-weight: 400"
+      >prefix=&rsquo;:&rsquo;, burnin=8, length=15)</span
+    ><strong>&nbsp;</strong>
+  </p>
+  <table
+    style="border-collapse: collapse; width: 50.6374%; height: 46px"
+    border="1"
+  >
+    <tbody>
+      <tr style="height: 10px">
+        <td style="width: 14.1025%; height: 10px"><strong>hint</strong></td>
+        <td style="width: 14.5833%; height: 10px"><strong>secret</strong></td>
+        <td style="width: 12.2581%; height: 10px">
+          <strong>generated password</strong>
+        </td>
+      </tr>
+      <tr style="height: 18px">
+        <td style="width: 14.1025%; height: 18px">netflix</td>
+        <td style="width: 14.5833%; height: 18px">alice</td>
+        <td style="width: 12.2581%; height: 18px">
+          <span style="font-weight: 400">WN1KUubX94:rhs8</span>
+        </td>
+      </tr>
+      <tr style="height: 18px">
+        <td style="width: 14.1025%; height: 18px">netflix</td>
+        <td style="width: 14.5833%; height: 18px">bob</td>
+        <td style="width: 12.2581%; height: 18px">
+          <span style="font-weight: 400">Z1E:QAcP8wYjpMX</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <strong
+      ><br /><span style="font-weight: 400"
+        >Of course, they can use anything else as a secret and change other
+        parameters as well as they wish. Please note that the way HPASS
+        generates password from given input parameters (hint, sekret, prefix,
+        burnin and length) is one-way hash function and the input parameters
+        cannot be recovered given the password string (see some more elaboration
+        see: </span
+      ><a
+        href="https://www.unblocktalent.com/topics/building-blocks/is-hashing-reversible/"
+        ><span style="font-weight: 400"
+          >https://www.unblocktalent.com/topics/building-blocks/is-hashing-reversible/</span
+        ></a
+      ><span style="font-weight: 400"
+        >). Someone who would want to generate your password for any specific
+        account would have to know all these parameters AND the source code of
+        the hashing function.</span
+      ></strong
+    >
+  </p>
+  <h1><strong>Problems with password managers</strong></h1>
+  <p>
+    You can find multiple sources discussing pros and cons of using password
+    manager. Very short list is:
+  </p>
+  <ul>
+    <li><strong>Pros:</strong> convenience, ability to share passwords</li>
+    <li>
+      <strong>Cons:</strong> need to remember master password, vulnerability to
+      hacking, safety
+    </li>
+  </ul>
+  <p>
+    We can argue that HPASS has all adantages and none of dissadventages of
+    password managers.
+  </p>
+  <p>Follow the links below to find out more.</p>
+  <ol>
+    <li>
+      <a href="https://blog.hypr.com/problems-with-password-managers"
+        ><span style="font-weight: 400"
+          >https://blog.hypr.com/problems-with-password-managers</span
+        ></a
+      >
+    </li>
+    <li>
+      <a href="https://www.makeuseof.com/are-password-managers-safe-or-not/"
+        >https://www.makeuseof.com/are-password-managers-safe-or-not</a
+      >
+    </li>
+    <li>
+      <a href="https://blog.knowbe4.com/what-about-password-manager-risks"
+        >https://blog.knowbe4.com/what-about-password-manager-risks</a
+      >
+    </li>
+  </ol>
+  <h1>Details</h1>
+  <p><strong>TBD...</strong></p>
+  <p><strong>&nbsp;</strong></p>
+</body>

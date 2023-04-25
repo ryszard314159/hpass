@@ -41,9 +41,10 @@ function contentHandler(msg) {
 
 function popupHandler(msg) {
   console.log("sw: popupHandler: DOMAIN= ", DOMAIN); // " DOMAINS= ", DOMAINS);
-  console.log("sw: popupHandler: request= ", msg);
+  console.log("sw: popupHandler: msg= ", msg);
   chrome.storage.local.get(["options"], (results) => {
     const opts = results.options;
+    console.log("sw: popupHandler: opts= ", opts);
     opts.hint = getHint(DOMAIN, msg.hint);
     const p = getPass(opts);
     console.log("sw: popupHandler: opts= ", opts);
@@ -96,4 +97,24 @@ chrome.runtime.onInstalled.addListener(function (details) {
       `sw: Updated from ${details.previousVersion} to ${thisVersion} !`
     );
   }
+});
+
+// chrome.runtime.onInstalled.addListener(function() {
+//   chrome.storage.sync.get("options", function(data) {
+//     if (!data.options) {
+//       // If options haven't been set yet, open a new tab to your options page
+//       chrome.tabs.create({ url: "options.html" });
+//     }
+//   });
+// });
+
+chrome.runtime.onInstalled.addListener(function () {
+  const now = new Date();
+  const expiryDate = new Date();
+  expiryDate.setDate(now.getDate() + 30);
+
+  chrome.storage.local.set({
+    isFreeTrial: true,
+    expiryDate: expiryDate,
+  });
 });

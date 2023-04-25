@@ -79,3 +79,24 @@ function setValues(els, value) {
       );
   }
 }
+
+chrome.extension.onRequest.addListener(function (
+  request,
+  sender,
+  sendResponse
+) {
+  if (request.action == "checkFreeTrial") {
+    const isFreeTrial = chrome.storage.local.get("isFreeTrial");
+    const expiryDate = chrome.storage.local.get("expiryDate");
+
+    if (isFreeTrial && new Date() < expiryDate) {
+      sendResponse({
+        message: "You are currently in free trial mode.",
+      });
+    } else {
+      sendResponse({
+        message: "Your free trial has expired.",
+      });
+    }
+  }
+});

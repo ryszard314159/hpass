@@ -21,11 +21,9 @@
   ],
   "action": {
     "default_icon": {
-      "16": "icons/hpass.16.png",
-      "32": "icons/hpass.32.png",
-      "48": "icons/hpass.48.png",
-      "128": "icons/hpass.128.png",
-      "256": "icons/hpass.256.png"
+      "256": "icons/hpass.256.png",
+      "512": "icons/hpass.512.png",
+      "1024": "icons/hpass.1024.png"
     },
     "default_title": "HPASS",
     "default_popup": "popup.html"
