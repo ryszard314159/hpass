@@ -1,0 +1,135 @@
+body {
+  min-width: 300px;
+  max-height: 400px;
+  /* max-width: 50%; */
+  position: relative;
+  vertical-align: middle;
+  background-color: rgb(239, 208, 143);
+}
+
+.container > div {
+  display: inline-block;
+  display: -moz-inline-box;
+  *display: inline; /* For IE7 */
+  zoom: 1; /* Trigger hasLayout */
+  width: 29%;
+  text-align: center;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px;
+}
+
+.textbox {
+  width: 100%;
+  font-size: 12px;
+  margin: 0;
+  padding: 0px 0px;
+}
+
+.textbox:focus {
+  outline: 0;
+  border-color: #66afe9;
+}
+
+label {
+  /* display: block; */
+  float: left;
+  width: 20%;
+}
+
+input {
+  /* display: block; */
+  display: block;
+  /* float: right; */
+  width: 70%;
+  background-color: aqua;
+}
+
+.ButtonContainer {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  text-align: justify;
+  line-height: 0;
+  vertical-align: top;
+  padding: 10px 0; /* adjust as needed */
+}
+.ButtonContainer button {
+  margin: 0 10px; /* adjust as needed */
+}
+.ButtonContainer:after {
+  content: "";
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+  line-height: 1.5;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+/* <style>
+body {font-family: Arial, Helvetica, sans-serif;} */
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+/* </style> */

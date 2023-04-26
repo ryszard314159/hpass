@@ -1,0 +1,68 @@
+<html>
+  <body>
+    <link href="extension.css" rel="stylesheet" type="text/css" />
+    <script defer type="module" src="options.js"></script>
+    <a href="https://hpass.net" target="_blank">
+      <button>Visit HPASS homepage</button> <br /></a
+    ><br />
+    <fieldset name="options" id="options">
+      <legend align="center">Options</legend>
+      <label for="pepper" class="tooltip"
+        >&#127798;
+        <span class="tooltiptext"
+          >at least on special character to satisfy picky websites
+          requirements</span
+        >
+      </label>
+      <input id="pepper" placeholder="Recommended _.-!@*$?&% etc." /><br />
+      <label for="salt" class="tooltip"
+        >&#129323;
+        <span class="tooltiptext"
+          >secret to make generated password unique</span
+        >
+      </label>
+      <input id="salt" placeholder="Your secret to make it unique" /><br />
+      <label for="length" class="tooltip"
+        >&#128207;
+        <span class="tooltiptext"
+          >password length in 4-128 characters range, 15 recommended</span
+        >
+      </label>
+      <input
+        id="length"
+        placeholder="15 recommended, in 4-128 characters range, "
+      /><br />
+      <!-- <label for="burnin">Burnin:</label>
+      <input type="text" id="burnin" placeholder="NINE" /><br /> -->
+      <label for="email" class="tooltip"
+        >&#128231; <span class="tooltiptext">email for login</span></label
+      >
+      <input type="email" id="email" placeholder="name@domain.tld" /> <br />
+      <label for="username" class="tooltip"
+        >&#128100; <span class="tooltiptext">username for login</span></label
+      >
+      <input id="username" placeholder="username for login" />
+      <br />
+      <div class="container">
+        <div>
+          <button class="title" id="save">Save</button>
+        </div>
+        <div>
+          <button class="title" id="demo">Demo</button>
+        </div>
+        <div>
+          <button class="title" id="reset">Reset</button>
+        </div>
+      </div>
+    </fieldset>
+    <br />
+    <div>
+      <a
+        href="https://www.reddit.com/r/dataisbeautiful/comments/2vfgvh/most_frequentlyused_special_characters_in_10/"
+        target="_blank"
+      >
+        <button>Which special characters to use?</button> <br /></a
+      ><br />
+    </div>
+  </body>
+</html>

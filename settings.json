@@ -1,0 +1,19 @@
+{
+  "pepper": { "value": "_", "icon": "&#127798;", "name": "Hot Pepper" },
+  "salt": {
+    "value": "top secret!",
+    "icon": "&#129323;",
+    "name": "Face with Finger Covering Closed Lips"
+  },
+  "length": { "value": 15, "icon": "&#128207;", "name": "Straight Ruler" },
+  "email": {
+    "value": "donkey@winnie.pooh",
+    "icon": "&#128231;",
+    "name": "E-Mail Symbol"
+  },
+  "username": {
+    "value": "eeore",
+    "icon": "&#128100;",
+    "name": "Bust In Silhouette"
+  }
+}

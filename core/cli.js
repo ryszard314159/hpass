@@ -18,15 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// import { ArgumentParser,  ArgumentDefaultsHelpFormatter} from "argparse";
+import { ArgumentParser, ArgumentDefaultsHelpFormatter } from "argparse";
+import CLIP from "node-clipboardy";
 // const ArgumentParser = require('argparse').ArgumentParser;
-const {
-  ArgumentParser,
-  ArgumentDefaultsHelpFormatter,
-} = require("argparse/argparse.js");
-const assert = require("assert");
-const lib = require("./lib.js");
-// import { getPass } from "./lib.js" // SyntaxError: Cannot use import statement outside a module
+// const {
+//   ArgumentParser,
+//   ArgumentDefaultsHelpFormatter,
+// } = require("argparse/argparse.js");
+// const assert = require("assert");
+// const lib = require("./lib.js");
+import { getPass } from "./lib.js"; // SyntaxError: Cannot use import statement outside a module
 
 const DESCRIPTION =
   "Seeded password generator - generates password from hint and salt; \
@@ -102,7 +103,7 @@ function get_parser() {
 }
 
 let parser = get_parser();
-// let args, passwd;
+let args, passwd;
 if (
   typeof process.env.BUILTIN !== "undefined" ||
   typeof window !== "undefined"
@@ -116,5 +117,6 @@ if (
 }
 if (args.debug) console.dir(args);
 
-passwd = lib.getPass(args);
-// passwd = getPass(args);
+// passwd = lib.getPass(args);
+passwd = getPass(args);
+CLIP.writeSync(passwd);
