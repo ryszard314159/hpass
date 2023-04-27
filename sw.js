@@ -1,4 +1,4 @@
-const version = "0.41";
+const version = "0.42";
 
 const appAssets = [
   "index.html",
@@ -7,7 +7,7 @@ const appAssets = [
   "app.js",
   "core/lib.js",
   "settings.json",
-  "style.css",
+  "css/pwa.css",
   "icons/hpass.256.png",
   "icons/hpass.512.png",
   "icons/hpass.1024.png",
