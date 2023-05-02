@@ -27,7 +27,8 @@
     {
       "src": "../icons/maskable.1024.png",
       "type": "image/png",
-      "sizes": "1024x1024"
+      "sizes": "1024x1024",
+      "purpose": "any maskable"
     }
   ]
 }
