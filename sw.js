@@ -11,6 +11,7 @@ const appAssets = [
   "icons/hpass.256.png",
   "icons/hpass.512.png",
   "icons/hpass.1024.png",
+  "icons/maskable.1024.png",
 ];
 
 fetch("./settings.json")
