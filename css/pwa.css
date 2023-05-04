@@ -165,8 +165,9 @@ span {
   white-space: pre;
   background-color: coral;
   border: 0px solid;
+  overflow-x: auto;
   overflow-y: auto;
-  display: none;
+  display: flex;
   justify-content: center;
 }
 

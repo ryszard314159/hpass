@@ -1,4 +1,4 @@
-const version = "0.42";
+const version = "0.01";
 
 const appAssets = [
   "index.html",
@@ -14,12 +14,12 @@ const appAssets = [
   "icons/maskable.1024.png",
 ];
 
-fetch("./settings.json")
-  .then((response) => response.json())
-  .then((json) => {
-    cache.add(json);
-    console.log("sw: install: settings in cache= ", json);
-  });
+// fetch("./settings.json")
+//   .then((response) => response.json())
+//   .then((json) => {
+//     cache.add(json);
+//     console.log("sw: install: settings in cache= ", json);
+//   });
 
 // const defaults = {
 //   pepper: { value: "_", icon: "&#127798;", name: "Hot Pepper" },
