@@ -1,7 +1,7 @@
 {
   "name": "HPASS Password Generator",
   "short_name": "HPASS",
-  "start_url": "./",
+  "start_url": "../index.html",
   "display": "standalone",
   "id": "/hpass/index.html",
   "background_color": "#fdfdfd",
