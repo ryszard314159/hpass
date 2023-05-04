@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content="Hinted easy to use password generator" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=128" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#db4938" />
+    <!-- the same as manifest theme_color -->
+    <title>HPASS Password Generator</title>
+    <link rel="manifest" href="pwa/manifest.json" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="css/pwa.css" />
+    <script defer type="module" src="core/lib.js"></script>
+    <script defer type="module" src="app.js"></script>
+  </head>
+  <p class="p3">
+    <body>
+      <header></header>
+      <main>
+        <noscript>
+          <div>
+            HPASS requires JavaScript to function. <br />
+            <small>Please enable JavaScript in your browser settings</small>
+          </div>
+        </noscript>
+        <table class="center" style="width: 60%">
+          <!-- <tr style="height: 32px" id="iconsRow" HEIGHT="40%"> -->
+          <tr id="iconsRow" HEIGHT="5%">
+            <!-- <th style="width: 33%;"><img src="icons/help.svg" id="help"></img></th> -->
+            <th style="width: 33%; text-align: left">
+              <button class="button circle" id="help" style="padding-left: 2px">
+                <span>
+                  <strong>&quest;</strong>
+                  <!-- question mark: help -->
+                </span>
+              </button>
+            </th>
+            <th style="width: 33%">
+              <span id="hide" style="font-size: 2em">&#129296;</span>
+            </th>
+            <th style="width: 33%; text-align: right">
+              <button class="button circle" id="info" style="padding-left: 5px">
+                <strong>&#105;</strong>
+                <!-- i - for info -->
+              </button>
+            </th>
+          </tr>
+          <tr>
+            <td colspan="3" style="width: calc(100% / 3)">
+              <input
+                id="hint"
+                type="text"
+                class="form-control"
+                placeholder="hint / seed"
+                style="background-color: lightblue; width: 100%"
+              />
+            </td>
+          </tr>
+          <tr id="pepperRow" class="hidden">
+            <td>Pepper: &#127798;</td>
+            <!-- <td>
+              for="pepper" class="tooltip">
+              <label for="pepper" class="tooltip">
+                Pepper: &#127798;
+                <span class="tooltiptext">
+                  at least on special character to satisfy picky websites
+                  requirements
+                </span>
+              </label>
+            </td> -->
+            <td colspan="2" style="width: 20%">
+              <input
+                class="form-control"
+                id="pepper"
+                placeholder="Recommended _.-!@*$?&% etc."
+              />
+            </td>
+          </tr>
+          <tr id="saltRow" class="hidden">
+            <td>Salt: &#129323;</td>
+            <td colspan="2">
+              <input
+                class="form-control"
+                id="salt"
+                placeholder="Your secret to make it unique"
+              />
+            </td>
+          </tr>
+          <tr id="lengthRow" class="hidden">
+            <td>Length: &#128207;</td>
+            <td colspan="2" style="width: 60%; font-weight: 900">
+              <input
+                class="form-control"
+                id="length"
+                placeholder="15 recommended"
+              />
+            </td>
+          </tr>
+          <tr id="buttonRow" class="hidden" style="background-color: #66bd13">
+            <td>
+              <button
+                class="title"
+                id="save"
+                style="background-color: lightgreen"
+              >
+                Save
+              </button>
+            </td>
+            <td>
+              <button
+                class="title"
+                id="demo"
+                style="background-color: lightgreen"
+              >
+                Demo
+              </button>
+            </td>
+            <td>
+              <button
+                class="title"
+                id="reset"
+                style="background-color: lightgreen"
+              >
+                Reset
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3">
+              <button
+                id="generate"
+                class="btn btn-default"
+                style="
+                  background-color: lightgreen;
+                  font-weight: 900;
+                  width: 100%;
+                  text-align: center;
+                "
+              >
+                Generate and Copy
+              </button>
+            </td>
+          </tr>
+          <tr id="passwordsRow" class="hidden">
+            <td colspan="3">
+              <p class="scroll" id="passwords"></p>
+            </td>
+          </tr>
+        </table>
+      </main>
+      <footer></footer>
+    </body>
+  </p>
+</html>
