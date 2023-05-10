@@ -1,160 +1,59 @@
+/*
+https://www.freecodecamp.org/news/css-selectors-cheat-sheet/
+https://www.w3schools.com/cssref/css_selectors.php
+*/
+
 body {
   font-family: "Arial";
   background-color: rgb(224, 192, 144);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5%;
+  margin-bottom: auto;
 }
 
-help {
-  background-color: rgb(175, 231, 191);
+#help {
+  border-radius: 0px;
+  border-top-left-radius: 10px;
+}
+#hide {
+  font-size: 20px;
+  border-left: 10px;
+  border-right: 1px;
+  border-radius: 9px;
+}
+#info {
+  border-radius: 0px;
+  border-top-right-radius: 10px;
+}
+#hint {
+  /* placeholder: "  prompt / hint / seed"; */
+  /* content: "Your placeholder text here"; */
+  background-color: lightblue;
+}
+#hint::placeholder {
+  /* placeholder: "  prompt / hint / seed"; */
+  content: "Your placeholder text here";
+}
+
+#generate {
+  background-color: green;
+}
+
+#demo {
+  border-left: 10px;
+  border-right: 1px;
+}
+
+#passwords {
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
 }
 
 button {
   margin: 0 auto;
   display: block;
 }
-
-.button {
-  background-color: #04aa6d; /* Green */
-  border: none;
-  color: white;
-  /* padding: 0px; */
-  padding-left: 3px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 8px 8px;
-  cursor: pointer;
-  /* font-weight: 100; */
-  width: 32px;
-  height: 32px;
-}
-
-.circle {
-  border-radius: 90%;
-  /* border-radius: 8em / 8em; */
-  background-color: deepskyblue;
-  font-size: 2rem;
-  vertical-align: middle;
-}
-.orange-circle {
-  border-radius: 25%;
-  /* border-radius: 8em / 8em; */
-  background-color: rgb(233, 137, 19);
-  font-size: 1em;
-  vertical-align: middle;
-}
-
-img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-
-.collapsible {
-  background-color: #777;
-  color: white;
-  cursor: pointer;
-  padding: 18px;
-  width: 100%;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 15px;
-}
-
-.p1 {
-  font-family: "Times New Roman", Times, serif;
-}
-
-.p2 {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.p3 {
-  font-family: "Courier New", monospace;
-}
-
-div {
-  margin-bottom: 10px;
-}
-
-/*
-table,
-th,
-td {
-  border: 0px solid black;
-}
-  margin-top: 5%;
-  margin-left: 1%;
-    width: 100%;
-*/
-
-table {
-  table-layout: fixed;
-  margin-top: 5%;
-  border: 0px solid black;
-}
-
-table.center {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-td {
-  border: 0px solid black;
-  width: calc(100% / 3);
-  font-weight: 900;
-}
-
-label {
-  display: inline-block;
-  /* width: 150px; */
-  width: 100%;
-  text-align: left;
-}
-
-.container {
-  margin-top: 16px;
-  margin-left: 16px;
-  max-width: 256px;
-  justify-content: center;
-}
-
-/*
-    <style>
-        h1 {
-            color: green;
-        }
-*/
-.container {
-  display: table;
-  width: 100%;
-}
-
-label {
-  display: table-cell;
-  width: 50%;
-  white-space: nowrap;
-}
-
-span {
-  display: table-cell;
-  padding: 0px 8px 0px 8px;
-}
-/*        
-        input {
-            width: 70%;
-        }
-    </style>
-      max-width: 500px;
-*/
 
 .scroll {
   margin-top: 0px;
@@ -173,13 +72,6 @@ span {
 
 .hidden {
   display: none;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 32px;
-  height: 16px;
 }
 
 .switch input {
@@ -235,17 +127,6 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-/*
-ul li {
-  background: url("icons/help.svg") no-repeat left center;
-  background: url("icons/info.svg") no-repeat left center;
-  padding: 5px 10px 5px 25px;
-  list-style: none;
-  margin: 0;
-  vertical-align: middle;
-}
-*/
-
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
@@ -254,12 +135,136 @@ ul li {
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;
-
-  /* Position the tooltip */
   position: absolute;
   z-index: 1;
 }
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+/* display/flex bit sets up the horizontal layout */
+/* border bit draws the box around it */
+/* I've used padding so you can see the edges of the elements. */
+form {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid grey;
+  padding: 0px;
+  margin: 0rem;
+}
+
+/* Tell the input to use all the available space */
+/* And hide the input's outline, so the form looks like the outline */
+input {
+  flex-grow: 2;
+  border: none;
+}
+
+/* remove the input focus blue box, it will be in the wrong place. */
+input:focus {
+  outline: none;
+}
+
+/* Add the focus effect to the form so it contains the button */
+form:focus-within {
+  outline: 1px solid blue;
+}
+
+button {
+  border: 0px solid rgb(62, 62, 222);
+  background: rgb(73, 73, 166);
+  color: white;
+  width: 10%;
+  min-height: 2rem;
+}
+
+.btn-group button {
+  background-color: #04aa6d;
+  border: 1px solid green;
+  color: white;
+  padding: 10px 24px;
+  cursor: pointer;
+  float: left;
+}
+
+/* border-radius: 10000px; */
+.btn {
+  background-color: rgb(10, 172, 10);
+  border: 0px solid blue;
+  border-color: none;
+  color: black;
+  font-size: 18px;
+  width: 100%;
+  height: auto;
+  min-height: 2rem;
+}
+.btn:hover {
+  background-color: darkgreen;
+  color: white;
+  transition-duration: 1s;
+  transition-property: background-color;
+}
+.rounded-bottom {
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Prevent double borders */
+.btn-group button:not(:last-child) {
+  border-right: none;
+}
+
+/* Add a background color on hover */
+/* .btn-group button:hover {
+  background-color: #3e8e41;
+} */
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+div {
+  /* background-color: rgb(225, 64, 120); */
+  background-color: lightgreen;
+  border-radius: 32px / 32px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 0rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Optional button styling */
+.rowbutton {
+  background-color: lightgreen;
+  /* border: none; */
+  /* border-radius: 16px / 16px; */
+  color: black;
+  padding: 8px 0px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 0px; /* Remove the margin between buttons */
+  width: 99%;
+  min-height: 2rem;
+  cursor: pointer;
+}
+.rowbutton:hover {
+  background-color: green;
+  color: darkblue;
+  transition-duration: 0.5s;
+  transition-property: background-color;
 }

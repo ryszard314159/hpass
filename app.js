@@ -73,6 +73,7 @@ el.info = document.getElementById("info");
 el.save = document.getElementById("save");
 el.demo = document.getElementById("demo");
 el.reset = document.getElementById("reset");
+el.raw = document.getElementById("raw");
 
 // TODO: replace localStorage with Cache Storage
 let opts = JSON.parse(window.localStorage.getItem("options"));
@@ -104,11 +105,39 @@ if (n < opts.minlength || n > opts.maxlength) {
   });
 });
 
+// 1. convert promp string to lower case
+// 2. extract only domain e.g. http://www.domain.com -> domain
+
+// Remove the protocol (e.g., "http://", "https://")
+// Remove www prefix, if present
+// Extract the domain name (excluding subdomains and paths)
+// Remove subdomains
+function extractNakedDomain(url) {
+  let domain = url.replace(/^https?:\/\//i, "");
+  domain = domain.replace(/^www\./i, "");
+  domain = domain.split("/")[0];
+  const parts = domain.split(".");
+  if (parts.length > 2) {
+    parts.shift();
+  }
+  return parts.join(".");
+}
+
+function cleanHint(prompt) {
+  let domain = extractNakedDomain(prompt);
+  return domain.split(".")[0].toLowerCase();
+}
+
 function htmlToUni(x) {
   const divElement = document.createElement("div");
   divElement.innerHTML = x;
   return divElement.textContent;
 }
+
+el.raw.addEventListener("click", (event) => {
+  event.preventDefault();
+  el.raw.innerHTML = el.raw.innerHTML === "raw" ? "clean" : "raw";
+});
 
 el.hide.addEventListener("click", function () {
   const htmlEncoding = ["&#128065;", "&#129296;"]; // SHOW HIDE
@@ -118,11 +147,20 @@ el.hide.addEventListener("click", function () {
   el.hide.innerHTML = el.hide.innerHTML === show ? hide : show;
   // el.hint.type = el.hint.type === "password" ? "text" : "password";
   // let els = ["saltRow", "pepperRow", "lengthRow", "burninRow", "passwordsRow"];
-  let els = ["saltRow", "pepperRow", "lengthRow", "buttonRow", "passwordsRow"];
-  for (let id of els) {
-    // console.log("id= ", id);
+  let ids = [
+    "help",
+    "saltForm",
+    "pepperForm",
+    "lengthForm",
+    "saveDiv",
+    "passwords",
+  ];
+  for (let id of ids) {
+    console.log("app: id= ", id);
     document.getElementById(id).classList.toggle("hidden");
+    // document.getElementById(id).classList.toggle("center");
   }
+  document.getElementById("generate").classList.toggle("rounded-bottom");
 });
 
 el.save.addEventListener("click", function () {
@@ -150,7 +188,9 @@ el.generate.addEventListener("click", function () {
   // TODO: replace localStorage with Cache Storage
   window.localStorage.setItem("options", JSON.stringify(opts));
   let args = { ...opts }; // deep copy
-  args.hint = el.hint.value;
+  args.hint =
+    el.raw.innerHTML === "raw" ? el.hint.value : cleanHint(el.hint.value);
+  // args.hint = el.hint.value;
   console.log("generate:1: opts=", opts);
   args.digits = false;
   args.unicode = false;
