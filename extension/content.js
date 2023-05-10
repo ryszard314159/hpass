@@ -1,6 +1,7 @@
-window.addEventListener("load", () => {
-  setTimeout(() => run(), 900);
-}); // setTimeout.. delay helps for some sites
+window.addEventListener("load", run);
+// window.addEventListener("load", () => {
+//   setTimeout(() => run(), 900);
+// }); // setTimeout.. delay helps for some sites
 
 function findUserInputs(allInputs) {
   let v = allInputs.filter((e) => {
@@ -44,7 +45,8 @@ function getAllNodes(
   return tagName ? all.filter(foo) : all;
 }
 
-function run() {
+function run(runMessage) {
+  console.log("content: run: runMessage= ", runMessage);
   const allInputElements = getAllNodes(document.body);
   if (allInputElements.length < 1) return;
   let usernameInputs = findUserInputs(allInputElements);
@@ -80,23 +82,81 @@ function setValues(els, value) {
   }
 }
 
-chrome.extension.onRequest.addListener(function (
-  request,
-  sender,
-  sendResponse
-) {
-  if (request.action == "checkFreeTrial") {
-    const isFreeTrial = chrome.storage.local.get("isFreeTrial");
-    const expiryDate = chrome.storage.local.get("expiryDate");
+// chrome.extension.onRequest.addListener(function (
+//   request,
+//   sender,
+//   sendResponse
+// ) {
+//   if (request.action == "checkFreeTrial") {
+//     const isFreeTrial = chrome.storage.local.get("isFreeTrial");
+//     const expiryDate = chrome.storage.local.get("expiryDate");
+//     if (isFreeTrial && new Date() < expiryDate) {
+//       sendResponse({
+//         message: "You are currently in free trial mode.",
+//       });
+//     } else {
+//       sendResponse({
+//         message: "Your free trial has expired.",
+//       });
+//     }
+//   }
+// });
 
-    if (isFreeTrial && new Date() < expiryDate) {
-      sendResponse({
-        message: "You are currently in free trial mode.",
-      });
-    } else {
-      sendResponse({
-        message: "Your free trial has expired.",
-      });
-    }
-  }
-});
+//
+// Create an observer instance linked to the callback function
+// const observer = new MutationObserver(callback);
+// const observer = new MutationObserver((mutationList) => {
+//   // for (const mutation of mutationList) {
+//   //   if (mutation.type === "childList") {
+//   //     console.log("content: observer: A child node has been added or removed.");
+//   //   } else if (mutation.type === "attributes") {
+//   //     console.log(
+//   //       `content: observer: The ${mutation.attributeName} attribute was modified.`
+//   //     );
+//   //   }
+//   // }
+//   run("from observer");
+// });
+// Start observing the target node for configured mutations
+// const targetNode = document.documentElement;
+// Options for the observer (which mutations to observe)
+// const config = { attributes: true, childList: true, subtree: true };
+// observer.observe(targetNode, config);
+// TODO: adding MutationObserver helps for some sites e.g. https://www.komoot.com
+//       but not for others e.g. https://www.verizon.com/home/myverizon/
+// Later, you can stop observing
+// observer.disconnect();
+
+// document.onclick = function (event) {
+//   // Compensate for IE<9's non-standard event model
+//   //
+//   console.log("content: document.onclick: event= ", event);
+//   if (event === undefined) event = window.event;
+//   var target = "target" in event ? event.target : event.srcElement;
+//   alert("clicked on " + target.tagName);
+// };
+
+// window.addEventListener("click", function (event) {
+//   console.log("content: window.addEventListener: event= ", event);
+//   if (event === undefined) event = window.event;
+//   var target = "target" in event ? event.target : event.srcElement;
+//   alert("clicked on " + target.tagName);
+// });
+
+// var monitor = setInterval(function () {
+//   var elem = document.activeElement;
+//   // if (elem && elem.tagName == "IFRAME") {
+//   if (elem) {
+//     clearInterval(monitor);
+//     alert("clicked!");
+//     console.log("monitor: elem=", elem);
+//   }
+// }, 100);
+
+// const inputBoxes = document.getElementsByTagName("INPUT");
+// const inputPressed = e => {
+//   console.log("inputPressed: e.target.id= ", e.target.id);  // Get ID of Clicked Element
+// };
+// for (let inp of inputBoxes) {
+//   inp.addEventListener("click", inputPressed);
+// };
