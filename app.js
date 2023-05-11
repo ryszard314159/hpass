@@ -73,7 +73,7 @@ el.info = document.getElementById("info");
 el.save = document.getElementById("save");
 el.demo = document.getElementById("demo");
 el.reset = document.getElementById("reset");
-el.raw = document.getElementById("raw");
+el.hintButton = document.getElementById("hintButton");
 
 // TODO: replace localStorage with Cache Storage
 let opts = JSON.parse(window.localStorage.getItem("options"));
@@ -134,9 +134,9 @@ function htmlToUni(x) {
   return divElement.textContent;
 }
 
-el.raw.addEventListener("click", (event) => {
+el.hintButton.addEventListener("click", (event) => {
   event.preventDefault();
-  el.raw.innerHTML = el.raw.innerHTML === "raw" ? "clean" : "raw";
+  el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
 });
 
 el.hide.addEventListener("click", function () {
@@ -158,7 +158,6 @@ el.hide.addEventListener("click", function () {
   for (let id of ids) {
     console.log("app: id= ", id);
     document.getElementById(id).classList.toggle("hidden");
-    // document.getElementById(id).classList.toggle("center");
   }
   document.getElementById("generate").classList.toggle("rounded-bottom");
 });
@@ -179,6 +178,11 @@ el.reset.addEventListener("click", function () {
   el.length.value = null;
 });
 
+el.hint.addEventListener("mouseout", () => {
+  if (el.hintButton.innerHTML === "raw") return;
+  el.hint.value = cleanHint(el.hint.value);
+});
+
 el.generate.addEventListener("click", function () {
   console.log("generate:0: opts.burnin=", opts.burnin);
   opts.pepper = el.pepper.value;
@@ -188,9 +192,9 @@ el.generate.addEventListener("click", function () {
   // TODO: replace localStorage with Cache Storage
   window.localStorage.setItem("options", JSON.stringify(opts));
   let args = { ...opts }; // deep copy
-  args.hint =
-    el.raw.innerHTML === "raw" ? el.hint.value : cleanHint(el.hint.value);
-  // args.hint = el.hint.value;
+  // args.hint =
+  //   el.raw.innerHTML === "raw" ? el.hint.value : cleanHint(el.hint.value);
+  args.hint = el.hint.value;
   console.log("generate:1: opts=", opts);
   args.digits = false;
   args.unicode = false;
@@ -212,7 +216,3 @@ el.generate.addEventListener("click", function () {
     .catch((err) => console.error("app: clipboard copy error= ", err));
 });
 
-// window.addEventListener("load", (e) => {
-//   alert("app: window load event");
-//   console.log("app: line 158: window load event= ", e);
-// });
