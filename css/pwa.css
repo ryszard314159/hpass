@@ -3,13 +3,25 @@ https://www.freecodecamp.org/news/css-selectors-cheat-sheet/
 https://www.w3schools.com/cssref/css_selectors.php
 */
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: "Arial";
   background-color: rgb(224, 192, 144);
-  margin-left: auto;
+  /* margin-left: 1%;
   margin-right: auto;
+  margin-top: 9%;
+  margin-bottom: auto; */
+  /* height: 100%;
+  width: 100%; */
   margin-top: 5%;
-  margin-bottom: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #help {
@@ -18,9 +30,10 @@ body {
 }
 #hide {
   font-size: 20px;
-  border-left: 10px;
-  border-right: 1px;
-  border-radius: 9px;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-right-color: grey;
+  border-left-color: grey;
 }
 #info {
   border-radius: 0px;
@@ -41,8 +54,11 @@ body {
 }
 
 #demo {
-  border-left: 10px;
-  border-right: 1px;
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-right-color: grey;
+  border-left-color: grey;
+}
 }
 
 #passwords {
@@ -157,7 +173,8 @@ form {
 /* Tell the input to use all the available space */
 /* And hide the input's outline, so the form looks like the outline */
 input {
-  flex-grow: 2;
+  /* flex-grow: 1; */
+  width: 100%;
   border: none;
 }
 
@@ -175,7 +192,7 @@ button {
   border: 0px solid rgb(62, 62, 222);
   background: rgb(73, 73, 166);
   color: white;
-  width: 10%;
+  width: 20%;
   min-height: 2rem;
 }
 
@@ -231,7 +248,7 @@ button {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 50%;
+  width: 90%;
 }
 
 div {
@@ -242,7 +259,7 @@ div {
   justify-content: space-between;
   width: 100%;
   margin-bottom: 0rem;
-  margin-left: auto;
+  margin-left: 0;
   margin-right: auto;
 }
 
@@ -268,3 +285,4 @@ div {
   transition-duration: 0.5s;
   transition-property: background-color;
 }
+
