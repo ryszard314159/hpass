@@ -29,9 +29,10 @@ import { getPass } from "./core/lib.js";
 
 if ("serviceWorker" in navigator) {
   const swPath = "sw.js";
-  console.log("apps: hpass registered: swPath= ", swPath);
+  console.log("apps: bbbbefore registration: swPath= ", swPath);
   navigator.serviceWorker
     .register(swPath)
+    .then(reg => console.log('app: sw registered!', reg))
     .catch(console.error("app: registration failed"));
 }
 

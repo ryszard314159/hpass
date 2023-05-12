@@ -4,22 +4,19 @@ https://www.w3schools.com/cssref/css_selectors.php
 */
 
 html, body {
+  font-family: Arial, Helvetica, sans-serif;
   height: 100%;
-  margin: 0;
-  padding: 0;
+  width: 100%;
 }
 
+* {font-size: 32px !important;}
+
 body {
-  font-family: "Arial";
   background-color: rgb(224, 192, 144);
-  /* margin-left: 1%;
-  margin-right: auto;
-  margin-top: 9%;
-  margin-bottom: auto; */
-  /* height: 100%;
-  width: 100%; */
-  margin-top: 5%;
-  display: flex;
+  margin-top: 6%;
+  margin-left: 10%;
+  width: 80%;
+  display: block;
   align-items: center;
   justify-content: center;
 }
@@ -29,7 +26,7 @@ body {
   border-top-left-radius: 10px;
 }
 #hide {
-  font-size: 20px;
+  /* font-size: 20px; */
   border-left-width: 1px;
   border-right-width: 1px;
   border-right-color: grey;
@@ -40,17 +37,17 @@ body {
   border-top-right-radius: 10px;
 }
 #hint {
-  /* placeholder: "  prompt / hint / seed"; */
-  /* content: "Your placeholder text here"; */
   background-color: lightblue;
 }
-#hint::placeholder {
-  /* placeholder: "  prompt / hint / seed"; */
-  content: "Your placeholder text here";
-}
-
 #generate {
   background-color: green;
+  color: white;
+}
+#generate:hover {
+  background-color: darkgreen;
+  color: rgb(233, 249, 13);
+  transition-duration: 0.5s;
+  transition-property: color, background-color;
 }
 
 #demo {
@@ -58,7 +55,6 @@ body {
   border-right-width: 1px;
   border-right-color: grey;
   border-left-color: grey;
-}
 }
 
 #passwords {
@@ -196,22 +192,13 @@ button {
   min-height: 2rem;
 }
 
-.btn-group button {
-  background-color: #04aa6d;
-  border: 1px solid green;
-  color: white;
-  padding: 10px 24px;
-  cursor: pointer;
-  float: left;
-}
-
 /* border-radius: 10000px; */
 .btn {
   background-color: rgb(10, 172, 10);
   border: 0px solid blue;
   border-color: none;
   color: black;
-  font-size: 18px;
+  /* font-size: 18px; */
   width: 100%;
   height: auto;
   min-height: 2rem;
@@ -225,30 +212,6 @@ button {
 .rounded-bottom {
   border-bottom-left-radius: 9px;
   border-bottom-right-radius: 9px;
-}
-
-/* Clear floats (clearfix hack) */
-.btn-group:after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-/* Prevent double borders */
-.btn-group button:not(:last-child) {
-  border-right: none;
-}
-
-/* Add a background color on hover */
-/* .btn-group button:hover {
-  background-color: #3e8e41;
-} */
-
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 90%;
 }
 
 div {
@@ -273,7 +236,7 @@ div {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  /* font-size: 16px; */
   margin: 0px; /* Remove the margin between buttons */
   width: 99%;
   min-height: 2rem;
