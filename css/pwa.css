@@ -9,7 +9,7 @@ html, body {
   width: 100%;
 }
 
-* {font-size: 32px !important;}
+* {font-size: 1.1em !important;}
 
 body {
   background-color: rgb(224, 192, 144);
