@@ -32,7 +32,7 @@ if ("serviceWorker" in navigator) {
   console.log("apps: bbbbefore registration: swPath= ", swPath);
   navigator.serviceWorker
     .register(swPath)
-    .then(reg => console.log('app: sw registered!', reg))
+    .then((reg) => console.log("app: sw registered!", reg))
     .catch(console.error("app: registration failed"));
 }
 
@@ -126,7 +126,8 @@ function extractNakedDomain(url) {
 
 function cleanHint(prompt) {
   let domain = extractNakedDomain(prompt);
-  return domain.split(".")[0].toLowerCase();
+  // return domain.split(".")[0].toLowerCase();
+  return domain.split(".").at(-2).toLowerCase();
 }
 
 function htmlToUni(x) {
@@ -216,4 +217,3 @@ el.generate.addEventListener("click", function () {
     })
     .catch((err) => console.error("app: clipboard copy error= ", err));
 });
-
