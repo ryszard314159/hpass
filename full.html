@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="description" content="Hinted easy to use password generator" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#db4938" />
+    <title>HPASS Password Generator</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="css/full.css" />
+    <script defer type="module" src="core/lib.js"></script>
+    <script defer type="module" src="full.js"></script>
+  </head>
+  <body>
+    <br />
+    <div id="helpDiv">
+      <button id="help" class="rowbutton">&quest;</button>
+      <button id="hide" class="rowbutton">&#129296;</button>
+      <button id="info" class="rowbutton">&#105;</button>
+    </div>
+    <form id="hintForm">
+      <button id="hintButton" title="clean/raw toggle">clean</button>
+      <input id="hint" placeholder="  password prompt" />
+    </form>
+    <form id="pepperForm" class="hidden">
+      <button title="symbol for picky websites">&#127798;</button>
+      <input id="pepper" placeholder="  Use _.-!@*$?&% etc." />
+    </form>
+    <form id="saltForm" class="hidden">
+      <button title="your secret token">&#129323;</button>
+      <input id="salt" placeholder=" enter secret to make it unique" />
+    </form>
+    <form id="lengthForm" class="hidden">
+      <button title="generated password length">&#128207;</button>
+      <input id="length" placeholder="  15 recommended" />
+    </form>
+    <div id="saveDiv" class="hidden">
+      <button id="save" class="rowbutton">Save</button>
+      <button id="demo" class="rowbutton">Demo</button>
+      <button id="reset" class="rowbutton">Reset</button>
+    </div>
+    <button id="generate" class="btn rounded-bottom">Generate and Copy</button>
+    <p class="scroll hidden rounded-bottom" id="passwords"></p>
+    <!-- </div> -->
+  </body>
+</html>
