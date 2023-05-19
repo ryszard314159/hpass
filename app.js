@@ -67,6 +67,7 @@ el.pepper = document.getElementById("pepper");
 el.length = document.getElementById("length");
 el.range = document.getElementById("range");
 el.generate = document.getElementById("generate");
+el.burger = document.getElementById("burger");
 el.passwords = document.getElementById("passwords");
 el.hide = document.getElementById("hide");
 el.help = document.getElementById("help");
@@ -75,6 +76,9 @@ el.save = document.getElementById("save");
 el.demo = document.getElementById("demo");
 el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
+el.sidebar = document.getElementById("sidebar");
+el.menuList = document.getElementById("menuList");
+el.notify = document.getElementById("notify");
 
 // TODO: replace localStorage with Cache Storage
 let opts = JSON.parse(window.localStorage.getItem("options"));
@@ -126,8 +130,8 @@ function extractNakedDomain(url) {
 
 function cleanHint(prompt) {
   let domain = extractNakedDomain(prompt);
-  // return domain.split(".")[0].toLowerCase();
-  return domain.split(".").at(-2).toLowerCase();
+  const u = domain.split(".");
+  return u.length > 1 ? u.at(-2).toLowerCase() : domain;
 }
 
 function htmlToUni(x) {
@@ -136,33 +140,41 @@ function htmlToUni(x) {
   return divElement.textContent;
 }
 
-el.hintButton.addEventListener("click", (event) => {
-  event.preventDefault();
-  el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
+el.burger.addEventListener("click", (event) => {
+  // event.preventDefault();
+  // el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
+  console.log("app: burger clicked...");
+  // el.sidebar.classList.toggle("hidden");
+  el.sidebar.style.display = "block";
 });
 
-el.hide.addEventListener("click", function () {
-  const htmlEncoding = ["&#128065;", "&#129296;"]; // SHOW HIDE
-  const [show, hide] = htmlEncoding.map((x) => htmlToUni(x));
-  // const hide = "hide"; // 👁
-  // const show = "show"; // 🤐
-  el.hide.innerHTML = el.hide.innerHTML === show ? hide : show;
-  // el.hint.type = el.hint.type === "password" ? "text" : "password";
-  // let els = ["saltRow", "pepperRow", "lengthRow", "burninRow", "passwordsRow"];
-  let ids = [
-    "help",
-    "saltForm",
-    "pepperForm",
-    "lengthForm",
-    "saveDiv",
-    "passwords",
-  ];
-  for (let id of ids) {
-    console.log("app: id= ", id);
-    document.getElementById(id).classList.toggle("hidden");
-  }
-  document.getElementById("generate").classList.toggle("rounded-bottom");
-});
+// el.hintButton.addEventListener("click", (event) => {
+//   event.preventDefault();
+//   el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
+// });
+
+// el.hide.addEventListener("click", function () {
+//   const htmlEncoding = ["&#128065;", "&#129296;"]; // SHOW HIDE
+//   const [show, hide] = htmlEncoding.map((x) => htmlToUni(x));
+//   // const hide = "hide"; // 👁
+//   // const show = "show"; // 🤐
+//   el.hide.innerHTML = el.hide.innerHTML === show ? hide : show;
+//   // el.hint.type = el.hint.type === "password" ? "text" : "password";
+//   // let els = ["saltRow", "pepperRow", "lengthRow", "burninRow", "passwordsRow"];
+//   let ids = [
+//     "help",
+//     "saltForm",
+//     "pepperForm",
+//     "lengthForm",
+//     "saveDiv",
+//     "passwords",
+//   ];
+//   for (let id of ids) {
+//     console.log("app: id= ", id);
+//     document.getElementById(id).classList.toggle("hidden");
+//   }
+//   document.getElementById("generate").classList.toggle("rounded-bottom");
+// });
 
 el.save.addEventListener("click", function () {
   window.localStorage.setItem("options", JSON.stringify(opts));
@@ -180,13 +192,26 @@ el.reset.addEventListener("click", function () {
   el.length.value = null;
 });
 
-el.hint.addEventListener("mouseout", () => {
-  if (el.hintButton.innerHTML === "raw") return;
-  el.hint.value = cleanHint(el.hint.value);
+el.sidebar.addEventListener("focusout", () => {
+  console.log("app: sidebar focusout event...");
+  el.sidebar.style.display = "none";
 });
+
+el.hint.addEventListener("click", () => {
+  console.log("app: sidebar focusout event...");
+  el.sidebar.style.display = "none";
+});
+
+// el.hint.addEventListener("mouseout", () => {
+//   if (el.hintButton.innerHTML === "raw") return;
+//   el.hint.value = cleanHint(el.hint.value);
+// });
 
 el.generate.addEventListener("click", function () {
   console.log("generate:0: opts.burnin=", opts.burnin);
+  // grow();
+  // setTimeout(shrink, 500);
+  toggleSize();
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
   opts.length = el.length.value;
@@ -208,12 +233,53 @@ el.generate.addEventListener("click", function () {
   args.debug = true;
   args.verbose = true;
   let passwd = getPass(args);
-  document.getElementById("passwords").prepend(passwd + "\n");
+  // document.getElementById("passwords").prepend(passwd + "\n");
   navigator.clipboard
     .writeText(passwd)
     .then(() => {
-      // alert(`app: coppied password= ${passwd}`);
+      // alert(`app: before openNotify: coppied password= ${passwd}`);
+      // openNotify();
+      // alert(`app: after openNotify: coppied password= ${passwd}`);
       console.log("app: clipboard copy success! passwd= ", passwd);
     })
     .catch((err) => console.error("app: clipboard copy error= ", err));
 });
+
+function toggleSize() {
+  el.generate.classList.add("active");
+  setTimeout(function () {
+    el.generate.classList.remove("active");
+  }, 100);
+}
+
+function grow() {
+  // add grow to class list
+  el.generate.classList.add("grow");
+}
+
+function shrink() {
+  // add grow to class list
+  el.generate.classList.remove("grow");
+  // el.generate.classList.add("shrink");
+  // setTimeout(shrink, 500);
+}
+
+// Function to open the modal and start the timer
+function openNotify() {
+  // alert(`app: inside openNotify!!!`);
+  el.notify.style.display = "block";
+  el.notify.style.backgroundColor = "red";
+  console.log(
+    "app: openNotify: el.notify.style.display= ",
+    el.notify.style.display
+  );
+  console.log(
+    "app: openNotify: el.notify.style.zIndex= ",
+    el.notify.style.zIndex
+  );
+  setTimeout(closeNotify, 500);
+}
+function closeNotify() {
+  el.notify.style.display = "none";
+}
+// window.addEventListener('load', openNotify);

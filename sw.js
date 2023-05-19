@@ -1,4 +1,4 @@
-const version = "0.03";
+const version = "0.07";
 
 const appAssets = [
   "index.html",
@@ -89,27 +89,37 @@ self.addEventListener("activate", (e) => {
   e.waitUntil(cleaned);
 });
 
-// Static cache startegy - Cache with Network Fallback
+// Static cache strategy - Network first with Cache Fallback
 const staticCache = (req) => {
-  return caches.match(req).then((cachedRes) => {
-    // Return cached response if found
-    if (cachedRes) return cachedRes;
-
-    // Fall back to network
-    return fetch(req).then((networkRes) => {
-      // Update cache with new response
+  e.respondWith(
+    fetch(req).then((networkRes) => {
       caches
         .open(`static-${version}`)
         .then((cache) => cache.put(req, networkRes));
-
       // Return Clone of Network Response
       return networkRes.clone();
-    });
-  });
+    })
+  );
 };
 
+// Static cache strategy - Cache with Network Fallback
+// const staticCache = (req) => {
+//   return caches.match(req).then((cachedRes) => {
+//     // Return cached response if found
+//     if (cachedRes) return cachedRes;
+//     // Fall back to network
+//     return fetch(req).then((networkRes) => {
+//       // Update cache with new response
+//       caches
+//         .open(`static-${version}`)
+//         .then((cache) => cache.put(req, networkRes));
+//       // Return Clone of Network Response
+//       return networkRes.clone();
+//     });
+//   });
+// };
+
 self.addEventListener("fetch", (e) => {
-  // App shell
   if (e.request.url.match(location.origin)) {
     e.respondWith(staticCache(e.request));
   }
