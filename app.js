@@ -67,7 +67,8 @@ el.pepper = document.getElementById("pepper");
 el.length = document.getElementById("length");
 el.range = document.getElementById("range");
 el.generate = document.getElementById("generate");
-el.burger = document.getElementById("burger");
+el.burger1 = document.getElementById("burger1");
+el.burger2 = document.getElementById("burger2");
 el.passwords = document.getElementById("passwords");
 el.hide = document.getElementById("hide");
 el.help = document.getElementById("help");
@@ -140,7 +141,15 @@ function htmlToUni(x) {
   return divElement.textContent;
 }
 
-el.burger.addEventListener("click", (event) => {
+el.burger1.addEventListener("click", (event) => {
+  // event.preventDefault();
+  // el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
+  console.log("app: burger clicked...");
+  // el.sidebar.classList.toggle("hidden");
+  el.sidebar.style.display = "block";
+});
+
+el.burger2.addEventListener("click", (event) => {
   // event.preventDefault();
   // el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
   console.log("app: burger clicked...");

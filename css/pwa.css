@@ -25,7 +25,8 @@ body {
   text-align: center;
 }
 
-#burger {
+#burger1,
+#burger2 {
   background-color: transparent;
   border: 0px solid #ccc;
   float: right;
@@ -127,6 +128,8 @@ form:focus-within {
   border-top-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
+  min-width: 1rem;
+  min-height: 4rem;
 }
 
 input {
