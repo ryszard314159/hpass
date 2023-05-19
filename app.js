@@ -144,7 +144,7 @@ function htmlToUni(x) {
 el.burger1.addEventListener("click", (event) => {
   // event.preventDefault();
   // el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
-  console.log("app: burger clicked...");
+  console.log("app: burger1 clicked...");
   // el.sidebar.classList.toggle("hidden");
   el.sidebar.style.display = "block";
 });
@@ -152,7 +152,7 @@ el.burger1.addEventListener("click", (event) => {
 el.burger2.addEventListener("click", (event) => {
   // event.preventDefault();
   // el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
-  console.log("app: burger clicked...");
+  console.log("app: burger2 clicked...");
   // el.sidebar.classList.toggle("hidden");
   el.sidebar.style.display = "block";
 });
@@ -211,10 +211,10 @@ el.hint.addEventListener("click", () => {
   el.sidebar.style.display = "none";
 });
 
-// el.hint.addEventListener("mouseout", () => {
-//   if (el.hintButton.innerHTML === "raw") return;
-//   el.hint.value = cleanHint(el.hint.value);
-// });
+el.hint.addEventListener("mouseout", () => {
+  // if (el.hintButton.innerHTML === "raw") return;
+  el.hint.value = cleanHint(el.hint.value);
+});
 
 el.generate.addEventListener("click", function () {
   console.log("generate:0: opts.burnin=", opts.burnin);
