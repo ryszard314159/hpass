@@ -1,4 +1,9 @@
-const version = "0.07";
+"use strict";
+// import { getPass } from "./core/lib.js";
+const version = "0.10";
+
+// let salt = getPass({ hint: "", length: 32 });
+// console.log("sw: just after import: salt= ", salt);
 
 const appAssets = [
   "index.html",
@@ -64,8 +69,15 @@ self.addEventListener("install", (event) => {
 */
 
 self.addEventListener("install", (installEvent) => {
-  console.log("sw: installEvent= ", installEvent);
-  console.log(`sw: open: static-version= ${version}`);
+  // let salt = getPass({ hint: "", length: 32 });
+  // console.log("sw: install: salt= ", salt);
+  // broadcast sw install event
+  const msg = { install: true };
+  const installChannel = new BroadcastChannel("installChannel");
+  installChannel.postMessage(msg);
+  console.log("sw: install: installChannel msg= ", msg);
+  console.log("sw: install: installEvent= ", installEvent);
+  console.log(`sw: install: open: static-version= ${version}`);
   // const url = "data.json";
   // Open the Cache Storage and add the local JSON file to the cache
   // caches.open("settings").then((cache) => {

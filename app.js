@@ -1,6 +1,9 @@
 "use strict";
-
 import { getPass } from "./core/lib.js";
+// console.log("app: before uuidv4()");
+// import { v4 as uuidv4 } from "uuid";
+// const uid = uuidv4();
+// console.log("app: uid= ", uid);
 
 // function detectPageLoad() {
 //   if (
@@ -27,12 +30,50 @@ import { getPass } from "./core/lib.js";
 //   console.log("app: window.onload event");
 // };
 
+const default_opts = {
+  pepper: "_",
+  salt: null, // "top secret!",
+  length: 15,
+  clean: true,
+  maxlength: 64,
+  minlength: 5,
+  // burnin: 9,
+  // maxburnin: 9999,
+};
+
 if ("serviceWorker" in navigator) {
   const swPath = "sw.js";
-  console.log("apps: bbbbefore registration: swPath= ", swPath);
+  console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
     .register(swPath)
-    .then((reg) => console.log("app: sw registered!", reg))
+    .then((reg) => {
+      console.log("app: sw registered!", reg);
+      // const installChannel = new BroadcastChannel("installChannel");
+      // alert("app: sw registered!");
+      const salt = getPass({ hint: "", length: 32 });
+      console.log("app: sw registered: : salt= ", salt);
+      default_opts.salt = salt;
+      console.log("app: sw registered: default_opts= ", default_opts);
+      window.localStorage.setItem("installSalt", salt);
+      // installChannel.onmessage = (event) => {
+      //   alert("app: installChannel.onmessage!");
+      //   console.log("app: installChannel.omessage: event= ", event);
+      //   const value = event.data.install;
+      //   console.log("app: installChannel.omessage: value= ", value);
+      //   if (event.data.install) {
+      //     const installSalt = getPass({ hint: "", length: 32 });
+      //     console.log(
+      //       "app: installChannel.onmessage: installSalt= ",
+      //       installSalt
+      //     );
+      //     default_opts.salt = installSalt;
+      //     console.log(
+      //       "apps: installChannel.onmessage: default_opts= ",
+      //       default_opts
+      //     );
+      //   }
+      // };
+    })
     .catch(console.error("app: registration failed"));
 }
 
@@ -50,65 +91,74 @@ if ("serviceWorker" in navigator) {
 // }
 // printJSON();
 
-const default_opts = {
-  pepper: "_",
-  salt: "top secret!",
-  length: 15,
-  maxlength: 64,
-  minlength: 5,
-  // burnin: 9,
-  // maxburnin: 9999,
-};
+// const installChannel = new BroadcastChannel("installChannel");
+// installChannel.onmessage = (event) => {
+//   console.log("app: installChannel: event= ", event);
+//   // value = event.data.key;
+// };
+
 // Selecting elements
 const el = {};
 el.hint = document.getElementById("hint");
 el.salt = document.getElementById("salt");
 el.pepper = document.getElementById("pepper");
 el.length = document.getElementById("length");
+el.clean = document.getElementById("clean");
 el.range = document.getElementById("range");
 el.generate = document.getElementById("generate");
-el.burger1 = document.getElementById("burger1");
-el.burger2 = document.getElementById("burger2");
+el.leftBurger = document.getElementById("leftBurger");
+el.rightBurger = document.getElementById("rightBurger");
 el.passwords = document.getElementById("passwords");
 el.hide = document.getElementById("hide");
-el.help = document.getElementById("help");
-el.info = document.getElementById("info");
 el.save = document.getElementById("save");
 el.demo = document.getElementById("demo");
 el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
-el.sidebar = document.getElementById("sidebar");
+el.menu = document.getElementById("menu");
+el.more = document.getElementById("more");
 el.menuList = document.getElementById("menuList");
 el.notify = document.getElementById("notify");
+console.log("app:1: el= ", el);
+console.log("app:1: el.length= ", el.length);
+console.log("app:1: el.length.value= ", el.length.value);
+console.log("app:1: el.clean= ", el.clean);
+console.log("app:1: el.clean.value= ", el.clean.value);
 
 // TODO: replace localStorage with Cache Storage
 let opts = JSON.parse(window.localStorage.getItem("options"));
-console.log("from localStorage: opts= ", opts);
+console.log("apps: from localStorage: opts= ", opts);
+// alert("app:0: opts= ", JSON.stringify(opts));
+// alert("app: default_opts= ", default_opts);
+console.log("apps: default_opts= ", default_opts);
 opts = opts === null ? default_opts : opts;
-console.log("after defaults applied: opts=", opts);
+console.log("apps: after defaults applied: opts=", opts);
+opts.salt = window.localStorage.getItem("installSalt");
+console.log("apps: installSalt applied: opts=", opts);
+// alert("app:1: opts= ", opts);
 el.salt.value = opts.salt;
 el.pepper.value = opts.pepper;
 let n = Math.min(Math.max(opts.minlength, opts.length), opts.maxlength);
 el.length.value = n;
 el.length.min = opts.minlength;
 el.length.max = opts.maxlength;
+el.clean.value = opts.clean;
 if (n < opts.minlength || n > opts.maxlength) {
   alert(
     `Length (=${n}) must be between ${opts.minlength} and ${opts.maxlength}!`
   );
 }
+console.log("app:2: el.length.value= ", el.length.value);
+console.log("app:2: el.clean.value= ", el.clean.value);
 
-["help", "info"].forEach((x) => {
-  let e = el[x];
-  e.addEventListener("click", function () {
-    let h = screen.height;
-    let w = screen.width;
-    window.open(
-      `./${x}.html`,
-      "popUpWindow",
-      `height=${h / 2}, width=${w / 2}, left=${w / 4}, top=${h / 4}`
-    );
-  });
+el.more.addEventListener("click", function () {
+  el.more.preventDefault();
+  let h = screen.height;
+  let w = screen.width;
+  window.open(
+    `./more.html`,
+    "popUpWindow",
+    `height=${h / 2}, width=${w / 2}, left=${w / 4}, top=${h / 4}`
+  );
 });
 
 // 1. convert promp string to lower case
@@ -141,20 +191,19 @@ function htmlToUni(x) {
   return divElement.textContent;
 }
 
-el.burger1.addEventListener("click", (event) => {
-  // event.preventDefault();
-  // el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
-  console.log("app: burger1 clicked...");
-  // el.sidebar.classList.toggle("hidden");
-  el.sidebar.style.display = "block";
+// const toggleButton = document.getElementById("toggle-menu");
+// const menu = document.getElementById("menu");
+// toggleButton.addEventListener("click", () => {
+//   menu.classList.toggle("slide-in");
+
+el.leftBurger.addEventListener("click", () => {
+  console.log("app: leftBurger clicked...");
+  el.menu.classList.toggle("slide-in");
 });
 
-el.burger2.addEventListener("click", (event) => {
-  // event.preventDefault();
-  // el.hintButton.innerHTML = el.hintButton.innerHTML === "raw" ? "clean" : "raw";
-  console.log("app: burger2 clicked...");
-  // el.sidebar.classList.toggle("hidden");
-  el.sidebar.style.display = "block";
+el.rightBurger.addEventListener("click", () => {
+  console.log("app: rightBurger clicked...");
+  el.menu.classList.toggle("slide-in");
 });
 
 // el.hintButton.addEventListener("click", (event) => {
@@ -186,25 +235,29 @@ el.burger2.addEventListener("click", (event) => {
 // });
 
 el.save.addEventListener("click", function () {
+  console.log("apps: save: opts= ", opts);
   window.localStorage.setItem("options", JSON.stringify(opts));
 });
 
 el.demo.addEventListener("click", function () {
+  console.log("app: demo: el= ", el);
   el.pepper.value = default_opts.pepper;
   el.salt.value = default_opts.salt;
   el.length.value = default_opts.length;
+  el.clean.value = default_opts.clean;
 });
 
 el.reset.addEventListener("click", function () {
   el.pepper.value = null;
   el.salt.value = null;
   el.length.value = null;
+  el.clean.value = null;
 });
 
-el.sidebar.addEventListener("focusout", () => {
-  console.log("app: sidebar focusout event...");
-  el.sidebar.style.display = "none";
-});
+// el.sidebar.addEventListener("focusout", () => {
+//   console.log("app: sidebar focusout event...");
+//   el.sidebar.style.display = "none";
+// });
 
 el.hint.addEventListener("click", () => {
   console.log("app: sidebar focusout event...");
@@ -213,7 +266,28 @@ el.hint.addEventListener("click", () => {
 
 el.hint.addEventListener("mouseout", () => {
   // if (el.hintButton.innerHTML === "raw") return;
-  el.hint.value = cleanHint(el.hint.value);
+  // el.hint.value = el.clean.value ? cleanHint(el.hint.value) : el.hint.value;
+  console.log(
+    "app:0: el.clean.value= ",
+    el.clean.value,
+    " el.hint.value= ",
+    el.hint.value
+  );
+  if (el.clean.value) {
+    console.log(
+      "app:2: el.clean.value= ",
+      el.clean.value,
+      " el.hint.value= ",
+      el.hint.value
+    );
+    el.hint.value = cleanHint(el.hint.value);
+  }
+  console.log(
+    "app:3: el.clean.value= ",
+    el.clean.value,
+    " el.hint.value= ",
+    el.hint.value
+  );
 });
 
 el.generate.addEventListener("click", function () {
@@ -224,6 +298,7 @@ el.generate.addEventListener("click", function () {
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
   opts.length = el.length.value;
+  opts.clean = el.clean.value;
   // opts.burnin = el.burnin.value;
   // TODO: replace localStorage with Cache Storage
   window.localStorage.setItem("options", JSON.stringify(opts));
