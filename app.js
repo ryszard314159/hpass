@@ -34,7 +34,7 @@ const default_opts = {
   pepper: "_",
   salt: null, // "top secret!",
   length: 15,
-  clean: true,
+  clean: 2,
   maxlength: 64,
   minlength: 5,
   // burnin: 9,
@@ -50,7 +50,7 @@ if ("serviceWorker" in navigator) {
       console.log("app: sw registered!", reg);
       // const installChannel = new BroadcastChannel("installChannel");
       // alert("app: sw registered!");
-      const salt = getPass({ hint: "", length: 32 });
+      const salt = getPass({ hint: "", length: 8 });
       console.log("app: sw registered: : salt= ", salt);
       default_opts.salt = salt;
       console.log("app: sw registered: default_opts= ", default_opts);
@@ -179,10 +179,22 @@ function extractNakedDomain(url) {
   return parts.join(".");
 }
 
-function cleanHint(prompt) {
+// cleaning level:
+// 0 - leave prompt as is e.g. https://www.amazon.com
+// 1 - extract domain e.g. amazon.com
+// 2 - extract domain and drop top-level domain (TLD)
+//     e.g. amazon
+function cleanHint(prompt, level) {
+  // console.log("cleanHint: level= ", level, " prompt= ", prompt);
+  // console.log("cleanHint: typeof(level)= ", typeof level);
+  if (level == 0) return prompt;
   let domain = extractNakedDomain(prompt);
+  // console.log("cleanHint: level= ", level, " domain= ", domain);
+  if (level == 1) return domain.toLowerCase();
   const u = domain.split(".");
-  return u.length > 1 ? u.at(-2).toLowerCase() : domain;
+  const v = u.length > 1 ? u.at(-2) : domain;
+  // console.log("cleanHint: level= ", level, " v= ", v);
+  return v.toLowerCase();
 }
 
 function htmlToUni(x) {
@@ -273,14 +285,14 @@ el.hint.addEventListener("mouseout", () => {
     " el.hint.value= ",
     el.hint.value
   );
-  if (el.clean.value) {
+  if (el.clean.value > 0) {
     console.log(
       "app:2: el.clean.value= ",
       el.clean.value,
       " el.hint.value= ",
       el.hint.value
     );
-    el.hint.value = cleanHint(el.hint.value);
+    el.hint.value = cleanHint(el.hint.value, el.clean.value);
   }
   console.log(
     "app:3: el.clean.value= ",
