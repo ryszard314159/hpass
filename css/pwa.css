@@ -27,7 +27,7 @@ body {
 } */
 
 body {
-  margin-top: 6%;
+  margin-top: 20%;
   /* margin-left: 10%; */
   /* margin-right: 10%; */
   width: 80%;
@@ -68,6 +68,7 @@ body {
 
 #generate.active {
   /* #generate { */
+  font-size: 64px;
   border: none;
   transform: scale(1.5);
   transition: all 1s ease;
@@ -113,13 +114,14 @@ body {
 
 form {
   display: flex;
-  flex-direction: row;
+  flex-direction: row column;
   border: 0px solid blue;
   border: none;
   padding: 0px;
   margin: 0rem;
-  /* border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
+  /* border-radius: 50%; */
+  /* border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem; */
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
@@ -210,19 +212,19 @@ input:focus {
 }
 
 .circle-button {
-  width: 100px;
-  height: 100px;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   background-color: lightgray;
-  border: 0px solid black;
+  border: 2px solid black;
   display: flex;
   cursor: pointer;
-  color: red;
-  font-size: 64px;
+  /* color: red; */
+  /* font-size: 64px; */
   vertical-align: middle;
   text-align: center;
   transition: all 0s ease;
-  padding: 0.4rem 2.4rem;
+  /* padding: 0.4rem 2.4rem; */
 }
 
 /* #generate {
@@ -251,9 +253,18 @@ input:focus {
   transition: all 8s ease;
 } */
 
+.page-break {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 #menu {
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-around; */
   position: fixed;
-  bottom: -50%; /* Start the menu below the viewport */
+  bottom: -60%; /* Start the menu below the viewport */
   left: 0;
   width: 100%;
   height: 50%;
@@ -261,23 +272,31 @@ input:focus {
   transition: transform 0.3s ease-out; /* Add transition effect */
 }
 .slide-in {
-  transform: translateY(-100%);
+  transform: translateY(-130%);
   /* Slide the menu up to the bottom of the viewport */
 }
 
 #saveDiv {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   /* width: 100%; */
 }
+
+/* .container {
+  display: flex;
+}
+.container.space-around {
+  justify-content: space-around;
+} */
+
 #saveDiv,
 #save,
 #demo,
 #reset {
   flex: 1;
-  margin: 0 5px;
+  margin: 0 0px;
   border: none;
-  border-right: 1px solid black;
+  /* border-right: 1px solid black; */
   background-color: none; /* yellow; */
   font-size: large;
 }
@@ -299,7 +318,7 @@ input:focus {
 #saltBtn,
 #lengthBtn,
 #cleanBtn {
-  border: 0.01px solid red;
+  border: 0px solid red;
   border-style: solid solid solid none;
 }
 
@@ -310,5 +329,31 @@ input:focus {
 }
 
 a {
+  font-size: xx-large;
   text-decoration: none;
+}
+
+#more {
+  height: 18%;
+  /* background-image: radial-gradient(#00cc44, #009933); */
+  /* background-image: radial-gradient(white, grey); */
+  /* background-image: linear-gradient(direction, color-stop1, color-stop2, ...); */
+  background-image: linear-gradient(to right, lightblue, white, lightblue);
+}
+#pepperForm,
+#saltForm,
+#lengthForm,
+#cleanForm {
+  height: 16%;
+  background-image: linear-gradient(lightgrey, white, lightgrey);
+}
+#saveDiv {
+  height: 18%;
+  background-image: linear-gradient(lightgrey, white, lightgrey);
+}
+
+#save,
+#demo,
+#reset {
+  background-image: linear-gradient(to right, lightblue, white, lightblue);
 }

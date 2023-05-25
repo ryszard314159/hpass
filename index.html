@@ -13,7 +13,7 @@
     <script defer type="module" src="sw.js"></script>
   </head>
   <body>
-    <div class="">
+    <div id="hintContainer" class="">
       <form id="hintForm" class="">
         <button id="leftBurger" class="burger" type="button">&#9776;</button>
         <!-- <svg id="burger" focusable="false" viewBox="0 0 12 12">
@@ -24,45 +24,46 @@
       </form>
     </div>
     <div class="center">
-      <button id="generate" class="circle-button">&#9656;</button>
+      <!-- <button id="generate" class="circle-button">&#9656;</button> -->
+      <svg
+        id="generate"
+        xmlns="http://www.w3.org/2000/svg"
+        width="100"
+        height="100"
+        viewBox="0 0 100 100"
+      >
+        <circle cx="50" cy="50" r="50" fill="lightgrey" />
+        <polygon points="30,15 90,50 30,85" fill="red" />
+      </svg>
     </div>
-    <div id="menu" class="menu" id="menuList">
-      <!-- <ul class="menu" id="menuList">
-        <li id="help">Help</li>
-        <li id="info">Info</li>
-        <li id="advanced">Advanced</li>
-      </ul> -->
-      <!-- <div id="more" class="">More...</div> -->
-      <div id="more">
-        <a href="info.html" style="font-size: xx-large">&#8594;</a>
-        <!-- <a href="info.html" style="font-size: x-large">...</a> -->
+    <div id="menu" class="menu">
+      <div id="more" class="center">
+        <a href="info.html">&#8594;</a>
       </div>
-      <form id="pepperForm">
-        <button id="pepperBtn" title="special character(s)">&#127798;</button>
-        <input id="pepper" placeholder="one or more of _.-!@*$?&% etc." />
-      </form>
-      <form id="saltForm">
-        <button id="saltBtn" title="your secret token">&#129323;</button>
-        <input id="salt" placeholder="secret to make password unique" />
-      </form>
-      <form id="lengthForm">
-        <button id="lengthBtn" title="password length">&#128207;</button>
-        <input id="length" placeholder="recommended length is 15" />
-      </form>
-      <form id="cleanForm">
-        <button id="cleanBtn" title="clean or not to clean">&#x1f9f9;</button>
-        <!-- <input id="clean" placeholder="scrub level: 0|1|2" /> -->
-        <input
-          id="clean"
-          placeholder="0|1|2; 0: https://fb.com, 1: fb.com, 2: fb"
-        />
-      </form>
+      <div>
+        <form id="pepperForm" class="center">
+          <button id="pepperBtn" class="circle-button center">&#127798;</button>
+          <input id="pepper" placeholder="one or more of _.-!@*$?&% etc." />
+        </form>
+        <form id="saltForm" class="center">
+          <button id="saltBtn" class="circle-button center">&#129323;</button>
+          <input id="salt" placeholder="secret to make password unique" />
+        </form>
+        <form id="lengthForm" class="center">
+          <button id="lengthBtn" class="circle-button center">&#128207;</button>
+          <input id="length" placeholder="recommended length is 15" />
+        </form>
+        <form id="cleanForm" class="center">
+          <button id="cleanBtn" class="circle-button center">&#x1f9f9;</button>
+          <!-- <input id="clean" placeholder="scrub level: 0|1|2" /> -->
+          <input id="clean" placeholder="clean level: 0|1|2" />
+        </form>
+      </div>
       <div id="saveDiv">
         <button id="save" class="">Save</button>
         <button id="demo" class="">Demo</button>
         <button id="reset" class="">Reset</button>
       </div>
     </div>
-    <!-- <div id="notify" class="hidden">Pasword generated!</div> -->
   </body>
 </html>
