@@ -215,12 +215,12 @@ input:focus {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background-color: lightgray;
+  background-color: none;
   border: 2px solid black;
   display: flex;
   cursor: pointer;
   /* color: red; */
-  /* font-size: 64px; */
+  font-size: 2rem;
   vertical-align: middle;
   text-align: center;
   transition: all 0s ease;
@@ -329,7 +329,7 @@ input:focus {
 }
 
 a {
-  font-size: xx-large;
+  font-size: 4rem;
   text-decoration: none;
 }
 

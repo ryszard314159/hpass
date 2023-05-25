@@ -106,6 +106,7 @@ el.length = document.getElementById("length");
 el.clean = document.getElementById("clean");
 el.range = document.getElementById("range");
 el.generate = document.getElementById("generate");
+el.generateDiv = document.getElementById("generateDiv");
 el.leftBurger = document.getElementById("leftBurger");
 el.rightBurger = document.getElementById("rightBurger");
 el.passwords = document.getElementById("passwords");
@@ -207,16 +208,35 @@ function htmlToUni(x) {
 // const menu = document.getElementById("menu");
 // toggleButton.addEventListener("click", () => {
 //   menu.classList.toggle("slide-in");
+// &#x274C; CROSS MARK
 
-el.leftBurger.addEventListener("click", () => {
-  console.log("app: leftBurger clicked...");
-  el.menu.classList.toggle("slide-in");
+const burgers = ["leftBurger", "rightBurger"];
+burgers.forEach((x) => {
+  el[x].addEventListener("click", () => {
+    // console.log(`app: ${x} clicked...`);
+    el.menu.classList.toggle("slide-in");
+    burgers.forEach((y) => {
+      // console.log(`app: ${y} innerHTML= `, el[y].innerHTML);
+      // console.log(`app: ${y} innerHTML= ${el[y].innerHTML}`);
+      // console.log(
+      //   `app: ${y} innerHTML.toString()= ${el[y].innerHTML.toString()}`
+      // );
+      // const uCross = "&#x274C;"; // unicode for CROSS
+      // const uBurger = "&#9776;"; // unicode for HAMBURGER
+      const uBurger = "☰";
+      const uCross = "❌";
+      // console.log(`app: uCross= ${uCross}, uBurger= ${uBurger}`);
+      el[y].innerHTML = el[y].innerHTML == uBurger ? uCross : uBurger;
+    });
+  });
 });
 
-el.rightBurger.addEventListener("click", () => {
-  console.log("app: rightBurger clicked...");
-  el.menu.classList.toggle("slide-in");
-});
+// const slideOut = ["generateDiv"];
+// slideOut.forEach((x) => {
+//   el[x].addEventListener("click", () => {
+//     el.menu.classList.remove("slide-in");
+//   });
+// });
 
 // el.hintButton.addEventListener("click", (event) => {
 //   event.preventDefault();
