@@ -103,7 +103,7 @@ self.addEventListener("activate", (e) => {
 
 // Static cache strategy - Network first with Cache Fallback
 const staticCache = (req) => {
-  e.respondWith(
+  req.respondWith(
     fetch(req).then((networkRes) => {
       caches
         .open(`static-${version}`)

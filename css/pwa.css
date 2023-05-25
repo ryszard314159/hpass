@@ -331,6 +331,7 @@ input:focus {
 a {
   font-size: 4rem;
   text-decoration: none;
+  padding-bottom: 1.3rem;
 }
 
 #more {
@@ -355,5 +356,6 @@ a {
 #save,
 #demo,
 #reset {
+  font-size: 1.5rem;
   background-image: linear-gradient(to right, lightblue, white, lightblue);
 }

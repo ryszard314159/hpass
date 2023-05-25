@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+id="generate"
+xmlns="http://www.w3.org/2000/svg"
+width="100"
+height="100"
+>
+<defs>
+    <radialGradient
+    id="circleGradient"
+    cx="50%"
+    cy="50%"
+    r="50%"
+    fx="50%"
+    fy="50%"
+    >
+    <stop offset="50%" style="stop-color: white" />
+    <stop offset="100%" style="stop-color: lightgrey" />
+    </radialGradient>
+</defs>
+<circle cx="50" cy="50" r="50" fill="url(#circleGradient)" />
+<polygon points="30,15 90,50 30,85" fill="red" />
+</svg>
