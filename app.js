@@ -327,6 +327,7 @@ el.generate.addEventListener("click", function () {
   // grow();
   // setTimeout(shrink, 500);
   toggleSize();
+  navigator.vibrate(200);
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
   opts.length = el.length.value;
