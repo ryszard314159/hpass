@@ -3,12 +3,17 @@ package net.hpass.hpass
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -20,9 +25,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import net.hpass.hpass.ui.theme.HpassTheme
 
 class MainActivity : ComponentActivity() {
@@ -49,15 +59,24 @@ class MainActivity : ComponentActivity() {
         {
             Text(
                 text = "Length in 1-7 range",
+                fontFamily = FontFamily.SansSerif,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(16.dp),
 //                textAlign = TextAlign.Center
             )
             var text by remember { mutableStateOf(TextFieldValue("")) }
             TextField(
                 value = text,
+                modifier = Modifier.padding(16.dp)
+                    .background(androidx.compose.ui.graphics.Color(0xffadd8e6)),
                 onValueChange = {
                     text = it
                 },
-                label = { Text(text = "hint to generate password") },
+                label = { Text(
+//                    style = TextStyle(fontStyle = Color(0xff005500)),
+//                    color = Color.LightGray,
+                    color = Color(0xff999999),
+                    text = "hint to generate password") },
                 placeholder = { Text(text = "Your password hint") },
             )
             Column() {
@@ -71,8 +90,11 @@ class MainActivity : ComponentActivity() {
                 hpassRowNumber("Length:", "6")
 
                 Button(
+                    modifier = Modifier.padding(16.dp),
+                    colors = ButtonDefaults.buttonColors(Color(0xff90ee90)),
+//                    content = RowScope(),
                     onClick = { /*TODO*/ }) {
-                    
+                    Text( text = "Generate and copy to clipboard",color=Color(0xff333333))
                 }
 
             }
@@ -90,6 +112,7 @@ private fun hpassRow(s: String, initial: String) {
         Text(text = s + ":") // this is the label
         TextField(
             value = text,
+            modifier = Modifier.padding(16.dp),
             onValueChange = {
                 text = it
             },
@@ -105,6 +128,7 @@ private fun hpassRowNumber(s: String, initial: String) {
         Text(text = s + ":") // this is the label
         TextField(
             value = text,
+            modifier = Modifier.padding(16.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             onValueChange = { it ->
                 text = it
