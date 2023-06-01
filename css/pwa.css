@@ -32,7 +32,7 @@ div {
   border: 0px solid #ccc;
   float: right;
   font-size: 2rem;
-  color: grey;
+  color: black;
 }
 
 .center {
@@ -81,7 +81,7 @@ form {
 }
 
 #hintContainer {
-  margin-top: -3rem;
+  margin-top: -4rem;
 }
 
 #hintForm {
@@ -98,136 +98,41 @@ input {
   width: 100%;
   border: none;
   text-align: center;
-  font-size: x-large;
-}
-
-/* remove the input focus blue box, it will be in the wrong place. */
-input:focus {
-  outline: none;
-}
-
-#sidebar {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 200px;
-  height: 100vh;
-  background-color: lightgrey;
-  z-index: 98;
-}
-
-#sidebar ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-#sidebar ul li {
-  padding: 10px;
-  margin: 0;
-}
-
-#sidebar ul li a {
-  color: #fff;
-  text-decoration: none;
-}
-
-#sidebar ul li a:hover {
-  /* color: #ccc; */
-  color: red;
-}
-
-.round-button {
-  display: block;
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
-  border: 2px solid #f5f5f5;
-  border-radius: 50%;
-  color: #f5f5f5;
-  text-align: center;
-  text-decoration: none;
-  background: #555777;
-  box-shadow: 0 0 3px gray;
-  font-size: 20px;
-  font-weight: bold;
-}
-.round-button:hover {
-  background: #777555;
-}
-
-.circle-button {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background-color: none;
-  border: 2px solid black;
-  display: flex;
-  cursor: pointer;
-  /* color: red; */
-  font-size: 2rem;
-  vertical-align: middle;
-  text-align: center;
-  transition: all 0s ease;
-  /* padding: 0.4rem 2.4rem; */
-}
-
-.page-break {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  font-size: 1.5rem;
 }
 
 #menu {
   display: inline-block;
-  /* flex-direction: column; */
   justify-content: space-around;
-  margin-top: 10%;
+  margin-top: 20%;
   position: flex;
-  /* bottom: -50%; Start the menu below the viewport */
-  /* left: 0; */
   width: 100%;
-  /* height: 90%; */
+  height: 50%;
   background-color: white;
-  transition: transform 0.3s ease-out; /* Add transition effect */
+  transition: transform 0.4s ease-out;
 }
 .slide-in {
-  transform: translateY(150%);
-  /* Slide the menu up to the bottom of the viewport */
+  transform: translateY(160%);
 }
 
 #saveDiv {
-  /* display: block; */
+  display: flex;
   justify-content: space-around;
-  /* width: 100%; */
 }
 
 #save,
 #demo,
 #reset {
   flex: 1;
-  margin: 0 0px;
+  margin: 0rem;
   border-radius: 15px;
   border: 1px solid grey;
-  /* border-right: 1px solid black; */
-  background-color: transparent; /* yellow; */
-  font-size: large;
+  background-color: transparent;
+  font-size: 16px;
 }
 #more {
-  font-size: xx-large;
   background-color: transparent;
-  border: none;
 }
-
-/* .button-container button {
-  flex: 1;
-  margin: 0 5px;
-  border-right: 10px solid #000;
-}
-.button-container button:last-child {
-  border-right: none;
-} */
 
 #pepperBtn,
 #saltBtn,
@@ -237,35 +142,19 @@ input:focus {
   border-style: solid solid solid none;
 }
 
-#more,
-#saveDiv {
-  margin: 1rem;
-  text-decoration: none;
-}
-
 a {
   font-size: 2rem;
   text-decoration: none;
   padding-bottom: 0rem;
 }
 
-/* #more { */
-/* height: 18%; */
-/* background-image: radial-gradient(#00cc44, #009933); */
-/* background-image: radial-gradient(white, grey); */
-/* background-image: linear-gradient(direction, color-stop1, color-stop2, ...); */
-background-image: linear-gradient(to right, lightblue, white, lightblue);
-/* } */
-
 #save,
 #demo,
 #reset {
-  /* float: right; */
   margin: 1rem;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   border: 1px solid black;
   border-radius: 15px;
-  /* background-image: linear-gradient(to right, lightblue, white, lightblue); */
 }
 
 .input-container {
@@ -286,7 +175,6 @@ input {
   padding: 1%;
   border: 1px solid #ccc;
   border-radius: 16px;
-  /* font-size: 1.5rem; */
   float: right;
 }
 
@@ -295,14 +183,10 @@ input {
 }
 
 label {
-  /* vertical-align: middle; */
-  /* text-align: center; */
-  /* float: left; */
-  /* width: 50%; */
   color: grey;
   position: absolute;
   left: 15%;
-  top: 50%;
+  top: 35%;
   transform: translateY(-50%);
 }
 
@@ -310,7 +194,6 @@ label {
 .input-container .trailing-icon {
   position: absolute;
   top: 15%;
-  /* transform: translateY(-50%); */
   color: #888;
   font-size: 1rem;
   font-weight: bolder;
@@ -320,7 +203,6 @@ label {
   border: transparent;
 }
 
-/* .input-container .leading-icon { */
 .leading-icon {
   left: 0rem;
 }
@@ -348,38 +230,11 @@ label {
   width: 100%;
 }
 
-/* .helper-text {
-  font-size: 0.25rem;
-  float: left;
-  color: lightgray;
-  margin-left: 0rem;
-  margin-top: 0rem;
-  background-color: transparent;
-} */
-
 .input-container .error-text {
   font-size: 12px;
   color: red;
   margin-top: 5px;
 }
-
-/* 2023-05-31: 14:04 */
-
-.wrapper {
-  position: relative;
-  display: inline-block;
-}
-.close:before {
-  content: "✕";
-}
-.close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  cursor: pointer;
-}
-
-/* 2023-05-31: 17:18 */
 
 .popup {
   position: fixed;
