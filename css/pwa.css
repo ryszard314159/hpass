@@ -37,11 +37,12 @@ body {
   text-align: center;
 }
 
-.burger {
+.gear {
   background-color: transparent;
   border: 0px solid #ccc;
   float: right;
-  font-size: x-large;
+  font-size: 4rem;
+  color: green;
 }
 
 /* .center {
@@ -268,11 +269,12 @@ input:focus {
   left: 0;
   width: 100%;
   height: 50%;
-  background-color: #f1f1f1;
+  float: bottom;
+  background-color: transparent;
   transition: transform 0.3s ease-out; /* Add transition effect */
 }
 .slide-in {
-  transform: translateY(-130%);
+  transform: translateY(-160%);
   /* Slide the menu up to the bottom of the viewport */
 }
 
@@ -297,7 +299,7 @@ input:focus {
   margin: 0 0px;
   border: none;
   /* border-right: 1px solid black; */
-  background-color: none; /* yellow; */
+  background-color: transparent; /* yellow; */
   font-size: large;
 }
 #saveDiv,
@@ -324,7 +326,7 @@ input:focus {
 
 #more,
 #saveDiv {
-  margin: 0rem;
+  margin: 1rem;
   text-decoration: none;
 }
 
@@ -341,21 +343,147 @@ a {
   /* background-image: linear-gradient(direction, color-stop1, color-stop2, ...); */
   background-image: linear-gradient(to right, lightblue, white, lightblue);
 }
-#pepperForm,
+
+/* #pepperForm,
 #saltForm,
 #lengthForm,
 #cleanForm {
   height: 16%;
   background-image: linear-gradient(lightgrey, white, lightgrey);
-}
-#saveDiv {
+} */
+
+/* #saveDiv {
   height: 18%;
   background-image: linear-gradient(lightgrey, white, lightgrey);
-}
+} */
 
 #save,
 #demo,
 #reset {
+  /* float: right; */
+  margin: 1rem;
   font-size: 1.5rem;
-  background-image: linear-gradient(to right, lightblue, white, lightblue);
+  border: 1px solid black;
+  border-radius: 15px;
+  /* background-image: linear-gradient(to right, lightblue, white, lightblue); */
+}
+
+.input-container {
+  position: relative;
+  width: 80%;
+  float: right;
+  margin-bottom: 4%;
+  margin-top: 2%;
+  margin-right: 1%;
+}
+
+.input-container input {
+  width: 90%;
+  padding: 1%;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  font-size: 32px;
+  float: right;
+}
+
+.input-container .leading-icon,
+.input-container .trailing-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block;
+  background-color: transparent;
+  border: transparent;
+}
+
+.input-container .leading-icon {
+  left: 1.5rem;
+  top: 1.5rem;
+  font-size: 2rem;
+  display: inline-block;
+}
+
+.input-container .trailing-icon {
+  right: 2%;
+  top: 1.5rem;
+  font-weight: bolder;
+}
+
+.input-container label {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  color: #888;
+  pointer-events: none;
+  transition: 0.2s ease all;
+  font-size: 1rem;
+  background-color: transparent;
+}
+
+input,
+label {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label {
+  top: -12%;
+  left: 6rem;
+  font-size: 1rem;
+  color: grey;
+  background-color: white;
+}
+
+.input-container .helper-text {
+  font-size: 0.75rem;
+  float: left;
+  color: gray;
+  margin-left: 3rem;
+  margin-top: 0rem;
+  background-color: transparent;
+  width: 100%;
+}
+
+.input-container .error-text {
+  font-size: 12px;
+  color: red;
+  margin-top: 5px;
+}
+
+/* 2023-05-31: 14:04 */
+
+.wrapper {
+  position: relative;
+  display: inline-block;
+}
+.close:before {
+  content: "✕";
+}
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}
+
+/* 2023-05-31: 17:18 */
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #a6e882;
+  padding: 20px;
+  border: 0px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.popupMessage {
+  font-size: 1rem;
 }

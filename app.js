@@ -34,7 +34,7 @@ const default_opts = {
   pepper: "_",
   salt: null, // "top secret!",
   length: 15,
-  clean: 2,
+  clean: 1,
   maxlength: 64,
   minlength: 5,
   // burnin: 9,
@@ -97,6 +97,32 @@ if ("serviceWorker" in navigator) {
 //   // value = event.data.key;
 // };
 
+function cleanLevel(level) {
+  let v = null;
+  const trueClean = new Set(["true", true, "1", 1]); // , "2", 2]);
+  const falseClean = new Set(["false", false, "0", 0]);
+  const highClean = new Set(["2", 2]);
+  if (falseClean.has(level)) v = 0;
+  if (trueClean.has(level)) v = 1;
+  if (highClean.has(level)) v = 2;
+  if (v === null) {
+    console.log("WARNING: app: cleanLevel: invalid level= ", level);
+    // v = 0;
+    console.log("WARNING: app: cleanLevel: level set to= ", v);
+  }
+  return v;
+}
+
+function cleanLevelDisplay(level) {
+  let v = null;
+  if (level === 0) v = "false";
+  if (level === 1) v = "true";
+  if (level === 2) v = "2";
+  console.log("app: cleanLevelDisplay: input level= ", level);
+  console.log("app: cleanLevelDisplay: output v= ", v);
+  return v;
+}
+
 // Selecting elements
 const el = {};
 el.hint = document.getElementById("hint");
@@ -107,18 +133,22 @@ el.clean = document.getElementById("clean");
 el.range = document.getElementById("range");
 el.generate = document.getElementById("generate");
 el.generateDiv = document.getElementById("generateDiv");
-el.leftBurger = document.getElementById("leftBurger");
-el.rightBurger = document.getElementById("rightBurger");
+el.gear = document.getElementById("gear");
 el.passwords = document.getElementById("passwords");
 el.hide = document.getElementById("hide");
 el.save = document.getElementById("save");
 el.demo = document.getElementById("demo");
 el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
+el.back = document.getElementById("back");
 el.menu = document.getElementById("menu");
 el.more = document.getElementById("more");
 el.menuList = document.getElementById("menuList");
 el.notify = document.getElementById("notify");
+el.pepperCross = document.getElementById("pepperCross");
+el.saltCross = document.getElementById("saltCross");
+el.lengthCross = document.getElementById("lengthCross");
+el.cleanCross = document.getElementById("cleanCross");
 console.log("app:1: el= ", el);
 console.log("app:1: el.length= ", el.length);
 console.log("app:1: el.length.value= ", el.length.value);
@@ -132,6 +162,7 @@ console.log("apps: from localStorage: opts= ", opts);
 // alert("app: default_opts= ", default_opts);
 console.log("apps: default_opts= ", default_opts);
 opts = opts === null ? default_opts : opts;
+opts.clean = cleanLevel(opts.clean);
 console.log("apps: after defaults applied: opts=", opts);
 opts.salt = window.localStorage.getItem("installSalt");
 console.log("apps: installSalt applied: opts=", opts);
@@ -142,7 +173,7 @@ let n = Math.min(Math.max(opts.minlength, opts.length), opts.maxlength);
 el.length.value = n;
 el.length.min = opts.minlength;
 el.length.max = opts.maxlength;
-el.clean.value = opts.clean;
+el.clean.value = cleanLevelDisplay(opts.clean);
 if (n < opts.minlength || n > opts.maxlength) {
   alert(
     `Length (=${n}) must be between ${opts.minlength} and ${opts.maxlength}!`
@@ -151,16 +182,16 @@ if (n < opts.minlength || n > opts.maxlength) {
 console.log("app:2: el.length.value= ", el.length.value);
 console.log("app:2: el.clean.value= ", el.clean.value);
 
-el.more.addEventListener("click", function () {
-  el.more.preventDefault();
-  let h = screen.height;
-  let w = screen.width;
-  window.open(
-    `./more.html`,
-    "popUpWindow",
-    `height=${h / 2}, width=${w / 2}, left=${w / 4}, top=${h / 4}`
-  );
-});
+// el.more.addEventListener("click", function () {
+//   el.more.preventDefault();
+//   let h = screen.height;
+//   let w = screen.width;
+//   window.open(
+//     `./more.html`,
+//     "popUpWindow",
+//     `height=${h / 2}, width=${w / 2}, left=${w / 4}, top=${h / 4}`
+//   );
+// });
 
 // 1. convert promp string to lower case
 // 2. extract only domain e.g. http://www.domain.com -> domain
@@ -186,23 +217,32 @@ function extractNakedDomain(url) {
 // 2 - extract domain and drop top-level domain (TLD)
 //     e.g. amazon
 function cleanHint(prompt, level) {
-  // console.log("cleanHint: level= ", level, " prompt= ", prompt);
-  // console.log("cleanHint: typeof(level)= ", typeof level);
-  if (level == 0) return prompt;
+  console.log("cleanHint: level= ", level, " prompt= ", prompt);
+  console.log("cleanHint: typeof(level)= ", typeof level);
+  if (level === 0) return prompt;
   let domain = extractNakedDomain(prompt);
-  // console.log("cleanHint: level= ", level, " domain= ", domain);
-  if (level == 1) return domain.toLowerCase();
+  console.log("cleanHint: level= ", level, " domain= ", domain);
+  if (level < 2) return domain.toLowerCase();
   const u = domain.split(".");
   const v = u.length > 1 ? u.at(-2) : domain;
-  // console.log("cleanHint: level= ", level, " v= ", v);
+  console.log("cleanHint: level= ", level, " v= ", v);
   return v.toLowerCase();
 }
 
-function htmlToUni(x) {
-  const divElement = document.createElement("div");
-  divElement.innerHTML = x;
-  return divElement.textContent;
+function showPopup(msg) {
+  const popup = document.getElementById("popup");
+  popup.innerHTML = msg;
+  popup.style.display = "block";
+  setTimeout(function () {
+    popup.style.display = "none";
+  }, 2000); // Close the popup after 5 seconds
 }
+
+// function htmlToUni(x) {
+//   const divElement = document.createElement("div");
+//   divElement.innerHTML = x;
+//   return divElement.textContent;
+// }
 
 // const toggleButton = document.getElementById("toggle-menu");
 // const menu = document.getElementById("menu");
@@ -210,24 +250,37 @@ function htmlToUni(x) {
 //   menu.classList.toggle("slide-in");
 // &#x274C; CROSS MARK
 
-const burgers = ["leftBurger", "rightBurger"];
-burgers.forEach((x) => {
-  el[x].addEventListener("click", () => {
-    // console.log(`app: ${x} clicked...`);
-    el.menu.classList.toggle("slide-in");
-    burgers.forEach((y) => {
-      // console.log(`app: ${y} innerHTML= `, el[y].innerHTML);
-      // console.log(`app: ${y} innerHTML= ${el[y].innerHTML}`);
-      // console.log(
-      //   `app: ${y} innerHTML.toString()= ${el[y].innerHTML.toString()}`
-      // );
-      // const uCross = "&#x274C;"; // unicode for CROSS
-      // const uBurger = "&#9776;"; // unicode for HAMBURGER
-      const uBurger = "☰";
-      const uCross = "❌";
-      // console.log(`app: uCross= ${uCross}, uBurger= ${uBurger}`);
-      el[y].innerHTML = el[y].innerHTML == uBurger ? uCross : uBurger;
-    });
+// const burgers = ["leftBurger", "rightBurger"];
+// burgers.forEach((x) => {
+el.gear.addEventListener("click", () => {
+  // console.log(`app: ${x} clicked...`);
+  el.menu.classList.toggle("slide-in");
+  // burgers.forEach((y) => {
+  // console.log(`app: ${y} innerHTML= `, el[y].innerHTML);
+  // console.log(`app: ${y} innerHTML= ${el[y].innerHTML}`);
+  // console.log(
+  //   `app: ${y} innerHTML.toString()= ${el[y].innerHTML.toString()}`
+  // );
+  // const uCross = "&#x274C;"; // unicode for CROSS
+  // const uBurger = "&#9776;"; // unicode for HAMBURGER
+  // const uBurger = "☰";
+  // const uCross = "❌";
+  // console.log(`app: uCross= ${uCross}, uBurger= ${uBurger}`);
+  // el[y].innerHTML = el[y].innerHTML == uBurger ? uCross : uBurger;
+});
+
+el.back.addEventListener("click", () => {
+  el.menu.classList.toggle("slide-in");
+});
+
+// const crosses = ["pepperCross", "saltCross", "lengthCross", "cleanCross"];
+const ops = ["pepper", "salt", "length", "clean"];
+ops.forEach((x) => {
+  let cross = `${x}Cross`;
+  console.log("app:0: ops.forEach: x= ", x, " cross= ", cross);
+  el[cross].addEventListener("click", () => {
+    console.log("app:1: ops.forEach: x= ", x, " cross= ", cross);
+    el[x].value = null;
   });
 });
 
@@ -267,8 +320,16 @@ burgers.forEach((x) => {
 // });
 
 el.save.addEventListener("click", function () {
-  console.log("apps: save: opts= ", opts);
+  console.log("apps:0: save: opts= ", opts);
+  opts.pepper = el.pepper.value;
+  opts.salt = el.salt.value;
+  opts.length = el.length.value;
+  opts.clean = cleanLevel(el.clean.value);
   window.localStorage.setItem("options", JSON.stringify(opts));
+  el.clean.value = cleanLevelDisplay(opts.clean);
+  console.log("apps:1: save: opts= ", opts);
+  console.log("apps:1: save: el.clean.value= ", el.clean.value);
+  showPopup("settings saved!");
 });
 
 el.demo.addEventListener("click", function () {
@@ -276,10 +337,11 @@ el.demo.addEventListener("click", function () {
   el.pepper.value = default_opts.pepper;
   el.salt.value = default_opts.salt;
   el.length.value = default_opts.length;
-  el.clean.value = default_opts.clean;
+  el.clean.value = cleanLevelDisplay(default_opts.clean);
 });
 
 el.reset.addEventListener("click", function () {
+  console.log("app: reset: el= ", el);
   el.pepper.value = null;
   el.salt.value = null;
   el.length.value = null;
@@ -291,35 +353,32 @@ el.reset.addEventListener("click", function () {
 //   el.sidebar.style.display = "none";
 // });
 
-el.hint.addEventListener("click", () => {
-  console.log("app: sidebar focusout event...");
-  el.sidebar.style.display = "none";
-});
+// el.hint.addEventListener("click", () => {
+//   console.log("app: sidebar focusout event...");
+//   el.sidebar.style.display = "none";
+// });
 
 el.hint.addEventListener("mouseout", () => {
   // if (el.hintButton.innerHTML === "raw") return;
   // el.hint.value = el.clean.value ? cleanHint(el.hint.value) : el.hint.value;
+  const cleaned = cleanLevel(el.clean.value);
+  console.log("app:0: mouseout: el.clean.value= ", el.clean.value);
   console.log(
-    "app:0: el.clean.value= ",
-    el.clean.value,
-    " el.hint.value= ",
-    el.hint.value
+    "app:0: mouseout: type of el.clean.value= ",
+    typeof el.clean.value
   );
-  if (el.clean.value > 0) {
-    console.log(
-      "app:2: el.clean.value= ",
-      el.clean.value,
-      " el.hint.value= ",
-      el.hint.value
-    );
-    el.hint.value = cleanHint(el.hint.value, el.clean.value);
+  console.log("app:0: mouseout: cleaned= ", cleaned);
+  console.log("app:0: mouseout: type of cleaned= ", typeof cleaned);
+  console.log("app:0: museout:: el.hint.value= ", el.hint.value);
+  if (cleaned) {
+    console.log("app:1: mouseout: el.clean.value= ", el.clean.value);
+    el.hint.value = cleanHint(el.hint.value, cleaned);
+    console.log("app:1: mouseout: el.hint.value= ", el.hint.value);
+  } else {
+    console.log("app:2: mouseout: el.clean.value= ", el.clean.value);
   }
-  console.log(
-    "app:3: el.clean.value= ",
-    el.clean.value,
-    " el.hint.value= ",
-    el.hint.value
-  );
+  console.log("app:3: mouseout: el.clean.value= ", el.clean.value);
+  console.log("app:3: mouseout: el.hint.value= ", el.hint.value);
 });
 
 el.generate.addEventListener("click", function () {
@@ -327,7 +386,7 @@ el.generate.addEventListener("click", function () {
   // grow();
   // setTimeout(shrink, 500);
   toggleSize();
-  navigator.vibrate(100);
+  navigator.vibrate(10);
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
   opts.length = el.length.value;
@@ -360,6 +419,7 @@ el.generate.addEventListener("click", function () {
       console.log("app: clipboard copy success! passwd= ", passwd);
     })
     .catch((err) => console.error("app: clipboard copy error= ", err));
+  showPopup(`generated<br>password= ${passwd}<br>copied to clipboard`);
 });
 
 function toggleSize() {
@@ -369,34 +429,34 @@ function toggleSize() {
   }, 100);
 }
 
-function grow() {
-  // add grow to class list
-  el.generate.classList.add("grow");
-}
+// function grow() {
+//   // add grow to class list
+//   el.generate.classList.add("grow");
+// }
 
-function shrink() {
-  // add grow to class list
-  el.generate.classList.remove("grow");
-  // el.generate.classList.add("shrink");
-  // setTimeout(shrink, 500);
-}
+// function shrink() {
+//   // add grow to class list
+//   el.generate.classList.remove("grow");
+//   // el.generate.classList.add("shrink");
+//   // setTimeout(shrink, 500);
+// }
 
 // Function to open the modal and start the timer
-function openNotify() {
-  // alert(`app: inside openNotify!!!`);
-  el.notify.style.display = "block";
-  el.notify.style.backgroundColor = "red";
-  console.log(
-    "app: openNotify: el.notify.style.display= ",
-    el.notify.style.display
-  );
-  console.log(
-    "app: openNotify: el.notify.style.zIndex= ",
-    el.notify.style.zIndex
-  );
-  setTimeout(closeNotify, 500);
-}
-function closeNotify() {
-  el.notify.style.display = "none";
-}
+// function openNotify() {
+//   // alert(`app: inside openNotify!!!`);
+//   el.notify.style.display = "block";
+//   el.notify.style.backgroundColor = "red";
+//   console.log(
+//     "app: openNotify: el.notify.style.display= ",
+//     el.notify.style.display
+//   );
+//   console.log(
+//     "app: openNotify: el.notify.style.zIndex= ",
+//     el.notify.style.zIndex
+//   );
+//   setTimeout(closeNotify, 500);
+// }
+// function closeNotify() {
+//   el.notify.style.display = "none";
+// }
 // window.addEventListener('load', openNotify);

@@ -1,4 +1,7 @@
 <html>
+  <!--
+    https://uxplanet.org/the-anatomy-of-input-field-c3ef863e01d7
+  -->
   <head>
     <meta name="description" content="Hinted easy to use password generator" />
     <meta charset="utf-8" />
@@ -8,6 +11,7 @@
     <title>HPASS Password Generator</title>
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="css/pwa.css" />
+    <link rel="stylesheet" href="tmp.css" />
     <script defer type="module" src="core/lib.js"></script>
     <script defer type="module" src="app.js"></script>
     <script defer type="module" src="sw.js"></script>
@@ -15,56 +19,67 @@
   <body>
     <div id="hintContainer" class="">
       <form id="hintForm" class="">
-        <button id="leftBurger" class="burger" type="button">&#9776;</button>
+        <!-- <button id="leftBurger" class="burger" type="button">&#9776;</button> -->
+        <!-- <img id="generate" src="icons/generate.svg" /> -->
+        <button id="generate" class="gear" type="button">➜</button>
         <!-- <svg id="burger" focusable="false" viewBox="0 0 12 12">
         <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
       </svg> -->
         <input id="hint" placeholder="password hint" />
-        <button id="rightBurger" class="burger" type="button">&#9776;</button>
+        <button id="gear" class="gear" type="button">⚙</button>
       </form>
     </div>
-    <div id="generateDiv" class="center">
-      <!-- <button id="generate" class="circle-button">&#9656;</button> -->
+    <!-- <div id="generateDiv" class="center">
       <img id="generate" src="icons/generate.svg" />
-    </div>
+    </div> -->
     <div id="menu" class="menu">
-      <div id="more" class="center">
+      <!-- <div id="more" class="center">
         <a href="info.html" class="center">→</a>
+      </div> -->
+      <!-- <span id="close" class="close"></span> -->
+      <div class="">
+        <legend id="back">↶ Settings</legend>
+        <div class="input-container">
+          <button id="pepperBtn" class="leading-icon">🌶</button>
+          <input id="pepper" placeholder=" " />
+          <label for="pepper">Special character</label>
+          <button id="pepperCross" class="trailing-icon">⨉</button>
+          <p class="helper-text">one or more of _.-!@*$?&% etc.</p>
+        </div>
+        <div class="input-container">
+          <button id="saltBtn" class="leading-icon">🤫</button>
+          <input id="salt" placeholder=" " />
+          <label for="salt">Secret</label>
+          <button id="saltCross" class="trailing-icon">⨉</button>
+          <p class="helper-text">secret to make password unique</p>
+        </div>
+        <div class="input-container">
+          <button id="lengthBtn" class="leading-icon">📏</button>
+          <input id="length" placeholder=" " />
+          <label for="length">Length</label>
+          <button id="lengthCross" class="trailing-icon">⨉</button>
+          <p class="helper-text">password length (15 recommended)</p>
+        </div>
+        <div class="input-container">
+          <button id="cleanBtn" class="leading-icon">🧹</button>
+          <input id="clean" placeholder=" " />
+          <label for="clean">Clean hint: true|false</label>
+          <button id="cleanCross" class="trailing-icon">⨉</button>
+          <p class="helper-text">
+            <b>true:</b> extract domain e.g. https://www.google.com/photos/ ➜
+            google.com <br />
+            <b>false:</b> keep hint as-is
+          </p>
+        </div>
       </div>
-      <div>
-        <form id="pepperForm" class="center">
-          <!-- <button id="pepperBtn" class="circle-button center">&#127798;</button> -->
-          <button id="pepperBtn" class="circle-button center">
-            &nbsp;&nbsp;🌶
-          </button>
-          <input id="pepper" placeholder="one or more of _.-!@*$?&% etc." />
-        </form>
-        <form id="saltForm" class="center">
-          <button id="saltBtn" class="circle-button center">
-            &nbsp;&nbsp;🤫
-          </button>
-          <input id="salt" placeholder="secret to make password unique" />
-        </form>
-        <form id="lengthForm" class="center">
-          <!-- <button id="lengthBtn" class="circle-button center">&#128207;</button> -->
-          <button id="lengthBtn" class="circle-button center">
-            &nbsp;&nbsp;📏
-          </button>
-          <input id="length" placeholder="recommended length is 15" />
-        </form>
-        <form id="cleanForm" class="center">
-          <!-- <button id="cleanBtn" class="circle-button center">&#x1f9f9;</button> -->
-          <button id="cleanBtn" class="circle-button center">
-            &nbsp;&nbsp;🧹
-          </button>
-          <!-- <input id="clean" placeholder="scrub level: 0|1|2" /> -->
-          <input id="clean" placeholder="clean level: 0|1|2" />
-        </form>
-      </div>
+      <!-- <br /> -->
       <div id="saveDiv">
         <button id="save" class="">Save</button>
         <button id="demo" class="">Demo</button>
         <button id="reset" class="">Reset</button>
+      </div>
+      <div id="popup" class="popup" style="display: none">
+        <span id="popupMessage">This is a transient popup message.</span>
       </div>
     </div>
   </body>
