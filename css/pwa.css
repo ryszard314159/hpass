@@ -146,6 +146,15 @@ a {
   font-size: 2rem;
   text-decoration: none;
   padding-bottom: 0rem;
+  border: 9px solid blue;
+  border-radius: 1rem;
+  width: 10%;
+  margin-left: 45%;
+  border-style: solid;
+  color: black;
+  background-color: lightblue;
+  display: block;
+  justify-content: space-around;
 }
 
 #save,
