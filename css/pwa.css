@@ -67,6 +67,11 @@ body {
   transition: all 0.3s ease;
 } */
 
+legend {
+  font-size: x-large;
+  margin-bottom: 1rem;
+}
+
 #generate.active {
   /* #generate { */
   font-size: 64px;
@@ -133,6 +138,10 @@ form {
 /* form:focus-within {
   outline: 1px solid blue;
 } */
+
+#hintContainer {
+  margin-top: -3rem;
+}
 
 #hintForm {
   border-top-left-radius: 1rem;
@@ -261,25 +270,25 @@ input:focus {
 }
 
 #menu {
-  /* display: flex;
-  flex-direction: column;
-  justify-content: space-around; */
-  position: fixed;
-  bottom: -60%; /* Start the menu below the viewport */
-  left: 0;
+  display: inline-block;
+  /* flex-direction: column; */
+  justify-content: space-around;
+  margin-top: 10%;
+  position: flex;
+  /* bottom: -50%; Start the menu below the viewport */
+  /* left: 0; */
   width: 100%;
-  height: 50%;
-  float: bottom;
-  background-color: transparent;
+  /* height: 90%; */
+  background-color: white;
   transition: transform 0.3s ease-out; /* Add transition effect */
 }
 .slide-in {
-  transform: translateY(-160%);
+  transform: translateY(150%);
   /* Slide the menu up to the bottom of the viewport */
 }
 
 #saveDiv {
-  display: flex;
+  display: block;
   justify-content: space-around;
   /* width: 100%; */
 }
@@ -301,10 +310,6 @@ input:focus {
   /* border-right: 1px solid black; */
   background-color: transparent; /* yellow; */
   font-size: large;
-}
-#saveDiv,
-#reset {
-  border-right: none; /* Remove border on the last button */
 }
 
 .button-container button {
@@ -372,9 +377,10 @@ a {
   position: relative;
   width: 80%;
   float: right;
-  margin-bottom: 4%;
-  margin-top: 2%;
+  margin-bottom: 5%;
+  margin-top: 0%;
   margin-right: 1%;
+  margin-left: 1%;
 }
 
 .input-container input {
@@ -400,7 +406,7 @@ a {
 }
 
 .input-container .leading-icon {
-  left: 1.5rem;
+  left: 1rem;
   top: 1.5rem;
   font-size: 2rem;
   display: inline-block;
@@ -414,8 +420,8 @@ a {
 
 .input-container label {
   position: absolute;
-  top: 20%;
-  left: 20%;
+  top: 1rem;
+  left: 1rem;
   color: #888;
   pointer-events: none;
   transition: 0.2s ease all;
