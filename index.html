@@ -17,6 +17,8 @@
     <script defer type="module" src="sw.js"></script>
   </head>
   <body>
+    <br /><br />
+    <br /><br />
     <div id="hintContainer" class="">
       <form id="hintForm" class="">
         <!-- <button id="leftBurger" class="burger" type="button">&#9776;</button> -->
@@ -27,6 +29,7 @@
       </svg> -->
         <input id="hint" placeholder="password hint" />
         <button id="gear" class="gear" type="button">⚙</button>
+        <!-- <p class="helper-text">hiii</p> -->
       </form>
     </div>
     <!-- <div id="generateDiv" class="center">
@@ -39,13 +42,16 @@
       <!-- <span id="close" class="close"></span> -->
       <div class="">
         <legend id="back">↶ Settings</legend>
+        <!-- <form class="input-container"> -->
         <div class="input-container">
           <button id="pepperBtn" class="leading-icon">🌶</button>
           <input id="pepper" placeholder=" " />
           <label for="pepper">Special character</label>
           <button id="pepperCross" class="trailing-icon">⨉</button>
+          <br />
           <p class="helper-text">one or more of _.-!@*$?&% etc.</p>
         </div>
+        <!-- </form> -->
         <div class="input-container">
           <button id="saltBtn" class="leading-icon">🤫</button>
           <input id="salt" placeholder=" " />
@@ -71,7 +77,7 @@
           </p>
         </div>
       </div>
-      <br />
+      <div style="margin-bottom: 0.5rem">&nbsp;</div>
       <hr />
       <div id="saveDiv">
         <button id="save" class="">Save</button>

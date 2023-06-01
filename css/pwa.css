@@ -37,6 +37,10 @@ body {
   text-align: center;
 }
 
+div {
+  display: block;
+}
+
 .gear {
   background-color: transparent;
   border: 0px solid #ccc;
@@ -288,17 +292,10 @@ input:focus {
 }
 
 #saveDiv {
-  display: block;
+  /* display: block; */
   justify-content: space-around;
   /* width: 100%; */
 }
-
-/* .container {
-  display: flex;
-}
-.container.space-around {
-  justify-content: space-around;
-} */
 
 #saveDiv,
 #save,
@@ -349,19 +346,6 @@ a {
   background-image: linear-gradient(to right, lightblue, white, lightblue);
 }
 
-/* #pepperForm,
-#saltForm,
-#lengthForm,
-#cleanForm {
-  height: 16%;
-  background-image: linear-gradient(lightgrey, white, lightgrey);
-} */
-
-/* #saveDiv {
-  height: 18%;
-  background-image: linear-gradient(lightgrey, white, lightgrey);
-} */
-
 #save,
 #demo,
 #reset {
@@ -374,8 +358,10 @@ a {
 }
 
 .input-container {
+  align-items: center;
+  display: block;
   position: relative;
-  width: 80%;
+  width: 100%;
   float: right;
   margin-bottom: 5%;
   margin-top: 0%;
@@ -383,8 +369,9 @@ a {
   margin-left: 1%;
 }
 
-.input-container input {
-  width: 90%;
+input {
+  position: relative;
+  width: 100%;
   padding: 1%;
   border: 1px solid #ccc;
   border-radius: 16px;
@@ -392,53 +379,45 @@ a {
   float: right;
 }
 
+label {
+  /* vertical-align: middle; */
+  /* text-align: center; */
+  /* float: left; */
+  /* width: 50%; */
+  color: grey;
+  position: absolute;
+  left: 15%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .input-container .leading-icon,
 .input-container .trailing-icon {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 20%;
+  /* transform: translateY(-50%); */
   color: #888;
-  font-size: 16px;
+  font-size: 1.5rem;
+  font-weight: bolder;
   cursor: pointer;
   display: inline-block;
   background-color: transparent;
   border: transparent;
 }
 
-.input-container .leading-icon {
-  left: 1rem;
-  top: 1.5rem;
-  font-size: 2rem;
-  display: inline-block;
+/* .input-container .leading-icon { */
+.leading-icon {
+  left: 0rem;
 }
 
-.input-container .trailing-icon {
-  right: 2%;
-  top: 1.5rem;
-  font-weight: bolder;
-}
-
-.input-container label {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  color: #888;
-  pointer-events: none;
-  transition: 0.2s ease all;
-  font-size: 1rem;
-  background-color: transparent;
-}
-
-input,
-label {
-  vertical-align: middle;
-  text-align: center;
+.trailing-icon {
+  right: 1rem;
 }
 
 .input-container input:focus + label,
 .input-container input:not(:placeholder-shown) + label {
-  top: -12%;
-  left: 6rem;
+  top: 0%;
+  left: 2rem;
   font-size: 1rem;
   color: grey;
   background-color: white;
@@ -448,11 +427,20 @@ label {
   font-size: 0.75rem;
   float: left;
   color: gray;
-  margin-left: 3rem;
+  margin-left: 0rem;
   margin-top: 0rem;
   background-color: transparent;
   width: 100%;
 }
+
+/* .helper-text {
+  font-size: 0.25rem;
+  float: left;
+  color: lightgray;
+  margin-left: 0rem;
+  margin-top: 0rem;
+  background-color: transparent;
+} */
 
 .input-container .error-text {
   font-size: 12px;
