@@ -29,10 +29,15 @@ div {
 
 .gear {
   background-color: transparent;
+  /* border-radius: 50%; */
   border: 0px solid #ccc;
   float: right;
   font-size: 2rem;
   color: black;
+}
+.gear:hover {
+  font-weight: bolder;
+  background-color: lightgrey;
 }
 
 .center {
@@ -112,7 +117,7 @@ input {
   transition: transform 0.4s ease-out;
 }
 .slide-in {
-  transform: translateY(160%);
+  transform: translateY(200%);
 }
 
 #saveDiv,
@@ -205,7 +210,7 @@ label {
 .input-container .leading-icon,
 .input-container .trailing-icon {
   position: absolute;
-  top: 15%;
+  top: 25%;
   color: #888;
   font-size: 1rem;
   font-weight: bolder;
@@ -221,6 +226,11 @@ label {
 
 .trailing-icon {
   right: 1rem;
+  border-radius: 50%;
+}
+.trailing-icon:hover {
+  font-weight: bolder;
+  background-color: lightgray;
 }
 
 .input-container input:focus + label,

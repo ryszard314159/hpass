@@ -155,6 +155,13 @@ console.log("app:1: el.length.value= ", el.length.value);
 console.log("app:1: el.clean= ", el.clean);
 console.log("app:1: el.clean.value= ", el.clean.value);
 
+// function resize(elem, percent) {
+//   elem.style.fontSize = percent;
+// }
+
+// el.generate.addEventListener("mouseover", (x) => resize(x, "125%"));
+// el.generate.addEventListener("mouseout", (x) => resize(x, "100%"));
+
 // TODO: replace localStorage with Cache Storage
 let opts = JSON.parse(window.localStorage.getItem("options"));
 console.log("apps: from localStorage: opts= ", opts);
