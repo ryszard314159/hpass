@@ -171,7 +171,12 @@ console.log("apps: default_opts= ", default_opts);
 opts = opts === null ? default_opts : opts;
 opts.clean = cleanLevel(opts.clean);
 console.log("apps: after defaults applied: opts=", opts);
-opts.salt = window.localStorage.getItem("installSalt");
+if (!opts.salt) {
+  opts.salt = window.localStorage.getItem("installSalt");
+  console.log("app: opts.salt was undefined, set to installSalt= ", opts.salt);
+} else {
+  console.log("app: opts.salt was defined= ", opts.salt);
+}
 console.log("apps: installSalt applied: opts=", opts);
 // alert("app:1: opts= ", opts);
 el.salt.value = opts.salt;
@@ -240,6 +245,7 @@ function showPopup(msg) {
   const popup = document.getElementById("popup");
   popup.innerHTML = msg;
   popup.style.display = "block";
+  popup.style.fontSize = "1.5rem";
   setTimeout(function () {
     popup.style.display = "none";
   }, 2000); // Close the popup after 5 seconds
@@ -426,7 +432,7 @@ el.generate.addEventListener("click", function () {
       console.log("app: clipboard copy success! passwd= ", passwd);
     })
     .catch((err) => console.error("app: clipboard copy error= ", err));
-  showPopup(`generated<br>password= ${passwd}<br>copied to clipboard`);
+  showPopup(`${passwd}<br><br>copied to clipboard`);
 });
 
 function toggleSize() {
