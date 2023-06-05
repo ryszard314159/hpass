@@ -55,6 +55,7 @@ if ("serviceWorker" in navigator) {
       default_opts.salt = salt;
       console.log("app: sw registered: default_opts= ", default_opts);
       window.localStorage.setItem("installSalt", salt);
+      alert(`apps: install salt= ${salt} saved`);
       // installChannel.onmessage = (event) => {
       //   alert("app: installChannel.onmessage!");
       //   console.log("app: installChannel.omessage: event= ", event);
@@ -241,14 +242,50 @@ function cleanHint(prompt, level) {
   return v.toLowerCase();
 }
 
+// function addElement() {
+//   // create a new div element
+//   const newDiv = document.createElement("div");
+
+//   // and give it some content
+//   const newContent = document.createTextNode("Hi there and greetings!");
+
+//   // add the text node to the newly created div
+//   newDiv.appendChild(newContent);
+
+//   // add the newly created element and its content into the DOM
+//   const currentDiv = document.getElementById("div1");
+//   document.body.insertBefore(newDiv, currentDiv);
+// }
+
+// // Create a new web element
+// var newElement = document.createElement('p');
+// newElement.textContent = 'This is a new paragraph element!';
+
+// // Add the new element to the document body
+// document.body.appendChild(newElement);
+
+// // Add a click event listener to the button
+// var button = document.getElementById('myButton');
+// button.addEventListener('click', function() {
+//   alert('Button clicked!');
+// });
+
 function showPopup(msg) {
-  const popup = document.getElementById("popup");
-  popup.innerHTML = msg;
-  popup.style.display = "block";
-  popup.style.fontSize = "1.5rem";
-  setTimeout(function () {
-    popup.style.display = "none";
-  }, 2000); // Close the popup after 5 seconds
+  // const popup = document.getElementById("popup");
+  const p = document.createElement("p");
+  p.innerHTML = msg;
+  p.style.display = "block";
+  p.style.fontSize = "1.5rem";
+  p.style.backgroundColor = "green";
+  p.style.zIndex = 99;
+  p.style.position = "absolute";
+  p.style.width = "66%";
+  p.style.textAlign = "center";
+  p.style.borderRadius = "15px";
+  p.style.padding = "1rem 0 1rem 0";
+  document.documentElement.appendChild(p);
+  // setTimeout(function () {popup.style.display = "none";}, 2000); // Close the popup after 5 seconds
+  setTimeout(() => p.remove(), 3000);
 }
 
 // function htmlToUni(x) {
