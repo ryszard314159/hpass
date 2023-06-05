@@ -50,12 +50,26 @@ if ("serviceWorker" in navigator) {
       console.log("app: sw registered!", reg);
       // const installChannel = new BroadcastChannel("installChannel");
       // alert("app: sw registered!");
-      const salt = getPass({ hint: "", length: 8 });
-      console.log("app: sw registered: : salt= ", salt);
-      default_opts.salt = salt;
-      console.log("app: sw registered: default_opts= ", default_opts);
-      window.localStorage.setItem("installSalt", salt);
-      alert(`apps: install salt= ${salt} saved`);
+      const oldSalt = window.localStorage.getItem("installSalt");
+      if (oldSalt == null) {
+        const salt = getPass({ hint: "", length: 8 });
+        console.log("app: sw registered: : salt= ", salt);
+        default_opts.salt = salt;
+        console.log("app: sw registered: default_opts= ", default_opts);
+        window.localStorage.setItem("installSalt", salt);
+        alert(`apps: new installSalt= ${salt} saved`);
+      } else {
+        alert(`apps: old installSalt= ${oldSalt} detected`);
+        default_opts.salt = oldSalt;
+      }
+      const opts = window.localStorage.getItem("options");
+      if (opts == null) {
+        window.localStorage.setItem("options", JSON.stringify(default_opts));
+        alert("app: register: options set to default values on install");
+        console.log("app: register: default_opts= ", default_opts);
+      } else {
+        alert("app: register: options set already");
+      }
       // installChannel.onmessage = (event) => {
       //   alert("app: installChannel.onmessage!");
       //   console.log("app: installChannel.omessage: event= ", event);
@@ -166,7 +180,7 @@ console.log("app:1: el.clean.value= ", el.clean.value);
 // TODO: replace localStorage with Cache Storage
 let opts = JSON.parse(window.localStorage.getItem("options"));
 console.log("apps: from localStorage: opts= ", opts);
-// alert("app:0: opts= ", JSON.stringify(opts));
+alert("app: from localStorage opts= ", JSON.stringify(opts));
 // alert("app: default_opts= ", default_opts);
 console.log("apps: default_opts= ", default_opts);
 opts = opts === null ? default_opts : opts;
@@ -271,12 +285,11 @@ function cleanHint(prompt, level) {
 // });
 
 function showPopup(msg) {
-  // const popup = document.getElementById("popup");
   const p = document.createElement("p");
   p.innerHTML = msg;
   p.style.display = "block";
   p.style.fontSize = "1.5rem";
-  p.style.backgroundColor = "green";
+  p.style.backgroundColor = "lightgreen";
   p.style.zIndex = 99;
   p.style.position = "absolute";
   p.style.width = "66%";
