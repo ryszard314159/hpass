@@ -4,16 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -25,11 +29,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,8 +62,11 @@ class MainActivity : ComponentActivity() {
     @Preview
     @Composable
     private fun hpassSplash() {
-        Column(verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally)
+        Column(
+//            modifier = Modifier.fillMaxWidth(0.75f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
         {
             Text(
                 text = "Length in 1-7 range",
@@ -67,7 +78,8 @@ class MainActivity : ComponentActivity() {
             var text by remember { mutableStateOf(TextFieldValue("")) }
             TextField(
                 value = text,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(top = 16.dp, bottom = 16.dp)
                     .background(androidx.compose.ui.graphics.Color(0xffadd8e6)),
                 onValueChange = {
                     text = it
@@ -77,24 +89,30 @@ class MainActivity : ComponentActivity() {
 //                    color = Color.LightGray,
                     color = Color(0xff999999),
                     text = "hint to generate password") },
-                placeholder = { Text(text = "Your password hint") },
+//                placeholder = { Text(text = "Your password hint") },
             )
-            Column() {
+            Column(modifier = Modifier.fillMaxWidth(0.75f)) {
 //                var saltState by remember { mutableStateOf(TextFieldValue("bbb")) }
 //                var saltText by remember { mutableStateOf(TextFieldValue("salt")) }
 //                var pepperState by remember { mutableStateOf(TextFieldValue("ZZZ")) }
 //                var lengthState by remember { mutableStateOf(TextFieldValue("6")) }
 
-                hpassRow("Salt", "salt")
+                hpassRow("Salt:", "salt")
+//                SaltTextField()
                 hpassRow("Pepper:", "ZZZ")
                 hpassRowNumber("Length:", "6")
 
                 Button(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(Color(0xff90ee90)),
 //                    content = RowScope(),
                     onClick = { /*TODO*/ }) {
-                    Text( text = "Generate and copy to clipboard",color=Color(0xff333333))
+                    Text( text = "Generate and copy to clipboard",
+                        fontFamily = FontFamily.SansSerif,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color=Color(0xff333333)
+                    )
                 }
 
             }
@@ -108,11 +126,17 @@ private fun hpassRow(s: String, initial: String) {
 //    var myHint = hint
 //    var text = valueState
     var text by remember { mutableStateOf(TextFieldValue("")) }
-    Row() {
-        Text(text = s + ":") // this is the label
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            modifier = Modifier.padding(end = 16.dp).fillMaxWidth(0.25f),
+            text = s
+        ) // this is the label
         TextField(
             value = text,
-            modifier = Modifier.padding(16.dp),
+            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
+              modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
             onValueChange = {
                 text = it
             },
@@ -124,16 +148,45 @@ private fun hpassRow(s: String, initial: String) {
 @Composable
 private fun hpassRowNumber(s: String, initial: String) {
     var text by remember { mutableStateOf(TextFieldValue("")) }
-    Row() {
-        Text(text = s + ":") // this is the label
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = s,
+            modifier = Modifier.padding(end = 16.dp).fillMaxWidth(0.25f)
+        ) // this is the label
         TextField(
             value = text,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp).fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             onValueChange = { it ->
                 text = it
             },
             placeholder = { Text(text = initial) },
+        )
+    }
+}
+@Composable
+fun SaltTextField() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            text = "Salt",
+            style = MaterialTheme.typography.body1,
+        )
+        TextField(
+            value = "salty",
+            onValueChange = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+                .background(Color.White)
+                .border(
+                    width = 1.dp,
+                    color = Color.Gray,
+                ),
         )
     }
 }
