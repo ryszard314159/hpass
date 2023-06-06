@@ -158,29 +158,36 @@ input {
   border-style: solid solid solid none;
 }
 
-a {
+/* a {
   font-size: 2rem;
   text-decoration: none;
   padding-bottom: 0rem;
   border: 0px solid blue;
   border-radius: 33%;
   width: 10%;
-  /* margin-left: 45%; */
+  margin-left: 45%;
   border-style: solid;
   color: black;
-  /* background-color: lightblue; */
-  /* background-color: #f95d6a; */
-  background-color: lightgray;
-  /* display: inline; */
+  background-color: lightblue;
+  background-color: #f95d6a;
+  background-color: transparent;
+  display: inline;
   justify-content: space-around;
-}
+} */
 
 #save,
-#demo,
-#reset {
+#demo {
   margin: 1rem;
   font-size: 1.2rem;
   border: 1px solid black;
+  border-radius: 15px;
+}
+
+#help,
+#info {
+  margin: 1rem;
+  /* font-size: 1.2rem; */
+  border: 0px solid black;
   border-radius: 15px;
 }
 
