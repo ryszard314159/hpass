@@ -17,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -71,7 +72,7 @@ class MainActivity : ComponentActivity() {
             Text(
                 text = "Length in 1-7 range",
                 fontFamily = FontFamily.SansSerif,
-                fontSize = 18.sp,
+                fontSize = 24.sp,
                 modifier = Modifier.padding(16.dp),
 //                textAlign = TextAlign.Center
             )
@@ -84,11 +85,14 @@ class MainActivity : ComponentActivity() {
                 onValueChange = {
                     text = it
                 },
-                label = { Text(
+                label = {
+                    Text(
 //                    style = TextStyle(fontStyle = Color(0xff005500)),
 //                    color = Color.LightGray,
-                    color = Color(0xff999999),
-                    text = "hint to generate password") },
+                        color = Color(0xff999999),
+                        text = "hint to generate password"
+                    )
+                },
 //                placeholder = { Text(text = "Your password hint") },
             )
             Column(modifier = Modifier.fillMaxWidth(0.75f)) {
@@ -103,18 +107,30 @@ class MainActivity : ComponentActivity() {
                 hpassRowNumber("Length:", "6")
 
                 Button(
-                    modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(Color(0xff90ee90)),
 //                    content = RowScope(),
                     onClick = { /*TODO*/ }) {
-                    Text( text = "Generate and copy to clipboard",
+                    Text(
+                        text = "Generate and copy to clipboard",
                         fontFamily = FontFamily.SansSerif,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color=Color(0xff333333)
+                        color = Color(0xff333333)
                     )
                 }
-
+                Divider(
+                    color = Color.Red,
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(16.dp)
+                )
+                Divider(
+                    color = Color.Red,
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(16.dp)
+                )
             }
         }
     }
@@ -130,13 +146,16 @@ private fun hpassRow(s: String, initial: String) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            modifier = Modifier.padding(end = 16.dp).fillMaxWidth(0.25f),
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .fillMaxWidth(0.25f),
+            fontWeight = FontWeight.Bold,
             text = s
         ) // this is the label
         TextField(
             value = text,
             textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-              modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
             onValueChange = {
                 text = it
             },
@@ -145,17 +164,23 @@ private fun hpassRow(s: String, initial: String) {
         )
     }
 }
+
 @Composable
 private fun hpassRowNumber(s: String, initial: String) {
     var text by remember { mutableStateOf(TextFieldValue("")) }
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = s,
-            modifier = Modifier.padding(end = 16.dp).fillMaxWidth(0.25f)
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .fillMaxWidth(0.25f)
         ) // this is the label
         TextField(
             value = text,
-            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = 16.dp, bottom = 16.dp)
+                .fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             onValueChange = { it ->
                 text = it
@@ -164,6 +189,7 @@ private fun hpassRowNumber(s: String, initial: String) {
         )
     }
 }
+
 @Composable
 fun SaltTextField() {
     Row(
