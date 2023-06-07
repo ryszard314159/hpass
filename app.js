@@ -4,7 +4,7 @@ import { getPass } from "./core/lib.js";
 const globalDefaults = {};
 globalDefaults.pepper = "_";
 globalDefaults.length = 15;
-globalDefaults.clean = true;
+globalDefaults.clean = 2;
 globalDefaults.minlength = 5;
 globalDefaults.maxlength = 64;
 globalDefaults.salt = null;
@@ -72,19 +72,18 @@ if ("serviceWorker" in navigator) {
 }
 
 function cleanLevel(level) {
-  let v = null;
-  const trueClean = new Set(["true", true, "1", 1]); // , "2", 2]);
-  const falseClean = new Set(["false", false, "0", 0]);
-  const highClean = new Set(["2", 2]);
-  if (falseClean.has(level)) v = false;
-  if (trueClean.has(level)) v = true;
-  if (highClean.has(level)) v = 2;
-  if (v === null) {
-    console.log("WARNING: app: cleanLevel: invalid level= ", level);
-    v = true;
-    console.log("WARNING: app: cleanLevel: level set to= ", v);
-  }
-  return v;
+  // const trueClean = new Set(["true", true, "1", 1]); // , "2", 2]);
+  // const falseClean = new Set(["false", false, "0", 0]);
+  // const highClean = new Set(["2", 2]);
+  // if (falseClean.has(level)) v = false;
+  // if (trueClean.has(level)) v = true;
+  // if (highClean.has(level)) v = 2;
+  // if (v === null) {
+  //   console.log("WARNING: app: cleanLevel: invalid level= ", level);
+  //   v = true;
+  //   console.log("WARNING: app: cleanLevel: level set to= ", v);
+  // }
+  return Math.max(Math.min(level, 2), 0);
 }
 
 // function cleanLevelDisplay(level) {

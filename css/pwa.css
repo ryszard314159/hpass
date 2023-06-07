@@ -23,6 +23,20 @@ body {
   text-align: center;
 }
 
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f1f1f1;
+  padding: 20px;
+  /* margin-bottom: 90px; */
+  text-align: center;
+  text-decoration: none;
+  font-size: 2rem;
+  z-index: 99;
+}
+
 div {
   display: block;
 }
