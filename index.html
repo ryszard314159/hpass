@@ -18,7 +18,7 @@
   </head>
   <body>
     <br /><br />
-    <!-- <br /><br /> -->
+    <br /><br />
     <div id="hintContainer" class="">
       <form id="hintForm" class="">
         <!-- <button id="generate" class="gear" type="button">➜</button> -->
@@ -48,17 +48,19 @@
         </div>
         <div class="input-container">
           <button id="lengthBtn" class="leading-icon">📏</button>
-          <input id="length" placeholder=" " />
+          <input id="length" type="number" min="5" max="64" placeholder=" " />
           <label for="length">Length</label>
-          <button id="lengthCross" class="trailing-icon">⨉</button>
-          <p class="helper-text">password length (15 recommended)</p>
+          <!-- <button id="lengthCross" class="trailing-icon">⨉</button> -->
+          <p class="helper-text">
+            5-128 range, 15 recommended to satisfy most websites
+          </p>
         </div>
         <div class="input-container">
           <button id="cleanBtn" class="leading-icon">🧹</button>
           <input id="clean" type="number" min="0" max="2" placeholder=" " />
           <!-- <input type="number" name="quantity" min="1" max="100"> -->
           <label for="clean">Clean level: 0|1|2</label>
-          <button id="cleanCross" class="trailing-icon">⨉</button>
+          <!-- <button id="cleanCross" class="trailing-icon">⨉</button> -->
           <p class="helper-text">
             <b>0:</b> keep hint as-is <b>1:</b> convert to lower case and
             extract domain e.g. https://www.Google.com/photos/ ➜ google.com

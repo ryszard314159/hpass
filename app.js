@@ -1,5 +1,10 @@
 "use strict";
-import { getPass } from "./core/lib.js";
+import { getPass, MAXLENGTH, MINLENGTH } from "./core/lib.js";
+
+const MAXCLEAN = 2;
+const MINCLEAN = 0;
+const POPUPSHORT = 1e3; // short popup time
+const POPUPLONG = 1e5; // long popup time
 
 const globalDefaults = {};
 globalDefaults.pepper = "_";
@@ -24,7 +29,6 @@ el.passwords = document.getElementById("passwords");
 el.hide = document.getElementById("hide");
 el.save = document.getElementById("save");
 el.demo = document.getElementById("demo");
-// el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
 el.back = document.getElementById("back");
 el.menu = document.getElementById("menu");
@@ -54,7 +58,7 @@ if ("serviceWorker" in navigator) {
         let msg = `installation: your personalized secret is ${salt}`;
         msg = msg + "<br>NOTE: you can change it later if you whish";
         alert("app: register: options set to default values on install");
-        showPopup(msg, 1e5);
+        showPopup(msg, POPUPLONG);
         console.log("app: register: opts=defaults= ", defaults);
       } else {
         console.log("app: register: exist already: opts= ", opts);
@@ -71,20 +75,20 @@ if ("serviceWorker" in navigator) {
     .catch(console.error("app: registration failed"));
 }
 
-function cleanLevel(level) {
-  // const trueClean = new Set(["true", true, "1", 1]); // , "2", 2]);
-  // const falseClean = new Set(["false", false, "0", 0]);
-  // const highClean = new Set(["2", 2]);
-  // if (falseClean.has(level)) v = false;
-  // if (trueClean.has(level)) v = true;
-  // if (highClean.has(level)) v = 2;
-  // if (v === null) {
-  //   console.log("WARNING: app: cleanLevel: invalid level= ", level);
-  //   v = true;
-  //   console.log("WARNING: app: cleanLevel: level set to= ", v);
-  // }
-  return Math.max(Math.min(level, 2), 0);
-}
+// function cleanLevel(level) {
+// const trueClean = new Set(["true", true, "1", 1]); // , "2", 2]);
+// const falseClean = new Set(["false", false, "0", 0]);
+// const highClean = new Set(["2", 2]);
+// if (falseClean.has(level)) v = false;
+// if (trueClean.has(level)) v = true;
+// if (highClean.has(level)) v = 2;
+// if (v === null) {
+//   console.log("WARNING: app: cleanLevel: invalid level= ", level);
+//   v = true;
+//   console.log("WARNING: app: cleanLevel: level set to= ", v);
+// }
+//   return Math.max(Math.min(level, 2), 0);
+// }
 
 // function cleanLevelDisplay(level) {
 //   let v = null;
@@ -188,6 +192,8 @@ function showPopup(msg, timeOut) {
   p.style.borderRadius = "15px";
   p.style.padding = "1rem 0 1rem 0";
   p.style.position = "absolute";
+  // width:140px;overflow:auto
+  p.style.overflow = "auto";
   const x = document.createElement("button");
   x.innerHTML = "X";
   x.style.position = "absolute";
@@ -212,7 +218,7 @@ el.back.addEventListener("click", () => {
   el.menu.classList.toggle("slide-in");
 });
 
-const ops = ["pepper", "salt", "length", "clean"];
+const ops = ["pepper", "salt"]; // "length"]; "clean"];
 ops.forEach((x) => {
   let cross = `${x}Cross`;
   console.log("app:0: ops.forEach: x= ", x, " cross= ", cross);
@@ -225,15 +231,17 @@ ops.forEach((x) => {
 el.save.addEventListener("click", function () {
   const opts = { ...globalDefaults };
   console.log("apps:0: save: opts= ", opts);
+  console.log("apps:0: save: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
-  opts.length = el.length.value;
-  opts.clean = cleanLevel(el.clean.value);
+  opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
+  opts.clean = Math.max(Math.min(el.clean.value, MAXCLEAN), MINCLEAN);
   window.localStorage.setItem("options", JSON.stringify(opts));
-  el.clean.value = cleanLevel(opts.clean);
+  el.length.value = opts.length;
+  el.clean.value = opts.clean;
   console.log("apps:1: save: opts= ", opts);
   console.log("apps:1: save: el.clean.value= ", el.clean.value);
-  showPopup("settings saved!", 1000);
+  showPopup("settings saved!", POPUPSHORT);
 });
 
 el.demo.addEventListener("click", function () {
@@ -242,9 +250,9 @@ el.demo.addEventListener("click", function () {
   el.pepper.value = globalDefaults.pepper;
   el.salt.value = globalDefaults.salt;
   el.length.value = globalDefaults.length;
-  el.clean.value = cleanLevel(globalDefaults.clean);
-  el.length.min = globalDefaults.minlength;
-  el.length.max = globalDefaults.maxlength;
+  el.clean.value = globalDefaults.clean;
+  el.length.min = MINLENGTH;
+  el.length.max = MAXLENGTH;
   console.log("app: demo: el.pepper.value= ", el.pepper.value);
   console.log("app: demo: el.salt.value= ", el.salt.value);
   console.log("app: demo: el.length.value= ", el.length.value);
@@ -253,16 +261,8 @@ el.demo.addEventListener("click", function () {
   console.log("app: demo: el.length.max= ", el.length.max);
 });
 
-// el.reset.addEventListener("click", function () {
-//   console.log("app: reset: el= ", el);
-//   el.pepper.value = null;
-//   el.salt.value = null;
-//   el.length.value = null;
-//   el.clean.value = null;
-// });
-
 el.hint.addEventListener("mouseout", () => {
-  const cleaned = cleanLevel(el.clean.value);
+  const cleaned = Math.max(Math.min(el.clean.value, MAXCLEAN), MINCLEAN);
   console.log("app:0: mouseout: el.clean.value= ", el.clean.value);
   console.log(
     "app:0: mouseout: type of el.clean.value= ",
@@ -309,7 +309,7 @@ el.generate.addEventListener("click", function () {
     .writeText(passwd)
     .then(() => {
       console.log("app: clipboard copy success! passwd= ", passwd);
-      showPopup(`${passwd}<br><br>copied to clipboard`, 1000);
+      showPopup(`${passwd}<br><br>copied to clipboard`, POPUPSHORT);
     })
     .catch((err) => console.error("app: clipboard copy error= ", err));
 });
