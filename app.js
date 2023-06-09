@@ -316,13 +316,13 @@ el.generate.addEventListener("click", function () {
   // document.getElementById("passwords").prepend(passwd + "\n");
   if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
     // iOS device
-    const el = document.createElement("textarea");
-    el.value = passwd;
-    document.body.appendChild(el);
-    el.select();
-    el.setSelectionRange(0, 99999); // For mobile devices
+    const x = document.createElement("textarea");
+    x.value = passwd;
+    document.body.appendChild(x);
+    x.select();
+    x.setSelectionRange(0, 99999); // For mobile devices
     document.execCommand("copy");
-    document.body.removeChild(el);
+    document.body.removeChild(x);
     console.log("app: iOS: clipboard copy success! passwd= ", passwd);
     showPopup(`${passwd}<br><br>copied to clipboard`, POPUPSHORT);
   } else {
