@@ -314,13 +314,27 @@ el.generate.addEventListener("click", function () {
   args.verbose = true;
   let passwd = getPass(args);
   // document.getElementById("passwords").prepend(passwd + "\n");
-  navigator.clipboard
-    .writeText(passwd)
-    .then(() => {
-      console.log("app: clipboard copy success! passwd= ", passwd);
-      showPopup(`${passwd}<br><br>copied to clipboard`, POPUPSHORT);
-    })
-    .catch((err) => console.error("app: clipboard copy error= ", err));
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+    // iOS device
+    const el = document.createElement("textarea");
+    el.value = passwd;
+    document.body.appendChild(el);
+    el.select();
+    el.setSelectionRange(0, 99999); // For mobile devices
+    document.execCommand("copy");
+    document.body.removeChild(el);
+    console.log("app: iOS: clipboard copy success! passwd= ", passwd);
+    showPopup(`${passwd}<br><br>copied to clipboard`, POPUPSHORT);
+  } else {
+    // Non-iOS device
+    navigator.clipboard
+      .writeText(passwd)
+      .then(() => {
+        console.log("app: non-iOS: clipboard copy success! passwd= ", passwd);
+        showPopup(`${passwd}<br><br>copied to clipboard`, POPUPSHORT);
+      })
+      .catch((err) => console.error("app: clipboard copy error= ", err));
+  }
 });
 
 function toggleSize() {
@@ -329,3 +343,25 @@ function toggleSize() {
     el.generate.classList.remove("active");
   }, 100);
 }
+
+// if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+//   // iOS device
+//   const el = document.createElement("textarea");
+//   el.value = passwd;
+//   document.body.appendChild(el);
+//   el.select();
+//   el.setSelectionRange(0, 99999); // For mobile devices
+//   document.execCommand("copy");
+//   document.body.removeChild(el);
+//   console.log("app: clipboard copy success! passwd= ", passwd);
+//   showPopup(`${passwd}<br><br>copied to clipboard`, POPUPSHORT);
+// } else {
+//   // Non-iOS device
+//   navigator.clipboard
+//     .writeText(passwd)
+//     .then(() => {
+//       console.log("app: clipboard copy success! passwd= ", passwd);
+//       showPopup(`${passwd}<br><br>copied to clipboard`, POPUPSHORT);
+//     })
+//     .catch((err) => console.error("app: clipboard copy error= ", err));
+// }
