@@ -55,16 +55,30 @@
             4-128 range, 15 recommended to satisfy most websites
           </p>
         </div>
+        <!--       
+<input list="browsers">
+<datalist id="browsers">
+  <option value="Internet Explorer">
+  <option value="Firefox">
+  <option value="Google Chrome">
+  <option value="Opera">
+  <option value="Safari">
+</datalist>
+-->
         <div class="input-container">
           <button id="cleanBtn" class="leading-icon">🧹</button>
-          <input id="clean" type="number" min="0" max="2" placeholder=" " />
+          <input id="clean" list="cleanList" placeholder=" " />
           <!-- <input type="number" name="quantity" min="1" max="100"> -->
-          <label for="clean">Clean level: 0|1|2</label>
+          <label for="clean">Clean: true|false</label>
           <!-- <button id="cleanCross" class="trailing-icon">⨉</button> -->
+          <!-- <datalist id="cleanList">
+            <option value="true"></option>
+            <option value="false"></option>
+          </datalist> -->
           <p class="helper-text">
-            <b>0:</b> keep hint as-is <b>1:</b> convert to lower case and
-            extract domain e.g. https://www.Google.com/photos/ ➜ google.com
-            <b>2:</b> extract second-level domain e.g. google (default)
+            <b>true:</b> convert to lower case and extract second level domain
+            e.g. https://www.Google.com/photos/ ➜ google <b>false:</b> keep hint
+            as-is
           </p>
         </div>
       </div>

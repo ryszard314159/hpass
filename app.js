@@ -9,7 +9,7 @@ const POPUPLONG = 1e5; // long popup time
 const globalDefaults = {};
 globalDefaults.pepper = "_";
 globalDefaults.length = 15;
-globalDefaults.clean = 2;
+globalDefaults.clean = true;
 globalDefaults.minlength = 5;
 globalDefaults.maxlength = 64;
 globalDefaults.salt = null;
@@ -228,6 +228,11 @@ ops.forEach((x) => {
   });
 });
 
+function cleanClean(v) {
+  const valid = new Set(["true", "false", true, false, 0, 1, "0", "1"]);
+  return valid.has(v) ? v : true;
+}
+
 el.save.addEventListener("click", function () {
   const opts = { ...globalDefaults };
   console.log("apps:0: save: opts= ", opts);
@@ -235,10 +240,12 @@ el.save.addEventListener("click", function () {
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
   opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
-  opts.clean = Math.max(Math.min(el.clean.value, MAXCLEAN), MINCLEAN);
+  // opts.clean = Math.max(Math.min(el.clean.value, MAXCLEAN), MINCLEAN);
+  opts.clean = cleanClean(el.clean.value);
+  el.clean.value = opts.clean;
   window.localStorage.setItem("options", JSON.stringify(opts));
   el.length.value = opts.length;
-  el.clean.value = opts.clean;
+  // el.clean.value = opts.clean;
   console.log("apps:1: save: opts= ", opts);
   console.log("apps:1: save: el.clean.value= ", el.clean.value);
   showPopup("settings saved!", POPUPSHORT);
@@ -262,7 +269,8 @@ el.demo.addEventListener("click", function () {
 });
 
 el.hint.addEventListener("mouseout", () => {
-  const cleaned = Math.max(Math.min(el.clean.value, MAXCLEAN), MINCLEAN);
+  // const cleaned = Math.max(Math.min(el.clean.value, MAXCLEAN), MINCLEAN);
+  const cleaned = el.clean.value;
   console.log("app:0: mouseout: el.clean.value= ", el.clean.value);
   console.log(
     "app:0: mouseout: type of el.clean.value= ",
@@ -289,7 +297,8 @@ el.generate.addEventListener("click", function () {
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
   opts.length = el.length.value;
-  opts.clean = el.clean.value;
+  opts.clean = cleanClean(el.clean.value);
+  el.clean.value = opts.clean;
   window.localStorage.setItem("options", JSON.stringify(opts));
   let args = { ...opts }; // deep copy
   args.hint = el.hint.value;

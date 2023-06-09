@@ -1,5 +1,10 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
+  background-color: rgb(195, 223, 238);
+  width: 95%;
+  margin-left: 2%;
+  margin-top: 10%;
+  /* margin-right: 9%; */
 }
 
 .banner {
