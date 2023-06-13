@@ -7,12 +7,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.ColumnScopeInstance.weight
+//import androidx.compose.foundation.layout.ColumnScopeInstance.weight
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+//import androidx.compose.foundation.layout.RowScopeInstance.weight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
@@ -24,6 +31,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,6 +71,8 @@ class MainActivity : ComponentActivity() {
     @Preview
     @Composable
     private fun hpassSplash() {
+        var generatedPasswords by remember { mutableStateOf(listOf<String>()) }
+
         Column(
 //            modifier = Modifier.fillMaxWidth(0.75f),
             verticalArrangement = Arrangement.Center,
@@ -112,7 +122,16 @@ class MainActivity : ComponentActivity() {
                         .fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(Color(0xff90ee90)),
 //                    content = RowScope(),
-                    onClick = { /*TODO*/ }) {
+                    onClick = {
+                        val generatedPassword : String = generatePassword(
+//                            passwordHint,
+//                            salt,
+//                            pepper,
+//                            passwordLength
+                        )
+                        generatedPasswords = generatedPasswords + generatedPassword
+                    }
+                ) {
                     Text(
                         text = "Generate and copy to clipboard",
                         fontFamily = FontFamily.SansSerif,
@@ -126,6 +145,19 @@ class MainActivity : ComponentActivity() {
                     thickness = 1.dp,
                     modifier = Modifier.padding(16.dp)
                 )
+                LazyColumnWithAutoScroll(generatedPasswords)
+//                LazyColumn(
+//                    reverseLayout = true,
+//                    userScrollEnabled = true,
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    items(generatedPasswords) { password ->
+//                        Text(
+//                            text = password,
+//                            modifier = Modifier.padding(bottom = 8.dp)
+//                        )
+//                    }
+//                }
                 Divider(
                     color = Color.Red,
                     thickness = 1.dp,
@@ -134,6 +166,37 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+@Composable
+fun LazyColumnWithAutoScroll(itemlist: List<String>) {
+    // This variable remembers the state of the LazyColumn.
+    val listState = rememberLazyListState()
+
+    // This function scrolls the LazyColumn to the bottom when new items are added.
+    LaunchedEffect(itemlist.size) {
+        if (!listState.isScrolledToTheEnd()) {
+            listState.animateScrollToItem(itemlist.size - 1)
+        }
+    }
+
+    // This function displays the items in the LazyColumn.
+    LazyColumn(
+        reverseLayout = true,
+        userScrollEnabled = true,
+//        modifier = Modifier.weight(1f),
+        state = listState
+//        reverseLayout = true
+    ) {
+        items(itemlist) { item ->
+            Text(text = item)
+        }
+    }
+}
+
+fun LazyListState.isScrolledToTheEnd(): Boolean {
+    val lastItem = layoutInfo.visibleItemsInfo.lastOrNull()
+    return lastItem == null || lastItem.size + lastItem.offset <= layoutInfo.viewportEndOffset
 }
 
 @Composable
@@ -215,6 +278,19 @@ fun SaltTextField() {
                 ),
         )
     }
+}
+
+private fun generatePassword(/*hint: String, salt: String, pepper: String, length: Int*/): String {
+    // Generate the password based on the provided inputs
+    // Implement your password generation logic here
+    // ...
+    val length =4
+//  return "password1" // Return the generated password
+    val chars = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    val password = (1..length)
+        .map { chars.random() }
+        .joinToString("")
+    return password
 }
 
 @Composable
