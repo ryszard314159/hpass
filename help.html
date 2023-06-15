@@ -7,44 +7,69 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body style="background-color: rgb(175, 231, 191)">
-    <a href="javascript:window.history.back();" class="banner"><<< Back</a>
+    <a href="javascript:window.history.back();" class="banner">
+      <img width="48" height="24" src="icons/back.svg" /> Settings</a>
     <div style="margin-top: 6rem"></div>
+    <h1>Installation and Settings</h1>
+    Press <img width="48" height="24" src="icons/reset.svg" /> button to populate
+    setting fields with default values
+    <ul>
+      <li>Special character (🌶): "_" i.e. underscore</li>
+      <li>
+        Secret (🤫) random 8 character string (e.g. RJgXyUri) to make generated
+        passwords unique to the user. You are welcome to change it if you wish.
+      </li>
+      <li>Length (📏): 15</li>
+      <li>Clean (🧹): <tt><strong>true</strong></tt></li>
+    </ul>
+    Press <img width="48" height="24" src="icons/save.svg" /> button to save
+    these values on your device. Password prompt entered in "enter hint" box at
+    the top of the screen together with these settings determines the generated
+    password i.e. with the same values always the same password will be
+    generated. <strong>NOTE:</strong> it is important to store these values in
+    some safe place in case e.g. you loose your device etc. In this case,
+    if you install the app on the new device you would need to enter these
+    settings in order to create the same password as on the old device. 
     <h1>Basic usage</h1>
     <ol>
-      <li>Enter password seed in blue box</li>
-      <li>Click "Generate and copy" button</li>
-      <li>Paste generated password from clipboard</li>
+      <li>
+        Enter password hint in <tt>enter hint</tt> box. It is recommended to use as a
+        hint simply secondary domain of the website which asks for password e.g.
+        <tt>netflix</tt>. Note: you can simply copy and paste
+        <tt>https://www.netflix.com/login</tt> and with Clean option set to true
+        it will extract just <tt>netflix</tt> as a hint.
+      </li>
+      <li>
+        Click <img width="32" height="24" src="icons/generate.svg" /> button to
+        generate password and password will be automaticall copied to the
+        clipboard.
+      </li>
+      <li>Paste generated password from clipboard where it is needed.</li>
     </ol>
-    <h1>Icons</h1>
-    <ul>
-      <li><strong>help</strong> - shows this page</li>
-      <li><strong>hide/show</strong> - toggle visibility</li>
-      <li><strong>info</strong> - in depth background</li>
-    </ul>
-    <h1>Options</h1>
-    You should change default parameters (in parentheses below) in order to
-    generate passwords unique to you. The values you enter are saved locally and
-    reused between sessions. NOTE: These saved values will be erased when
-    browser cache/cookies are cleared.
-    <ol>
-      <li>
-        <strong>Pepper</strong> (!) -
-        <a
-          href="https://en.wikipedia.org/wiki/List_of_special_characters_for_passwords"
-          >special character</a
-        >
-        is recommended as these are required by most sites
-      </li>
-      <li><strong>Salt</strong> (SALT) - any secret you want</li>
-      <li>
-        <strong>Length</strong> (15) - longer passwords are more secure, but
-        some sites are limiting length. Default value 15 seems to be accepted by
-        most sites.
-      </li>
-      <li>
-        <strong>Burnin</strong> (9) - the number of initial (throw away) random
-        number generator cycles
-      </li>
-    </ol>
+    <h1>Buttons</h1>
+    <p> <!-- style="display: inline"> -->
+      <div class="container">
+        <img width="32" height="24" src="icons/generate.svg" /> Generate
+        password
+      </div>
+      <div class="container">
+        <img width="32" height="24" src="icons/gear.svg" />Show / hide settings
+      </div>
+      <div class="container">
+        <img width="32" height="24" src="icons/help.svg" /> Show this help page
+      </div>
+      <div class="container">
+        <img width="32" height="24" src="icons/reset.svg" /> Populate setting
+        fields with default values
+      </div>
+      <div class="container">
+        <img width="32" height="24" src="icons/save.svg" /> Save settings
+        locally
+      </div>
+      <div class="container">
+        <img width="32" height="24" src="icons/info.svg" /> Show more detailed
+        info page
+      </div>
+    </p>
   </body>
 </html>

@@ -20,11 +20,14 @@
     <br /><br />
     <br /><br />
     <div id="hintContainer" class="">
-      <form id="hintForm" class="">
+      <form id="hintForm" class="center">
         <!-- <button id="generate" class="gear" type="button">➜</button> -->
-        <button id="generate" class="gear" type="button">></button>
+        <!-- <button id="generate" class="gear" type="button">></button> -->
+        <!-- arrow-pointing-right-svgrepo-com -->
+        <img id="generate" width="64" height="32" src="icons/generate.svg" />
         <input id="hint" placeholder="enter hint" />
-        <button id="gear" class="gear" type="button">⚙</button>
+        <!-- <button id="gear" class="gear" type="button">⚙</button> -->
+        <img id="gear" width="64" height="32" src="icons/gear.svg" />
       </form>
     </div>
     <div id="menu" class="menu">
@@ -84,16 +87,24 @@
       </div>
       <div style="margin-bottom: 0.5rem">&nbsp;</div>
       <hr />
-      <div id="saveDiv">
+      <div id="saveDiv" style="display: flex; align-items: center">
         <!-- <a href="help.html" class="">&quest;</a> -->
-        <a id="help" href="help.html" class=""><img src="icons/help.svg" /></a>
+        <a id="help" href="help.html" class=""
+          ><img width="64" height="48" src="icons/help.svg"
+        /></a>
         <!-- <a id="help" href="help.html" class="">Help?</a> -->
         <!-- <button id="help" href="help.html" class="">Help?</button> -->
-        <button id="demo">Default</button>
+        <!-- <button id="demo">Default</button> -->
+        <!-- <button id="demo"> -->
+        <img id="demo" width="64" height="48" src="icons/reset.svg" />
+        <!-- </button> -->
         <!-- <button id="reset">Reset</button> -->
-        <button id="save">Save</button>
+        <!-- <button id="save">Save</button> -->
+        <img id="save" width="64" height="48" src="icons/save.svg" />
         <!-- <a href="info.html" class="">i</a> -->
-        <a id="info" href="info.html" class=""><img src="icons/info.svg" /></a>
+        <a id="info" href="info.html" class=""
+          ><img width="64" height="48" src="icons/info.svg"
+        /></a>
       </div>
       <!-- <div id="helpDiv">
         <a href="help.html" class="">&quest;</a>

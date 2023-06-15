@@ -21,3 +21,20 @@ body {
   z-index: 99;
   /* display: block; */
 }
+
+.center {
+  border: 1px solid;
+  display: block;
+  height: 100%;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  /* min-height: 100vh; */
+  background: transparent;
+  /* display: flex; */
+  display: inline;
+  /* justify-content: center; */
+  align-items: center;
+}

@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-  <circle cx="24" cy="24" r="20" stroke="black" stroke-width="1" fill="white"/>
-  <text x="50%" y="50%" text-anchor="middle" fill="black" font-size="1.5rem" font-weight="bold" dy=".3em">i</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="31" stroke="black" stroke-width="2" fill="white"/>
+  <text x="32" y="32" text-anchor="middle" font-size="2.5rem"
+  font-family="Arial, Helvetica, sans-serif" dy="0.9rem">i</text>
 </svg>

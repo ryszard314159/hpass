@@ -1,6 +1,9 @@
 "use strict";
 import { getPass, MAXLENGTH, MINLENGTH } from "./core/lib.js";
 
+// navigator.clipboard.writeText fails in Safari
+// https://developer.apple.com/forums/thread/691873
+
 const MAXCLEAN = 2;
 const MINCLEAN = 0;
 const POPUPSHORT = 1e3; // short popup time

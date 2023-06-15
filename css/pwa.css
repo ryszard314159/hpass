@@ -73,7 +73,7 @@ legend {
   margin-top: 2%;
   width: 20%;
   height: 3rem;
-  background-color: transparent;
+  background-color: lightgrey;
   /* border-radius: 50%; */
   border: 0px solid #ccc;
   float: right;
@@ -82,7 +82,7 @@ legend {
 }
 .gear:hover {
   font-weight: bolder;
-  background-color: lightgrey;
+  background-color: lightgreen;
 }
 
 .grow {
@@ -150,14 +150,14 @@ input {
   justify-content: space-around;
 }
 
-#save,
+/* #save,
 #demo {
   margin: 1rem;
   font-size: 1.2rem;
   border: 1px solid black;
   border-radius: 15px;
   background-color: transparent;
-}
+} */
 #more {
   background-color: transparent;
 }
