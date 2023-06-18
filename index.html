@@ -21,19 +21,21 @@
     <br /><br />
     <div id="hintContainer" class="">
       <form id="hintForm" class="center">
-        <!-- <button id="generate" class="gear" type="button">➜</button> -->
-        <!-- <button id="generate" class="gear" type="button">></button> -->
-        <!-- arrow-pointing-right-svgrepo-com -->
-        <img id="generate" width="64" height="32" src="icons/generate.svg" />
+        <img id="generate" class="btn" src="icons/generate.svg" />
         <input id="hint" placeholder="enter hint" />
-        <!-- <button id="gear" class="gear" type="button">⚙</button> -->
-        <img id="gear" width="64" height="32" src="icons/gear.svg" />
+        <img id="gear" class="btn" src="icons/gear.svg" />
       </form>
     </div>
     <div id="menu" class="menu">
       <div class="">
         <legend id="back">Settings &nbsp; &nbsp; &nbsp;⨉ <br /><br /></legend>
-        <!-- ↶ -->
+        <div class="input-container">
+          <button id="saltBtn" class="leading-icon">🤫</button>
+          <input id="salt" placeholder=" " />
+          <label for="salt">Secret</label>
+          <button id="saltCross" class="trailing-icon">⨉</button>
+          <p class="helper-text">secret to make password unique</p>
+        </div>
         <div class="input-container">
           <button id="pepperBtn" class="leading-icon">🌶</button>
           <input id="pepper" placeholder=" " />
@@ -43,76 +45,36 @@
           <p class="helper-text">one or more of _.-!@*$?&% etc.</p>
         </div>
         <div class="input-container">
-          <button id="saltBtn" class="leading-icon">🤫</button>
-          <input id="salt" placeholder=" " />
-          <label for="salt">Secret</label>
-          <button id="saltCross" class="trailing-icon">⨉</button>
-          <p class="helper-text">secret to make password unique</p>
-        </div>
-        <div class="input-container">
           <button id="lengthBtn" class="leading-icon">📏</button>
           <input id="length" type="number" min="5" max="128" placeholder=" " />
           <label for="length">Length</label>
-          <!-- <button id="lengthCross" class="trailing-icon">⨉</button> -->
           <p class="helper-text">
             4-128 range, 15 recommended to satisfy most websites
           </p>
         </div>
-        <!--       
-<input list="browsers">
-<datalist id="browsers">
-  <option value="Internet Explorer">
-  <option value="Firefox">
-  <option value="Google Chrome">
-  <option value="Opera">
-  <option value="Safari">
-</datalist>
--->
-        <div class="input-container">
+        <!-- <div class="input-container">
           <button id="cleanBtn" class="leading-icon">🧹</button>
           <input id="clean" list="cleanList" placeholder=" " />
-          <!-- <input type="number" name="quantity" min="1" max="100"> -->
           <label for="clean">Clean: true|false</label>
-          <!-- <button id="cleanCross" class="trailing-icon">⨉</button> -->
-          <!-- <datalist id="cleanList">
-            <option value="true"></option>
-            <option value="false"></option>
-          </datalist> -->
           <p class="helper-text">
             <b>true:</b> convert to lower case and extract second level domain
             e.g. https://www.Google.com/photos/ ➜ google <b>false:</b> keep hint
             as-is
           </p>
-        </div>
+        </div> -->
       </div>
-      <div style="margin-bottom: 0.5rem">&nbsp;</div>
+      <div style="margin-bottom: -1rem">&nbsp;</div>
       <hr />
       <div id="saveDiv" style="display: flex; align-items: center">
-        <!-- <a href="help.html" class="">&quest;</a> -->
         <a id="help" href="help.html" class=""
-          ><img width="64" height="48" src="icons/help.svg"
+          ><img class="btn" src="icons/help.svg"
         /></a>
-        <!-- <a id="help" href="help.html" class="">Help?</a> -->
-        <!-- <button id="help" href="help.html" class="">Help?</button> -->
-        <!-- <button id="demo">Default</button> -->
-        <!-- <button id="demo"> -->
-        <img id="demo" width="64" height="48" src="icons/reset.svg" />
-        <!-- </button> -->
-        <!-- <button id="reset">Reset</button> -->
-        <!-- <button id="save">Save</button> -->
-        <img id="save" width="64" height="48" src="icons/save.svg" />
-        <!-- <a href="info.html" class="">i</a> -->
+        <img id="demo" class="btn" src="icons/reset.svg" />
+        <img id="save" class="btn" src="icons/save.svg" />
         <a id="info" href="info.html" class=""
-          ><img width="64" height="48" src="icons/info.svg"
+          ><img class="btn" src="icons/info.svg"
         /></a>
       </div>
-      <!-- <div id="helpDiv">
-        <a href="help.html" class="">&quest;</a>
-        <a href="info.html" class="">i</a>
-      </div> -->
     </div>
-    <!-- <div id="popup" class="popup" style="display: none">
-      <span id="popupMessage">This is a transient popup message.</span>
-    </div> -->
   </body>
 </html>

@@ -63,9 +63,9 @@ function hash_string(s) {
   // Mersenne primes: 2^(2, 3, 5, 7, 13, 17, 19, 31, 67, 127, 257)
   const p = 2 ** 5 - 1,
     m = MP31; // 2**31 - 1
-  var value = MP31; // 2**31 - 1;
-  var pp = 1;
-  for (var j = 0; j < s.length; j++) {
+  let value = MP31; // 2**31 - 1;
+  let pp = 1;
+  for (let j = 0; j < s.length; j++) {
     value = (value + s.charCodeAt(j) * pp) % m;
     pp = (pp * p) % m;
   }
@@ -90,7 +90,7 @@ function* rig(max, hint) {
     typeof hint === "string",
     `hint must be string, got ${typeof hint}`
   );
-  var seed = hint == "" ? Date.now() : hash_string(hint);
+  let seed = hint == "" ? Date.now() : hash_string(hint);
   while (true) {
     seed = (a * seed + c) % m;
     yield Math.abs(seed % max);
@@ -143,7 +143,7 @@ function getPass(args) {
   CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
   CHARS.upper = CHARS.lower.toUpperCase();
   CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-  var charset = "";
+  let charset = "";
   if (!args.unicode) {
     if (args.digits) charset += CHARS.digits;
     if (args.letters) charset += CHARS.lower + CHARS.upper;

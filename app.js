@@ -4,8 +4,8 @@ import { getPass, MAXLENGTH, MINLENGTH } from "./core/lib.js";
 // navigator.clipboard.writeText fails in Safari
 // https://developer.apple.com/forums/thread/691873
 
-const MAXCLEAN = 2;
-const MINCLEAN = 0;
+// const MAXCLEAN = 2;
+// const MINCLEAN = 0;
 const POPUPSHORT = 1e3; // short popup time
 const POPUPLONG = 1e5; // long popup time
 
@@ -23,7 +23,7 @@ el.hint = document.getElementById("hint");
 el.salt = document.getElementById("salt");
 el.pepper = document.getElementById("pepper");
 el.length = document.getElementById("length");
-el.clean = document.getElementById("clean");
+// el.clean = document.getElementById("clean");
 el.range = document.getElementById("range");
 el.generate = document.getElementById("generate");
 el.generateDiv = document.getElementById("generateDiv");
@@ -70,7 +70,7 @@ if ("serviceWorker" in navigator) {
       el.pepper.value = opts.pepper;
       el.salt.value = opts.salt;
       el.length.value = opts.length;
-      el.clean.value = opts.clean;
+      // el.clean.value = opts.clean;
       el.length.min = opts.minlength;
       el.length.max = opts.maxlength;
       console.log("app: register: els set to opts= ", opts);
@@ -141,15 +141,27 @@ if ("serviceWorker" in navigator) {
 // Remove www prefix, if present
 // Extract the domain name (excluding subdomains and paths)
 // Remove subdomains
-function extractNakedDomain(url) {
-  let domain = url.replace(/^https?:\/\//i, "");
-  domain = domain.replace(/^www\./i, "");
-  domain = domain.split("/")[0];
-  const parts = domain.split(".");
-  if (parts.length > 2) {
-    parts.shift();
-  }
-  return parts.join(".");
+// function extractNakedDomain(url) {
+//   const regex = /^https?:\/\/([a-z0-9]+\.)+[a-z0-9]+(\/.*)?$/;
+//   let domain = url.replace(/^https?:\/\//i, "");
+//   domain = domain.replace(/^www\./i, "");
+//   domain = domain.split("/")[0];
+//   const parts = domain.split(".");
+//   if (parts.length > 2) {
+//     parts.shift();
+//   }
+//   return parts.join(".");
+// }
+
+function extractSecondaryDomain(x) {
+  const regex = /^https?:\/\/([a-z0-9]+\.)+[a-z0-9]+(\/.*)?$/;
+  if (!regex.test(x)) return x; // no url found, return as is
+  let a = x.replace(/^https?:\/\//i, ""); // drop leading https?://
+  let b = a.replace(/\/.*$/, ""); // remove tail i.e. from the first / to the end
+  let c = b.split("."); // split on .
+  if (c.length < 2) return b;
+  let d = c.slice(-2, -1)[0];
+  return d;
 }
 
 // cleaning level:
@@ -157,17 +169,23 @@ function extractNakedDomain(url) {
 // 1 - extract domain e.g. amazon.com
 // 2 - extract domain and drop top-level domain (TLD)
 //     e.g. amazon
-function cleanHint(prompt, level) {
-  console.log("cleanHint: level= ", level, " prompt= ", prompt);
-  console.log("cleanHint: typeof(level)= ", typeof level);
-  if (level === 0) return prompt;
-  let domain = extractNakedDomain(prompt);
-  console.log("cleanHint: level= ", level, " domain= ", domain);
-  if (level < 2) return domain.toLowerCase();
-  const u = domain.split(".");
-  const v = u.length > 1 ? u.at(-2) : domain;
-  console.log("cleanHint: level= ", level, " v= ", v);
-  return v.toLowerCase();
+// function cleanHint(prompt, level) {
+//   console.log("cleanHint: level= ", level, " prompt= ", prompt);
+//   console.log("cleanHint: typeof(level)= ", typeof level);
+//   if (level === 0) return prompt;
+//   let domain = extractNakedDomain(prompt);
+//   console.log("cleanHint: level= ", level, " domain= ", domain);
+//   if (level < 2) return domain.toLowerCase();
+//   const u = domain.split(".");
+//   const v = u.length > 1 ? u.at(-2) : domain;
+//   console.log("cleanHint: level= ", level, " v= ", v);
+//   return v.toLowerCase();
+// }
+
+function cleanHint(prompt) {
+  let hint = prompt.toLowerCase();
+  let domain = extractSecondaryDomain(hint);
+  return domain;
 }
 
 // .ribbon {
@@ -244,13 +262,13 @@ el.save.addEventListener("click", function () {
   opts.salt = el.salt.value;
   opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
   // opts.clean = Math.max(Math.min(el.clean.value, MAXCLEAN), MINCLEAN);
-  opts.clean = cleanClean(el.clean.value);
-  el.clean.value = opts.clean;
+  // opts.clean = cleanClean(el.clean.value);
+  // el.clean.value = opts.clean;
   window.localStorage.setItem("options", JSON.stringify(opts));
   el.length.value = opts.length;
   // el.clean.value = opts.clean;
   console.log("apps:1: save: opts= ", opts);
-  console.log("apps:1: save: el.clean.value= ", el.clean.value);
+  // console.log("apps:1: save: el.clean.value= ", el.clean.value);
   showPopup("settings saved!", POPUPSHORT);
 });
 
@@ -260,36 +278,36 @@ el.demo.addEventListener("click", function () {
   el.pepper.value = globalDefaults.pepper;
   el.salt.value = globalDefaults.salt;
   el.length.value = globalDefaults.length;
-  el.clean.value = globalDefaults.clean;
+  // el.clean.value = globalDefaults.clean;
   el.length.min = MINLENGTH;
   el.length.max = MAXLENGTH;
   console.log("app: demo: el.pepper.value= ", el.pepper.value);
   console.log("app: demo: el.salt.value= ", el.salt.value);
   console.log("app: demo: el.length.value= ", el.length.value);
-  console.log("app: demo: el.clean.value= ", el.clean.value);
+  // console.log("app: demo: el.clean.value= ", el.clean.value);
   console.log("app: demo: el.length.min= ", el.length.min);
   console.log("app: demo: el.length.max= ", el.length.max);
 });
 
 el.hint.addEventListener("mouseout", () => {
   // const cleaned = Math.max(Math.min(el.clean.value, MAXCLEAN), MINCLEAN);
-  const cleaned = el.clean.value;
-  console.log("app:0: mouseout: el.clean.value= ", el.clean.value);
-  console.log(
-    "app:0: mouseout: type of el.clean.value= ",
-    typeof el.clean.value
-  );
-  console.log("app:0: mouseout: cleaned= ", cleaned);
-  console.log("app:0: mouseout: type of cleaned= ", typeof cleaned);
+  // const cleaned = el.clean.value;
+  // console.log("app:0: mouseout: el.clean.value= ", el.clean.value);
+  // console.log(
+  //   "app:0: mouseout: type of el.clean.value= ",
+  //   typeof el.clean.value
+  // );
+  // console.log("app:0: mouseout: cleaned= ", cleaned);
+  // console.log("app:0: mouseout: type of cleaned= ", typeof cleaned);
   console.log("app:0: museout:: el.hint.value= ", el.hint.value);
-  if (cleaned) {
-    console.log("app:1: mouseout: el.clean.value= ", el.clean.value);
-    el.hint.value = cleanHint(el.hint.value, cleaned);
-    console.log("app:1: mouseout: el.hint.value= ", el.hint.value);
-  } else {
-    console.log("app:2: mouseout: el.clean.value= ", el.clean.value);
-  }
-  console.log("app:3: mouseout: el.clean.value= ", el.clean.value);
+  // if (cleaned) {
+  console.log("app:1: mouseout: el.hint.value= ", el.hint.value);
+  el.hint.value = cleanHint(el.hint.value); // cleaned);
+  console.log("app:2: mouseout: el.hint.value= ", el.hint.value);
+  // } else {
+  //   console.log("app:2: mouseout: el.clean.value= ", el.clean.value);
+  // }
+  // console.log("app:3: mouseout: el.clean.value= ", el.clean.value);
   console.log("app:3: mouseout: el.hint.value= ", el.hint.value);
 });
 
@@ -300,8 +318,8 @@ el.generate.addEventListener("click", function () {
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
   opts.length = el.length.value;
-  opts.clean = cleanClean(el.clean.value);
-  el.clean.value = opts.clean;
+  // opts.clean = cleanClean(el.clean.value);
+  // el.clean.value = opts.clean;
   window.localStorage.setItem("options", JSON.stringify(opts));
   let args = { ...opts }; // deep copy
   args.hint = el.hint.value;

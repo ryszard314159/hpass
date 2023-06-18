@@ -9,68 +9,80 @@
   <body style="background-color: rgb(175, 231, 191); padding-top: 9%;">
     <div class="center">
         <a href="javascript:window.history.back();" class="banner">
-         <img width="48" height="24" src="icons/back.svg" />
+         <img width="48rem" height="24rem" src="icons/back.svg" />
           Settings
         </a>
     </div>
     <h1>Installation and Settings</h1>
-    Press <img width="48" height="24" src="icons/reset.svg" /> button to populate
-    setting fields with default values
+    Press
+    <img width="16rem" height="16rem" src="icons/reset.svg" />
+    <!-- <img class="btn" src="icons/reset.svg" /> -->
+    button to populate setting fields with default values
     <ul>
-      <li>Special character (🌶): "_" i.e. underscore</li>
       <li>
-        Secret (🤫) random 8 character string (e.g. RJgXyUri) to make generated
-        passwords unique to the user. You are welcome to change it if you wish.
+        <strong><tt>Secret</tt></strong> (🤫): random 8 character string, generated when app is installed,
+        to make generated passwords unique for the user.
+        You are welcome to change it if you wish.
       </li>
-      <li>Length (📏): 15</li>
-      <li>Clean (🧹): <tt><strong>true</strong></tt></li>
+      <li><tt><strong>Special character</tt></strong> (🌶): _ i.e. underscore</li>
+      <li><tt><strong>Length</tt></strong> (📏): 15</li>
+      <!-- <li>Clean (🧹): <tt><strong>true</strong></tt></li> -->
     </ul>
-    Press <img width="48" height="24" src="icons/save.svg" /> button to save
-    these values on your device. Password prompt entered in "enter hint" box at
+    Press
+    <img width="16rem" height="16rem" src="icons/save.svg" />
+    button to save these values on your device.
+    Password prompt (or hint) entered in <tt>enter hint</tt> box at
     the top of the screen together with these settings determines the generated
     password i.e. with the same values always the same password will be
-    generated. <strong>NOTE:</strong> it is important to store these values in
-    some safe place in case e.g. you loose your device etc. In this case,
-    if you install the app on the new device you would need to enter these
-    settings in order to create the same password as on the old device. 
-    <h1>Basic usage</h1>
+    generated.
+    <br><br><strong>NOTE:</strong> it is important to store
+    <strong><tt>Secret</tt></strong>
+    (and other values if different then default settings) in
+    safe place in case you loose data on your device (or device itself).
+    In such a case, you would need to enter these
+    settings again in order to recreate your passwords -
+    remember, these values (by design) are not stored in any central location,
+    only on your device, 
+    and cannot be recovered if you loose them.
+    <h1>Usage</h1>
     <ol>
       <li>
-        Enter password hint in <tt>enter hint</tt> box. It is recommended to use as a
-        hint simply secondary domain of the website which asks for password e.g.
-        <tt>netflix</tt>. Note: you can simply copy and paste
-        <tt>https://www.netflix.com/login</tt> and with Clean option set to true
-        it will extract just <tt>netflix</tt> as a hint.
+        Enter password hint in a <tt>enter hint</tt> box. It is recommended to use as a
+        hint secondary domain of the website for which you need
+        a password e.g. <tt>abc</tt>
+        for <tt>https://www.abc.com</tt> website.
+        For convenience you can simply copy and paste
+        <tt>https://www.abc.com</tt> and
+        <tt>abc</tt> will be automaticall extracted and used as a hint.
       </li>
       <li>
-        Click <img width="32" height="24" src="icons/generate.svg" /> button to
-        generate password and password will be automaticall copied to the
-        clipboard.
+        Click <img width="16rem" height="16rem" src="icons/generate.svg" /> button to
+        generate password and copy to the clipboard.
       </li>
-      <li>Paste generated password from clipboard where it is needed.</li>
+      <li>Paste generated password from the clipboard where you need it.</li>
     </ol>
     <h1>Buttons</h1>
     <p> <!-- style="display: inline"> -->
       <div class="container">
-        <img width="32" height="16" src="icons/generate.svg" /> Generate
+        <img width="16rem" height="16rem" src="icons/generate.svg" /> Generate
         password &nbsp;
       </div>
       <div class="container">
-        <img width="32" height="16" src="icons/gear.svg" />Show / hide settings &nbsp;
+        <img width="16rem" height="16rem" src="icons/gear.svg" />Show / hide settings &nbsp;
       </div>
       <div class="container">
-        <img width="32" height="16" src="icons/help.svg" /> Show this help page &nbsp;
+        <img width="16rem" height="16rem" src="icons/help.svg" /> Show this help page &nbsp;
       </div>
       <div class="container">
-        <img width="32" height="16" src="icons/reset.svg" /> Populate setting
+        <img width="16rem" height="16rem" src="icons/reset.svg" /> Populate setting
         fields with default values &nbsp;
       </div>
       <div class="container">
-        <img width="32" height="16" src="icons/save.svg" /> Save settings
+        <img width="16rem" height="16rem" src="icons/save.svg" /> Save settings
         locally &nbsp;
       </div>
       <div class="container">
-        <img width="32" height="16" src="icons/info.svg" /> Show more detailed
+        <img width="32rem" height="16rem" src="icons/info.svg" /> Show more detailed
         info page
       </div>
     </p>
