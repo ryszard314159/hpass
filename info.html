@@ -8,7 +8,6 @@
     <div class="center">
       <a href="javascript:window.history.back();" class="banner">
         <img width="48rem" height="24rem" src="icons/back.svg" />
-        <img width="48rem" height="24rem" src="icons/generate.svg" />
         Settings
       </a>
     </div>
@@ -30,14 +29,14 @@
       passwords are generated locally, on demand and never stored in any central
       location. Passwords and few simple settings to generate them (Secret,
       Special character and Length) are never stored in any centralized
-      location, only on your local device, and therefore is no danger of data
-      breach so often reported for password managers.
+      location, only on your local device, so there is no danger of data breach
+      so often reported for password managers.
     </p>
     <p>
       Large number of sites and apps offer strong random password generation,
-      but despite, not exhaustive, but quite extensive search (see links below)
-      I was not able to locate any which would allow to generate reproducible,
-      hint-based passwords as HPASS does.
+      but quite extensive search (see links below) failed to find any which
+      would allow to generate reproducible, hint-derived passwords as HPASS
+      does.
     </p>
     <h2>Typical usage</h2>
     <p>
@@ -49,8 +48,8 @@
       <tt><strong>Secret</strong></tt> = "SECRET", and default values for
       <tt><strong>Special character</strong></tt> and
       <tt><strong>Length</strong></tt
-      >) and copy it to the clipboard. You can paste it where it is needed. As a
-      convenience feature, if you enter the whole URL (e.g.
+      >) and copy it to the clipboard. After that you can paste it where it is
+      needed. As a convenience feature, if you enter the whole URL (e.g.
       <tt>https://www.abc.com</tt>) the app will atomatically extract
       <tt>abc</tt> (secondary domain) as a password hint.
     </p>
@@ -74,15 +73,24 @@
     <h2>Security considerations</h2>
     There is always a balance between security and convenience. In HPASS context
     it means that although keeping only local copies of any sensitive
-    information is more secure and less tempting for any hackers then keeping
-    any sensitive information in a centralized location, just compare relative
-    effort and payoff of braking once into central database with millions of
-    password vs braking into millions of individual devices - no information is
-    100% secure if it is written down. If you are concerned about the
-    possibility of some bad actors braking into your device and stealing
-    settings you use to generate password (Secret, Special Character and
-    Length), there are some steps you can take to vastly improve security of
-    your password by paying (small) inconvenience price. For example you can:
+    information is more secure and less tempting for any hackers then keeping it
+    in a centralized location - just compare relative effort and potential
+    payoff of braking once into central database with millions of password vs
+    braking into millions of individual devices -
+    <a
+      href="https://hbr.org/2017/12/you-cant-secure-100-of-your-data-100-of-the-time"
+      >no information is 100% secure if it is written down</a
+    >,
+    <a
+      href="https://www.jamaicaobserver.com/letters/theres-no-such-thing-as-100-secure-data/"
+    >
+      the only secure data is the one that is kept in your head</a
+    >
+    (barring any mind-reading :). If you are concerned about the possibility of
+    some bad actors braking into your device and stealing settings you use to
+    generate password (Secret, Special Character and Length), there are some
+    steps you can take to vastly improve security of your password by paying
+    (small) inconvenience price. For example you can:
     <ol>
       <li>
         "decorate" hint with some extra characters e.g. instead of using

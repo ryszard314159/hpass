@@ -13,8 +13,8 @@ const globalDefaults = {};
 globalDefaults.pepper = "_";
 globalDefaults.length = 15;
 globalDefaults.clean = true;
-globalDefaults.minlength = 5;
-globalDefaults.maxlength = 64;
+globalDefaults.minlength = MINLENGTH;
+globalDefaults.maxlength = MAXLENGTH;
 globalDefaults.salt = null;
 
 // Selecting elements
@@ -265,7 +265,7 @@ el.save.addEventListener("click", function () {
   // opts.clean = cleanClean(el.clean.value);
   // el.clean.value = opts.clean;
   window.localStorage.setItem("options", JSON.stringify(opts));
-  el.length.value = opts.length;
+  el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
   // el.clean.value = opts.clean;
   console.log("apps:1: save: opts= ", opts);
   // console.log("apps:1: save: el.clean.value= ", el.clean.value);
@@ -287,6 +287,7 @@ el.demo.addEventListener("click", function () {
   // console.log("app: demo: el.clean.value= ", el.clean.value);
   console.log("app: demo: el.length.min= ", el.length.min);
   console.log("app: demo: el.length.max= ", el.length.max);
+  showPopup("defaults restored!", POPUPSHORT);
 });
 
 el.hint.addEventListener("mouseout", () => {
@@ -317,7 +318,8 @@ el.generate.addEventListener("click", function () {
   const opts = {};
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
-  opts.length = el.length.value;
+  opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
+  el.length.value = opts.length;
   // opts.clean = cleanClean(el.clean.value);
   // el.clean.value = opts.clean;
   window.localStorage.setItem("options", JSON.stringify(opts));
