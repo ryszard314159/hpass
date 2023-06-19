@@ -1,6 +1,6 @@
 "use strict";
 // import { getPass } from "./core/lib.js";
-const version = "0.10";
+const version = "0.11";
 
 // let salt = getPass({ hint: "", length: 32 });
 // console.log("sw: just after import: salt= ", salt);
@@ -17,6 +17,11 @@ const appAssets = [
   "icons/hpass.512.png",
   "icons/hpass.1024.png",
   "icons/maskable.1024.png",
+  "icons/info.svg",
+  "icons/help.svg",
+  "icons/reset.svg",
+  "icons/generate.svg",
+  "icons/back.svg",
 ];
 
 // fetch("./settings.json")
