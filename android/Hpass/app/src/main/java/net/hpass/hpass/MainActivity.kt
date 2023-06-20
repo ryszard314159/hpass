@@ -6,11 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.ColumnScopeInstance.align
+//import androidx.compose.foundation.layout.ColumnScopeInstance.align
 //import androidx.compose.foundation.layout.ColumnScopeInstance.weight
 //import androidx.compose.foundation.layout.ColumnScopeInstance.weight
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 //import androidx.compose.foundation.layout.RowScopeInstance.weight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
@@ -35,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import net.hpass.hpass.ui.theme.HpassTheme
 
 class MainActivity : ComponentActivity() {
@@ -123,7 +131,7 @@ class MainActivity : ComponentActivity() {
                     colors = ButtonDefaults.buttonColors(Color(0xff90ee90)),
 //                    content = RowScope(),
                     onClick = {
-                        val generatedPassword : String = generatePassword(
+                        val generatedPassword: String = generatePassword(
 //                            passwordHint,
 //                            salt,
 //                            pepper,
@@ -145,7 +153,7 @@ class MainActivity : ComponentActivity() {
                     thickness = 1.dp,
                     modifier = Modifier.padding(16.dp)
                 )
-                LazyColumnWithAutoScroll(generatedPasswords)
+                LazyColumnWithAutoScroll2(generatedPasswords)
 //                LazyColumn(
 //                    reverseLayout = true,
 //                    userScrollEnabled = true,
@@ -194,9 +202,38 @@ fun LazyColumnWithAutoScroll(itemlist: List<String>) {
     }
 }
 
+
 fun LazyListState.isScrolledToTheEnd(): Boolean {
     val lastItem = layoutInfo.visibleItemsInfo.lastOrNull()
     return lastItem == null || lastItem.size + lastItem.offset <= layoutInfo.viewportEndOffset
+}
+
+@Composable
+fun LazyColumnWithAutoScroll2(itemlist: List<String>) {
+    val lazyColumnListState = rememberLazyListState()
+    val corroutineScope = rememberCoroutineScope()
+
+
+    LazyColumn(
+//        modifier = Modifier.fillMaxHeight(0.4f),
+        reverseLayout = true,
+        state = lazyColumnListState
+
+    ) {
+
+        itemsIndexed(itemlist) { index, string ->
+            Text(
+                modifier = Modifier.fillMaxWidth(1f),
+                text = string,
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp
+            )
+            corroutineScope.launch {
+                lazyColumnListState.scrollToItem(itemlist.size - 1)
+            }
+        }
+    }
+
 }
 
 @Composable
@@ -284,7 +321,7 @@ private fun generatePassword(/*hint: String, salt: String, pepper: String, lengt
     // Generate the password based on the provided inputs
     // Implement your password generation logic here
     // ...
-    val length =4
+    val length = 4
 //  return "password1" // Return the generated password
     val chars = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     val password = (1..length)
