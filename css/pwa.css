@@ -85,7 +85,7 @@ legend {
   background-color: lightgreen;
 }
 
-.btn-container {
+/* .btn-container {
   width: 2rem;
   height: 2rem;
 }
@@ -95,16 +95,42 @@ legend {
   border-radius: 50%;
   width: 3rem;
   height: 3rem;
-}
+} */
 
 .btn {
   width: 2rem;
   height: 2rem;
+  background-color: rgb(238, 236, 236);
+  padding: 1rem;
+  border-radius: 15%;
 }
 .btn:hover {
   font-weight: bolder;
-  background-color: lightgreen;
+  background-color: lightgrey;
+  transition: all 0.5s ease-in-out;
+  /* border-radius: 50%; */
+}
+
+#generate {
+  padding-left: 0.5rem;
+  border-top-right-radius: 0%;
+  border-bottom-right-radius: 0%;
+}
+
+#gear {
+  padding-right: 0.5rem;
+  border-top-left-radius: 0%;
+  border-bottom-left-radius: 0%;
+}
+
+#help,
+#demo,
+#save,
+#info {
   border-radius: 50%;
+  margin: 1rem;
+  border: 0px solid black;
+  /* border-radius: 15px; */
 }
 
 .grow {
@@ -170,6 +196,9 @@ input {
 #helpDiv {
   display: flex;
   justify-content: space-around;
+  text-decoration: none;
+  align-items: center;
+  vertical-align: middle;
 }
 
 /* #save,
@@ -190,13 +219,6 @@ input {
 #lengthBtn {
   border: 0px solid red;
   border-style: solid solid solid none;
-}
-
-#help,
-#info {
-  margin: 1rem;
-  border: 0px solid black;
-  border-radius: 15px;
 }
 
 .input-container {
@@ -297,4 +319,9 @@ label {
   border: 0px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#version {
+  font-size: 0.8rem;
+  color: gray;
 }
