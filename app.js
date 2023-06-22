@@ -28,7 +28,7 @@ el.gear = document.getElementById("gear");
 el.passwords = document.getElementById("passwords");
 el.hide = document.getElementById("hide");
 el.save = document.getElementById("save");
-el.demo = document.getElementById("demo");
+el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
 el.back = document.getElementById("back");
 el.menu = document.getElementById("menu");
@@ -187,20 +187,20 @@ el.save.addEventListener("click", function () {
   showPopup("settings saved!", SHORTPOPUP);
 });
 
-el.demo.addEventListener("click", function () {
-  console.log("app: demo: el= ", el);
-  console.log("app: demo: globalDefaults= ", globalDefaults);
+el.reset.addEventListener("click", function () {
+  console.log("app: reset: el= ", el);
+  console.log("app: reset: globalDefaults= ", globalDefaults);
   el.pepper.value = globalDefaults.pepper;
   el.salt.value = globalDefaults.salt;
   el.length.value = globalDefaults.length;
   el.length.min = MINLENGTH;
   el.length.max = MAXLENGTH;
-  console.log("app: demo: el.pepper.value= ", el.pepper.value);
-  console.log("app: demo: el.salt.value= ", el.salt.value);
-  console.log("app: demo: el.length.value= ", el.length.value);
-  console.log("app: demo: el.length.min= ", el.length.min);
-  console.log("app: demo: el.length.max= ", el.length.max);
-  showPopup("defaults restored!", POPUPSHORT);
+  console.log("app: reset: el.pepper.value= ", el.pepper.value);
+  console.log("app: reset: el.salt.value= ", el.salt.value);
+  console.log("app: reset: el.length.value= ", el.length.value);
+  console.log("app: reset: el.length.min= ", el.length.min);
+  console.log("app: reset: el.length.max= ", el.length.max);
+  showPopup("defaults restored!", SHORTPOPUP);
 });
 
 el.hint.addEventListener("mouseout", () => {

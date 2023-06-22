@@ -1,6 +1,6 @@
 "use strict";
 // import { getPass } from "./core/lib.js";
-const version = "2023-06-21";
+const version = "2023-06-22";
 
 const appAssets = [
   "index.html",
@@ -9,7 +9,6 @@ const appAssets = [
   "app.js",
   "core/lib.js",
   "settings.json",
-  "FAQ/index.html",
   "css/pwa.css",
   "css/style.css",
   "icons/hpass.256.png",
