@@ -15,6 +15,7 @@ const appAssets = [
   "icons/hpass.512.png",
   "icons/hpass.1024.png",
   "icons/maskable.1024.png",
+  "icons/logo.svg",
   "icons/info.svg",
   "icons/help.svg",
   "icons/reset.svg",
