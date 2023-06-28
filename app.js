@@ -121,12 +121,12 @@ function cleanHint(prompt) {
   return domain;
 }
 
-function showPopup(msg, timeOut) {
+function showPopup(msg, timeOut, bkg = "lightgreen") {
   const p = document.createElement("p");
   p.innerHTML = msg;
   p.style.display = "block";
   p.style.fontSize = "1.5rem";
-  p.style.backgroundColor = "lightgreen";
+  p.style.backgroundColor = bkg;
   p.style.border = "0.1px solid black";
   p.style.zIndex = 99;
   p.style.position = "absolute";
@@ -153,6 +153,10 @@ function showPopup(msg, timeOut) {
 
 el.gear.addEventListener("click", () => {
   el.menu.classList.toggle("slide-in");
+  console.log("app: gear click:0: el.gear.src= ", el.gear.src);
+  const x = el.gear.src.split("/").slice(-1)[0];
+  el.gear.src = x == "gear.svg" ? "icons/cross.svg" : "icons/gear.svg";
+  console.log("app: gear click:1: el.gear.src= ", el.gear.src);
 });
 
 el.back.addEventListener("click", () => {
@@ -188,6 +192,12 @@ el.save.addEventListener("click", function () {
 });
 
 el.reset.addEventListener("click", function () {
+  let msg = "Double click to restore defaults.<br>";
+  msg = msg + "WARNING: your current settings will be lost.";
+  showPopup(msg, SHORTPOPUP, "red");
+});
+
+el.reset.addEventListener("dblclick", function () {
   console.log("app: reset: el= ", el);
   console.log("app: reset: globalDefaults= ", globalDefaults);
   el.pepper.value = globalDefaults.pepper;
