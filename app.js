@@ -106,7 +106,8 @@ navigator.serviceWorker.addEventListener("message", (event) => {
 });
 
 function extractSecondaryDomain(x) {
-  const regex = /^https?:\/\/([a-z0-9]+\.)+[a-z0-9]+(\/.*)?$/;
+  // const regex = /^https?:\/\/([a-z0-9]+\.)+[a-z0-9]+(\/.*)?$/;
+  const regex = /^https?:\/\//;
   if (!regex.test(x)) return x; // no url found, return as is
   let a = x.replace(/^https?:\/\//i, ""); // drop leading https?://
   let b = a.replace(/\/.*$/, ""); // remove tail i.e. from the first / to the end
@@ -201,7 +202,7 @@ el.save.addEventListener("click", function () {
 el.reset.addEventListener("click", function () {
   let msg = "Double click to restore defaults.<br>";
   msg = msg + "WARNING: your current settings will be lost.";
-  showPopup(msg, SHORTPOPUP, "red");
+  showPopup(msg, 3 * SHORTPOPUP, "red");
 });
 
 el.reset.addEventListener("dblclick", function () {
