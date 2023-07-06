@@ -2,46 +2,97 @@
 
 <html>
   <head>
+    <meta charset="utf-8" />
     <title>Help</title>
-    <link rel="stylesheet" href="style.css" />
+    <!-- <link rel="stylesheet" href="css/pwa.css" /> -->
+    <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body style="background-color: rgb(175, 231, 191)">
-    <h1>Basic usage</h1>
-    <ol>
-      <li>Enter password seed in blue box</li>
-      <li>Click "Generate and copy" button</li>
-      <li>Paste generated password from clipboard</li>
-    </ol>
-    <h1>Icons</h1>
+  <body style="background-color: rgb(175, 231, 191); padding-top: 9%;">
+    <div class="center">
+        <!-- <a href="javascript:window.history.back();" class="banner"> -->
+        <a href="index.html" class="banner">
+         <img width="48rem" height="24rem" src="icons/back.svg" />
+          Settings
+        </a>
+    </div>
+    <h1>Installation and Settings</h1>
+    Press
+    <img width="16rem" height="16rem" src="icons/reset.svg" />
+    <!-- <img class="btn" src="icons/reset.svg" /> -->
+    button to populate setting fields with default values
     <ul>
-      <li><strong>help</strong> - shows this page</li>
-      <li><strong>hide/show</strong> - toggle visibility</li>
-      <li><strong>info</strong> - in depth background</li>
+      <li>
+        <strong><tt>Secret</tt></strong> (🤫): random 8 character string, generated when app is installed,
+        to make generated passwords unique for the user.
+        You are welcome to change it if you wish.
+      </li>
+      <li><tt><strong>Special character</tt></strong> (🌶): _ i.e. underscore</li>
+      <li><tt><strong>Length</tt></strong> (📏): 15</li>
+      <!-- <li>Clean (🧹): <tt><strong>true</strong></tt></li> -->
     </ul>
-    <h1>Options</h1>
-    You should change default parameters (in parentheses below) in order to
-    generate passwords unique to you. The values you enter are saved locally and
-    reused between sessions. NOTE: These saved values will be erased when
-    browser cache/cookies are cleared.
+    Press
+    <img width="16rem" height="16rem" src="icons/save.svg" />
+    button to save these values on your device.
+    Password prompt (or hint) entered in <tt>enter hint</tt> box at
+    the top of the screen together with these settings determines the generated
+    password i.e. with the same values always the same password will be
+    generated.
+    <br><br><strong>NOTE:</strong> it is important to store
+    <strong><tt>Secret</tt></strong>
+    (and other values if different then default settings) in
+    safe place in case you loose data on your device (or device itself).
+    In such a case, you would need to enter these
+    settings again in order to recreate your passwords -
+    remember, these values (by design) are not stored in any central location,
+    only on your device, 
+    and cannot be recovered if you loose them.
+    <h1>Usage</h1>
     <ol>
       <li>
-        <strong>Pepper</strong> (!) -
-        <a
-          href="https://en.wikipedia.org/wiki/List_of_special_characters_for_passwords"
-          >special character</a
-        >
-        is recommended as these are required by most sites
-      </li>
-      <li><strong>Salt</strong> (SALT) - any secret you want</li>
-      <li>
-        <strong>Length</strong> (15) - longer passwords are more secure, but
-        some sites are limiting length. Default value 15 seems to be accepted by
-        most sites.
+        Enter password hint in a <tt>enter hint</tt> box.
+        You can use as a hint any arbitrary string,
+        but it is probably the easiest and most straighforward
+        to use a secondary domain of the website for which you need
+        a password e.g. <tt>abc</tt>
+        for <tt>https://www.abc.com</tt> website.
+        For convenience you can simply copy and paste
+        <tt>https://www.abc.com</tt> and
+        <tt>abc</tt> will be automaticall extracted and used as a hint.
       </li>
       <li>
-        <strong>Burnin</strong> (9) - the number of initial (throw away) random
-        number generator cycles
+        Click <img width="16rem" height="16rem" src="icons/generate.svg" /> button to
+        generate password and copy to the clipboard.
       </li>
+      <li>Paste generated password from the clipboard where you need it.</li>
     </ol>
+    <h1>Buttons</h1>
+    <p> <!-- style="display: inline"> -->
+      <div class="container">
+        <img width="16rem" height="16rem" src="icons/generate.svg" /> Generate
+        password &nbsp;
+      </div>
+      <div class="container">
+        <img width="16rem" height="16rem" src="icons/gear.svg" />Show / hide settings &nbsp;
+      </div>
+      <div class="container">
+        <img width="16rem" height="16rem" src="icons/help.svg" /> Show this help page &nbsp;
+      </div>
+      <div class="container">
+        <img width="16rem" height="16rem" src="icons/reset.svg" /> Populate setting
+        fields with default values &nbsp;
+      </div>
+      <div class="container">
+        <img width="16rem" height="16rem" src="icons/save.svg" /> Save settings
+        locally &nbsp;
+      </div>
+      <div class="container">
+        <img width="32rem" height="16rem" src="icons/info.svg" /> Show more detailed
+        info page
+      </div>
+    </p>
+    <hr>
+    <a id="FAQ"></a>
+    <h1>Frequently Asked Questions (FAQ)</h1>
+    <p>Nothing here yet...</p>
   </body>
 </html>

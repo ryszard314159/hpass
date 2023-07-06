@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+ viewBox="0 0 100 100">
+     <circle cx="50" cy="50" r="50" fill="lightgreen" />
+  <path d="M 70 50
+           A 50 50 0 0 0 25 90
+           V 10
+           A 50 50 0 0 0 70 50
+           A 15 15 0 0 0 70 15
+           V 90
+           "
+           stroke="black"
+           stroke-width="4"
+           stroke-linecap="round"
+           fill="black"
+           />
+</svg>
+
+<!--
+      <path d="M 50 50
+           A 50 50 0 0 0 0 100
+           V 0
+           A 50 50 0 0 0 50 50
+           A 25 25 0 0 0 50 0
+           V 100
+           "
+           stroke="black"
+           stroke-width="0.5"
+           fill="black"
+           />
+    <circle cx="50" cy="50" r="50" fill="grey" />
+               V 100
+           A 25 25 0 0 0 50 50
+               A 25 25 0 0 0 25 25
+           V 0
+           A 50 50 0 0 0 50 50
+           A 25 25 0 0 0 50 0
+           V 100
+A 900 900 0 0 0 50 50
+A 500 500 0 0 0 60 100
+H 50
+           stroke="black"
+           stroke-width="0.5"
+A rx ry x-axis-rotation large-arc-flag sweep-flag x y
+transform="rotate(180 50 50)"
+-->

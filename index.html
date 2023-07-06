@@ -1,163 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+  <!--
+    https://uxplanet.org/the-anatomy-of-input-field-c3ef863e01d7
+  -->
   <head>
     <meta name="description" content="Hinted easy to use password generator" />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=128" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#db4938" />
-    <!-- the same as manifest theme_color -->
     <title>HPASS Password Generator</title>
-    <link rel="manifest" href="pwa/manifest.json" />
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-    />
+    <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="css/pwa.css" />
+    <link rel="stylesheet" href="tmp.css" />
     <script defer type="module" src="core/lib.js"></script>
     <script defer type="module" src="app.js"></script>
+    <script defer type="module" src="sw.js"></script>
   </head>
-  <p class="p3">
-    <body>
-      <header></header>
-      <main>
-        <noscript>
-          <div>
-            HPASS requires JavaScript to function. <br />
-            <small>Please enable JavaScript in your browser settings</small>
-          </div>
-        </noscript>
-        <table class="center" style="width: 60%">
-          <!-- <tr style="height: 32px" id="iconsRow" HEIGHT="40%"> -->
-          <tr id="iconsRow" HEIGHT="5%">
-            <!-- <th style="width: 33%;"><img src="icons/help.svg" id="help"></img></th> -->
-            <th style="width: 33%; text-align: left">
-              <button class="button circle" id="help" style="padding-left: 2px">
-                <span>
-                  <strong>&quest;</strong>
-                  <!-- question mark: help -->
-                </span>
-              </button>
-            </th>
-            <th style="width: 33%">
-              <span id="hide" style="font-size: 2em">&#129296;</span>
-            </th>
-            <th style="width: 33%; text-align: right">
-              <button class="button circle" id="info" style="padding-left: 5px">
-                <strong>&#105;</strong>
-                <!-- i - for info -->
-              </button>
-            </th>
-          </tr>
-          <tr>
-            <td colspan="3" style="width: calc(100% / 3)">
-              <input
-                id="hint"
-                type="text"
-                class="form-control"
-                placeholder="hint / seed"
-                style="background-color: lightblue; width: 100%"
-              />
-            </td>
-          </tr>
-          <tr id="pepperRow" class="hidden">
-            <td>Pepper: &#127798;</td>
-            <!-- <td>
-              for="pepper" class="tooltip">
-              <label for="pepper" class="tooltip">
-                Pepper: &#127798;
-                <span class="tooltiptext">
-                  at least on special character to satisfy picky websites
-                  requirements
-                </span>
-              </label>
-            </td> -->
-            <td colspan="2" style="width: 20%">
-              <input
-                class="form-control"
-                id="pepper"
-                placeholder="Recommended _.-!@*$?&% etc."
-              />
-            </td>
-          </tr>
-          <tr id="saltRow" class="hidden">
-            <td>Salt: &#129323;</td>
-            <td colspan="2">
-              <input
-                class="form-control"
-                id="salt"
-                placeholder="Your secret to make it unique"
-              />
-            </td>
-          </tr>
-          <tr id="lengthRow" class="hidden">
-            <td>Length: &#128207;</td>
-            <td colspan="2" style="width: 60%; font-weight: 900">
-              <input
-                class="form-control"
-                id="length"
-                placeholder="15 recommended"
-              />
-            </td>
-          </tr>
-          <tr id="buttonRow" class="hidden" style="background-color: #66bd13">
-            <td>
-              <button
-                class="title"
-                id="save"
-                style="background-color: lightgreen"
-              >
-                Save
-              </button>
-            </td>
-            <td>
-              <button
-                class="title"
-                id="demo"
-                style="background-color: lightgreen"
-              >
-                Demo
-              </button>
-            </td>
-            <td>
-              <button
-                class="title"
-                id="reset"
-                style="background-color: lightgreen"
-              >
-                Reset
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3">
-              <button
-                id="generate"
-                class="btn btn-default"
-                style="
-                  background-color: lightgreen;
-                  font-weight: 900;
-                  width: 100%;
-                  text-align: center;
-                "
-              >
-                Generate and Copy
-              </button>
-            </td>
-          </tr>
-          <tr id="passwordsRow" class="hidden">
-            <td colspan="3">
-              <p
-                class="scroll"
-                style="display: flex; overflow-y: auto"
-                id="passwords"
-              ></p>
-            </td>
-          </tr>
-        </table>
-      </main>
-      <footer></footer>
-    </body>
-  </p>
+  <body>
+    <br /><br />
+    <br /><br />
+    <div id="hintContainer" class="">
+      <form id="hintForm" class="center">
+        <img id="gear" class="btn" src="icons/cross.svg" />
+        <input id="hint" placeholder="enter hint" />
+        <img id="generate" class="btn" src="icons/generate.svg" />
+      </form>
+    </div>
+    <div id="menu" class="menu">
+      <div class="">
+        <!-- <legend id="back">Settings &nbsp; &nbsp; &nbsp;⨉ <br /><br /></legend> -->
+        <legend id="back">Settings<br /><br /></legend>
+        <div class="input-container">
+          <button id="saltBtn" class="leading-icon">🤫</button>
+          <input id="salt" placeholder=" " />
+          <label for="salt">Secret</label>
+          <button id="saltCross" class="trailing-icon">⨉</button>
+          <p class="helper-text">secret to make password unique</p>
+        </div>
+        <div class="input-container">
+          <button id="pepperBtn" class="leading-icon">🌶</button>
+          <input id="pepper" placeholder=" " />
+          <label for="pepper">Special character</label>
+          <button id="pepperCross" class="trailing-icon">⨉</button>
+          <br />
+          <p class="helper-text">one or more of _.-!@*$?&% etc.</p>
+        </div>
+        <div class="input-container">
+          <button id="lengthBtn" class="leading-icon">📏</button>
+          <input id="length" type="number" min="5" max="128" placeholder=" " />
+          <label for="length">Length</label>
+          <p class="helper-text">
+            4-128 range, 15 recommended to satisfy most websites
+          </p>
+        </div>
+        <!-- <div class="input-container">
+          <button id="cleanBtn" class="leading-icon">🧹</button>
+          <input id="clean" list="cleanList" placeholder=" " />
+          <label for="clean">Clean: true|false</label>
+          <p class="helper-text">
+            <b>true:</b> convert to lower case and extract second level domain
+            e.g. https://www.Google.com/photos/ ➜ google <b>false:</b> keep hint
+            as-is
+          </p>
+        </div> -->
+      </div>
+      <div style="margin-bottom: -1rem">&nbsp;</div>
+      <hr />
+      <div id="saveDiv">
+        <a id="help" href="help.html" class=""
+          ><img class="btn" src="icons/help.svg"
+        /></a>
+        <img id="reset" class="btn" src="icons/reset.svg" />
+        <img id="save" class="btn" src="icons/save.svg" />
+        <a id="info" href="info.html" class=""
+          ><img class="btn" src="icons/info.svg"
+        /></a>
+      </div>
+      <hr />
+      <div class="center">
+        <img
+          style="width: 1.2rem; height: 1.2rem"
+          loading="lazy"
+          src="icons/logo.svg"
+        />
+        &nbsp;
+        <p id="version">VERSION</p>
+      </div>
+    </div>
+  </body>
 </html>
