@@ -105,6 +105,56 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   }
 });
 
+/**
+ * Copy a string to clipboard
+ * @param  {String} string         The string to be copied to clipboard
+ * @return {Boolean}               returns a boolean correspondent to the success of the copy operation.
+ * @see https://stackoverflow.com/a/53951634/938822
+ */
+function copyToClipboard(string) {
+  let textarea;
+  let result;
+
+  try {
+    textarea = document.createElement("textarea");
+    textarea.setAttribute("readonly", true);
+    textarea.setAttribute("contenteditable", true);
+    textarea.style.position = "fixed"; // prevent scroll from jumping to the bottom when focus is set.
+    textarea.value = string;
+
+    document.body.appendChild(textarea);
+
+    textarea.focus();
+    textarea.select();
+
+    const range = document.createRange();
+    range.selectNodeContents(textarea);
+
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    textarea.setSelectionRange(0, textarea.value.length);
+    result = document.execCommand("copy");
+  } catch (err) {
+    console.error(err);
+    result = null;
+  } finally {
+    document.body.removeChild(textarea);
+  }
+
+  // manual copy fallback using prompt
+  if (!result) {
+    const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+    const copyHotkey = isMac ? "⌘C" : "CTRL+C";
+    result = prompt(`Press ${copyHotkey}`, string); // eslint-disable-line no-alert
+    if (!result) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function extractSecondaryDomain(x) {
   // const regex = /^https?:\/\/([a-z0-9]+\.)+[a-z0-9]+(\/.*)?$/;
   const regex = /^https?:\/\//;
@@ -252,7 +302,9 @@ el.generate.addEventListener("click", function () {
   args.no_shuffle = false;
   args.debug = true;
   args.verbose = true;
-  let passwd = getPass(args);
+  const passwd = getPass(args);
+  const x = copyToClipboard(passwd) ? "SUCCESS" : "FAILED";
+  showPopup(`${passwd}<br><br>copy to clipboard ${x}`, SHORTPOPUP);
   // showPopup(`${passwd}<br><br>copied to clipboard:1`, SHORTPOPUP);
   // console.log("app: generate: passwd=", passwd, "type= ", typeof passwd);
   // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
@@ -260,39 +312,39 @@ el.generate.addEventListener("click", function () {
   // from https://developer.apple.com/forums/thread/691873 (modified)
   // IMPORTANT PART: the method body for the new ClipboardItem should return a new Promise
   // that contains resolve(new Blob([<DATA_TO_COPY>])
-  async function getIt() {
-    return getPass(args);
-  }
+  // async function getIt() {
+  //   return getPass(args);
+  // }
 
   // const clipboardItem = new ClipboardItem({
   //   "text/plain": new Blob([copyText], { type: "text/plain" }),
   // });
 
-  const clipboardItem = new ClipboardItem({
-    "text/plain": (async () => {
-      const passwd = await getIt();
-      if (!passwd) return new Blob();
-      return new Blob([passwd], { type: "text/plain" });
-    })(),
-  });
+  // const clipboardItem = new ClipboardItem({
+  //   "text/plain": (async () => {
+  //     const passwd = await getIt();
+  //     if (!passwd) return new Blob();
+  //     return new Blob([passwd], { type: "text/plain" });
+  //   })(),
+  // });
 
   // const string = await blob.text();
   // const type = blob.type;
   // const blob2 = new Blob([string], {type: type});
 
-  navigator.clipboard
-    .write([clipboardItem])
-    .then(() => {
-      // y.text().then(x => console.log("x= ", x))
-      // clipboardItem.text().then((p) => {
-      console.log("app: copied successfully! passwd= ", passwd);
-      // console.log("app: copied successfully! p= ", p);
-      showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
-      // });
-    })
-    .catch((error) => {
-      console.error("app: Failed to copy to clipboard:", error);
-    });
+  // navigator.clipboard
+  //   .write([clipboardItem])
+  //   .then(() => {
+  //     // y.text().then(x => console.log("x= ", x))
+  //     // clipboardItem.text().then((p) => {
+  //     console.log("app: copied successfully! passwd= ", passwd);
+  //     // console.log("app: copied successfully! p= ", p);
+  //     showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
+  //     // });
+  //   })
+  //   .catch((error) => {
+  //     console.error("app: Failed to copy to clipboard:", error);
+  //   });
 
   // showPopup(`${passwd}<br><br>copied to clipboard:3`, SHORTPOPUP);
 
