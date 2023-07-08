@@ -304,7 +304,9 @@ el.generate.addEventListener("click", function () {
   args.verbose = true;
   const passwd = getPass(args);
   const x = copyToClipboard(passwd) ? "SUCCESS" : "FAILED";
-  showPopup(`${passwd}<br><br>copy to clipboard ${x}`, SHORTPOPUP);
+  const bkg = x == "FAILED" ? "yellow" : "lightgreen";
+  if (x == "FAILED") alert("copyToClipboard FAILED");
+  showPopup(`${passwd}<br><br>copy to clipboard ${x}`, SHORTPOPUP, bkg);
   // showPopup(`${passwd}<br><br>copied to clipboard:1`, SHORTPOPUP);
   // console.log("app: generate: passwd=", passwd, "type= ", typeof passwd);
   // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
