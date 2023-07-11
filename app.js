@@ -281,9 +281,9 @@ el.hint.addEventListener("mouseout", () => {
   console.log("app:3: mouseout: el.hint.value= ", el.hint.value);
 });
 
-el.generate.addEventListener("click", function () {
+function generateFun() {
   toggleSize();
-  navigator.vibrate(10);
+  // navigator.vibrate(10); does not work on iOS
   const opts = {};
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
@@ -307,63 +307,14 @@ el.generate.addEventListener("click", function () {
   const bkg = x == "FAILED" ? "yellow" : "lightgreen";
   if (x == "FAILED") alert("copyToClipboard FAILED");
   showPopup(`${passwd}<br><br>copy to clipboard ${x}`, SHORTPOPUP, bkg);
-  // showPopup(`${passwd}<br><br>copied to clipboard:1`, SHORTPOPUP);
-  // console.log("app: generate: passwd=", passwd, "type= ", typeof passwd);
-  // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-  // iOS device
-  // from https://developer.apple.com/forums/thread/691873 (modified)
-  // IMPORTANT PART: the method body for the new ClipboardItem should return a new Promise
-  // that contains resolve(new Blob([<DATA_TO_COPY>])
-  // async function getIt() {
-  //   return getPass(args);
-  // }
+}
 
-  // const clipboardItem = new ClipboardItem({
-  //   "text/plain": new Blob([copyText], { type: "text/plain" }),
-  // });
-
-  // const clipboardItem = new ClipboardItem({
-  //   "text/plain": (async () => {
-  //     const passwd = await getIt();
-  //     if (!passwd) return new Blob();
-  //     return new Blob([passwd], { type: "text/plain" });
-  //   })(),
-  // });
-
-  // const string = await blob.text();
-  // const type = blob.type;
-  // const blob2 = new Blob([string], {type: type});
-
-  // navigator.clipboard
-  //   .write([clipboardItem])
-  //   .then(() => {
-  //     // y.text().then(x => console.log("x= ", x))
-  //     // clipboardItem.text().then((p) => {
-  //     console.log("app: copied successfully! passwd= ", passwd);
-  //     // console.log("app: copied successfully! p= ", p);
-  //     showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
-  //     // });
-  //   })
-  //   .catch((error) => {
-  //     console.error("app: Failed to copy to clipboard:", error);
-  //   });
-
-  // showPopup(`${passwd}<br><br>copied to clipboard:3`, SHORTPOPUP);
-
-  // Now, we can write to the clipboard in Safari
-  // navigator.clipboard.write([clipboardItem]);
-  //
-  // } else {
-  //   // Non-iOS device
-  //   navigator.clipboard
-  //     .writeText(passwd)
-  //     .then(() => {
-  //       console.log("app: non-iOS: clipboard copy success! passwd= ", passwd);
-  //       showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
-  //     })
-  //     .catch((err) => console.error("app: clipboard copy error= ", err));
-  // }
-});
+el.generate.addEventListener("click", generateFun);
+// el.generate.addEventListener("keydown", (e) => {
+//   if (e.key === "Enter") {
+//     generateFun();
+//   }
+// });
 
 function toggleSize() {
   el.generate.classList.add("active");
@@ -371,3 +322,59 @@ function toggleSize() {
     el.generate.classList.remove("active");
   }, 100);
 }
+// showPopup(`${passwd}<br><br>copied to clipboard:1`, SHORTPOPUP);
+// console.log("app: generate: passwd=", passwd, "type= ", typeof passwd);
+// if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+// iOS device
+// from https://developer.apple.com/forums/thread/691873 (modified)
+// IMPORTANT PART: the method body for the new ClipboardItem should return a new Promise
+// that contains resolve(new Blob([<DATA_TO_COPY>])
+// async function getIt() {
+//   return getPass(args);
+// }
+
+// const clipboardItem = new ClipboardItem({
+//   "text/plain": new Blob([copyText], { type: "text/plain" }),
+// });
+
+// const clipboardItem = new ClipboardItem({
+//   "text/plain": (async () => {
+//     const passwd = await getIt();
+//     if (!passwd) return new Blob();
+//     return new Blob([passwd], { type: "text/plain" });
+//   })(),
+// });
+
+// const string = await blob.text();
+// const type = blob.type;
+// const blob2 = new Blob([string], {type: type});
+
+// navigator.clipboard
+//   .write([clipboardItem])
+//   .then(() => {
+//     // y.text().then(x => console.log("x= ", x))
+//     // clipboardItem.text().then((p) => {
+//     console.log("app: copied successfully! passwd= ", passwd);
+//     // console.log("app: copied successfully! p= ", p);
+//     showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
+//     // });
+//   })
+//   .catch((error) => {
+//     console.error("app: Failed to copy to clipboard:", error);
+//   });
+
+// showPopup(`${passwd}<br><br>copied to clipboard:3`, SHORTPOPUP);
+
+// Now, we can write to the clipboard in Safari
+// navigator.clipboard.write([clipboardItem]);
+//
+// } else {
+//   // Non-iOS device
+//   navigator.clipboard
+//     .writeText(passwd)
+//     .then(() => {
+//       console.log("app: non-iOS: clipboard copy success! passwd= ", passwd);
+//       showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
+//     })
+//     .catch((err) => console.error("app: clipboard copy error= ", err));
+// }
