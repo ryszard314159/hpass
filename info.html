@@ -20,7 +20,7 @@
     create strong passwords.
 
     <h2>Why?</h2>
-    If you think there is a way for improvement in your current approach to
+    If you think there is room for improvement in your current approach to
     password handling you may find HPASS helpful. One way to store and share
     passwords is by using a
     <a href="https://en.wikipedia.org/wiki/Password_manager">password manager</a
@@ -28,11 +28,15 @@
     problems.
     <p>
       HPASS(&trade;) uses an alternative approach with one major advantage:
-      passwords are generated locally, on demand and never stored in any central
-      location. Passwords and few simple settings to generate them (Secret,
-      Special character and Length) are never stored in any centralized
-      location, only on your local device, so there is no danger of data breach
-      so often reported for password managers.
+      passwords are generated locally, on-demand and never stored in any central
+      location. Passwords and few parameters to generate them (
+      <tt><strong>Hint</strong></tt
+      >, <tt><strong>Secret</strong></tt
+      >, <tt><strong>Special Character</strong></tt
+      >, and <tt><strong>Length</strong></tt
+      >) are never stored in any centralized location, only on your local
+      device, so there is no danger of data breach so often reported for
+      password managers.
     </p>
     <p>
       Large number of sites and apps offer strong random password generation,
@@ -42,70 +46,73 @@
     </p>
     <h2>Typical usage</h2>
     <p>
-      Assume you have HPASS installed and need a password for
-      <tt>https://www.abc.com</tt> website. You simply enter <tt>abc</tt> as a
-      password hint into <tt>enter hint</tt> input box and press generate button
-      (<img width="32rem" height="16rem" src="icons/generate.svg" />) This will
-      generate password string (<tt>57MDf_e1QkNIrD8</tt> assuming
-      <tt><strong>Secret</strong></tt> = "SECRET", and default values for
-      <tt><strong>Special character</strong></tt> and
-      <tt><strong>Length</strong></tt
-      >) and copy it to the clipboard. After that you can paste it where it is
-      needed. As a convenience feature, if you enter the whole URL (e.g.
-      <tt>https://www.abc.com</tt>) the app will atomatically extract
-      <tt>abc</tt> (secondary domain) as a password hint.
+      Assume you need a password for a website:
+      URL=<tt>https://www.abc.com</tt>. You can simply enter <tt>abc</tt> as a
+      password hint into <tt>"Enter Hint"</tt> input box and press generate
+      button (<img width="32rem" height="16rem" src="icons/generate.svg" />).
+      This will generate password string and copy it to the clipboard, and you
+      can paste it where it is needed. As a convenience feature, if you enter
+      the whole URL the app will automatically extract secondary domain (i.e.
+      "abc" in this example) as a password <tt><strong>Hinr</strong></tt
+      >.
     </p>
 
-    <p>
-      Note that the default settings (<tt
-        ><strong>Special character</strong></tt
-      >
-      = "_", <tt><strong>Length</strong></tt> = 15) have been selected to
-      satisfy most (if not all) websites password requirements - some websites
-      will not accept e.g. ? as symbol, and some impose rather short maximum
-      password length - 15 seems to be accepted by most.
-    </p>
-    <p>
-      Please note that the way HPASS generates password from given input
-      parameters (hint, Secret, Special character, Length) is one-way hash
-      function and the input parameters cannot be recovered from the password
-      string.
-    </p>
+    <h2>Notes</h2>
+    <ul>
+      <li>
+        The default settings (<tt><strong>Special Character</strong></tt> = "_",
+        <tt><strong>Length</strong></tt> = 15) have been selected to satisfy
+        most password requirements. Some websites will not accept certain
+        special characters, and some impose rather short maximum password length
+        - "_" and 15 seems to be accepted by most (if not all) sites.
+      </li>
+
+      <li>
+        Purpose of <tt><strong>Secret</strong></tt> is to create different
+        passwords for users using the same other parameters.
+      </li>
+
+      <li>
+        HPASS generates password from given input parameters through
+        <a href="https://csrc.nist.gov/glossary/term/one_way_hash_algorithm"
+          >one-way hash function</a
+        >
+        and the input parameters cannot be recovered from the password string.
+      </li>
+    </ul>
 
     <h2>Security considerations</h2>
-    There is always a balance between security and convenience. In HPASS context
-    it means that although keeping only local copies of any sensitive
-    information is more secure and less tempting for any hackers then keeping it
-    in a centralized location - just compare relative effort and potential
-    payoff of braking once into central database with millions of password vs
-    braking into millions of individual devices -
+    Keeping only local copies of any sensitive information is more secure and
+    less tempting for any hackers then keeping it in a centralized location -
+    just compare relative effort and potential payoff of braking once into
+    central database with millions of password vs braking into millions of
+    individual devices. However,
     <a
       href="https://hbr.org/2017/12/you-cant-secure-100-of-your-data-100-of-the-time"
       >no information is 100% secure if it is written down</a
-    >,
+    >, and
     <a
       href="https://www.jamaicaobserver.com/letters/theres-no-such-thing-as-100-secure-data/"
     >
       the only secure data is the one that is kept in your head</a
     >
-    (barring any mind-reading :). If you are concerned about the possibility of
-    some bad actors braking into your device and stealing settings you use to
-    generate password (Secret, Special Character and Length), there are some
-    steps you can take to vastly improve security of your password by paying
-    (small) inconvenience price. For example you can:
+    (barring any mind-reading capabilities :). Given that, if you are still
+    concerned about the possibility of some bad actors braking into your device
+    and stealing settings you use to generate password, there are some steps you
+    can take to make your passwords virtually 100% secure by paying (small)
+    inconvenience price. For example you can:
     <ol>
       <li>
         "decorate" hint with some extra characters e.g. instead of using
-        <tt>abc</tt> you can always append (or prepend) some character to it
+        <tt>abc</tt> you can always append some character(s) (known only to
+        you!) to it
       </li>
       <li>use generated password as a hint and generate password again</li>
     </ol>
-    ...and probably you can invent many more simple schemes to accomplish the
-    same goal i.e. that the generated password cannot be derived from any stored
-    data, since the part of the whole password generating procedure is stored
-    only in your mind :) Of course, if the sites you need to login into where
-    the security is most important (bank accounts, etc) offer multifactor
-    authentication (<a
+    You can invent more simple schemes to accomplish the same goal i.e. that the
+    part of the whole password generating procedure is stored only in your head
+    :) Of course, if the sites you need to login into where the security is most
+    important (bank accounts, etc) offer multifactor authentication (<a
       href="https://en.wikipedia.org/wiki/Multi-factor_authentication"
       >MFA</a
     >) it is always a good idea to use it.
@@ -118,11 +125,10 @@
 
     <h2>Support</h2>
     If you have any questions, comments, suggestions please contact
-    <tt>info@hpass.app</tt>. We may not be able to answer all questions and
-    concerns individually, but we will address all concerns and include all
-    relevant information in
+    <tt>info@hpass.app</tt>. Answering all questions individually might be not
+    feasible, but all concerns will be addressed in
     <!-- <a href="https://hpass.app/help.html#FAQ">Frequently Asked Questions</a> -->
-    <a href="help.html#FAQ">Frequently Asked Questions</a>
+    <a href="help.html#FAQ">Frequently Asked Questions</a> document.
 
     <h2>Problems with password managers</h2>
     <p>
@@ -137,7 +143,7 @@
       </li>
     </ul>
     <p>
-      We can argue that HPASS has all adantages and none of dissadventages of
+      We can argue that HPASS has all advantages and none of dissadventages of
       password managers.
     </p>
     <p>Follow the links below to find out more.</p>

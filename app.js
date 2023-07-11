@@ -303,10 +303,11 @@ function generateFun() {
   args.debug = true;
   args.verbose = true;
   const passwd = getPass(args);
-  const x = copyToClipboard(passwd) ? "SUCCESS" : "FAILED";
-  const bkg = x == "FAILED" ? "yellow" : "lightgreen";
-  if (x == "FAILED") alert("copyToClipboard FAILED");
-  showPopup(`${passwd}<br><br>copy to clipboard ${x}`, SHORTPOPUP, bkg);
+  if (copyToClipboard(passwd)) {
+    showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
+  } else {
+    alert("copyToClipboard FAILED");
+  }
 }
 
 el.generate.addEventListener("click", generateFun);
