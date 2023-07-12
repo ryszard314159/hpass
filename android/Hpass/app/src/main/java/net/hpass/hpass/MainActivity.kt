@@ -98,6 +98,7 @@ class MainActivity : ComponentActivity() {
             TextField(
                 value = text,
                 modifier = Modifier
+                    .fillMaxWidth(0.75f)
                     .padding(top = 16.dp, bottom = 16.dp)
                     .background(androidx.compose.ui.graphics.Color(0xffadd8e6)),
                 onValueChange = {
