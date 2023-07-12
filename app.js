@@ -105,6 +105,56 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   }
 });
 
+/**
+ * Copy a string to clipboard
+ * @param  {String} string         The string to be copied to clipboard
+ * @return {Boolean}               returns a boolean correspondent to the success of the copy operation.
+ * @see https://stackoverflow.com/a/53951634/938822
+ */
+function copyToClipboard(string) {
+  let textarea;
+  let result;
+
+  try {
+    textarea = document.createElement("textarea");
+    textarea.setAttribute("readonly", true);
+    textarea.setAttribute("contenteditable", true);
+    textarea.style.position = "fixed"; // prevent scroll from jumping to the bottom when focus is set.
+    textarea.value = string;
+
+    document.body.appendChild(textarea);
+
+    textarea.focus();
+    textarea.select();
+
+    const range = document.createRange();
+    range.selectNodeContents(textarea);
+
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    textarea.setSelectionRange(0, textarea.value.length);
+    result = document.execCommand("copy");
+  } catch (err) {
+    console.error(err);
+    result = null;
+  } finally {
+    document.body.removeChild(textarea);
+  }
+
+  // manual copy fallback using prompt
+  if (!result) {
+    const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+    const copyHotkey = isMac ? "⌘C" : "CTRL+C";
+    result = prompt(`Press ${copyHotkey}`, string); // eslint-disable-line no-alert
+    if (!result) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function extractSecondaryDomain(x) {
   // const regex = /^https?:\/\/([a-z0-9]+\.)+[a-z0-9]+(\/.*)?$/;
   const regex = /^https?:\/\//;
@@ -202,6 +252,7 @@ el.save.addEventListener("click", function () {
 el.reset.addEventListener("click", function () {
   let msg = "Double click to restore defaults.<br>";
   msg = msg + "WARNING: your current settings will be lost.";
+  console.log("app: reset: msg= ", msg);
   showPopup(msg, 3 * SHORTPOPUP, "red");
 });
 
@@ -230,9 +281,9 @@ el.hint.addEventListener("mouseout", () => {
   console.log("app:3: mouseout: el.hint.value= ", el.hint.value);
 });
 
-el.generate.addEventListener("click", function () {
+function generateFun() {
   toggleSize();
-  navigator.vibrate(10);
+  // navigator.vibrate(10); does not work on iOS
   const opts = {};
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
@@ -251,29 +302,20 @@ el.generate.addEventListener("click", function () {
   args.no_shuffle = false;
   args.debug = true;
   args.verbose = true;
-  let passwd = getPass(args);
-  if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-    // iOS device
-    const x = document.createElement("textarea");
-    x.value = passwd;
-    document.body.appendChild(x);
-    x.select();
-    x.setSelectionRange(0, 99999); // For mobile devices
-    document.execCommand("copy");
-    document.body.removeChild(x);
-    console.log("app: iOS: clipboard copy success! passwd= ", passwd);
+  const passwd = getPass(args);
+  if (copyToClipboard(passwd)) {
     showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
   } else {
-    // Non-iOS device
-    navigator.clipboard
-      .writeText(passwd)
-      .then(() => {
-        console.log("app: non-iOS: clipboard copy success! passwd= ", passwd);
-        showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
-      })
-      .catch((err) => console.error("app: clipboard copy error= ", err));
+    alert("copyToClipboard FAILED");
   }
-});
+}
+
+el.generate.addEventListener("click", generateFun);
+// el.generate.addEventListener("keydown", (e) => {
+//   if (e.key === "Enter") {
+//     generateFun();
+//   }
+// });
 
 function toggleSize() {
   el.generate.classList.add("active");
@@ -281,3 +323,59 @@ function toggleSize() {
     el.generate.classList.remove("active");
   }, 100);
 }
+// showPopup(`${passwd}<br><br>copied to clipboard:1`, SHORTPOPUP);
+// console.log("app: generate: passwd=", passwd, "type= ", typeof passwd);
+// if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+// iOS device
+// from https://developer.apple.com/forums/thread/691873 (modified)
+// IMPORTANT PART: the method body for the new ClipboardItem should return a new Promise
+// that contains resolve(new Blob([<DATA_TO_COPY>])
+// async function getIt() {
+//   return getPass(args);
+// }
+
+// const clipboardItem = new ClipboardItem({
+//   "text/plain": new Blob([copyText], { type: "text/plain" }),
+// });
+
+// const clipboardItem = new ClipboardItem({
+//   "text/plain": (async () => {
+//     const passwd = await getIt();
+//     if (!passwd) return new Blob();
+//     return new Blob([passwd], { type: "text/plain" });
+//   })(),
+// });
+
+// const string = await blob.text();
+// const type = blob.type;
+// const blob2 = new Blob([string], {type: type});
+
+// navigator.clipboard
+//   .write([clipboardItem])
+//   .then(() => {
+//     // y.text().then(x => console.log("x= ", x))
+//     // clipboardItem.text().then((p) => {
+//     console.log("app: copied successfully! passwd= ", passwd);
+//     // console.log("app: copied successfully! p= ", p);
+//     showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
+//     // });
+//   })
+//   .catch((error) => {
+//     console.error("app: Failed to copy to clipboard:", error);
+//   });
+
+// showPopup(`${passwd}<br><br>copied to clipboard:3`, SHORTPOPUP);
+
+// Now, we can write to the clipboard in Safari
+// navigator.clipboard.write([clipboardItem]);
+//
+// } else {
+//   // Non-iOS device
+//   navigator.clipboard
+//     .writeText(passwd)
+//     .then(() => {
+//       console.log("app: non-iOS: clipboard copy success! passwd= ", passwd);
+//       showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
+//     })
+//     .catch((err) => console.error("app: clipboard copy error= ", err));
+// }
