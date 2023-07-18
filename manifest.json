@@ -1,13 +1,16 @@
 {
   "name": "HPASS Password Generator",
   "short_name": "HPASS",
-  "start_url": "./",
-  "scope": "./",
+  "description": "HPASS is a lightweight, easy-to-use, and safer alternative to password managers.",
+  "start_url": "https://hpass.app",
+  "scope": "https://hpass.app",
   "display": "standalone",
   "id": "/hpass/index.html",
   "background_color": "#fdfdfd",
   "theme_color": "#db4938",
   "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["games", "finance", "navigation"],
   "icons": [
     {
       "src": "./icons/logo.256.png",
@@ -29,6 +32,55 @@
       "type": "image/png",
       "sizes": "1024x1024",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshots/basic.png",
+      "type": "image/png",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "./screenshots/settings.png",
+      "type": "image/png",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "./screenshots/settings-saved.png",
+      "type": "image/png",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "./screenshots/copied-to-clipboard.png",
+      "type": "image/png",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "./screenshots/warning.png",
+      "type": "image/png",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "./screenshots/usage.png",
+      "type": "image/png",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "./screenshots/what-is-hpass.png",
+      "type": "image/png",
+      "sizes": "1080x2400"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Help",
+      "url": "/help.html",
+      "description": "Basic usage description and F.A.Q. page"
+    },
+    {
+      "name": "Info",
+      "url": "/info.html",
+      "description": "More details and reasons for using password generators instead of managers."
     }
   ]
 }
