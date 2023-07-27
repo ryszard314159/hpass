@@ -32,6 +32,7 @@ el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
 // el.back = document.getElementById("back");
 el.menu = document.getElementById("menu");
+el.adunit = document.getElementById("adunit");
 el.more = document.getElementById("more");
 el.menuList = document.getElementById("menuList");
 el.notify = document.getElementById("notify");
@@ -202,8 +203,27 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   setTimeout(() => p.remove(), timeOut);
 }
 
+// el.gear.addEventListener("click", () => {
+//   el.adunit.classList.toggle("slide-in");
+//   el.menu.classList.toggle("slide-in");
+//   console.log("app: gear click:0: el.gear.src= ", el.gear.src);
+//   const x = el.gear.src.split("/").slice(-1)[0];
+//   el.gear.src = x == "gear.svg" ? "icons/cross.svg" : "icons/gear.svg";
+//   el.gear.style.backgroundColor = x == "gear.svg" ? "red" : "lightgray";
+//   // el.gear.backgroundColor = "pink";
+//   console.log("app: gear click:1: el.gear.src= ", el.gear.src);
+//   console.log(
+//     "app: gear click:1: el.gear.style.backgrounColor= ",
+//     el.gear.style.backgroundColor
+//   );
+//   console.log("app: gear click:1: x= ", x);
+// });
+
+// Switch over/under positions of adunut and menu elements...
+
 el.gear.addEventListener("click", () => {
-  el.menu.classList.toggle("slide-in");
+  // el.adunit.classList.toggle("slide-in");
+  // el.menu.classList.toggle("slide-in");
   console.log("app: gear click:0: el.gear.src= ", el.gear.src);
   const x = el.gear.src.split("/").slice(-1)[0];
   el.gear.src = x == "gear.svg" ? "icons/cross.svg" : "icons/gear.svg";
@@ -215,6 +235,17 @@ el.gear.addEventListener("click", () => {
     el.gear.style.backgroundColor
   );
   console.log("app: gear click:1: x= ", x);
+  const zIndexA = getComputedStyle(el.adunit).zIndex;
+  const zIndexB = getComputedStyle(el.menu).zIndex;
+  console.log("apps: zIndexA= ", zIndexA, "zIndexB= ", zIndexB);
+  el.adunit.style.zIndex = zIndexB;
+  el.menu.style.zIndex = zIndexA;
+  console.log(
+    "apps: adunit zIndex= ",
+    el.adunit.style.zIndex,
+    "menu zIndex= ",
+    el.menu.style.zIndex
+  );
 });
 
 // el.back.addEventListener("click", () => {

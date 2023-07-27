@@ -1,0 +1,8 @@
+io/github/ryszard314159/twa/LauncherActivity.java
+ io.github.ryszard314159.twa.LauncherActivity
+io/github/ryszard314159/twa/Application.java
+ io.github.ryszard314159.twa.Application
+io/github/ryszard314159/twa/BuildConfig.java
+ io.github.ryszard314159.twa.BuildConfig
+io/github/ryszard314159/twa/DelegationService.java
+ io.github.ryszard314159.twa.DelegationService
