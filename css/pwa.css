@@ -42,11 +42,11 @@ div {
 }
 
 .center {
-  /* display: flex; */
+  display: flex;
   justify-content: center;
   align-items: center;
   /* height: 2rem; */
-  border: 2px solid green;
+  border: 0px solid green;
 }
 
 legend {
@@ -164,7 +164,8 @@ form {
   border-bottom-right-radius: 1rem;
   min-width: 1rem;
   min-height: 4rem;
-  background: rgba(128, 128, 128, 1);
+  /* background: rgba(128, 128, 128, 1); */
+  background: transparent;
   z-index: 999;
   display: flex;
   justify-content: center;
@@ -185,7 +186,7 @@ input {
   position: absolute;
   width: 80%;
   height: 80%;
-  top: 30%;
+  top: 25%;
   left: 10%;
   right: 10%;
   bottom: 10%;
@@ -207,7 +208,8 @@ input {
 #adunit {
   z-index: 9;
   /* right: 20%; */
-  background-color: pink;
+  /* background-color: pink; */
+  /* background: rgba(255, 255, 255, 1); */
 }
 #menu {
   z-index: -9;
@@ -225,18 +227,6 @@ input {
   text-decoration: none;
   align-items: center;
   vertical-align: middle;
-}
-
-#versionContainer {
-  display: blocking;
-  justify-content: space-around;
-  text-decoration: none;
-  align-items: center;
-  vertical-align: middle;
-}
-#logo,
-#version {
-  margin: 0 auto;
 }
 
 /* #save,
@@ -360,7 +350,20 @@ label {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
+#versionContainer {
+  display: inline-flex;
+  justify-content: center;
+  text-decoration: none;
+  /* align-items: center; */
+  vertical-align: middle;
+}
+
+#logo,
 #version {
+  margin: 0 auto;
+}
+
+/* #version {
   font-size: 0.8rem;
   color: gray;
-}
+} */
