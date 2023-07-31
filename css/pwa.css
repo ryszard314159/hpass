@@ -208,7 +208,7 @@ input {
 #adunit {
   z-index: 9;
   /* right: 20%; */
-  /* background-color: pink; */
+  background-color: pink;
   /* background: rgba(255, 255, 255, 1); */
 }
 #menu {
