@@ -102,7 +102,7 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   console.log("app: message: event= ", event);
   if (event.data && event.data.type === "VERSION") {
     console.log("app: message: event.data= ", event.data);
-    el.version.innerHTML = `HPASS Version ${event.data.version}`;
+    el.version.innerHTML = `${event.data.version}`;
   }
 });
 

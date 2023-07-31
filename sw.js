@@ -1,6 +1,6 @@
 "use strict";
 // import { getPass } from "./core/lib.js";
-const version = "2023-07-18";
+const version = "2023-07-31";
 
 const appAssets = [
   "index.html",
@@ -20,6 +20,7 @@ const appAssets = [
   "icons/reset.svg",
   "icons/generate.svg",
   "icons/back.svg",
+  "privacy/index.html",
 ];
 
 self.addEventListener("install", (installEvent) => {
