@@ -212,6 +212,7 @@ input {
   width: 90%;
   /* right: 20%; */
   background-color: pink;
+  background-image: linear-gradient(to right, lightgrey, white, lightgrey);
   /* background: rgba(255, 255, 255, 1); */
 }
 #menu {
