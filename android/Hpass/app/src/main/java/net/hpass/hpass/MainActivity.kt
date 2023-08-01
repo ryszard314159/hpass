@@ -1,5 +1,8 @@
 package net.hpass.hpass
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,6 +11,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 //import androidx.compose.foundation.layout.ColumnScopeInstance.align
 //import androidx.compose.foundation.layout.ColumnScopeInstance.align
 //import androidx.compose.foundation.layout.ColumnScopeInstance.weight
@@ -20,15 +24,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
+//import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.LocalTextStyle
@@ -67,7 +75,12 @@ class MainActivity : ComponentActivity() {
             HpassTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .border(
+                            width = 2.dp,
+                            color = Color.Red
+                        ),
                     color = MaterialTheme.colors.background
                 ) {
                     hpassSplash()
@@ -80,9 +93,16 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun hpassSplash() {
         var generatedPasswords by remember { mutableStateOf(listOf<String>()) }
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
         Column(
 //            modifier = Modifier.fillMaxWidth(0.75f),
+            modifier = Modifier
+                .padding(4.dp)
+                .border(
+                    width = 2.dp,
+                    color = Color.Red
+                ),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         )
@@ -139,6 +159,8 @@ class MainActivity : ComponentActivity() {
 //                            passwordLength
                         )
                         generatedPasswords = generatedPasswords + generatedPassword
+                        val clip: ClipData = ClipData.newPlainText("generated password", generatedPassword)
+                        clipboard.setPrimaryClip(clip)
                     }
                 ) {
                     Text(
@@ -214,27 +236,34 @@ fun LazyColumnWithAutoScroll2(itemlist: List<String>) {
     val lazyColumnListState = rememberLazyListState()
     val corroutineScope = rememberCoroutineScope()
 
+    SelectionContainer {
 
-    LazyColumn(
-//        modifier = Modifier.fillMaxHeight(0.4f),
-        reverseLayout = true,
-        state = lazyColumnListState
+        LazyColumn(
+//        modifier = Modifier.height(40.dp),
+//        contentPadding = PaddingValues(bottom = 10.dp),
+            Modifier.heightIn(0.dp, 100.dp),
+//         Modifier.size(100.dp),
 
-    ) {
+            reverseLayout = true,
+            state = lazyColumnListState
 
-        itemsIndexed(itemlist) { index, string ->
-            Text(
-                modifier = Modifier.fillMaxWidth(1f),
-                text = string,
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp
-            )
-            corroutineScope.launch {
-                lazyColumnListState.scrollToItem(itemlist.size - 1)
+        ) {
+
+            itemsIndexed(itemlist) { index, string ->
+//                SelectionContainer {
+                Text(
+                    modifier = Modifier.fillMaxWidth(1f),
+                    text = string,
+                    textAlign = TextAlign.Center,
+                    fontSize = 24.sp
+                )
+//                }
+                corroutineScope.launch {
+                    lazyColumnListState.scrollToItem(itemlist.size - 1)
+                }
             }
         }
     }
-
 }
 
 @Composable
@@ -255,7 +284,7 @@ private fun hpassRow(s: String, initial: String) {
         ) // this is the label
         TextField(
             value = text,
-            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
+            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Start),
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
             onValueChange = {
                 text = it
@@ -319,6 +348,7 @@ fun SaltTextField() {
 }
 
 private fun generatePassword(/*hint: String, salt: String, pepper: String, length: Int*/): String {
+    // TODO use Ryszards password generation code.
     // Generate the password based on the provided inputs
     // Implement your password generation logic here
     // ...
