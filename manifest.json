@@ -42,27 +42,27 @@
       "sizes": "1080x2400"
     },
     {
-      "src": "./screenshots/settings.png",
-      "type": "image/png",
-      "sizes": "1080x2400"
-    },
-    {
-      "src": "./screenshots/settings-saved.png",
-      "type": "image/png",
-      "sizes": "1080x2400"
-    },
-    {
       "src": "./screenshots/copied-to-clipboard.png",
       "type": "image/png",
       "sizes": "1080x2400"
     },
     {
-      "src": "./screenshots/warning.png",
+      "src": "./screenshots/privacy.png",
+      "type": "image/png",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "./screenshots/settings.png",
       "type": "image/png",
       "sizes": "1080x2400"
     },
     {
       "src": "./screenshots/usage.png",
+      "type": "image/png",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "./screenshots/warning.png",
       "type": "image/png",
       "sizes": "1080x2400"
     },
