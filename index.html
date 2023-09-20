@@ -28,7 +28,7 @@
     <title>HPASS Password Generator</title>
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="css/pwa.css" />
-    <link rel="stylesheet" href="tmp.css" />
+    <!-- <link rel="stylesheet" href="tmp.css" /> -->
     <link rel="icon" type="image/svg" href="icons/logo.svg" />
     <script defer type="module" src="core/lib.js"></script>
     <script defer type="module" src="app.js"></script>
@@ -45,82 +45,229 @@
     <!-- <div style="justify-content: center; align-items: center"> -->
     <div id="hintContainer">
       <form id="hintForm" class="center">
-        <img id="gear" class="btn" src="icons/gear.svg" />
+        <img id="gear" class="btn" src="icons/cross.svg" />
         <input id="hint" placeholder="Enter Hint" />
         <img id="generate" class="btn" src="icons/generate.svg" />
       </form>
     </div>
-    <!-- <div id="adunit-menu" class="center"> -->
-    <div id="adunit" class="center">
-      <!-- <p>...AD SLOT...</p> -->
-      <ins
-        class="adsbygoogle"
-        style="display: block"
-        data-ad-client="ca-pub-9946044372357745"
-        data-ad-slot="7381421405"
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      ></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-      <!-- <p>...AD SLOT...</p> -->
-    </div>
-    <div id="menu" class="center">
-      <div id="settings" class="">
-        <!-- <legend id="back">Settings &nbsp; &nbsp; &nbsp;⨉ <br /><br /></legend> -->
-        <legend id="back">Settings<br /><br /></legend>
-        <div class="input-container">
-          <button id="saltBtn" class="leading-icon">🤫</button>
-          <input id="salt" placeholder=" " />
-          <label for="salt">Secret</label>
-          <button id="saltCross" class="trailing-icon">⨉</button>
-          <p class="helper-text">secret to make password unique</p>
+    <div id="menu-parent">
+      <!-- <div id="adunit-menu" class="center"> -->
+      <div id="adunit" class="center">
+        <!-- <p>...AD SLOT...</p> -->
+        <ins
+          class="adsbygoogle"
+          style="display: block"
+          data-ad-client="ca-pub-9946044372357745"
+          data-ad-slot="7381421405"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+        <!-- <p>...AD SLOT...</p> -->
+      </div>
+      <div id="menu" class="center">
+        <div id="settings" class="">
+          <!-- <legend id="back">Settings &nbsp; &nbsp; &nbsp;⨉ <br /><br /></legend> -->
+          <legend id="back">Settings<br /><br /></legend>
+          <div class="input-container">
+            <button id="saltBtn" class="leading-icon">🤫</button>
+            <input id="salt" placeholder=" " />
+            <label for="salt">Secret</label>
+            <button id="saltCross" class="trailing-icon">⨉</button>
+            <p class="helper-text">secret to make password unique</p>
+          </div>
+          <div class="input-container">
+            <button id="pepperBtn" class="leading-icon">🌶</button>
+            <input id="pepper" placeholder=" " />
+            <label for="pepper">Special Character</label>
+            <button id="pepperCross" class="trailing-icon">⨉</button>
+            <br />
+            <p class="helper-text">one or more of _.-!@*$?&% etc.</p>
+          </div>
+          <div class="input-container">
+            <button id="lengthBtn" class="leading-icon">📏</button>
+            <input
+              id="length"
+              type="number"
+              min="5"
+              max="128"
+              placeholder=" "
+            />
+            <label for="length">Length</label>
+            <p class="helper-text">
+              4-128 range, 15 recommended to satisfy most websites
+            </p>
+          </div>
         </div>
-        <div class="input-container">
-          <button id="pepperBtn" class="leading-icon">🌶</button>
-          <input id="pepper" placeholder=" " />
-          <label for="pepper">Special Character</label>
-          <button id="pepperCross" class="trailing-icon">⨉</button>
-          <br />
-          <p class="helper-text">one or more of _.-!@*$?&% etc.</p>
+        <div style="margin-bottom: -1rem">&nbsp;</div>
+        <hr />
+        <div id="saveDiv">
+          <a id="help" href="help.html" class=""
+            ><img class="btn" src="icons/help.svg"
+          /></a>
+          <img id="reset" class="btn" src="icons/reset.svg" />
+          <img id="save" class="btn" src="icons/save.svg" />
+          <a id="info" href="info.html" class=""
+            ><img class="btn" src="icons/info.svg"
+          /></a>
         </div>
-        <div class="input-container">
-          <button id="lengthBtn" class="leading-icon">📏</button>
-          <input id="length" type="number" min="5" max="128" placeholder=" " />
-          <label for="length">Length</label>
-          <p class="helper-text">
-            4-128 range, 15 recommended to satisfy most websites
+        <hr />
+        <div id="versionContainer" class="">
+          <img
+            id="logo"
+            style="width: 1.2rem; height: 1.2rem"
+            loading="lazy"
+            src="icons/logo.svg"
+          />
+          &nbsp; HPASS &middot; Version &nbsp;
+          <p id="version">YYYY-MM-DD</p>
+          &nbsp; &middot; &nbsp;
+          <a href="privacy/index.html">Privacy</a>
+          &nbsp; &middot; &nbsp;
+          <a href="help.html#FAQ">FAQ</a>
+          &nbsp; &middot; &nbsp;
+          <a href="help.html#Contact">Contact</a>
+        </div>
+        <br /><br />
+        <hr />
+        <br /><br />
+        <blurb style="text-align: left">
+          <h2 style="text-align: center">
+            Why strong passwords are important?
+          </h2>
+          <p>
+            Using strong passwords is crucial for protecting your online
+            accounts and sensitive information. Strong passwords are difficult
+            for hackers to guess, reducing the risk of unauthorized access.
+            Strong passwords in conjuction with a tool which makes it easy to
+            generate them (like e.g. HPASS), and eliminates a need to remember
+            or store passwords, offer several advantages:
           </p>
-        </div>
-      </div>
-      <div style="margin-bottom: -1rem">&nbsp;</div>
-      <hr />
-      <div id="saveDiv">
-        <a id="help" href="help.html" class=""
-          ><img class="btn" src="icons/help.svg"
-        /></a>
-        <img id="reset" class="btn" src="icons/reset.svg" />
-        <img id="save" class="btn" src="icons/save.svg" />
-        <a id="info" href="info.html" class=""
-          ><img class="btn" src="icons/info.svg"
-        /></a>
-      </div>
-      <hr />
-      <div id="versionContainer" class="">
-        <img
-          id="logo"
-          style="width: 1.2rem; height: 1.2rem"
-          loading="lazy"
-          src="icons/logo.svg"
-        />
-        &nbsp; HPASS &middot; Version &nbsp;
-        <p id="version">YYYY-MM-DD</p>
-        &nbsp; &middot; &nbsp;
-        <a href="privacy/index.html">Privacy</a>
+          <ul style="list-style: none">
+            <li>
+              <b>Security:</b> Strong password include a mix of letters,
+              numbers, and symbols, making them harder to crack through brute
+              force or dictionary attacks.
+            </li>
+            <li>
+              <strong>Privacy:</strong> Robust passwords safeguard your personal
+              and financial data, preventing identity theft and privacy
+              breaches.
+            </li>
+            <li>
+              <b>Account Protection:</b> Strong passwords help defend against
+              unauthorized access to your accounts, securing your emails, social
+              media, and online banking.
+            </li>
+            <li>
+              <b>Simplified Digital Life:</b> Easy to generate strong passwords
+              minimize "Forgot your password?" situations and the need of going
+              through the time consuming process of resetting password.
+            </li>
+          </ul>
+
+          <h3>Passwords Do's:</h3>
+          <ul>
+            <li>Use account specific passwords</li>
+            <li>
+              Use multi-factor authentication (MFA) whenever possible and
+              important
+            </li>
+            <li>
+              Use long, complex passwords - at least 12-15 characters; longer is
+              alway better, but some sites have a restriction of password length
+              - some times as short as 15
+            </li>
+          </ul>
+
+          <h3>Passwords Don't</h3>
+          <ul>
+            <li>Do not resuse the same password for multiple accounts</li>
+            <li>
+              Do not use easy patterns, dictionary words or easily guessable
+              personal data. Few examples of most commonly used (and hacked!)
+              passwords:
+              <tt
+                >123456, password, qwerty, 111111, abc123, password1, iloveyou,
+                1q2w3e4r</tt
+              >.
+            </li>
+            <li>
+              Never share your passwords to others, particularly as plain text
+              in email, etc.
+            </li>
+          </ul>
+
+          <h3>But how?</h3>
+          <p style="text-align: left">
+            You may ask, but how possibly can I create, and remember long,
+            complex and site specific password for multiple - perhaps hundreds -
+            sites. As you may have guessed, our recommendation is to use HPASS
+            to simplify this aspect of your life :) - see more on how HPASS can
+            help, and why it might be better solution for you than password
+            manager, in <a href="info.html">Info section.</a>
+          </p>
+
+          <h3>Password Generators vs. Managers</h3>
+          <p style="text-align: left">
+            One of the often recommended solutions is to use
+            <a href="https://en.wikipedia.org/wiki/Password_manager"
+              >Password Manager</a
+            >
+            [PM]. The advantage of PMs is that in addition to storing passwords
+            they allow to store any number of other data (credit card numbers,
+            PINs, social security numbers, etc) and some allow to share this
+            information with other users. While convenient, this type of
+            centralized storage attracts hackers with the prospect of
+            potentially stealing sensitive and valuable data for milions of
+            users and creates single point of failure.
+          </p>
+          <p style="text-align: left">
+            As you may have guessed our recommendation is to use HPASS :) It is
+            the single-minded and narrowly focused tool to help with easy
+            generation and use of strong and secure passwords. You can find more
+            on how HPASS can help, and why you may want to consider it in
+            <a href="info.html">Info section.</a>
+          </p>
+
+          <h3>Further reading</h3>
+          <ol>
+            <li>
+              <a
+                href="https://www.darkreading.com/vulnerabilities-threats/how-password-managers-can-get-hacked"
+                >How Password Managers Can Get Hacked</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://fractionalciso.com/browser-password-managers-flawed-security-by-design"
+                >Browser password managers – flawed security, by design!</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.safetydetectives.com/blog/the-most-hacked-passwords-in-the-world/"
+                >20 Most Hacked Passwords in 2023: Is Yours Here?
+              </a>
+            </li>
+            <li>https://proton.me/blog/how-long-should-my-password-be</li>
+            <li>
+              <a
+                href="https://www.psmpartners.com/blog/nist-password-best-practices/"
+                >NIST Password Best Practices</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://cybernews.com/best-password-managers/are-password-managers-safe/"
+                >Are password managers safe to use in 2023?</a
+              >
+            </li>
+          </ol>
+        </blurb>
       </div>
     </div>
-    <!-- </div>
-    </div> -->
   </body>
 </html>
