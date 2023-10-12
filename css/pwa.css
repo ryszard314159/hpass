@@ -191,11 +191,11 @@ input {
 #adunit {
   position: absolute;
   width: 90%;
-  height: 100%;
+  height: 90%;
   top: 5%;
   left: 5%;
   right: 10%;
-  bottom: 10%;
+  bottom: 40%;
   display: block;
   /* justify-content: space-around; */
   /* display: flex; */
