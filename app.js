@@ -14,6 +14,7 @@ globalDefaults.clean = true;
 globalDefaults.minlength = MINLENGTH;
 globalDefaults.maxlength = MAXLENGTH;
 globalDefaults.salt = null;
+globalDefaults.url = "https://hpass.app";
 
 // Selecting elements
 const el = {};
@@ -28,6 +29,7 @@ el.gear = document.getElementById("gear");
 el.passwords = document.getElementById("passwords");
 el.hide = document.getElementById("hide");
 el.save = document.getElementById("save");
+el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
 // el.back = document.getElementById("back");
@@ -278,6 +280,13 @@ el.save.addEventListener("click", function () {
   el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
   console.log("apps:1: save: opts= ", opts);
   showPopup("settings saved!", SHORTPOPUP);
+});
+
+el.share.addEventListener("click", function () {
+  const opts = { ...globalDefaults };
+  console.log("apps:0: share: opts= ", opts);
+  copyToClipboard(opts.url);
+  showPopup(`${opts.url} copied to clipoard - share it!`, 3 * SHORTPOPUP);
 });
 
 el.reset.addEventListener("click", function () {
