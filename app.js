@@ -22,6 +22,7 @@ el.hint = document.getElementById("hint");
 el.salt = document.getElementById("salt");
 el.pepper = document.getElementById("pepper");
 el.length = document.getElementById("length");
+el.burn = document.getElementById("burn");
 el.range = document.getElementById("range");
 el.generate = document.getElementById("generate");
 el.generateDiv = document.getElementById("generateDiv");
@@ -331,6 +332,7 @@ function generateFun() {
   el.length.value = opts.length;
   window.localStorage.setItem("options", JSON.stringify(opts));
   let args = { ...opts }; // deep copy
+  args.burn = el.burn.value;
   args.hint = el.hint.value;
   console.log("generate:1: opts=", opts);
   args.digits = false;

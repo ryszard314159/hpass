@@ -162,7 +162,7 @@ function getPass(args) {
     */
     let hint = args.hint + args.salt + args.pepper + args.length;
     let gint = rig(MP31, hint);
-    for (let k = 0; k < args.burnin; k++) {
+    for (let k = 0; k < args.burn; k++) {
       gint.next().value;
     }
     let lower = get_random_string(1, CHARS.lower, gint);
@@ -176,7 +176,7 @@ function getPass(args) {
       console.log(`DEBUG: args.pepper= ${args.pepper}`);
       console.log(`DEBUG: pepper= ${pepper}`);
       console.log(`DEBUG: args.length= ${args.length}`);
-      console.log(`DEBUG: args.burnin= ${args.burnin}`);
+      console.log(`DEBUG: args.burn= ${args.burn}`);
       console.log(`DEBUG: n= ${n}`);
       console.log(`DEBUG: hint= ${hint}`);
     }

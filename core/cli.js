@@ -54,7 +54,7 @@ function get_parser() {
     default:
       typeof process.env.SALT === "undefined" ? "SALT" : process.env.SALT,
   });
-  parser.add_argument("-b", "--burnin", {
+  parser.add_argument("-b", "--burn", {
     help: "discard cycles",
     type: "int",
     default: 0,
@@ -115,7 +115,9 @@ if (
   // get args from command line
   args = parser.parse_args();
 }
-if (args.debug) console.dir(args);
+if (args.debug) {
+  console.log("cli.js: DEBUG:", args);
+}
 
 // passwd = lib.getPass(args);
 passwd = getPass(args);
