@@ -1,0 +1,21 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "utils for hpass",
+  "main": "cli.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com:ryszard314159/hpass.git"
+  },
+  "keywords": [
+    "strong",
+    "password",
+    "generator"
+  ],
+  "author": "Ryszard Czerminski",
+  "license": "GPL-3.0-or-later"
+}

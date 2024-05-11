@@ -213,7 +213,7 @@ input {
   transform: translateY(200%);
 } */
 #adunit {
-  z-index: -9;
+  z-index: +99;
   /* left: 5%;
   right: 5%;
   width: 90%; */
