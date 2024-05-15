@@ -18,6 +18,7 @@ globalDefaults.url = "https://hpass.app";
 
 // Selecting elements
 const el = {};
+el.overlay = document.getElementById("overlay");
 el.hint = document.getElementById("hint");
 el.salt = document.getElementById("salt");
 el.pepper = document.getElementById("pepper");
@@ -206,6 +207,12 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   setTimeout(() => p.remove(), timeOut);
 }
 
+function closeOverlay() {
+  // Code to close the overlay, e.g., remove the .overlay element from the DOM
+  document.querySelector('.overlay').remove();
+}
+el.overlay.addEventListener("click", closeOverlay);
+
 // el.gear.addEventListener("click", () => {
 //   el.adunit.classList.toggle("slide-in");
 //   el.menu.classList.toggle("slide-in");
@@ -244,10 +251,8 @@ el.gear.addEventListener("click", () => {
   el.adunit.style.zIndex = zIndexB;
   el.menu.style.zIndex = zIndexA;
   console.log(
-    "apps: adunit zIndex= ",
-    el.adunit.style.zIndex,
-    "menu zIndex= ",
-    el.menu.style.zIndex
+    "apps: adunit zIndex= ", el.adunit.style.zIndex,
+    "menu zIndex= ", el.menu.style.zIndex
   );
 });
 
@@ -365,6 +370,9 @@ function toggleSize() {
     el.generate.classList.remove("active");
   }, 100);
 }
+
+
+
 // showPopup(`${passwd}<br><br>copied to clipboard:1`, SHORTPOPUP);
 // console.log("app: generate: passwd=", passwd, "type= ", typeof passwd);
 // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
