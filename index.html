@@ -53,13 +53,13 @@
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946044372357745"
       crossorigin="anonymous"
     ></script>
-    <script>
+    <!-- <script>
       // Wait for the DOM to be fully loaded
       document.addEventListener('DOMContentLoaded', function() {
           // Bind click event to close button after DOM is loaded
-          document.querySelector('.close-btn').addEventListener('click', closeOverlay);
+          document.getElementById("closeOverlayButton").addEventListener('click', closeOverlay);
       });
-  </script>
+    </script> -->
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
@@ -72,17 +72,19 @@
       ></iframe
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
-    <br /><br />
-    <br /><br />
+    <br/><br/><br/><br/>
     <div id="overlay" class="overlay">
-      <p> </p>
+      <br/><br/>
       <img
-        id="logo"
-        style="width: 4rem; height: 4rem"
-        loading="lazy"
+        width="64" height="64"
         src="icons/logo.svg"
       />
-      <span class="close-button" id="closeOverlay">&times;</span>
+      <!-- loading="lazy" -->
+      <!-- style="width: 4rem; height: 4rem; position: fixed; top: 2rem;" -->
+      <br/><br/><br/>
+      <!-- <span class="close-button" id="closeOverlay">&times</span> -->
+      <!-- <button id="closeOverlay">&times</button> -->
+      <button id="closeOverlayButton" class="round-button">&times</button>
       <ins
       class="adsbygoogle"
       style="display: block"
@@ -98,7 +100,7 @@
     <!-- <div style="justify-content: center; align-items: center"> -->
     <div id="hintContainer">
       <form id="hintForm" class="center">
-        <img id="gear" class="btn" src="icons/cross.svg" />
+        <img id="gear" class="btn" src="icons/gear.svg" />
         <input id="hint" placeholder="Enter Hint" />
         <img id="generate" class="btn" src="icons/generate.svg" />
       </form>
@@ -121,7 +123,8 @@
       <div id="menu" class="center">
         <div id="settings" class="">
           <!-- <legend id="back">Settings &nbsp; &nbsp; &nbsp;⨉ <br /><br /></legend> -->
-          <legend id="back">Settings<br /><br /></legend>
+          <br/><br/>
+          <legend id="back">Settings<br/><br/></legend>
           <div class="input-container">
             <button id="saltBtn" class="leading-icon">🤫</button>
             <input id="salt" placeholder=" " />
@@ -352,20 +355,25 @@
     <script>
       // Get references to the elements
       const overlay = document.getElementById('overlay');
-      const closeOverlayButton = document.getElementById('closeOverlay');
+      const closeOverlayButton = document.getElementById('closeOverlayButton');
       // const hiddenElement = document.getElementById('hiddenElement');
     
       // Show the modal when the page finishes loading
       window.addEventListener('load', () => {
         overlay.style.display = 'block';
-        setTimeout(() => {
-          closeOverlayButton.style.display = 'block';
-        }, 2000); // Show the close button after 2 seconds
+        setTimeout(() => {closeOverlayButton.style.display = 'block';}, 2000);
       });
     
       // Hide the modal and show the hidden element when the close button is clicked
-      closeOverlayButton.addEventListener('click', () => {
+      closeOverlayButton.addEventListener('click', (event) => {
+        // event.stopPropagation();
         overlay.style.display = 'none';
+        console.log("closeOverlayButton clicked")
+        // hiddenElement.style.display = 'block';
+      });
+      overlay.addEventListener('click', (event) => {
+        // event.stopPropagation();
+        console.log("overlay clicked")
         // hiddenElement.style.display = 'block';
       });
     </script>

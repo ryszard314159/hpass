@@ -18,8 +18,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0;
-  padding: 0;
+  margin: 0% 0% 0% 0%; /* top right bottom left */
+  padding: 0% 0% 0% 0%;
 }
 
 body {
@@ -416,38 +416,46 @@ label {
 }
 
 .overlay {
-  display: none; /* Initially hidden */
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 128, 0, 1); /* Green color with opacity */
-  z-index: 9999;
+  background-color: rgb(84, 216, 84); /* Green color with opacity */
+  z-index: 9998;
   overflow-y: auto; /* Allow scrolling if content exceeds viewport */
 }
 
-.close-button {
-  display: none; /* Initially hidden */
+#closeOverlayButton {
   position: absolute;
-  top: 1px;
-  right: 10px;
+  top: 1rem;
+  left: 1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: none;
+  background-color: gray;
   cursor: pointer;
-  font-size: 40px;
+  font-size: 1.5rem;
   color: black;
-  /* animation: fadeIn 1s ease-in-out 2s forwards; Fade in after 2 seconds */
-  animation: fadeIn 1s;
+  animation: fadeIn 4s;
+  transition: background-color 4s;
+  z-index: 9999;
 }
 
-/* .close-btn {
-  position: absolute;
-  top: 5%;
-  right: 5%;
-  cursor: pointer;
-  display: block;
-  color: black;
-  font-size: 48px;
-} */
+#closeOverlayButton:hover {
+  background-color: white;
+  font-weight:bold;
+}
+
+.round-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
 
 .hidden {
   opacity: 0;

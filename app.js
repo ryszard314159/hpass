@@ -237,7 +237,7 @@ el.gear.addEventListener("click", () => {
   console.log("app: gear click:0: el.gear.src= ", el.gear.src);
   const x = el.gear.src.split("/").slice(-1)[0];
   el.gear.src = x == "gear.svg" ? "icons/cross.svg" : "icons/gear.svg";
-  el.gear.style.backgroundColor = x == "gear.svg" ? "red" : "lightgray";
+  el.gear.style.backgroundColor = x == "gear.svg" ? "red" : "lightgreen";
   // el.gear.backgroundColor = "pink";
   console.log("app: gear click:1: el.gear.src= ", el.gear.src);
   console.log(
