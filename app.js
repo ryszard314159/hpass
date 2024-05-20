@@ -18,7 +18,7 @@ globalDefaults.url = "https://hpass.app";
 
 // Selecting elements
 const el = {};
-el.overlay = document.getElementById("overlay");
+// el.overlay = document.getElementById("overlay");
 el.hint = document.getElementById("hint");
 el.salt = document.getElementById("salt");
 el.pepper = document.getElementById("pepper");
@@ -29,7 +29,8 @@ el.generate = document.getElementById("generate");
 el.generateDiv = document.getElementById("generateDiv");
 el.gear = document.getElementById("gear");
 el.passwords = document.getElementById("passwords");
-el.hide = document.getElementById("hide");
+el.hidesettings = document.getElementById("hidesettings");
+el.settings = document.getElementById("settings");
 el.save = document.getElementById("save");
 el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
@@ -207,11 +208,11 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   setTimeout(() => p.remove(), timeOut);
 }
 
-function closeOverlay() {
-  // Code to close the overlay, e.g., remove the .overlay element from the DOM
-  document.querySelector('.overlay').remove();
-}
-el.overlay.addEventListener("click", closeOverlay);
+// function closeOverlay() {
+//   // Code to close the overlay, e.g., remove the .overlay element from the DOM
+//   document.querySelector('.overlay').remove();
+// }
+// el.overlay.addEventListener("click", closeOverlay);
 
 // el.gear.addEventListener("click", () => {
 //   el.adunit.classList.toggle("slide-in");
@@ -245,14 +246,18 @@ el.gear.addEventListener("click", () => {
     el.gear.style.backgroundColor
   );
   console.log("app: gear click:1: x= ", x);
-  const zIndexA = getComputedStyle(el.adunit).zIndex;
-  const zIndexB = getComputedStyle(el.menu).zIndex;
-  console.log("apps: zIndexA= ", zIndexA, "zIndexB= ", zIndexB);
-  el.adunit.style.zIndex = zIndexB;
-  el.menu.style.zIndex = zIndexA;
   console.log(
-    "apps: adunit zIndex= ", el.adunit.style.zIndex,
-    "menu zIndex= ", el.menu.style.zIndex
+    "apps:1: settings zIndex= ", el.settings.style.zIndex,
+    "apps:1: hidesettings zIndex= ", el.hidesettings.style.zIndex
+  );
+  const zIndexA = getComputedStyle(el.hidesettings).zIndex;
+  const zIndexB = getComputedStyle(el.settings).zIndex;
+  console.log("apps: zIndexA= ", zIndexA, "zIndexB= ", zIndexB);
+  el.hidesettings.style.zIndex = zIndexB;
+  el.settings.style.zIndex = zIndexA;
+  console.log(
+    "apps:2: settings zIndex= ", el.settings.style.zIndex,
+    "apps:2: hidesettings zIndex= ", el.hidesettings.style.zIndex
   );
 });
 

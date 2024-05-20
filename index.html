@@ -73,30 +73,6 @@
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <br/><br/><br/><br/>
-    <div id="overlay" class="overlay">
-      <br/><br/>
-      <img
-        width="64" height="64"
-        src="icons/logo.svg"
-      />
-      <!-- loading="lazy" -->
-      <!-- style="width: 4rem; height: 4rem; position: fixed; top: 2rem;" -->
-      <br/><br/><br/>
-      <!-- <span class="close-button" id="closeOverlay">&times</span> -->
-      <!-- <button id="closeOverlay">&times</button> -->
-      <button id="closeOverlayButton" class="round-button">&times</button>
-      <ins
-      class="adsbygoogle"
-      style="display: block"
-      data-ad-client="ca-pub-9946044372357745"
-      data-ad-slot="7381421405"
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-      ></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-    </div>
     <!-- <div style="justify-content: center; align-items: center"> -->
     <div id="hintContainer">
       <form id="hintForm" class="center">
@@ -105,23 +81,11 @@
         <img id="generate" class="btn" src="icons/generate.svg" />
       </form>
     </div>
-    <div id="menu-parent">
-      <!-- <div id="adunit-menu" class="center"> -->
-      <div id="adunit">
-        <ins
-          class="adsbygoogle"
-          style="display: block"
-          data-ad-client="ca-pub-9946044372357745"
-          data-ad-slot="7381421405"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+    <div id="menu" class="center">
+      <div id="hidesettings" style="z-index: +80;">
+        <!-- <p></p> -->
       </div>
-      <div id="menu" class="center">
-        <div id="settings" class="">
+        <div id="settings" style="z-index: -80;" class="">
           <!-- <legend id="back">Settings &nbsp; &nbsp; &nbsp;⨉ <br /><br /></legend> -->
           <br/><br/>
           <legend id="back">Settings<br/><br/></legend>
@@ -171,7 +135,7 @@
         </div>
         <div style="margin-bottom: -1rem">&nbsp;</div>
         <hr />
-        <div id="saveDiv">
+        <div id="saveDiv" class="btnContainer">
           <a id="help" href="help.html" class=""
             ><img class="btn" src="icons/help.svg"
           /></a>
@@ -213,7 +177,7 @@
             (adsbygoogle = window.adsbygoogle || []).push({});
           </script>
         </div>
-        <blurb style="text-align: left">
+        <blurb style="text-align: left; margin-bottom: 33%">
           <h2 style="text-align: center">
             Why strong passwords are important?
           </h2>
@@ -350,32 +314,22 @@
             </li>
           </ol>
         </blurb>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br>
       </div>
+    <div id="adunit">
+      <p>adunit</p>
+      <ins
+        class="adsbygoogle"
+        style="display: block"
+        data-ad-client="ca-pub-9946044372357745"
+        data-ad-slot="7381421405"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      ></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
     </div>
-    <script>
-      // Get references to the elements
-      const overlay = document.getElementById('overlay');
-      const closeOverlayButton = document.getElementById('closeOverlayButton');
-      // const hiddenElement = document.getElementById('hiddenElement');
-    
-      // Show the modal when the page finishes loading
-      window.addEventListener('load', () => {
-        overlay.style.display = 'block';
-        setTimeout(() => {closeOverlayButton.style.display = 'block';}, 2000);
-      });
-    
-      // Hide the modal and show the hidden element when the close button is clicked
-      closeOverlayButton.addEventListener('click', (event) => {
-        // event.stopPropagation();
-        overlay.style.display = 'none';
-        console.log("closeOverlayButton clicked")
-        // hiddenElement.style.display = 'block';
-      });
-      overlay.addEventListener('click', (event) => {
-        // event.stopPropagation();
-        console.log("overlay clicked")
-        // hiddenElement.style.display = 'block';
-      });
-    </script>
   </body>
 </html>

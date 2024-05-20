@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="104.65975mm"
-   height="103.20406mm"
-   viewBox="0 0 104.65975 103.20406"
+   width="100"
+   height="100"
+   viewBox="0 0 100 100"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    sodipodi:docname="save.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -24,15 +24,16 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.4039843"
-     inkscape:cx="188.74855"
-     inkscape:cy="239.31892"
+     inkscape:zoom="2"
+     inkscape:cx="55.25"
+     inkscape:cy="132.5"
      inkscape:window-width="999"
      inkscape:window-height="991"
      inkscape:window-x="26"
      inkscape:window-y="23"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     inkscape:pageshadow="2" />
   <defs
      id="defs2">
     <marker
@@ -59,14 +60,14 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-48.031001,-85.205339)">
+     transform="translate(-44.730744,-83.320845)">
     <path
-       style="fill:none;stroke:#000000;stroke-width:5.40729818;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleStart)"
-       d="m 99.995751,86.024569 c 0,79.550981 0,79.550981 0,79.550981"
+       style="fill:none;stroke:#000000;stroke-width:4.95505;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleStart)"
+       d="m 95.484337,85.957185 c 0,72.995985 0,72.995985 0,72.995985"
        id="path113" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:6.60046449;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-       d="m 48.031001,175.16971 v 5.68521 7.55448 H 152.69075 c 0.28213,-14.23969 0.28213,-14.23969 0.28213,-14.23969"
+       style="fill:none;stroke:#000000;stroke-width:5.58893;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       d="m 54.563468,167.66416 v 5.11515 6.79702 h 83.401962 c 0.22481,-12.81189 0.22481,-12.81189 0.22481,-12.81189"
        id="path4332"
        sodipodi:nodetypes="cccc" />
   </g>
