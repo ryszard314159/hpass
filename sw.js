@@ -1,6 +1,6 @@
 "use strict";
 // import { getPass } from "./core/lib.js";
-const version = "2024-03-01";
+const version = "2024-06-08";
 
 const appAssets = [
   "index.html",
@@ -48,17 +48,27 @@ self.addEventListener("activate", (e) => {
 });
 
 // Static cache strategy - Network first with Cache Fallback
+// const staticCache = (req) => {
+//   req.respondWith(
+//     fetch(req).then((networkRes) => {
+//       caches
+//         .open(`static-${version}`)
+//         .then((cache) => cache.put(req, networkRes));
+//       // Return Clone of Network Response
+//       return networkRes.clone();
+//     })
+//   );
+// };
+
 const staticCache = (req) => {
-  req.respondWith(
-    fetch(req).then((networkRes) => {
-      caches
-        .open(`static-${version}`)
-        .then((cache) => cache.put(req, networkRes));
-      // Return Clone of Network Response
-      return networkRes.clone();
-    })
-  );
+  return fetch(req).then((networkRes) => {
+    return caches.open(`static-${version}`).then((cache) => {
+         cache.put(req, networkRes.clone()); // Put a clone of the network     66  response in the cache
+         return networkRes; // Return the original network response
+       });
+     });
 };
+
 
 self.addEventListener("fetch", (e) => {
   if (e.request.url.match(location.origin)) {

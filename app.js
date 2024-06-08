@@ -24,28 +24,32 @@ el.salt = document.getElementById("salt");
 el.pepper = document.getElementById("pepper");
 el.length = document.getElementById("length");
 el.burn = document.getElementById("burn");
+el.peak = document.getElementById("peak"); // instead of top
 el.range = document.getElementById("range");
 el.generate = document.getElementById("generate");
+el.hintForm = document.getElementById("hintForm");
 el.generateDiv = document.getElementById("generateDiv");
 el.gear = document.getElementById("gear");
 el.passwords = document.getElementById("passwords");
 el.hidesettings = document.getElementById("hidesettings");
 el.settings = document.getElementById("settings");
+el.help = document.getElementById("help");
 el.save = document.getElementById("save");
 el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
 // el.back = document.getElementById("back");
-el.menu = document.getElementById("menu");
+// el.menu = document.getElementById("menu");
 el.adunit = document.getElementById("adunit");
 el.more = document.getElementById("more");
-el.menuList = document.getElementById("menuList");
+// el.menuList = document.getElementById("menuList");
 el.notify = document.getElementById("notify");
 el.pepperCross = document.getElementById("pepperCross");
 el.saltCross = document.getElementById("saltCross");
 el.lengthCross = document.getElementById("lengthCross");
 el.cleanCross = document.getElementById("cleanCross");
 el.version = document.getElementById("version");
+el.clickSound = document.getElementById('clickSound');
 
 if ("serviceWorker" in navigator) {
   const swPath = "sw.js";
@@ -185,13 +189,14 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   p.style.fontSize = "1.5rem";
   p.style.backgroundColor = bkg;
   p.style.border = "0.1px solid black";
-  p.style.zIndex = 99;
+  p.style.zIndex = 9;
   p.style.position = "absolute";
+  p.style.top = "20%";
+  p.style.right = "10%";
   p.style.width = "80%";
   p.style.textAlign = "center";
   p.style.borderRadius = "15px";
   p.style.padding = "1rem 0 1rem 0";
-  p.style.position = "absolute";
   p.style.overflow = "auto";
   const x = document.createElement("button");
   x.innerHTML = "X";
@@ -250,14 +255,26 @@ el.gear.addEventListener("click", () => {
     "apps:1: settings zIndex= ", el.settings.style.zIndex,
     "apps:1: hidesettings zIndex= ", el.hidesettings.style.zIndex
   );
-  const zIndexA = getComputedStyle(el.hidesettings).zIndex;
-  const zIndexB = getComputedStyle(el.settings).zIndex;
-  console.log("apps: zIndexA= ", zIndexA, "zIndexB= ", zIndexB);
-  el.hidesettings.style.zIndex = zIndexB;
-  el.settings.style.zIndex = zIndexA;
+  // const zIndexA = getComputedStyle(el.hidesettings).zIndex;
+  // const zIndexB = getComputedStyle(el.settings).zIndex;
+  // console.log("apps: zIndexA= ", zIndexA, "zIndexB= ", zIndexB);
+  // el.hidesettings.style.zIndex = zIndexB;
+  // el.settings.style.zIndex = zIndexA;
+  // console.log(
+  //   "apps:2: settings zIndex= ", el.settings.style.zIndex,
+  //   "apps:2: hidesettings zIndex= ", el.hidesettings.style.zIndex
+  // );
   console.log(
-    "apps:2: settings zIndex= ", el.settings.style.zIndex,
-    "apps:2: hidesettings zIndex= ", el.hidesettings.style.zIndex
+    "apps:3: settings display= ", getComputedStyle(el.settings).display,
+    "apps:3: hidesettings display= ", getComputedStyle(el.hidesettings).display
+  );
+  el.hidesettings.style.display = getComputedStyle(el.hidesettings).display === "none" ? "block" : "none";
+  el.settings.style.display = getComputedStyle(el.settings).display === "none" ? "block" : "none";
+  // el.hidesettings.classList.toggle('hidden');
+  // el.settings.classList.toggle('hidden');
+  console.log(
+    "apps:4: settings display= ", getComputedStyle(el.settings).display,
+    "apps:4: hidesettings display= ", getComputedStyle(el.hidesettings).display
   );
 });
 
@@ -280,7 +297,7 @@ function cleanClean(v) {
   return valid.has(v) ? v : true;
 }
 
-el.save.addEventListener("click", function () {
+el.save.addEventListener("dblclick", function () {
   const opts = { ...globalDefaults };
   console.log("apps:0: save: opts= ", opts);
   console.log("apps:0: save: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
@@ -293,7 +310,7 @@ el.save.addEventListener("click", function () {
   showPopup("settings saved!", SHORTPOPUP);
 });
 
-el.share.addEventListener("click", function () {
+el.share.addEventListener("dblclick", function () {
   const opts = { ...globalDefaults };
   console.log("apps:0: share: opts= ", opts);
   copyToClipboard(opts.url);
@@ -332,8 +349,10 @@ el.hint.addEventListener("mouseout", () => {
   console.log("app:3: mouseout: el.hint.value= ", el.hint.value);
 });
 
-function generateFun() {
-  toggleSize();
+function generateFun(event) {
+  event.preventDefault();
+  console.log("generateFun: event.preventDefault() added");
+  // toggleSize();
   // navigator.vibrate(10); does not work on iOS
   const opts = {};
   opts.pepper = el.pepper.value;
@@ -343,6 +362,9 @@ function generateFun() {
   window.localStorage.setItem("options", JSON.stringify(opts));
   let args = { ...opts }; // deep copy
   args.burn = el.burn.value;
+  args.peak = el.peak.value;
+  el.burn.value = "";
+  el.peak.value = "";
   args.hint = el.hint.value;
   console.log("generate:1: opts=", opts);
   args.digits = false;
@@ -355,14 +377,55 @@ function generateFun() {
   args.debug = true;
   args.verbose = true;
   const passwd = getPass(args);
-  if (copyToClipboard(passwd)) {
-    showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
-  } else {
-    alert("copyToClipboard FAILED");
-  }
+  navigator.clipboard.writeText(passwd);
+  showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
+  // const status = copyToClipboard(passwd);
+  // console.log("generateFun: status= ", status);
+  // if (copyToClipboard(passwd)) {
+  // if (status) {
+  //   console.log("generateFun: status= ", status);
+  //   // alert("copyToClipboard SUCCESS!");
+  //   // showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
+  // } else {
+  //   alert("copyToClipboard FAILED");
+  // }
 }
 
+el.hintForm.addEventListener('submit', function (event) {
+  event.preventDefault();
+  // Add your form submission handling logic here
+});
+
+function handleFeedback() {
+  if (navigator.vibrate) { // haptic
+      navigator.vibrate(50); // vibrate for 100ms
+  }
+  if (el.clickSound) { // audio
+      // Ensure the audio is ready to play
+      el.clickSound.currentTime = 0; // Reset audio to start
+      el.clickSound.play();
+      console.log("handleFeedback: sound played");
+  }
+  console.log("handleFeedback: animation added to classList");
+  // el.generate.style.animation = 'moveGenerateBtn 0.25s forwards';
+  console.log("handleFeedback: animation added to classList");
+  el.generate.classList.add('animateGenerate');
+  // Reset position after animation ends
+  el.generate.addEventListener('animationend', () => {
+    // el.generate.style.animation = '';
+    el.generate.classList.remove('animateGenerate');
+    el.generate.style.left = '55%';
+    el.generate.style.transform = 'translateX(0%)';
+  }, { once: true });
+};
+
+el.generate.addEventListener("click", handleFeedback)
 el.generate.addEventListener("click", generateFun);
+// el.generate.addEventListener("click", function (event) {
+//   event.preventDefault();
+//   // Add your button click handling logic here
+// });
+
 // el.generate.addEventListener("keydown", (e) => {
 //   if (e.key === "Enter") {
 //     generateFun();
@@ -375,6 +438,34 @@ function toggleSize() {
     el.generate.classList.remove("active");
   }, 100);
 }
+
+function handleLinkClick(event) {
+  const link = event.currentTarget;
+  if (!link.clickCount) {
+    link.clickCount = 0;
+  }
+  link.clickCount++;
+  // link.clickCount = !link.clickCount ? 0 : link.clickCount + 1;
+  if (link.clickCount === 2) {
+    window.location.href = link.href;
+  }
+  event.preventDefault();
+}
+
+
+// const tooltip = document.querySelector('.tooltip');
+// const helpLink = document.querySelector('#help');
+
+// tooltip.addEventListener('touchstart', (e) => {
+//   tooltip.classList.add('show-tooltip');
+// });
+
+// tooltip.addEventListener('touchend', (e) => {
+//   setTimeout(() => {
+//     tooltip.classList.remove('show-tooltip');
+//     helpLink.href && (window.location.href = helpLink.href);
+//   }, 500);
+// });
 
 
 

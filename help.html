@@ -25,35 +25,53 @@
     button to populate setting fields with default values
     <ul>
       <li>
-        <strong><tt>Secret</tt></strong> (🤫): random 8 character string, generated when app is installed,
+        <strong>Secret</strong> (🤫): random 8 character string, generated when app is installed,
         to make generated passwords unique for the user.
-        You are welcome to change it if you wish.
+        You may want to change to some value you are likely to remember.
       </li>
-      <li><tt><strong>Special character</tt></strong> (🌶): _ i.e. underscore</li>
-      <li><tt><strong>Length</tt></strong> (📏): 15</li>
-      <li><tt><strong>Burn</tt></strong> (&#128293): 0</li>
-      <!-- <li>Clean (🧹): <tt><strong>true</strong></tt></li> -->
+      <li><strong>Special character</strong> (<span style="color: red">&#x1F336</span>): _ i.e. underscore</li>
+      <li><strong>Length</strong> (📏): 15</li>
     </ul>
-    Press
-    <img src="icons/save.svg" style="width:2rem; height:1rem;"/>
-    button to save these values (except <strong><tt>Burn</tt></strong>) on your device.
-    Password prompt (or hint) entered in the <tt>Enter Hint</tt> box at
-    the top of the screen together with these settings determines the generated
+
+    These three parameters are saved on your local device when you generate password.
+    
+    <h2>Extra security</h2>
+    
+    The purpose of two additional variables is to provide extra security layer in
+    (very unlikely) case of your device being compromised and possibly
+    your <strong>Secret</strong>, <strong>Special Character</strong>
+    and <strong>Length</strong> parameters stolen.
+    These variables: 
+    <ul>
+      <li><strong>Top Secret</strong> (&#129296): any string you wish (default: empty string)</li>
+      <li><strong>Burn</strong> (&#128293): any number in 0-999999 range (default=0)</li>  
+    </ul>
+    are never stored on your local device or anywhere else, and discarted
+    immidiately after the password is generated. They need to be entered
+    everytime you want to use them to generate password. This is a small price in convenience
+    you may want to pay for high value passwords
+    (bank accounts, social security, etc.) if you are concerned about
+    possibility (again - very unlikely) of your device being compromised.
+    
+
+    <p>
+    Password prompt (or hint) entered in the <strong>Enter Hint</strong> box at
+    the top of the screen, together with these 5 settings determines the generated
     password i.e. with the same values always the same password will be
     generated.
     <br><br><strong>NOTE:</strong> it is important to store
-    <strong><tt>Secret</tt></strong>
+    <strong>Secret</strong>
     (and other values if different then default settings) in
     safe place in case you loose data on your device (or device itself).
     In such a case, you would need to enter these
     settings again in order to recreate your passwords -
     remember, these values (by design) are not stored in any central location,
-    only on your device, 
-    and cannot be recovered if you loose them.
+    only on your device, and cannot be recovered if you loose them -
+    <strong>Top Secret</strong> and <strong>Burn</strong> are never stored.
     <h1>Usage</h1>
     <ol>
       <li>
-        Enter password hint in the <tt>Enter Hint</tt> box.
+        Enter password hint in the <strong>Enter Hint</strong> box.
         You can use any string as a hint,
         but it is probably the easiest and most straighforward
         to use a secondary domain of the site for which you need
@@ -64,10 +82,11 @@
         <tt>abc</tt> will be automaticall extracted and used as a hint.
       </li>
       <li>
-        You may want to enter custom value
-        for <strong><tt>Burn</tt></strong>. This parameter is never stored, so in case
+        For extra security you may want to enter custom values
+        for <strong>Top Secret</strong> and <strong>Burn</strong>.
+        These parameters are never stored, so in case
         your device is compromised and bad actors manage to steal your
-        <strong><tt>Secret</tt></strong> this offers an extra security layer.
+        data this offers an extra security layer.
       </li>
       <li>
         Click <img src="icons/generate.svg" style="width:2rem; height:0.8rem;"/> button to
@@ -82,7 +101,9 @@
         password &nbsp;
       </div>
       <div class="container">
-        <img src="icons/gear.svg" style="width:3rem; height:1rem;"/>Show / hide settings &nbsp;
+        <img src="icons/gear.svg" style="width:3rem; height:1rem;"/> / 
+        <img src="icons/cross.svg" style="width:3rem; height:1rem;"/>
+        Show / hide settings &nbsp;
       </div>
       <div class="container">
         <img src="icons/help.svg" style="width:3rem; height:1rem;"/> Show this help page &nbsp;
@@ -108,7 +129,9 @@
     <hr>
     <a id="Contact"></a>
     <h1>Contact</h1>
-    <p>Email: info@hpass.app, Phone:+17748130071</p>
+    <p>Email <strong>info@hpass.app</strong> to ask questions,
+      suggest improvements, etc.
+    </p>
     <a id="FAQ"></a>
     <h1>Frequently Asked Questions (FAQ)</h1>
     <p>Nothing here yet...</p>

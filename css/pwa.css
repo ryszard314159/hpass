@@ -9,6 +9,17 @@ https://www.sliderrevolution.com/resources/slide-menu/
   margin: 0;
   padding: 0;
 } */
+/* * {
+  display: block;
+  margin: 0 auto;
+  margin: 1rem 0 0 0;
+  padding: 0;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  width: 100vh;
+} */
 
 html,
 body {
@@ -23,11 +34,11 @@ body {
 }
 
 body {
+  display: block;
   /* margin-top: 10%; */
   width: 90%;
   max-width: 100%;
   overflow-x: hidden;
-  display: block;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -64,47 +75,50 @@ legend {
   margin-bottom: 1rem;
 }
 
-#gear {
-  padding-right: 0.5rem;
-  border-top-left-radius: 1rem;
-  border-bottom-left-radius: 1rem;
-  border-top-right-radius: 0%;
-  border-bottom-right-radius: 0%;
-  /* margin-top: 2%; */
+#gear, #generate {
   width: 10%;
-  /* height: 2rem; */
-  /* background-color: lightgray; */
-  /* border-radius: 50%; */
-  /* border: 0px solid #ccc; */
-  /* float: right; */
-  /* font-size: 2rem; */
-  /* color: black; */
-}
-#gear:hover {
-  /* font-weight: bolder; */
-  background-color: lightgreen;
+  height: 100%;
+  /* margin: 0 auto; */
+  /* flex: 0 0 auto; */
 }
 
+#gear {
+  /* padding-right: 0.5rem; */
+  border-radius: 1rem 0 0 1rem;
+  background-color: lightgreen;
+  background-color: red;
+
+}
+/* #gear:hover {
+  background-color: lightgreen;
+} */
+
 #generate {
-  padding-left: 0.5rem;
-  border-top-left-radius: 0%;
-  border-bottom-left-radius: 0%;
-  border-top-right-radius: 1rem;
-  border-bottom-right-radius: 1rem;
-  width: 10%;
+  border-radius: 0 1rem 1rem 0;
+  background-color: lightblue;
+  /* animation: moveGenerateBtn 0.25s forwards; */
+}
+
+.animateGenerate {
+  animation: moveGenerateBtn 0.25s forwards;
+}
+
+@keyframes moveGenerateBtn {
+  0% { transform: translateX(55%);}
+ 100% { transform: translateX(+0%);
+ }
+}
+
+@media (max-width: 600px) {
+  #gear, #generate {
+    width: 15%;
+  }
 }
 
 .btnContainer {
   display: inline-flex;
   justify-content: space-between;
   align-items: center;
-  vertical-align: middle;
-}
-
-.btnContainer-OLD {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 5%;
   vertical-align: middle;
 }
 
@@ -127,8 +141,13 @@ legend {
   /* transition: all 9.5s ease-in-out; */
   /* border-radius: 50%; */
 }
+#share {
+  width: 4rem;
+  /* height: 3rem; */
+}
 
 #help,
+#reset,
 #demo,
 #share,
 #save,
@@ -137,6 +156,9 @@ legend {
   margin: 1rem;
   border: 0px solid black;
   /* border-radius: 15px; */
+}
+#share {
+  background-color: lightgreen;
 }
 
 .grow {
@@ -173,22 +195,20 @@ form {
   display: flex;
   justify-content: center;
   align-items: center;
+  
 }
 
 #hintForm {
   width: 90%;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-  border-bottom-left-radius: 1rem;
-  border-bottom-right-radius: 1rem;
-  min-width: 1rem;
-  min-height: 4rem;
+  height: 100%;
+  border-radius: 1rem;
   /* background: rgba(128, 128, 128, 1); */
   background: transparent;
-  z-index: 99;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 4px 4px 4px 4px lightgrey;
+  margin: 0 0 0.5rem 0;
 }
 
 input {
@@ -200,52 +220,43 @@ input {
   font-size: 1.5rem;
 }
 
-#menu,
-#hidemenu {
-  position: sticky;
-  display: block;
-  justify-content: center;
-  align-items: center;
-  margin: 0% 0% 0% 0%; /* top right bottom left */
+#settingsContainer {
+  position: relative;
   width: 100%;
-  height: 100%;
-  top: 33%;
+  height: 48%;
+  margin: 0 auto;
+  /* background-color: rgba(181, 113, 30, 0.5); */
+}
+#hidesettings,
+#settings {
+  position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: white;
-  transition: transform 4.4s ease-out;
-}
-#menu {
-  z-index: +9;
-  /* background-color: lightgray; */
-  background-color: transparent;
-}
-#hidemenu {
-  z-index: +80;
-  background-color: lightblue;
-  /* background-color: transparent; */
-}
-
-#hidesettings,
-#settings {
-  display: block;
-  position: flex;
-  margin: 0 auto;
-  height: 45%;
+  /* margin: 0 auto; */
+  height: 100%;
   width: 100%;
-  z-index: -80;
 }
 #hidesettings {
-  position: absolute;
-  z-index: +80;
-  background-color: white;
-  /* background-color: rgb(83, 143, 192); */
+  display: none;
+  /* background-color: rgb(83, 143, 192, 0.5); */
+}
+#settings {
+  display: block;
+  /* background-color: rgba(153, 214, 39, 0.5); */
 }
 
+#hidesettings iframe {
+  width: 100%;
+  height: 100%;
+}
+.hidden {
+  visibility: hidden;
+}
 
 #adunit {
-  z-index: 90;
+  z-index: 9;
   width: 100%;
   display: block;
   position: fixed;
@@ -253,10 +264,17 @@ input {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: white;
-  /* background-image: linear-gradient(to right, lightgrey, white, lightgrey); */
-  /* background: rgba(255, 255, 255, 1); */
+  background-color: lightgray;
+  border-top: 4pt solid grey;
 }
+
+
+
+/* 4px 4px 4px 4px */
+/* box-shadow: 0px -4pt 4pt 4pt rgba(0, 0, 0, 0.2); */
+/* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) */
+/* background-image: linear-gradient(to right, lightgrey, white, lightgrey); */
+/* background: rgba(255, 255, 255, 1); */
 
 
 
@@ -289,6 +307,23 @@ input {
   border-style: solid solid solid none;
 }
 
+/* .photo {
+  background-image: url('stone1.jpg');
+  background-size: cover;
+  background-position: center;
+} */
+.sekret {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+#burn, #peak {
+    /* background-color: linear-gradient(90deg, #939292, #aaa); */
+    background-color: rgba(51, 44, 59, 0.2);
+    background-size: 100% 2px;
+    background-position: 0% 100%;
+    padding: 10px;
+    border-radius: 5px;
+}
+
 input {
   position: relative;
   width: 100%;
@@ -296,6 +331,8 @@ input {
   border: 1px solid #ccc;
   border-radius: 16px;
   float: right;
+  /* align-items: center; */
+  justify-content: center;
 }
 
 #hint {
@@ -311,7 +348,9 @@ label {
 }
 
 .input-container .leading-icon,
-.input-container .trailing-icon {
+.input-container .trailing-icon,
+.super-input-container .leading-icon,
+.super-input-container .trailing-icon {
   position: absolute;
   top: 10%;
   color: #888;
@@ -323,7 +362,8 @@ label {
   border: transparent;
 }
 
-.input-container {
+.input-container,
+.super-input-container {
   align-items: center;
   display: block;
   position: relative;
@@ -335,6 +375,10 @@ label {
   margin-left: 1%; */
   margin: 0 auto;
 }
+
+/* .super-input-container {
+  background-color: lightgray;
+} */
 
 .leading-icon {
   left: 0rem;
@@ -392,21 +436,40 @@ label {
 
 #versionContainer {
   display: inline-flex;
-  justify-content: center;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  justify-content: space-between;
   text-decoration: none;
-  /* align-items: center; */
   vertical-align: middle;
 }
 
-#logo,
-#version {
+#logo {
+  display: flex;
   margin: 0 auto;
+  width: 1.5rem; height: 1.5rem
 }
 
-/* #version {
-  font-size: 0.8rem;
-  color: gray;
+/* .flex-item:not:last-child:after {
+  content: "A";
 } */
+.flex-item {
+  display: flex;
+}
+/* .flex-item:before {
+  content: "•";
+  margin: 0 0.5rem;
+} */
+.flex-item:not(:first-child):before {
+  content: "•";
+  margin: 0 0.25rem;
+}
+
+
+#version {
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+}
 
 .full-page {
   width: 100vw; /* Viewport width */
@@ -435,3 +498,65 @@ label {
       opacity: 1;
   }
 }
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  /* border-bottom: 1px dotted black; */
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  transition: visibility 0.0s;
+  width: 120px;
+  background-color: blue;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px; 
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  transition-delay: 0.0s;
+}
+
+/* .tooltip.show-tooltip .tooltiptext {
+  visibility: visible;
+}
+
+.show-tooltip .tooltiptext {
+  visibility: visible;
+} */
+
+/* #menu,
+#hidemenu {
+  position: sticky;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  margin: 0% 0% 0% 0%;
+  width: 100%;
+  height: 100%;
+  top: 33%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  transition: transform 4.4s ease-out;
+}
+#menu {
+  z-index: +9;
+  background-color: lightgray;
+  background-color: transparent;
+}
+#hidemenu {
+  z-index: +80;
+  background-color: lightblue;
+  background-color: transparent;
+} */

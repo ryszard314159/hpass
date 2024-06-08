@@ -160,7 +160,7 @@ function getPass(args) {
       to satisfy requirements of many sites
       one or more special characters can be provided in args.pepper (default='!')
     */
-    let hint = args.hint + args.salt + args.pepper + args.length;
+    let hint = args.hint + args.salt + args.pepper + args.length + args.peak;
     let gint = rig(MP31, hint);
     for (let k = 0; k < args.burn; k++) {
       gint.next().value;
