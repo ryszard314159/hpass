@@ -83,22 +83,21 @@
           <!-- <legend id="back">Settings &nbsp; &nbsp; &nbsp;⨉ <br /><br /></legend> -->
           <br/><br/>
           <!-- <legend id="back">Settings<br/><br/></legend> -->
-          <div class="input-container">
+          <div id="saltContainer" class="input-container" style="background-color: transparent;">
             <button id="saltBtn" class="leading-icon">🤫</button>
             <input id="salt" placeholder="Secret" />
-            <!-- <label for="salt">Secret</label> -->
             <button id="saltCross" class="trailing-icon">⨉</button>
-            <p class="helper-text">secret to make password unique</p>
+            <div class="helper-text">secret to make password unique</div>
           </div>
-          <div class="input-container">
+          <div id="pepperContainer" class="input-container" style="background-color:transparent;">
             <button id="pepperBtn" class="leading-icon"><span style="color: red">&#x1F336</span></button>
             <input id="pepper" placeholder="Special Character" />
             <!-- <label for="pepper">Special Character</label> -->
             <button id="pepperCross" class="trailing-icon">⨉</button>
             <br />
-            <p class="helper-text">one or more of _.-!@*$?&% etc.</p>
+            <div class="helper-text">one or more of _.-!@*$?&% etc.</div>
           </div>
-          <div class="input-container">
+          <div id="lengthContainer" class="input-container">
             <button id="lengthBtn" class="leading-icon">📏</button>
             <input
               id="length"
@@ -107,26 +106,22 @@
               max="128"
               placeholder="Length"
             />
-            <!-- <label for="length">Length</label> -->
-            <p class="helper-text">4-128 range, 15 recommended</p>
+            <div class="helper-text">4-128 range, 15 recommended</div>
           </div>
-          <div class="input-container">
+          <div id="burnContainer" class="input-container">
             <button id="burnBtn" class="leading-icon">&#128293</button>
             <input
-              class="sekret"
               id="burn"
               type="number"
               min="0"
               max="999999"
               placeholder="Warm-up rounds"
             />
-            <p class="helper-text">
-              0-99999 range (never saved!)
-            </p>
+            <div class="helper-text">0-99999 range (never saved!)</div>
           </div>
-          <div class="input-container">
+          <div id="peakContainer" class="input-container">
             <button id="peakBtn" class="leading-icon">&#129296</button>
-            <input id="peak" class="sekret" placeholder="Top Secret" />
+            <input id="peak" placeholder="Top Secret" />
             <p class="helper-text">never saved!</p>
           </div>
       </div>
