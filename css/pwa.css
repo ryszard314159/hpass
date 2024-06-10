@@ -395,15 +395,29 @@ label {
 .input-container .leading-icon,
 .input-container .trailing-icon {
   position: absolute;
-  top: 10%;
+  /* top: 10%; */
   color: #888;
-  font-size: 1.3rem;
+  font-size: 1.8rem;
   font-weight: bolder;
   cursor: pointer;
   display: inline-block;
   background-color: transparent;
   border: transparent;
 }
+
+.input-container .leading-icon {
+  /* margin: 2% 0 2% 2%; */
+  position: absolute;
+  top: 12%; left: 2%;
+  /* right:98%; bottom: 50%; */
+}
+.input-container .trailing-icon {
+  position: absolute;
+  /* margin: 2% 2% 2% 0%; */
+  /* right:2%; bottom: 40%; */
+  top: 10%; left: 88%;
+}
+
 
 .input-container {
   align-items: center;
@@ -428,22 +442,10 @@ label {
 .super-input-container .trailing-icon {
 } */
 
-.leading-icon {
-  margin: 2% 0 2% 2%;
-  /* min-width: 64px;
-  width: 20%;
-  background-color: pink; */
-}
-
-.trailing-icon {
-  margin: 1% -2% 2% 0%;
-  right: 1rem;
-  border-radius: 50%;
-}
-.trailing-icon:hover {
+/* .trailing-icon:hover {
   font-weight: bolder;
   background-color: lightgray;
-}
+} */
 
 .input-container input:focus + label,
 .input-container input:not(:placeholder-shown) + label {
