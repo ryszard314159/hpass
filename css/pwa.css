@@ -115,6 +115,15 @@ legend {
   }
 }
 
+#saveDiv {
+  display: block;
+  /* width: 100%;
+  justify-content: space-around;
+  text-decoration: none;
+  align-items: center;
+  vertical-align: middle; */
+}
+
 .btnContainer {
   /* display: inline-flex; */
   display: flex;
@@ -134,7 +143,8 @@ legend {
   width: 2rem;
   height: 2rem;
   background-color: rgb(238, 236, 236);
-  padding: 0.5rem;
+  padding: 0.2rem;
+  margin: 0.5rem;
   border-radius: 15%;
 }
 .btn:hover {
@@ -258,14 +268,6 @@ input {
   visibility: hidden;
 }
 
-/* #saveDiv {
-  display: block;
-  width: 100%;
-  justify-content: space-around;
-  text-decoration: none;
-  align-items: center;
-  vertical-align: middle;
-} */
 
 #adunit {
   z-index: 9;
