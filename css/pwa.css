@@ -77,10 +77,19 @@ legend {
 }
 
 #gear, #generate {
+  display: inline-block;
   width: 10%;
   height: 100%;
+  max-height: 100%;
+  object-fit:cover;
+  object-position:center;
   /* margin: 0 auto; */
   /* flex: 0 0 auto; */
+}
+
+form img {
+  height: 100%;
+  /* width: 100%; */
 }
 
 #gear {
@@ -88,7 +97,7 @@ legend {
   border-radius: 1rem 0 0 1rem;
   background-color: lightgreen;
   background-color: red;
-
+  a
 }
 /* #gear:hover {
   background-color: lightgreen;
@@ -201,7 +210,7 @@ form {
 #hintContainer {
   /* position: absolute; */
   top: 10%;
-  z-index: 99;
+  z-index: 9;
   margin-top: -4rem;
   width: 100%;
   background: rgba(255, 255, 255, 1);
@@ -216,21 +225,28 @@ form {
   height: 100%;
   border-radius: 1rem;
   /* background: rgba(128, 128, 128, 1); */
-  background: transparent;
+  /* background-color: pink; */
+  /* background: transparent; */
   display: flex;
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center; */
+  align-items: stretch;
   box-shadow: 4px 4px 4px 4px lightgrey;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0 0;
+}
+
+#hintForm img {
+  flex-grow: 1;
+  height: 100%;
+  object-fit: contain;
 }
 
 input {
   position: relative;
   width: 100%;
-  padding: 1%;
+  padding: 0;
   border: 1px solid #ccc;
   border-radius: 16px;
-  float: right;
+  /* float: right; */
   text-align: center;
   /* align-items: center; */
   justify-content: center;
@@ -342,9 +358,9 @@ input {
     border-radius: 5px;
 }
 
-#burn::placeholder {
+/* #burn::placeholder {
   font-size: 1.5rem;
-}
+} */
 
 
 #hint {
