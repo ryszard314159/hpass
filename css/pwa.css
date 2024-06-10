@@ -225,13 +225,23 @@ form {
 }
 
 input {
-  background: transparent;
-  /* background: rgba(255, 255, 255, 1); */
+  position: relative;
   width: 100%;
-  border: none;
+  padding: 1%;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  float: right;
   text-align: center;
+  /* align-items: center; */
+  justify-content: center;
+  background: transparent;
   font-size: 1.5rem;
+  /* background: rgba(255, 255, 255, 1); */
 }
+
+/* input::placeholder {
+    font-size: 1.0rem;
+} */
 
 #settingsContainer {
   display: block;
@@ -332,16 +342,10 @@ input {
     border-radius: 5px;
 }
 
-input {
-  position: relative;
-  width: 100%;
-  padding: 1%;
-  border: 1px solid #ccc;
-  border-radius: 16px;
-  float: right;
-  /* align-items: center; */
-  justify-content: center;
+#burn::placeholder {
+  font-size: 1.5rem;
 }
+
 
 #hint {
   border: none;
