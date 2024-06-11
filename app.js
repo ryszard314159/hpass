@@ -201,10 +201,11 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   p.style.padding = "1rem 0 1rem 0";
   p.style.overflow = "auto";
   const x = document.createElement("button");
-  x.innerHTML = "X";
+  x.innerHTML = "⨉" // "X";
+  x.style.fontSize = "2rem";
   x.style.position = "absolute";
-  x.style.top = "4";
-  x.style.right = "4";
+  x.style.top = "0.2rem";
+  x.style.right = "1rem";
   x.style.backgroundColor = "transparent";
   x.style.border = "0px solid black";
   p.appendChild(x);
