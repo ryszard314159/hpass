@@ -47,6 +47,8 @@ el.notify = document.getElementById("notify");
 el.pepperCross = document.getElementById("pepperCross");
 el.saltCross = document.getElementById("saltCross");
 el.lengthCross = document.getElementById("lengthCross");
+el.burnCross = document.getElementById("burnCross");
+el.peakCross = document.getElementById("peakCross");
 el.cleanCross = document.getElementById("cleanCross");
 el.version = document.getElementById("version");
 el.clickSound = document.getElementById('clickSound');
@@ -282,7 +284,7 @@ el.gear.addEventListener("click", () => {
 //   el.menu.classList.toggle("slide-in");
 // });
 
-const ops = ["pepper", "salt"];
+const ops = ["pepper", "salt", "length", "burn", "peak"];
 ops.forEach((x) => {
   let cross = `${x}Cross`;
   console.log("app:0: ops.forEach: x= ", x, " cross= ", cross);
@@ -363,8 +365,8 @@ function generateFun(event) {
   let args = { ...opts }; // deep copy
   args.burn = el.burn.value;
   args.peak = el.peak.value;
-  el.burn.value = "";
-  el.peak.value = "";
+  // el.burn.value = "";
+  // el.peak.value = "";
   args.hint = el.hint.value;
   console.log("generate:1: opts=", opts);
   args.digits = false;
