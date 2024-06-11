@@ -106,6 +106,7 @@
               max="128"
               placeholder="Length"
             />
+            <button id="lengthCross" class="trailing-icon">⨉</button>
             <div class="helper-text">4-128 range, 15 recommended</div>
           </div>
           <div id="burnContainer" class="input-container">
@@ -117,22 +118,25 @@
               max="999999"
               placeholder="Warm-up rounds"
             />
+            <button id="burnCross" class="trailing-icon">⨉</button>
             <div class="helper-text">0-99999 range (never saved!)</div>
           </div>
           <div id="peakContainer" class="input-container">
             <button id="peakBtn" class="leading-icon">&#129296</button>
             <input id="peak" placeholder="Top Secret" />
-            <p class="helper-text">never saved!</p>
+            <button id="peakCross" class="trailing-icon">⨉</button>
+            <div class="helper-text">never saved!</div>
           </div>
       </div>
     </div>
     <hr>
     <div id="saveDiv" class="btnContainer">
       <div class="tooltip">
-        <a id="help" style="display: block;"
-            href="help.html"
-            onclick="return handleLinkClick(event)">
-          <img class="btn" src="icons/help.svg"/>
+        <a id="help" style="display: block;" href="help.html" onclick="return handleLinkClick(event)">
+          <!-- <figure> -->
+            <img class="btn" src="icons/help.svg">
+            <!-- <figcaption>Help</figcaption> -->
+          <!-- </figure> -->
         </a>
         <span class="tooltiptext">Basic help and usage guide</span>
       </div>
