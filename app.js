@@ -185,7 +185,7 @@ function cleanHint(prompt) {
 }
 
 function showPopup(msg, timeOut, bkg = "lightgreen") {
-  const p = document.createElement("p");
+  const p = document.createElement("div");
   p.innerHTML = msg;
   p.style.display = "block";
   // p.style.position = "absolute";
@@ -204,6 +204,7 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   p.style.borderRadius = "15px";
   p.style.padding = "1rem 0 1rem 0";
   p.style.overflow = "auto";
+  p.style.boxShadow = "20pt 20pt 9pt lightgrey";
   const x = document.createElement("button");
   x.innerHTML = "⨉" // "X";
   x.style.fontSize = "2rem";
