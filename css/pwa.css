@@ -145,8 +145,8 @@ button {
 .btnContainer {
   /* display: inline-flex; */
   display: flex;
-  justify-content: space-between;
-  /* justify-content: space-around; */
+  /* justify-content: space-between; */
+  justify-content: space-around;
   /* align-items: center; */
   /* vertical-align: middle; */
 }
@@ -158,10 +158,10 @@ button {
 }
 
 .btn {
-  width: 3rem;
-  height: 3rem;
+  width: 2rem;
+  height: 2rem;
   background-color: rgb(238, 236, 236);
-  padding: 0.2rem;
+  /* padding: 0.2rem; */
   margin: 0.5rem;
   border-radius: 15%;
 }
@@ -517,6 +517,8 @@ label {
   justify-content: space-between;
   text-decoration: none;
   vertical-align: middle;
+  font-size: small;
+  align-items: center;
 }
 
 #logo {
@@ -537,6 +539,7 @@ label {
 } */
 .flex-item:not(:first-child):before {
   content: "•";
+  /* content: "|"; */
   margin: 0 0.25rem;
 }
 
