@@ -26,10 +26,10 @@ el.length = document.getElementById("length");
 el.burn = document.getElementById("burn");
 el.peak = document.getElementById("peak"); // instead of top
 el.range = document.getElementById("range");
+el.gear = document.getElementById("gear");
 el.generate = document.getElementById("generate");
 el.hintForm = document.getElementById("hintForm");
-el.generateDiv = document.getElementById("generateDiv");
-el.gear = document.getElementById("gear");
+// el.generateDiv = document.getElementById("generateDiv");
 el.passwords = document.getElementById("passwords");
 el.hidesettings = document.getElementById("hidesettings");
 el.settings = document.getElementById("settings");
@@ -239,13 +239,14 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
 
 // Switch over/under positions of adunut and menu elements...
 
+// el.adunit.classList.toggle("slide-in");
+// el.menu.classList.toggle("slide-in");
+
 el.gear.addEventListener("click", () => {
-  // el.adunit.classList.toggle("slide-in");
-  // el.menu.classList.toggle("slide-in");
   console.log("app: gear click:0: el.gear.src= ", el.gear.src);
   const x = el.gear.src.split("/").slice(-1)[0];
-  el.gear.src = x == "gear.svg" ? "icons/cross.svg" : "icons/gear.svg";
-  el.gear.style.backgroundColor = x == "gear.svg" ? "red" : "lightgreen";
+  el.gear.src = (x == "gear.svg") ? "icons/cross.svg" : "icons/gear.svg";
+  el.gear.style.backgroundColor = (x == "gear.svg") ? "red" : "lightgreen";
   // el.gear.backgroundColor = "pink";
   console.log("app: gear click:1: el.gear.src= ", el.gear.src);
   console.log(
@@ -257,28 +258,29 @@ el.gear.addEventListener("click", () => {
     "apps:1: settings zIndex= ", el.settings.style.zIndex,
     "apps:1: hidesettings zIndex= ", el.hidesettings.style.zIndex
   );
-  // const zIndexA = getComputedStyle(el.hidesettings).zIndex;
-  // const zIndexB = getComputedStyle(el.settings).zIndex;
-  // console.log("apps: zIndexA= ", zIndexA, "zIndexB= ", zIndexB);
-  // el.hidesettings.style.zIndex = zIndexB;
-  // el.settings.style.zIndex = zIndexA;
-  // console.log(
-  //   "apps:2: settings zIndex= ", el.settings.style.zIndex,
-  //   "apps:2: hidesettings zIndex= ", el.hidesettings.style.zIndex
-  // );
+
   console.log(
     "apps:3: settings display= ", getComputedStyle(el.settings).display,
     "apps:3: hidesettings display= ", getComputedStyle(el.hidesettings).display
   );
   el.hidesettings.style.display = getComputedStyle(el.hidesettings).display === "none" ? "block" : "none";
   el.settings.style.display = getComputedStyle(el.settings).display === "none" ? "block" : "none";
-  // el.hidesettings.classList.toggle('hidden');
-  // el.settings.classList.toggle('hidden');
   console.log(
     "apps:4: settings display= ", getComputedStyle(el.settings).display,
     "apps:4: hidesettings display= ", getComputedStyle(el.hidesettings).display
   );
 });
+
+{}
+// const zIndexA = getComputedStyle(el.hidesettings).zIndex;
+// const zIndexB = getComputedStyle(el.settings).zIndex;
+// console.log("apps: zIndexA= ", zIndexA, "zIndexB= ", zIndexB);
+// el.hidesettings.style.zIndex = zIndexB;
+// el.settings.style.zIndex = zIndexA;
+// console.log(
+//   "apps:2: settings zIndex= ", el.settings.style.zIndex,
+//   "apps:2: hidesettings zIndex= ", el.hidesettings.style.zIndex
+// );
 
 // el.back.addEventListener("click", () => {
 //   el.menu.classList.toggle("slide-in");
