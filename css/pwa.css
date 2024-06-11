@@ -89,7 +89,7 @@ button {
 
 #gear, #generate {
   display: inline-block;
-  width: 10%;
+  width: 15%;
   height: 100%;
   max-height: 100%;
   object-fit:cover;
@@ -97,29 +97,21 @@ button {
   /* margin: 0 auto; */
   /* flex: 0 0 auto; */
 }
-
 form img {
   height: 100%;
   /* width: 100%; */
 }
-
 #gear {
   /* padding-right: 0.5rem; */
   border-radius: 1rem 0 0 1rem;
   /* background-color: lightgreen; */
   background-color: red;
-  a
 }
-/* #gear:hover {
-  background-color: lightgreen;
-} */
-
 #generate {
   border-radius: 0 1rem 1rem 0;
   background-color: lightblue;
   /* animation: moveGenerateBtn 0.25s forwards; */
 }
-
 .animateGenerate {
   animation: moveGenerateBtn 0.25s forwards;
 }
@@ -130,11 +122,15 @@ form img {
  }
 }
 
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
   #gear, #generate {
     width: 15%;
   }
-}
+} */
+
+/* #gear:hover {
+  background-color: lightgreen;
+} */
 
 #saveDiv {
   display: block;
