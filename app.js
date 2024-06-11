@@ -188,13 +188,17 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   const p = document.createElement("p");
   p.innerHTML = msg;
   p.style.display = "block";
+  // p.style.position = "absolute";
+  p.style.position = "fixed";
   p.style.fontSize = "1.5rem";
   p.style.backgroundColor = bkg;
   p.style.border = "0.1px solid black";
   p.style.zIndex = 9;
-  p.style.position = "absolute";
-  p.style.top = "20%";
-  p.style.right = "10%";
+  // p.style.top = "20%";
+  // p.style.right = "10%";
+  p.style.top = "50%";
+  p.style.left = "50%";
+  p.style.transform = "translate(-50%, -200%)"
   p.style.width = "80%";
   p.style.textAlign = "center";
   p.style.borderRadius = "15px";
@@ -302,7 +306,7 @@ function cleanClean(v) {
   return valid.has(v) ? v : true;
 }
 
-el.save.addEventListener("dblclick", function () {
+el.save.addEventListener("click", function () {
   const opts = { ...globalDefaults };
   console.log("apps:0: save: opts= ", opts);
   console.log("apps:0: save: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
@@ -315,16 +319,16 @@ el.save.addEventListener("dblclick", function () {
   showPopup("settings saved!", SHORTPOPUP);
 });
 
-el.share.addEventListener("dblclick", function () {
+el.share.addEventListener("click", function () {
   const opts = { ...globalDefaults };
   console.log("apps:0: share: opts= ", opts);
   copyToClipboard(opts.url);
-  showPopup(`${opts.url} copied to clipoard - share it!`, 3 * SHORTPOPUP);
+  showPopup(`${opts.url}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
 });
 
 el.reset.addEventListener("click", function () {
-  let msg = "Double click to restore defaults.<br>";
-  msg = msg + "WARNING: your current settings will be lost.";
+  let msg = "Double click<br>to restore defaults.<br>";
+  msg = msg + "WARNING: your current<br>settings will be lost.";
   console.log("app: reset: msg= ", msg);
   showPopup(msg, 3 * SHORTPOPUP, "red");
 });
