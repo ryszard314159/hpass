@@ -481,7 +481,7 @@ label {
 
 .input-container .helper-text {
   /* display: none; */
-  font-size: 0.75rem;
+  font-size: 1rem;
   float: left;
   color: gray;
   margin-left: 0rem;
