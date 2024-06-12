@@ -36,13 +36,21 @@
       HPASS(&trade;) uses an alternative approach with one major advantage:
       passwords are generated locally, on-demand and never stored in any central
       location. Passwords and few parameters to generate them (
-      <tt><strong>Hint</strong></tt
-      >, <tt><strong>Secret</strong></tt
-      >, <tt><strong>Special Character</strong></tt
-      >, and <tt><strong>Length</strong></tt
-      >) are never stored in any centralized location, only on your local
+      <strong>Hint</strong>,
+      <strong>Secret</strong>,
+      <strong>Special Character</strong>,
+      <strong>Length</strong>)
+      which are never stored in any centralized location, only on your local
       device, so there is no danger of data breach so often reported for
       password managers.
+      For extra layer of security you may want to use two additional
+      parameters, which are never stored anywhere:
+      <strong>Top Secret</strong> and
+      <strong>Burn</strong>.
+      See
+      <a href="help.html">Help section</a>
+      for detailed description of these parameters and how
+      they are used to generate passwodrs.
     </p>
     <p>
       Large number of sites and apps offer strong random password generation,
@@ -58,14 +66,13 @@
       (rebranded now as Spectre
       <a href="https://spectre.app">https://spectre.app</a>) was developed in
       2012. It uses basically the same idea as HPASS -
-      <strong
-        >do not store password, generate reproducible password when you need
-        it</strong
-      >. You can find there extensive explanations why this is a better solution
+      <strong>do not store password,
+      generate reproducible password when you need it</strong>.
+      You can find there extensive explanations why this is a better solution
       then storing passwords, as password managers do. However, the whole
       process Spectre uses seems overcomplicated and restrictive at the same
       time. For example, in addition to the HPASS
-      <tt><strong>Secret</strong></tt> eqivalent,it requires user name, it
+      <strong>Secret</strong> eqivalent, it requires user name, it
       generates passwords only following few fixed templates, etc. Take a look,
       and decide for yourself.
     </p>
@@ -77,7 +84,7 @@
       button (<img
         src="icons/generate.svg"
         style="width: 2rem; height: 0.8rem"
-      />). This will generate password string and copy it to the clipboard, and
+      />). This will generate password string and copy it to the clipboard -
       you can paste it where it is needed. As a convenience feature, if you
       enter the whole URL the app will automatically extract secondary domain
       (i.e. "abc" in this example) as a password <tt><strong>Hint</strong></tt
@@ -87,15 +94,15 @@
     <h2>Notes</h2>
     <ul>
       <li>
-        The default settings (<tt><strong>Special Character</strong></tt> = "_",
-        <tt><strong>Length</strong></tt> = 15) have been selected to satisfy
-        most password requirements. Some websites will not accept certain
+        The default settings (<strong>Special Character</strong> = "_",
+        <strong>Length</strong> = 15) have been selected to satisfy
+        most requirements. Some websites will not accept certain
         special characters, and some impose rather short maximum password length
         - "_" and 15 seems to be accepted by most (if not all) sites.
       </li>
 
       <li>
-        Purpose of <tt><strong>Secret</strong></tt> is to create different
+        Purpose of <strong>Secret</strong> is to create different
         passwords for users using the same other parameters.
       </li>
 

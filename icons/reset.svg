@@ -1,79 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   width="100"
-   height="100"
-   viewBox="0 0 100 100"
-   version="1.1"
-   id="svg5"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="reset.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     showgrid="false"
-     inkscape:zoom="4.6598337"
-     inkscape:cx="8.1547975"
-     inkscape:cy="50.109084"
-     inkscape:window-width="1850"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
-     inkscape:pageshadow="2" />
-  <defs
-     id="defs2">
-    <marker
-       style="overflow:visible"
-       id="Arrow2"
-       refX="0"
-       refY="0"
-       orient="auto-start-reverse"
-       inkscape:stockid="Arrow2"
-       markerWidth="7.6999998"
-       markerHeight="5.5999999"
-       viewBox="0 0 7.7 5.6"
-       inkscape:isstock="true"
-       inkscape:collect="always"
-       preserveAspectRatio="xMidYMid">
-      <path
-         transform="scale(0.7)"
-         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
-         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
-         id="arrow2L" />
-    </marker>
-  </defs>
-  <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-13.412754,-46.763779)">
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.33333;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2)"
-       id="path115"
-       sodipodi:type="arc"
-       sodipodi:cx="-100.93475"
-       sodipodi:cy="63.591835"
-       sodipodi:rx="44.123425"
-       sodipodi:ry="47.740002"
-       sodipodi:start="0"
-       sodipodi:end="4.9741884"
-       sodipodi:arc-type="arc"
-       d="M -56.811329,63.591835 A 44.123425,47.740002 0 0 1 -86.751744,108.79828 44.123425,47.740002 0 0 1 -135.94022,92.654106 44.123425,47.740002 0 0 1 -137.62204,37.06891 44.123425,47.740002 0 0 1 -89.514769,17.478535"
-       sodipodi:open="true"
-       transform="rotate(-90)" />
-  </g>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- This is a partial circle with an arrow tip at the 11 AM position -->
+  <!-- Partial Circle -->
+  <!-- <path d="M50,50 m0,50 a50,50 0 1,1 50,50" -->
+  <path d="M 50 10 A 40 40 0 1 1 10 50"
+    stroke="black" stroke-width="6" fill="none"/>
+  <polygon points="20,10 50,0 50,20" fill="black"/>
+  <!-- Arrow Tip at 11 AM position -->
+  <!-- <polygon points="45,5 55,5 50,0" fill="black"/> -->
 </svg>

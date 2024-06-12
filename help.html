@@ -19,17 +19,17 @@
         </a>
     </div>
     <h1>Installation and Settings</h1>
-    Press
+    Press <strong><tt>Reset</tt></strong>
     <!-- <img width="16rem" height="16rem" src="icons/reset.svg" /> -->
     <img src="icons/reset.svg" style="width:2rem; height:1rem;" />
-    button to populate setting fields with default values
+    button to populate setting fields with default values:
     <ul>
       <li>
         <strong>Secret</strong> (🤫): random 8 character string, generated when app is installed,
         to make generated passwords unique for the user.
-        You may want to change to some value you are likely to remember.
+        You may want to change it to some value you are likely to remember.
       </li>
-      <li><strong>Special character</strong> (<span style="color: red">&#x1F336</span>): _ i.e. underscore</li>
+      <li><strong>Special Character</strong> (<span style="color: red">&#x1F336</span>): _ i.e. underscore</li>
       <li><strong>Length</strong> (📏): 15</li>
     </ul>
 
@@ -44,21 +44,25 @@
     These variables: 
     <ul>
       <li><strong>Top Secret</strong> (&#129296): any string you wish (default: empty string)</li>
-      <li><strong>Burn</strong> (&#128293): any number in 0-999999 range (default=0)</li>  
+      <li><strong>Burn</strong> (&#128293): number, in 0-999999 range, of warm up rounds
+        for Pseudo-Random Number Generator (PRNG) to use (default: 0)</li>
     </ul>
     are never stored on your local device or anywhere else, and discarted
-    immidiately after the password is generated. They need to be entered
-    everytime you want to use them to generate password. This is a small price in convenience
+    at the end of the session, or when the page is reloaded.
+    After they are discarted they need to be entered again if you want to use them to generate password. This is a small price in convenience
     you may want to pay for high value passwords
     (bank accounts, social security, etc.) if you are concerned about
-    possibility (again - very unlikely) of your device being compromised.
+    possibility of data on your device being compromised.
     
-
     <p>
     Password prompt (or hint) entered in the <strong>Enter Hint</strong> box at
-    the top of the screen, together with these 5 settings determines the generated
-    password i.e. with the same values always the same password will be
-    generated.
+    the top of the screen, and
+    <strong>Secret</strong>, <strong>Special Character</strong>
+    <strong>Length</strong>, <strong>Top Secret</strong>
+    are used to construct the seed for PRNG.
+    This seed, together with <strong>Burn</strong> parameter (number of warm up rounds for PRNG),
+    determines uniquely the generated password
+    i.e. with the same values always the same password will be generated.
     <br><br><strong>NOTE:</strong> it is important to store
     <strong>Secret</strong>
     (and other values if different then default settings) in
