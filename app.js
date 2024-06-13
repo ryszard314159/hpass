@@ -69,8 +69,8 @@ if ("serviceWorker" in navigator) {
       if (opts == null) {
         opts = defaults;
         window.localStorage.setItem("options", JSON.stringify(opts));
-        let msg = `<br> Default secret is<br> ${defaults.salt}`;
-        msg = msg + "<br><br> NOTE: you should change it";
+        let msg = `<br> Default secret is<br><br> ${defaults.salt}`;
+        msg = msg + "<br><br> You should change it";
         msg = msg + "<br>to some personalized value.";
         alert("app: register: options set to default values on install");
         showPopup(msg, LONGPOPUP);
