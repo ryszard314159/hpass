@@ -1,64 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   width="100"
-   height="100"
-   viewBox="0 0 100 100"
-   version="1.1"
-   id="svg5"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="help.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="mm"
-     showgrid="false"
-     inkscape:zoom="3.2311552"
-     inkscape:cx="50.136867"
-     inkscape:cy="52.148531"
-     inkscape:window-width="891"
-     inkscape:window-height="1082"
-     inkscape:window-x="26"
-     inkscape:window-y="23"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="layer1"
-     inkscape:pageshadow="2" />
-  <defs
-     id="defs2" />
-  <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(189.19049,120.8055)">
-    <ellipse
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.80029;stroke-dasharray:none;stroke-opacity:1"
-       id="path21604"
-       cx="-138.94966"
-       cy="-70.640831"
-       rx="47.530708"
-       ry="47.476315" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:57.847px;line-height:0.45;font-family:sans-serif;-inkscape-font-specification:sans-serif;stroke-width:6.19783"
-       x="-146.39098"
-       y="-55.581863"
-       id="text23903"
-       transform="scale(1.0640536,0.93980229)"><tspan
-         sodipodi:role="line"
-         id="tspan23901"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;stroke-width:6.19783"
-         x="-146.39098"
-         y="-55.581863">?</tspan></text>
-  </g>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- This is a circle in the middle with radius 50 and stroke width 6 -->
+  <circle cx="50" cy="50" r="45" stroke="black" stroke-width="6" fill="none"/>
+  <!-- Adding a question mark in the middle -->
+  <text x="50" y="55" dominant-baseline="middle" text-anchor="middle"
+    font-size="70" font-family="Arial" fill="black">?</text>
 </svg>
