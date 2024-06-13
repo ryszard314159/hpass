@@ -69,9 +69,9 @@ if ("serviceWorker" in navigator) {
       if (opts == null) {
         opts = defaults;
         window.localStorage.setItem("options", JSON.stringify(opts));
-        let msg = `<br>installation: default secret is ${defaults.salt}`;
-        msg = msg + "<br>NOTE: you should change it for some";
-        msg = msg + "<br>personalized value.";
+        let msg = `<br> Default secret is<br> ${defaults.salt}`;
+        msg = msg + "<br><br> NOTE: you should change it";
+        msg = msg + "<br>to some personalized value.";
         alert("app: register: options set to default values on install");
         showPopup(msg, LONGPOPUP);
         console.log("app: register: opts=defaults= ", defaults);
@@ -200,7 +200,7 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   // p.style.right = "10%";
   p.style.top = "50%";
   p.style.left = "50%";
-  p.style.transform = "translate(-50%, -200%)"
+  p.style.transform = "translate(-50%, -100%)"
   p.style.width = "80%";
   p.style.textAlign = "center";
   p.style.borderRadius = "15px";
