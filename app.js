@@ -1,8 +1,9 @@
+/*
+TODO:
+1 - restore does not work for Secret
+*/
 "use strict";
 import { getPass, MAXLENGTH, MINLENGTH } from "./core/lib.js";
-
-// navigator.clipboard.writeText fails in Safari
-// https://developer.apple.com/forums/thread/691873
 
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
@@ -13,7 +14,7 @@ globalDefaults.length = 15;
 globalDefaults.clean = true;
 globalDefaults.minlength = MINLENGTH;
 globalDefaults.maxlength = MAXLENGTH;
-globalDefaults.salt = null;
+globalDefaults.salt = "Replace Me!";
 globalDefaults.url = "https://hpass.app";
 
 // Selecting elements
@@ -60,15 +61,15 @@ if ("serviceWorker" in navigator) {
     .register(swPath)
     .then((reg) => {
       const defaults = { ...globalDefaults };
-      const salt = getPass({ hint: "", length: 8 });
-      defaults.salt = salt;
-      globalDefaults.salt = salt;
+      // const salt = getPass({ hint: "", length: 8 });
+      // defaults.salt = salt;
+      // globalDefaults.salt = salt;
       console.log("app: sw registered!", reg);
       let opts = JSON.parse(window.localStorage.getItem("options"));
       if (opts == null) {
         opts = defaults;
         window.localStorage.setItem("options", JSON.stringify(opts));
-        let msg = `installation: your personalized secret is ${salt}`;
+        let msg = `<br>installation: your personalized secret is ${salt}`;
         msg = msg + "<br>NOTE: you can change it later if you whish";
         alert("app: register: options set to default values on install");
         showPopup(msg, LONGPOPUP);
