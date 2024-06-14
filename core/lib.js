@@ -160,7 +160,9 @@ function getPass(args) {
       to satisfy requirements of many sites
       one or more special characters can be provided in args.pepper (default='!')
     */
-    let hint = args.hint + args.salt + args.pepper + args.length + args.peak;
+    let p = args.peak;
+    p = (p === undefined) || (p === null) ? '' : p;
+    let hint = args.hint + args.salt + args.pepper + args.length + p;
     let gint = rig(MP31, hint);
     for (let k = 0; k < args.burn; k++) {
       gint.next().value;
@@ -171,6 +173,7 @@ function getPass(args) {
     const pepper = args.pepper + lower + upper + digit;
     let n = args.length - pepper.length;
     if (args.debug) {
+      console.log(`DEBUG: args.peak= ${args.peak}, p= ${p}`);
       console.log(`DEBUG: args.hint= ${args.hint}`);
       console.log(`DEBUG: args.salt= ${args.salt}`);
       console.log(`DEBUG: args.pepper= ${args.pepper}`);
