@@ -439,11 +439,11 @@ el.generate.addEventListener("click", generateFun);
 //   // Add your button click handling logic here
 // });
 
-// el.generate.addEventListener("keydown", (e) => {
-//   if (e.key === "Enter") {
-//     generateFun();
-//   }
-// });
+el.hint.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    generateFun(event);
+  }
+});
 
 function toggleSize() {
   el.generate.classList.add("active");
