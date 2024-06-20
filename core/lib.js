@@ -128,16 +128,26 @@ function get_random_string(n, charset = "", gint = rig(MP31, "")) {
   return z;
 }
 
-function getPass(args) {
-  /*
-  args.pepper      : pepper for generated password
-  args.hint        : hint to generate password
-  args.burn        : number of 'burn' steps in rng
-  args.length      : length of the password to generate
-  args.digits      : should digits be used?
-  args.letters     : should letters be used?
-  args.punctuation : should punctuation be used?
-  */
+// function getPass(args) {
+function getPass(args = {}) {
+  args = {
+    hint: "",           // easy to remember hint for the site e.g. 'netflix', 'amazon' etc.
+    pepper: "_",        // one or more special characters
+    salt: "Salt",       // user secret to make it unique
+    burn: 0,            // number of 'burn' (warm up) steps for RNG
+    peak: "",           // personal top secret
+    length: 15,         // length of generated password
+    digits: false,      // use digits
+    unicode: false,     // use unicode chars
+    lower: false,       // use lower case
+    upper: false,       // use upper case
+    punctuation: false, // use punctuation
+    no_shuffle: false,  // give it a shuffle before returning passwd string
+    debug: false,       // extra debug printout
+    verbose: false,     // print password, pepper, salt, and length
+    ...args
+  }
+
   const CHARS = {};
   CHARS.digits = "0123456789";
   CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
