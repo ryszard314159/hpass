@@ -49,6 +49,7 @@
     let clickCount = 0;
     let iClicked = -1;
     let jClicked = -1;
+    let changes = [];
     const gridContainer = document.getElementById('grid-container');
     let grid = createEmptyGrid();
     let interval;
@@ -81,17 +82,31 @@
         p = ((i - iClicked)**2 + (j - jClicked)**2) / (cols**2 + rows**2)
       }
       // console.log("aliveProb: i, j, iClicked, jClicked, p=", i, j, iClicked, jClicked, p);
-      return 0.5 + (0.5-p)/2;
+      // return 0.5 + (0.5-p)/2;
+      return 0.5;
     }
 
     function initializeGrid() {
       gridContainer.innerHTML = '';
+      // const rmin = rows/2 - 5;
+      // const rmax = rows/2 + 5;
+      // const cmin = cols/2 - 5;
+      // const cmax = cols/2 + 5;
+      const r0 = rows/2;
+      const c0 = cols/2;
+      const r2 = 11**2;
       for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
           const cell = document.createElement('div');
           cell.classList.add('cell');
           const p = aliveProb(i, j);
-          grid[i][j] = Math.random() < p ? 1 : 0;
+          // if ((rmin < i) && (i < rmax) &&  (cmin < j) && (j < cmax)) {
+          if ((i-r0)**2 + (j-c0)**2 < r2) {
+            grid[i][j] = Math.random() < p ? 1 : 0;
+            // grid[i][j] = 1;
+          } else {
+            grid[i][j] = 0;
+          }
           gridContainer.appendChild(cell);
         }
       }
@@ -108,14 +123,14 @@
     }
 
     function startGame() {
-      interval = setInterval(updateGrid, 200);
+      interval = setInterval(updateGrid, 150);
     }
 
     function stopGame() {
       clearInterval(interval);
     }
 
-    function updateGrid() {
+    function old_updateGrid() {
       const newGrid = createEmptyGrid();
       for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
@@ -139,23 +154,89 @@
       renderGrid();
     }
 
-    function countNeighbors(row, col) {
-      let count = 0;
-      for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-          if (i === 0 && j === 0) continue;
-          const newRow = row + i;
-          const newCol = col + j;
-          if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-            count += grid[newRow][newCol];
+    function updateGrid() {
+      const newGrid = createEmptyGrid();
+      let change = 0; // count how many cells changed value
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          const n = countNeighbors(i, j);
+          let nij = 0;
+          if (grid[i][j] === 1) {
+            nij = (n < 2 || n > 3) ? 0 : 1;
+          } else {
+            nij = (n === 3) ? 1 : 0;
           }
+          newGrid[i][j] = nij;
+          change += (nij === grid[i][j]) ? 0 : 1;
         }
       }
+      const maxlen = 32;
+      changes.push(change); // store change in changes array
+      if (changes.length > maxlen) {
+        changes.shift()
+      }
+      // console.log(`updateGrid: change/(rows*cols)= ${change/(rows*cols)}`);
+      // console.log(`updateGrid: changes= ${changes}`);
+      grid = newGrid;
+      renderGrid();
+      // if ((changes.length === maxlen) && (Math.min(...changes) === Math.max(...changes))) {
+      // start new game if changes array reached maxlen length and it is constant
+      if ((changes.length === maxlen) && (new Set(changes)).size === 1) {
+        console.log(`updateGrid: new game! changes= ${changes}`);
+        start();
+      }
+    }
+
+    // wrap-around add function for counting neighbors
+    // i.e.
+    // if (i > 0) && (i < imax) neighbors are i-1 and i+1
+    // if i === 0      neighbors are imax-1 and i+1
+    // if i === imax-1 neighbors are i-1 and 0
+    // function add(ix, i, imax) {
+    //   let v = ix + i;
+    //   v = (v < 0) ? imax-1 : v;
+    //   v = (v > imax-1) ? 0 : v;
+    //   return v;
+    // }
+
+    // wrap-around nbor utility function for countNeighbors()
+    function nbor(ix, i, imax) {
+      let v = ix + i;
+      v = (v < 0) ? imax-1 : v;
+      v = (v > imax-1) ? 0 : v;
+      return v;
+    }
+
+    // counts "alive" naighbors i.e. with grid value == 1
+    function countNeighbors(row, col) {
+      let count = 0;
+      // for (let i = -1; i <= 1; i++) {
+      //   for (let j = -1; j <= 1; j++) {
+      //     if (i === 0 && j === 0) continue;
+      //     // const newRow = row + i;
+      //     // const newCol = col + j;
+      //     // if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+      //     //   count += grid[newRow][newCol];
+      //     // }
+      //     const newRow = add(row, i, rows);
+      //     const newCol = add(col, j, cols);
+      //     count += grid[newRow][newCol];
+      //   }
+      // }
+      [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([i,j]) => {
+        count += grid[nbor(row, i, rows)][nbor(col, j, cols)];
+      });
       return count;
     }
 
-    function start() {
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function start() {
+      stopGame();
       initializeGrid();
+      await sleep(1000); // show initial grid for 1 sec
       startGame();
     }
 
