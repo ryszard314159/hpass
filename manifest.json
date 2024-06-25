@@ -14,22 +14,42 @@
   "categories": ["games", "finance", "navigation"],
   "icons": [
     {
-      "src": "./icons/logo.256.png",
+      "src": "/icons/logo.16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    },
+    {
+      "src": "/icons/logo.32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "/icons/logo.64.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    },
+    {
+      "src": "/icons/logo.128.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "/icons/logo.256.png",
       "type": "image/png",
       "sizes": "256x256"
     },
     {
-      "src": "./icons/logo.512.png",
+      "src": "/icons/logo.512.png",
       "type": "image/png",
       "sizes": "512x512"
     },
     {
-      "src": "./icons/logo.1024.png",
+      "src": "/icons/logo.1024.png",
       "type": "image/png",
       "sizes": "1024x1024"
     },
     {
-      "src": "./icons/logo.1024.png",
+      "src": "/icons/logo.1024.png",
       "type": "image/png",
       "sizes": "1024x1024",
       "purpose": "maskable"
@@ -37,37 +57,37 @@
   ],
   "screenshots": [
     {
-      "src": "./screenshots/basic.png",
+      "src": "/screenshots/basic.png",
       "type": "image/png",
       "sizes": "1080x2400"
     },
     {
-      "src": "./screenshots/copied-to-clipboard.png",
+      "src": "/screenshots/copied-to-clipboard.png",
       "type": "image/png",
       "sizes": "1080x2400"
     },
     {
-      "src": "./screenshots/privacy.png",
+      "src": "/screenshots/privacy.png",
       "type": "image/png",
       "sizes": "1080x2400"
     },
     {
-      "src": "./screenshots/settings.png",
+      "src": "/screenshots/settings.png",
       "type": "image/png",
       "sizes": "1080x2400"
     },
     {
-      "src": "./screenshots/usage.png",
+      "src": "/screenshots/usage.png",
       "type": "image/png",
       "sizes": "1080x2400"
     },
     {
-      "src": "./screenshots/warning.png",
+      "src": "/screenshots/warning.png",
       "type": "image/png",
       "sizes": "1080x2400"
     },
     {
-      "src": "./screenshots/what-is-hpass.png",
+      "src": "/screenshots/what-is-hpass.png",
       "type": "image/png",
       "sizes": "1080x2400"
     }
