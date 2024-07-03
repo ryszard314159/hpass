@@ -34,6 +34,26 @@
 
       gtag("config", "G-MBETXDSRVS");
     </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "HPASS",
+        "url": "https://hpass.app",
+        "logo": "https://hpass.app/icons/logo-144x144.png",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Works best in modern browsers.",
+        "description": "HPASS is a Progressive Web App designed to help users easily generate
+        and use strong passwords.",
+        "about": {
+          "@type": "Organization",
+          "name": "HPASS",
+          "url": "https://hpass.app",
+          "logo": "https://hpass.app/icons/logo.128.png",
+        }
+      }
+      </script>
     <meta name="description" content="Hinted easy to use password generator" />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -106,25 +126,13 @@
           </div>
           <div id="lengthContainer" class="input-container">
             <button id="lengthBtn" class="leading-icon">📏</button>
-            <input
-              id="length"
-              type="number"
-              min="5"
-              max="128"
-              placeholder="Length"
-            />
+            <input id="length" type="number" min="5" max="128" placeholder="Length"/>
             <button id="lengthCross" class="trailing-icon">⨉</button>
             <div class="helper-text">4-128 range, 15 recommended</div>
           </div>
           <div id="burnContainer" class="input-container">
             <button id="burnBtn" class="leading-icon">&#128293</button>
-            <input
-              id="burn"
-              type="number"
-              min="0"
-              max="999999"
-              placeholder="Warm-up rounds"
-            />
+            <input id="burn" type="number" min="0" max="999999" placeholder="Warm-up rounds"/>
             <button id="burnCross" class="trailing-icon">⨉</button>
             <div class="helper-text">0-99999 range (never saved!)</div>
           </div>
@@ -156,8 +164,19 @@
         <span class="tooltiptext">Share HPASS!</span>
       </div>
       <div class="tooltip">
-        <img id="save" class="btn" src="icons/save.svg" />
-        <span class="tooltiptext">Save settings</span>
+        <img id="save" class="btn" src="icons/export.svg" />
+        <span class="tooltiptext">Export settings</span>
+      </div>
+      <div class="tooltip">
+        <img id="importButton" class="btn" src="icons/import.svg" />
+        <span class="tooltiptext">Import settings</span>
+      </div>
+      <div id="fileInputModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Select a JSON file to import sites settings:</p><br>
+            <input type="file" id="importFileInput" accept="application/json">
+        </div>
       </div>
       <div class="tooltip">
         <a id="info" style="display: block;"

@@ -35,6 +35,65 @@ const MINLENGTH = 4;
 const MAXLENGTH = 128;
 const MP31 = 2 ** 31 - 1; // Mersenne prime
 
+function objDiff(x, y) {
+  const diff = {};
+  for (let key in x) {
+      // if (x.hasOwnProperty(key) && x[key] !== y[key]) {
+      if (x[key] !== y[key]) {
+          diff[key] = x[key];
+      }
+  }
+  return diff;
+}
+
+// returns setA \ setB
+function setsDiff(setA, setB) {
+  const difference = new Set();
+  for (let element of setA) {
+      if (!setB.has(element)) {
+          difference.add(element);
+      }
+  }
+  return difference;
+}
+
+function setsAreEqual(setA, setB) {
+  if (setA.size !== setB.size) {
+      return false;
+  }
+  for (let element of setA) {
+      if (!setB.has(element)) {
+          return false;
+      }
+  }
+  return true;
+}
+
+function deepEqual(obj1, obj2) {
+  if (obj1 === obj2) {
+      return true; // Both are the same object
+  }
+
+  if (obj1 == null || obj2 == null || typeof obj1 !== 'object' || typeof obj2 !== 'object') {
+      return false; // Not objects or one is null
+  }
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) {
+      return false; // Different number of properties
+  }
+
+  for (let key of keys1) {
+      if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+          return false; // Different values for the same property
+      }
+  }
+
+  return true;
+}
+
 /* permute chars in string using Durstenfeld shuffle algorithm */
 /**
  *
@@ -215,4 +274,4 @@ function getPass(args = {}) {
   return passwd;
 }
 
-export { getPass, MAXLENGTH, MINLENGTH };
+export { getPass, deepEqual, setsAreEqual, setsDiff, objDiff, MAXLENGTH, MINLENGTH };

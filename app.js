@@ -3,19 +3,20 @@ TODO:
 1 - restore does not work for Secret
 */
 "use strict";
-import { getPass, MAXLENGTH, MINLENGTH } from "./core/lib.js";
+import { deepEqual, setsAreEqual, objDiff, getPass, MAXLENGTH, MINLENGTH } from "./core/lib.js";
 
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
 
 const globalDefaults = {};
+globalDefaults.salt = "Replace Me!";
 globalDefaults.pepper = "_";
 globalDefaults.length = 15;
-globalDefaults.clean = true;
-globalDefaults.minlength = MINLENGTH;
-globalDefaults.maxlength = MAXLENGTH;
-globalDefaults.salt = "Replace Me!";
-globalDefaults.url = "https://hpass.app";
+// globalDefaults.minlength = MINLENGTH;
+// globalDefaults.maxlength = MAXLENGTH;
+// globalDefaults.url = "https://hpass.app";
+const URL = "https://hpass.app";
+// globalDefaults.clean = true;
 
 // Selecting elements
 const el = {};
@@ -66,7 +67,7 @@ if ("serviceWorker" in navigator) {
       // globalDefaults.salt = salt;
       console.log("app: sw registered!", reg);
       let opts = JSON.parse(window.localStorage.getItem("options"));
-      if (opts == null) {
+      if (opts === null) {
         opts = defaults;
         window.localStorage.setItem("options", JSON.stringify(opts));
         let msg = `<br> Default secret is<br><br> ${defaults.salt}`;
@@ -321,13 +322,16 @@ el.save.addEventListener("click", function () {
   el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
   console.log("apps:1: save: opts= ", opts);
   showPopup("settings saved!", SHORTPOPUP);
+  exportSettings();
 });
 
 el.share.addEventListener("click", function () {
-  const opts = { ...globalDefaults };
-  console.log("apps:0: share: opts= ", opts);
-  copyToClipboard(opts.url);
-  showPopup(`${opts.url}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
+  // const opts = { ...globalDefaults };
+  // console.log("apps:0: share: opts= ", opts);
+  // copyToClipboard(opts.url);
+  // showPopup(`${opts.url}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
+  copyToClipboard(URL);
+  showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
 });
 
 el.reset.addEventListener("click", function () {
@@ -343,13 +347,13 @@ el.reset.addEventListener("dblclick", function () {
   el.pepper.value = globalDefaults.pepper;
   el.salt.value = globalDefaults.salt;
   el.length.value = globalDefaults.length;
-  el.length.min = MINLENGTH;
-  el.length.max = MAXLENGTH;
+  // el.length.min = MINLENGTH;
+  // el.length.max = MAXLENGTH;
   console.log("app: reset: el.pepper.value= ", el.pepper.value);
   console.log("app: reset: el.salt.value= ", el.salt.value);
   console.log("app: reset: el.length.value= ", el.length.value);
-  console.log("app: reset: el.length.min= ", el.length.min);
-  console.log("app: reset: el.length.max= ", el.length.max);
+  // console.log("app: reset: el.length.min= ", el.length.min);
+  // console.log("app: reset: el.length.max= ", el.length.max);
   showPopup("defaults restored!", SHORTPOPUP);
 });
 
@@ -362,6 +366,100 @@ el.hint.addEventListener("mouseout", () => {
   console.log("app:3: mouseout: el.hint.value= ", el.hint.value);
 });
 
+// const el = {};
+// el.hint = document.getElementById("hint");
+// el.salt = document.getElementById("salt");
+
+el.hint.addEventListener("input", () => {
+  setTimeout(() => {
+    // let sites = JSON.parse(window.localStorage.getItem("sites"));
+    let opts = getHintOpts(el.hint.value);
+    console.log(`hint: keypressed: value= ${el.hint.value}`);
+    console.log(`hint: opts=`, opts);
+    if (opts !== undefined) {
+      el.salt.value = opts.salt;
+      el.pepper.value = opts.pepper;
+      el.length.value = opts.length;
+      // alert('hint: el values set!')
+    } else {
+      alert('hint: opts undefined?!')
+    }
+    // window.localStorage.setItem(JSON.stringify(opts));
+    // window.localStorage.setItem("options", JSON.stringify(opts));
+  }, 0);
+});
+
+function setGenericOpts(opts) {
+  /*   */
+  // sites = {fb: {salt: "fb-salt", pepper: "fb-pepper", length: 9}};
+  // window.localStorage.setItem("sites", JSON.stringify(sites));
+  const x = JSON.parse(window.localStorage.getItem("options"));
+  if (x === null) {
+    localStorage.setItem("options",  JSON.stringify(opts));
+    console.log(`setGenericOpts: options were null, saved=`, opts);
+  }
+  if (deepEqual(x, globalDefaults)) {
+    localStorage.setItem("options",  JSON.stringify(opts));
+    console.log(`setGenericOpts: options were null, saved=`, opts);
+  }
+}
+
+// function setHintOpts(hint, {salt: opts.salt, pepper: opts.pepper, length: opts.length});
+function setHintOpts(hint, opts) {
+  // set only global options if hint === ""
+  const eqLength = Object.keys(opts).length === Object.keys(globalDefaults).length;
+  console.assert(eqLength, "setHintsOpts: wrong length!");
+  if (!eqLength) {
+    alert('Wrong length!');
+  }
+  const generic = JSON.parse(window.localStorage.getItem("options"));
+  const diff = objDiff(opts, generic);
+  // console.log(`setHintOpts: opts=`, opts,
+  //            `\ngeneric= `, generic, `diff= `, diff);
+  // const theSameAsGlobal = deepEqual(generic, opts);
+  // if (theSameAsGeneric) {
+  if (Object.keys(diff).length === 0) {
+    console.log("setHintOpts: new opts the same as global - do nothing");
+    return;
+  }
+  if (hint === "") {
+    console.log(`setHintOpts: hint= ${hint} :: opts=`, JSON.stringify(opts));
+    let msg = `WARNING: global options set to:`;
+    msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
+    msg = `${msg}\nLength= ${opts.length}`;
+    alert(msg);
+    localStorage.setItem("options",  JSON.stringify(opts));
+    return;
+  }
+  let sites = JSON.parse(window.localStorage.getItem("sites"));
+  console.log(`setHintOpts: hint= ${hint}`);
+  if (sites === null) {
+    sites = {[hint]: diff};
+    console.log(`setHintOpts: sites was null, sites=`, sites);
+  } else {
+    sites[hint] = diff; // store ony values different from generic
+    console.log(`setHintOpts: sites was not null, sites=`, sites);
+  }
+  window.localStorage.setItem("sites",  JSON.stringify(sites));
+}
+
+// ...
+function getHintOpts(hint) {
+  let opts = JSON.parse(localStorage.getItem("options"));
+  if (opts === null) {
+    opts = globalDefaults;
+    localStorage.setItem("options", opts);
+  }
+  console.log("getHintOpts: generic opts= ", opts);
+  const sites = JSON.parse(window.localStorage.getItem("sites"));
+  if (sites !== null && sites[hint] !== undefined) {
+    console.log(`getHintOpts: hint-specific: sites[${hint}]= `, sites[hint]);
+    opts = {...opts, ...sites[hint]};
+  }
+  console.log("getHintOpts: final opts= ", opts);
+  return opts;
+}
+
 function generateFun(event) {
   event.preventDefault();
   console.log("generateFun: event.preventDefault() added");
@@ -372,13 +470,16 @@ function generateFun(event) {
   opts.salt = el.salt.value;
   opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
   el.length.value = opts.length;
-  window.localStorage.setItem("options", JSON.stringify(opts));
+  // window.localStorage.setItem("options", JSON.stringify(opts));
+  console.log("generateFun: opts= ", opts);
+  setHintOpts(el.hint.value, opts);
   let args = { ...opts }; // deep copy
   args.burn = el.burn.value;
   args.peak = el.peak.value;
   // el.burn.value = "";
   // el.peak.value = "";
   args.hint = el.hint.value;
+  // setHintOpts(args.hint, {salt: opts.salt, pepper: opts.pepper, length: opts.length});
   console.log("generate:1: opts=", opts);
   args.digits = false;
   args.unicode = false;
@@ -464,6 +565,134 @@ function handleLinkClick(event) {
   }
   event.preventDefault();
 }
+
+/*
+from stackoverflow...
+function saveAsFile(filename, data) {
+    const blob = new Blob([JSON.stringify(data)]);
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = window.URL.createObjectURL(blob);
+    link.click()
+};
+saveAsFile('posts.json', posts)
+
+*/
+
+// ChatGPT...
+
+// Function to export settings as a JSON file
+function exportSettings(filename = "hpass-site-settings.json") {
+  // Convert settings object to JSON string
+  const sites = JSON.parse(localStorage.getItem("sites"));
+  const settingsJSON = JSON.stringify(sites, null, 2);
+
+  // Create a Blob from the JSON string
+  const blob = new Blob([settingsJSON], { type: 'application/json' });
+
+  // Create a link element
+  const link = document.createElement('a');
+
+  // Set the download attribute with a filename
+  link.download = filename;
+
+  // Create a URL for the Blob and set it as the href attribute
+  link.href = window.URL.createObjectURL(blob);
+
+  // Append the link to the document body (required for Firefox)
+  document.body.appendChild(link);
+
+  // Programmatically click the link to trigger the download
+  link.click();
+
+  // Remove the link from the document
+  document.body.removeChild(link);
+}
+
+// // Sample settings data (initial/default settings)
+// let settings = {
+//   theme: 'dark',
+//   notifications: true,
+//   autoSave: false,
+//   // add other settings here
+// };
+
+// Get the modal
+const modal = document.getElementById("fileInputModal");
+
+// Get the button that opens the modal
+const btn = document.getElementById("importButton");
+
+// Get the <span> element that closes the modal
+const span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+  document.getElementById('importFileInput').click(); 
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+      modal.style.display = "none";
+  }
+}
+
+// Function to import settings from a JSON file
+function importSettings(event) {
+  const fileInput = document.getElementById('importFileInput');
+  const file = fileInput.files[0];
+
+  if (file) {
+      console.log('Selected file:', file);
+      console.log('File name:', file.name);
+      console.log('File type:', file.type);
+      console.log('File size:', file.size);
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          try {
+              // Parse the JSON string from the file
+              const importedSettings = JSON.parse(e.target.result);
+              const oldSettings = JSON.parse(localStorage.getItem("sites"));
+              // Update the application settings
+              const settings = { ...oldSettings, ...importedSettings };
+
+              // Apply the settings to your application
+              // applySettings(settings);
+              localStorage.setItem("sites", JSON.stringify(settings));
+              console.log("importSettings: imported= ", importedSettings);
+              console.log("importSettings: old= ", oldSettings);
+              console.log('importSettings: Settings applied:', settings);
+              // Close the modal after successful import
+              modal.style.display = "none";
+          } catch (error) {
+              console.error('Error parsing JSON file:', error);
+              alert('Failed to import settings. Please ensure the file is a valid JSON.');
+          }
+      };
+      reader.readAsText(file);
+  } else {
+      alert('No file selected.');
+  }
+}
+
+// Function to apply the settings to your application (example implementation)
+function applySettings(settings) {
+  // Apply the settings (e.g., update the UI, save to local storage, etc.)
+  console.log('Settings applied:', settings);
+  // Your code to apply the settings goes here
+}
+
+// Attach the change event to handle file selection
+document.getElementById('importFileInput').addEventListener('change', importSettings);
+
+
 
 
 // const tooltip = document.querySelector('.tooltip');
