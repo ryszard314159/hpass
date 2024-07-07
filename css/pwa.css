@@ -161,19 +161,20 @@ button {
   /* vertical-align: middle; */
 }
 
-.btnContained:hover {
+/* .btnContained:hover {
   font-weight: bolder;
   background-color: lightgreen;
   border-radius: 50%;
-}
+} */
 
 .btn {
   width: 2rem;
   height: 2rem;
   /* background-color: rgb(238, 236, 236); */
-  /* padding: 0.2rem; */
+  padding: 0.2rem;
   margin: 0.5rem;
-  border-radius: 0.8rem;
+  /* border-radius: 0.8rem; */
+  border-radius: 50%;
 }
 .btn:hover {
   font-weight: bolder;
@@ -181,6 +182,7 @@ button {
   /* transition: all 9.5s ease-in-out; */
   /* border-radius: 50%; */
 }
+
 
 #help,
 #reset,
@@ -197,6 +199,7 @@ button {
   padding: 2pt 0 2pt 0;
   width: 4rem;
   background-color: lightgreen;
+  border-radius: 0.8rem;
 }
 
 .grow {

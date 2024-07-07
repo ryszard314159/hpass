@@ -22,21 +22,61 @@
     Press <strong><tt>Reset</tt></strong>
     <!-- <img width="16rem" height="16rem" src="icons/reset.svg" /> -->
     <img src="icons/reset.svg" style="width:2rem; height:1rem;" />
-    button to populate setting fields with default values:
+    button to populate <em>generic settings</em> fields with default values:
     <ul>
       <li>
         <strong>Secret</strong> (🤫): "Replace Me!" -
         you should change it to some value you are likely to remember.
       </li>
-      <li><strong>Special Character</strong> (<span style="color: red">&#x1F336</span>): "_" i.e. underscore.</li>
+      <li><strong>Special Character</strong> (<span style="color: red">&#x1F336</span>):
+        "_" i.e. underscore.</li>
       <li><strong>Length</strong> (📏): 15</li>
     </ul>
 
-    These three parameters are saved on your local device when you generate password.
+    You are strongly encouraged to change <strong>Secret</strong>
+    to some personalized value. <strong>Special Character</strong> and
+    <strong>Length</strong> values were selected to satisfy requirements of majority
+    of sites. You can change these values if you wish.
+    Note that multiple characters (e.g. @$%) are fine as well for
+    the <strong>Special Character</strong> field.
+    Generate password (i.e. click <img src="icons/generate.svg" class="hbtn"/>
+    button in upper-right corner) with <strong>Enter Hint</strong> box empty,
+    to save these <em>generic settings</em> on your local device.
+    When password is generated with non-empty <strong>Enter Hint</strong> box
+    and any of these three values is different from the value
+    in <em>generic settings</em> these values will be stored in
+    <em>site-specific settings</em> on your local device and used automatically
+    next time you enter the same string in the <strong>Enter Hint</strong> box.
+    You may find this feature useful when you encounter a site
+    which does not accept <strong>Special Character</strong> and/or <strong>Length</strong>
+    values from your <em>generic settings</em>.
+
+    <h2>Multiple devices</h2>
+
+    You need to repeat this process on each device on which you want to use HPASS.
+    <em>Site-specific settings</em> can be exported
+    (<img src="icons/export.svg" class="hbtn"/>) from one device and imported
+    (<img src="icons/import.svg" class="hbtn"/>) on another.
+    Simple <a href="https://en.wikipedia.org/wiki/JSON">JSON file format</a> is used for this purpose.
+    If some site does not accept either <strong>Special Character</strong> or
+    <strong>Length</strong> in your <em>generic settings</em> you have to enter
+    values acceptable for the site in these boxes and generate the password.
+    These modified values will be saved locally in <em>site-specific settings</em>.
+    <br>
+    As an example, let's assume that <strong>abc</strong> site
+    does accept only these <strong>!#$%</strong> four special characters
+    and <strong>xyz</strong>
+    accepts only 6-12 characters long passwwords.
+    If you export your <em>site-specific settings</em>
+    after generating acceptable passwords for these two sites
+    the file you export might look like this:
+    <tt>{"xyz": {"length": 12}, "abc": {"pepper": "!"}}</tt> -
+    assuming you used "abc" and "xyz" in <strong>Enter Hint</strong> box
+    to generate passwords.
     
     <h2>Extra security</h2>
     
-    The purpose of two additional variables is to provide extra security layer in
+    The purpose of two additional settings is to provide extra security layer in
     (very unlikely) case of your device being compromised and possibly
     your <strong>Secret</strong>, <strong>Special Character</strong>
     and <strong>Length</strong> parameters stolen.
@@ -104,31 +144,36 @@
     <h1>Buttons</h1>
     <p> <!-- style="display: inline"> -->
       <div class="container">
-        <img src="icons/generate.svg" style="width:3rem; height:1rem;"/> Generate
+        <!-- <img src="icons/generate.svg" style="width:3rem; height:1rem;"/> Generate -->
+        <img src="icons/generate.svg" class="hbtn"/> Generate
         password &nbsp;
       </div>
       <div class="container">
-        <img src="icons/gear.svg" style="width:3rem; height:1rem;"/> / 
-        <img src="icons/cross.svg" style="width:3rem; height:1rem;"/>
-        Show / hide settings &nbsp;
+        <img src="icons/gear.svg" class="hbtn"/> / 
+        <img src="icons/cross.svg" class="hbtn"/>
+        Show / hide <em>general settings</em> &nbsp;
       </div>
       <div class="container">
-        <img src="icons/help.svg" style="width:3rem; height:1rem;"/> Show this help page &nbsp;
+        <img src="icons/help.svg" class="hbtn"/> Show this help page &nbsp;
       </div>
       <div class="container">
-        <img src="icons/reset.svg" style="width:3rem; height:1rem;"/> Populate setting
+        <img src="icons/reset.svg" class="hbtn"/> Populate setting
         fields with default values &nbsp;
       </div>
       <div class="container">
-        <img src="icons/save.svg" style="width:3rem; height:1rem;"/> Save settings
-        locally &nbsp;
+        <img src="icons/export.svg" class="hbtn"/> Export <em>site-specific settings</em>
+        &nbsp;
       </div>
       <div class="container">
-        <img src="icons/info.svg" style="width:3rem; height:1rem;"/> Show more detailed
+        <img src="icons/import.svg" class="hbtn"/> Import <em>site-specific settings</em>
+        &nbsp;
+      </div>
+      <div class="container">
+        <img src="icons/info.svg" class="hbtn"/> Show more detailed
         info page
       </div>
       <div class="container">
-        <img src="icons/share.svg" style="width:3rem; height:1rem;"/> Share HPASS url (=
+        <img src="icons/share.svg" class="hbtn"/> Share HPASS url (=
         <a href="https://hpass.app">https://hpass.app</a>)
         with anybody who might find it useful
       </div>
