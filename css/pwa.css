@@ -116,7 +116,7 @@ button {
 #gear {
   border-radius: 1rem 0 0 1rem;
   /* background-color: lightgreen; */
-  background-color: red;
+  background-color: lightgreen;
 }
 #generate {
   border-radius: 0 1rem 1rem 0;
@@ -302,11 +302,11 @@ form {
   width: 100%;
 }
 #hidesettings {
-  display: none;
+  display: block;
   /* background-color: rgb(83, 143, 192, 0.5); */
 }
 #settings {
-  display: block;
+  display: none;
   /* background-color: rgba(153, 214, 39, 0.5); */
 }
 
@@ -663,6 +663,7 @@ margin-top: 9rem;
   align-items: center;
   /* height: 2rem; */
   border: 0px solid green;
+  text-align: left;
 }
 
 .close {

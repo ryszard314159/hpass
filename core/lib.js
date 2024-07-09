@@ -34,6 +34,11 @@
 const MINLENGTH = 4;
 const MAXLENGTH = 128;
 const MP31 = 2 ** 31 - 1; // Mersenne prime
+const CHARS = {};
+CHARS.digits = "0123456789";
+CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
+CHARS.upper = CHARS.lower.toUpperCase();
+CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
 function objDiff(x, y) {
   const diff = {};
@@ -207,11 +212,6 @@ function getPass(args = {}) {
     ...args
   }
 
-  const CHARS = {};
-  CHARS.digits = "0123456789";
-  CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
-  CHARS.upper = CHARS.lower.toUpperCase();
-  CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
   let charset = "";
   if (!args.unicode) {
     if (args.digits) charset += CHARS.digits;
@@ -274,4 +274,5 @@ function getPass(args = {}) {
   return passwd;
 }
 
-export { getPass, deepEqual, setsAreEqual, setsDiff, objDiff, MAXLENGTH, MINLENGTH };
+export { getPass, deepEqual, get_random_string, setsAreEqual, setsDiff, objDiff, rig,
+  CHARS, MAXLENGTH, MINLENGTH };

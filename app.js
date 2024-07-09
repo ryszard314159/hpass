@@ -3,7 +3,8 @@ TODO:
 1 - restore does not work for Secret
 */
 "use strict";
-import { deepEqual, setsAreEqual, objDiff, getPass, MAXLENGTH, MINLENGTH } from "./core/lib.js";
+import { deepEqual, get_random_string, getPass, objDiff,
+  CHARS, MAXLENGTH, MINLENGTH } from "./core/lib.js";
 
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
@@ -54,6 +55,42 @@ el.peakCross = document.getElementById("peakCross");
 el.cleanCross = document.getElementById("cleanCross");
 el.version = document.getElementById("version");
 el.clickSound = document.getElementById('clickSound');
+el.fileInputModal = document.getElementById("fileInputModal");
+el.importButton = document.getElementById("importButton");
+
+function createSplashScreen() {
+  let msg = `<strong>Basic usage:</strong><br><br>
+  <ol>
+  <li>Enter a site name, or your favorite nick name for the site
+      e.g. facebook or fb, in Enter Hint box
+  <li>Click on <strong style="font-size: 1.2rem;">></strong> in top-right corner to generate password
+  <li>Paste password from clipboard
+  </ol>
+  <br>
+  To display and change options click on gear icon in top-left corner.
+  See Help page under ? icon
+  below for for more details.`;
+  const container = document.createElement("div"); // container
+  container.id = "splash-screen-container";
+  container.className = "modal";
+  const content = document.createElement("div"); // content
+  content.id = "splash-screen-content";
+  content.className = "modal-content";
+  content.innerHTML = msg;
+  const closeButton = document.createElement('span');
+  closeButton.className = 'close';
+  closeButton.innerHTML = '&times;';
+  closeButton.addEventListener('click', function() {
+    container.style.display = "none";
+  });
+  // const paragraph = document.createElement('p');
+  // paragraph.textContent = 'Select a JSON file to import sites settings:';
+  content.appendChild(closeButton);
+  container.appendChild(content);
+  container.style.display = "block";
+  document.body.appendChild(container);
+  console.log("createSplashScreen: at the end");
+}
 
 if ("serviceWorker" in navigator) {
   const swPath = "sw.js";
@@ -66,17 +103,33 @@ if ("serviceWorker" in navigator) {
       // defaults.salt = salt;
       // globalDefaults.salt = salt;
       console.log("app: sw registered!", reg);
+      console.log("app: before createSplashScreen");
+      // createSplashScreen();
+      console.log("app: after createSplashScreen");
       let opts = JSON.parse(window.localStorage.getItem("options"));
       if (opts === null) {
+        createSplashScreen();
+        // alert("app: null opts in localStorage!");
+        console.log("app: register: null opts in localStorage!");
         opts = defaults;
+        const charset = CHARS.digits + CHARS.lower + CHARS.upper;
+        opts.salt = get_random_string(16, charset);
         window.localStorage.setItem("options", JSON.stringify(opts));
-        let msg = `<br> Default secret is<br><br> ${defaults.salt}`;
-        msg = msg + "<br><br> You should change it";
-        msg = msg + "<br>to some personalized value.";
-        alert("app: register: options set to default values on install");
+        // let msg = `<br> Default secret is<br><br> ${opts.salt}`;
+        // msg = msg + "<br><br> You should change it";
+        // msg = msg + "<br>to some personalized value.";
+        let msg = `<br>Randomly generated secret is
+            <br><br><strong>${opts.salt}</strong><br><br>
+            You can use it as is or you can to change it
+            to some personalized value easy for you to remember.
+            <br><br>NOTE: to generate the same passwords on multiple
+            devices this secret and other options should be the same
+            on all devices.`;
+        // alert("app: register: options set to default values on install");
         showPopup(msg, LONGPOPUP);
-        console.log("app: register: opts=defaults= ", defaults);
+        console.log("app: register: opts=defaults= ", opts);
       } else {
+        // alert("app: register: options exists in localStorage!");
         console.log("app: register: exist already: opts= ", opts);
       }
       console.log("app: register: globalDefaults= ", globalDefaults);
@@ -181,6 +234,7 @@ function extractSecondaryDomain(x) {
   let d = c.slice(-2, -1)[0];
   return d;
 }
+
 function cleanHint(prompt) {
   let hint = prompt.toLowerCase();
   let domain = extractSecondaryDomain(hint);
@@ -618,36 +672,39 @@ function exportSettings(filename = "hpass-site-settings.json") {
 // };
 
 // Get the modal
-const modal = document.getElementById("fileInputModal");
+// const modal = document.getElementById("fileInputModal");
 
 // Get the button that opens the modal
-const btn = document.getElementById("importButton");
+// const btn = document.getElementById("importButton");
 
 // Get the <span> element that closes the modal
 const span = document.getElementsByClassName("close")[0];
 
 // When the user clicks the button, open the modal 
-btn.onclick = function() {
-  modal.style.display = "block";
-  document.getElementById('importFileInput').click(); 
-}
+el.importButton.addEventListener("click", function() {
+  // modal.style.display = "block";
+  el.fileInputModal.style.display = "block";
+  // document.getElementById('importFileInput').click();
+  // el.importFileInput.click();
+})
 
 // When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
+span.addEventListener("click", function() {
+  el.fileInputModal.style.display = "none";
+})
 
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-      modal.style.display = "none";
+window.addEventListener("click", function(event) {
+  if (event.target == el.fileInputModal) {
+    el.fileInputModal.style.display = "none";
   }
-}
+})
 
 // Function to import settings from a JSON file
 function importSettings(event) {
-  const fileInput = document.getElementById('importFileInput');
-  const file = fileInput.files[0];
+  // const fileInput = document.getElementById('importFileInput');
+  // const file = fileInput.files[0];
+  const file = el.importFileInput.files[0];
 
   if (file) {
       console.log('Selected file:', file);
