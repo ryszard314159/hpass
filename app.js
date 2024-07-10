@@ -58,18 +58,39 @@ el.clickSound = document.getElementById('clickSound');
 el.fileInputModal = document.getElementById("fileInputModal");
 el.importButton = document.getElementById("importButton");
 
-function createSplashScreen() {
-  let msg = `<strong>Basic usage:</strong><br><br>
+function createSplashScreen(opts) {
+  let msg = `<h3>Basic usage:</h3>
   <ol>
-  <li>Enter a site name, or your favorite nick name for the site
-      e.g. facebook or fb, in Enter Hint box
-  <li>Click on <strong style="font-size: 1.2rem;">></strong> in top-right corner to generate password
-  <li>Paste password from clipboard
+  <li>Enter a password hint in Enter Hint box.
+      This can be a full name, or your favorite nick name,
+      of the site you need the password for e.g. facebook or fb etc.
+  <li>Click on <strong style="font-size: 1.2rem;">></strong>
+      in top-right corner to generate password.
+      It will be copied to the clipboard.
+  <li>Paste password from the clipboard where you need it.
   </ol>
   <br>
-  To display and change options click on gear icon in top-left corner.
-  See Help page under ? icon
-  below for for more details.`;
+  <hr/>
+  Generated password is uniquely determined by Hint
+  together with
+  <ul>
+  <li>Secret (= ${opts.salt} )
+  <li>Special Character (= ${opts.pepper} ), and
+  <li>Length (= ${opts.length} ) options
+  <ul>
+  <br>
+  To display and change these options click on the gear icon
+  in the top-left corner.
+  Note, that to generate the same password values for
+  Hint, Secret, Special Character and Length have to be exactly the same.
+  See Help page under ? icon for more details.`;
+  // <h4>Current options are:</h4><br> 
+  // <ol>
+  // <li>Secret = ${opts.salt}
+  // <li>Special Character = ${opts.pepper}
+  // <li>Length = ${opts.length}
+  // </ol>
+  // <br>
   const container = document.createElement("div"); // container
   container.id = "splash-screen-container";
   container.className = "modal";
@@ -108,7 +129,6 @@ if ("serviceWorker" in navigator) {
       console.log("app: after createSplashScreen");
       let opts = JSON.parse(window.localStorage.getItem("options"));
       if (opts === null) {
-        createSplashScreen();
         // alert("app: null opts in localStorage!");
         console.log("app: register: null opts in localStorage!");
         opts = defaults;
@@ -126,7 +146,8 @@ if ("serviceWorker" in navigator) {
             devices this secret and other options should be the same
             on all devices.`;
         // alert("app: register: options set to default values on install");
-        showPopup(msg, LONGPOPUP);
+        // showPopup(msg, LONGPOPUP);
+        createSplashScreen(opts);
         console.log("app: register: opts=defaults= ", opts);
       } else {
         // alert("app: register: options exists in localStorage!");
@@ -467,9 +488,9 @@ function setHintOpts(hint, opts) {
     alert('Wrong length!');
   }
   const generic = JSON.parse(window.localStorage.getItem("options"));
+  console.log(`setHintOpts: opts=`, opts);
   const diff = objDiff(opts, generic);
-  // console.log(`setHintOpts: opts=`, opts,
-  //            `\ngeneric= `, generic, `diff= `, diff);
+  console.log(`setHintOpts: diff= `, diff);
   // const theSameAsGlobal = deepEqual(generic, opts);
   // if (theSameAsGeneric) {
   if (Object.keys(diff).length === 0) {
