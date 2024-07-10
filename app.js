@@ -448,6 +448,7 @@ el.hint.addEventListener("mouseout", () => {
 el.hint.addEventListener("input", () => {
   setTimeout(() => {
     // let sites = JSON.parse(window.localStorage.getItem("sites"));
+    el.hint.value = el.hint.value.toLowerCase();
     let opts = getHintOpts(el.hint.value);
     console.log(`hint: keypressed: value= ${el.hint.value}`);
     console.log(`hint: opts=`, opts);
