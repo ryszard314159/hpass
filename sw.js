@@ -1,6 +1,6 @@
 "use strict";
 // import { getPass } from "./core/lib.js";
-const version = "2024-06-13";
+const version = "2024-07-15";
 
 const appAssets = [
   "index.html",

@@ -18,7 +18,42 @@
           Settings
         </a>
     </div>
+
+    <h1>Basic Usage</h1>
+    <ol>
+      <li> Enter password hint in the <strong>Enter Hint</strong> box.
+      <li> Generate password by pressing
+           Enter key or clicking on an rigth arrow
+           <img src="icons/generate.svg" style="width:2rem; height:0.8rem;"/>
+           button in the top-upper corner.
+      <li>Paste password from the clipboard where you need it.</li>
+    </ol>
+
+    <strong>Important:</strong> generated password is uniquely defined by
+    a few simple settings, which are hidden by default to
+    prevent
+    <a href="https://en.wikipedia.org/wiki/Shoulder_surfing_(computer_security)">shoulder surfing</a>.
+    To access, and potentially change, these settings,
+    click <img src="icons/gear.svg" style="width:2rem; height:0.8rem;"/> button
+    in the top-left corner. If you plan to use this tool on multiple
+    devices remember that you need to have the same settings on each device.
+    <p>Read on to find out more...
+
     <h1>Installation and Settings</h1>
+    When you first visited the
+    <a href="https://hpass.app">HPASS site</a>,
+    settings were initialized and saved locally on your device.
+    You migh have noticed that the <strong>Secret</strong> was initialized to some random
+    alphanumeric string.
+    This ensures that the passwords generated for each user
+    are unique even if all other parameters remain the same.
+
+    <p>To modify and save setting:
+    (1) enter the settings you want
+    (2) clear <strong>Enter Hint</strong> box and
+    (3) generate password.
+
+    <p>
     Press <strong><tt>Reset</tt></strong>
     <!-- <img width="16rem" height="16rem" src="icons/reset.svg" /> -->
     <img src="icons/reset.svg" style="width:2rem; height:1rem;" />
@@ -29,40 +64,45 @@
         you should change it to some value you are likely to remember.
       </li>
       <li><strong>Special Character</strong> (<span style="color: red">&#x1F336</span>):
-        "_" i.e. underscore.</li>
+        "_" i.e. underscore (multiple characters are allowed).</li>
       <li><strong>Length</strong> (📏): 15</li>
     </ul>
 
-    You are strongly encouraged to change <strong>Secret</strong>
-    to some personalized value. <strong>Special Character</strong> and
-    <strong>Length</strong> values were selected to satisfy requirements of majority
-    of sites. You can change these values if you wish.
-    Note that multiple characters (e.g. @$%) are fine as well for
-    the <strong>Special Character</strong> field.
-    Generate password (i.e. click <img src="icons/generate.svg" class="hbtn"/>
+    <strong>Special Character</strong> and
+    <strong>Length</strong> values were selected to satisfy the requirements for the majority
+    of sites. You can change these values if you need to.
+
+    You are strongly encouraged either to keep <strong>Secret</strong> generated
+    for you at the begining or to change
+    to some personalized value.
+
+    <!-- Generate password (i.e. click <img src="icons/generate.svg" class="hbtn"/>
     button in upper-right corner) with <strong>Enter Hint</strong> box empty,
-    to save these <em>generic settings</em> on your local device.
+    to save these <em>generic settings</em> on your local device. -->
+
     When password is generated with non-empty <strong>Enter Hint</strong> box
     and any of these three values is different from the value
     in <em>generic settings</em> these values will be stored in
     <em>site-specific settings</em> on your local device and used automatically
     next time you enter the same string in the <strong>Enter Hint</strong> box.
-    You may find this feature useful when you encounter a site
+
+    This is useful when you encounter a site
     which does not accept <strong>Special Character</strong> and/or <strong>Length</strong>
     values from your <em>generic settings</em>.
 
     <h2>Multiple devices</h2>
 
-    You need to repeat this process on each device on which you want to use HPASS.
-    <em>Site-specific settings</em> can be exported
+    You need to have the same settings on each device to generate the same passwords.
+    To make this synchronization easier, <em>site-specific settings</em> can be exported
     (<img src="icons/export.svg" class="hbtn"/>) from one device and imported
-    (<img src="icons/import.svg" class="hbtn"/>) on another.
-    Simple <a href="https://en.wikipedia.org/wiki/JSON">JSON file format</a> is used for this purpose.
+    (<img src="icons/import.svg" class="hbtn"/>) on another using
+    simple <a href="https://en.wikipedia.org/wiki/JSON">JSON file format</a>.
     If some site does not accept either <strong>Special Character</strong> or
     <strong>Length</strong> in your <em>generic settings</em> you have to enter
     values acceptable for the site in these boxes and generate the password.
     These modified values will be saved locally in <em>site-specific settings</em>.
-    <br>
+
+    <p>
     As an example, let's assume that <strong>abc</strong> site
     does accept only these <strong>!#$%</strong> four special characters
     and <strong>xyz</strong>
@@ -76,11 +116,11 @@
     
     <h2>Extra security</h2>
     
-    The purpose of two additional settings is to provide extra security layer in
-    (very unlikely) case of your device being compromised and possibly
-    your <strong>Secret</strong>, <strong>Special Character</strong>
-    and <strong>Length</strong> parameters stolen.
-    These variables: 
+    The purpose of two additional settings is to provide extra security layer
+    in case your device is compromised and possibly
+    your <strong>Secret</strong> stolen.
+
+    <p>These variables:
     <ul>
       <li><strong>Top Secret</strong> (&#129296): any string you wish (default: empty string)</li>
       <li><strong>Burn</strong> (&#128293): number, in 0-999999 range, of warm up rounds
@@ -88,8 +128,8 @@
         (<a href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">PRNG</a>)
         to use (default: 0)</li>
     </ul>
-    are never stored on your local device or anywhere else, and discarted
-    at the end of the session, or when the page is reloaded.
+    are never stored anywhere, and discarted at the end of the session,
+    or when the page is reloaded.
     After they are discarted they need to be entered again if you want to use them to generate password. This is a small price in convenience
     you may want to pay for high value passwords
     (bank accounts, social security, etc.) if you are concerned about
@@ -115,6 +155,7 @@
     remember, these values (by design) are not stored in any central location,
     only on your device, and cannot be recovered if you loose them -
     <strong>Top Secret</strong> and <strong>Burn</strong> are never stored.
+
     <h1>Usage</h1>
     <ol>
       <li>
@@ -136,8 +177,7 @@
         data this offers an extra security layer.
       </li>
       <li>
-        Click <img src="icons/generate.svg" style="width:2rem; height:0.8rem;"/> button to
-        generate password and copy to the clipboard.
+        Generate password and copy it to the clipboard.
       </li>
       <li>Paste generated password from the clipboard where you need it.</li>
     </ol>
@@ -151,7 +191,7 @@
       <div class="container">
         <img src="icons/gear.svg" class="hbtn"/> / 
         <img src="icons/cross.svg" class="hbtn"/>
-        Show / hide <em>general settings</em> &nbsp;
+        Show / hide <em>generic settings</em> &nbsp;
       </div>
       <div class="container">
         <img src="icons/help.svg" class="hbtn"/> Show this help page &nbsp;
@@ -175,8 +215,7 @@
       <div class="container">
         <img src="icons/share.svg" class="hbtn"/> Share HPASS url (=
         <a href="https://hpass.app">https://hpass.app</a>)
-        with anybody who might find it useful
-      </div>
+        with anybody who might find it useful.
     </p>
     <hr>
     <a id="Contact"></a>
