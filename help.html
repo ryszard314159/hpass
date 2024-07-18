@@ -23,41 +23,41 @@
     <ol>
       <li> Enter password hint in the <strong>Enter Hint</strong> box.
       <li> Generate password by pressing
-           Enter key or clicking on an rigth arrow
+           Enter key or clicking on an the rigth arrow
            <img src="icons/generate.svg" style="width:2rem; height:0.8rem;"/>
            button in the top-upper corner.
-      <li>Paste password from the clipboard where you need it.</li>
+      <li>Paste password from the clipboard.</li>
     </ol>
 
     <strong>Important:</strong> generated password is uniquely defined by
     a few simple settings, which are hidden by default to
     prevent
     <a href="https://en.wikipedia.org/wiki/Shoulder_surfing_(computer_security)">shoulder surfing</a>.
-    To access, and potentially change, these settings,
+    To access and change these settings,
     click <img src="icons/gear.svg" style="width:2rem; height:0.8rem;"/> button
-    in the top-left corner. If you plan to use this tool on multiple
-    devices remember that you need to have the same settings on each device.
+    in the top-left corner. Make sure you have the same settings on all devices
+    where you are using HPASS.
+
     <p>Read on to find out more...
 
     <h1>Installation and Settings</h1>
     When you first visited the
     <a href="https://hpass.app">HPASS site</a>,
     settings were initialized and saved locally on your device.
-    You migh have noticed that the <strong>Secret</strong> was initialized to some random
-    alphanumeric string.
-    This ensures that the passwords generated for each user
-    are unique even if all other parameters remain the same.
+    The <strong>Secret</strong> was initialized with a random
+    alphanumeric string to ensure that each user's generated passwords
+    are unique even if all other parameters are identical.
 
-    <p>To modify and save setting:
-    (1) enter the settings you want
-    (2) clear <strong>Enter Hint</strong> box and
+    <p>To modify and save <em>generic settings</em>:
+    (1) clear <strong>Enter Hint</strong> box
+    (2) enter the settings you want, and
     (3) generate password.
 
     <p>
     Press <strong><tt>Reset</tt></strong>
     <!-- <img width="16rem" height="16rem" src="icons/reset.svg" /> -->
     <img src="icons/reset.svg" style="width:2rem; height:1rem;" />
-    button to populate <em>generic settings</em> fields with default values:
+    button to restore default values for <em>generic settings</em>:
     <ul>
       <li>
         <strong>Secret</strong> (🤫): "Replace Me!" -
@@ -73,8 +73,11 @@
     of sites. You can change these values if you need to.
 
     You are strongly encouraged either to keep <strong>Secret</strong> generated
-    for you at the begining or to change
-    to some personalized value.
+    for you or to change it to some personalized value.
+
+    <p>
+    <strong>Remember:</strong> keep these <em>generic settings</em> stored in safe location.
+    <p>
 
     <!-- Generate password (i.e. click <img src="icons/generate.svg" class="hbtn"/>
     button in upper-right corner) with <strong>Enter Hint</strong> box empty,
@@ -106,13 +109,15 @@
     As an example, let's assume that <strong>abc</strong> site
     does accept only these <strong>!#$%</strong> four special characters
     and <strong>xyz</strong>
-    accepts only 6-12 characters long passwwords.
+    accepts only 6-12 characters long passwords.
     If you export your <em>site-specific settings</em>
     after generating acceptable passwords for these two sites
     the file you export might look like this:
     <tt>{"xyz": {"length": 12}, "abc": {"pepper": "!"}}</tt> -
     assuming you used "abc" and "xyz" in <strong>Enter Hint</strong> box
     to generate passwords.
+    Note: <tt>pepper</tt> is an internal variable name for
+    <strong>Special Character</strong>.
     
     <h2>Extra security</h2>
     
@@ -138,7 +143,7 @@
     <p>
     Password prompt (or hint) entered in the <strong>Enter Hint</strong> box at
     the top of the screen, and
-    <strong>Secret</strong>, <strong>Special Character</strong>
+    <strong>Secret</strong>, <strong>Special Character</strong>,
     <strong>Length</strong>, <strong>Top Secret</strong>
     are used to construct the
     <a href="https://en.wikipedia.org/wiki/Random_seed">seed</a> for
@@ -156,7 +161,7 @@
     only on your device, and cannot be recovered if you loose them -
     <strong>Top Secret</strong> and <strong>Burn</strong> are never stored.
 
-    <h1>Usage</h1>
+    <h1>Usage: with all details</h1>
     <ol>
       <li>
         Enter password hint in the <strong>Enter Hint</strong> box.
@@ -171,7 +176,7 @@
       </li>
       <li>
         For extra security you may want to enter custom values
-        for <strong>Top Secret</strong> and <strong>Burn</strong>.
+        for <strong>Top Secret</strong> or <strong>Burn</strong>.
         These parameters are never stored, so in case
         your device is compromised and bad actors manage to steal your
         data this offers an extra security layer.

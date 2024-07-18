@@ -34,15 +34,14 @@
     problems.
     <p>
       HPASS(&trade;) uses an alternative approach with one major advantage:
-      passwords are generated locally, on-demand and never stored in any central
-      location. Passwords and few parameters to generate them (
-      <strong>Hint</strong>,
+      passwords are generated locally, on-demand and never stored anywhere.
+      Three <em>generic settings</em>  (
       <strong>Secret</strong>,
       <strong>Special Character</strong>,
-      <strong>Length</strong>)
-      which are never stored in any centralized location, only on your local
-      device, so there is no danger of data breach so often reported for
-      password managers.
+      <strong>Length</strong>),
+      to generate strong, reproducible passwords for any given
+      site (defined by <strong>Hint</strong>)
+      are stored only on your local device for convenience. 
       For extra layer of security you may want to use two additional
       parameters, which are never stored anywhere:
       <strong>Top Secret</strong> and
@@ -50,7 +49,7 @@
       See
       <a href="help.html">Help section</a>
       for detailed description of these parameters and how
-      they are used to generate passwodrs.
+      they are used to generate passwords.
     </p>
     <p>
       Large number of sites and apps offer strong random password generation,
@@ -84,7 +83,7 @@
       button (<img
         src="icons/generate.svg"
         style="width: 2rem; height: 0.8rem"
-      />). This will generate password string and copy it to the clipboard -
+      />). This will generate password and copy it to the clipboard -
       you can paste it where it is needed. As a convenience feature, if you
       enter the whole URL the app will automatically extract secondary domain
       (i.e. "abc" in this example) as a password <tt><strong>Hint</strong></tt
@@ -138,7 +137,7 @@
     inconvenience price. For example you can:
     <ol>
       <li>
-        Use <strong>To Secret</strong> and <strong>Burn</strong> for extra layer
+        Use <strong>Top Secret</strong> and <strong>Burn</strong> for extra layer
         of security.
         These two parameters are never stored.
       </li>
@@ -151,12 +150,24 @@
     </ol>
     You can probably invent more simple schemes to accomplish the same goal i.e.
     that the part of the whole password generating procedure is stored only in
-    your head :) Of course, if the sites you need to login into where the
+    your head :)
+    <!-- Of course, if the sites you need to login into where the
     security is most important (bank accounts, etc.) offer multifactor
     authentication (<a
       href="https://en.wikipedia.org/wiki/Multi-factor_authentication"
       >MFA</a
     >) it is always a good idea to use it.
+    Note however that with recent rise in
+    <a href="https://en.wikipedia.org/wiki/SIM_swap_scam">SIM swap scams</a>
+    this is not entirely fullproof. -->
+
+    For sites, which offer it, multifactor authentication (<a
+      href="https://en.wikipedia.org/wiki/Multi-factor_authentication"
+      >MFA</a
+    >) offers extra layer of security, but recent (2021-2022) rise in
+    <a href="https://en.wikipedia.org/wiki/SIM_swap_scam">SIM swap scams</a>
+    illustrates that MFA is not entirely fullproof.
+
     <p>
       Last, but not least, all HPASS
       <a href="https://github.com/hpass314159">code</a>

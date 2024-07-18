@@ -13,11 +13,7 @@ const globalDefaults = {};
 globalDefaults.salt = "Replace Me!";
 globalDefaults.pepper = "_";
 globalDefaults.length = 15;
-// globalDefaults.minlength = MINLENGTH;
-// globalDefaults.maxlength = MAXLENGTH;
-// globalDefaults.url = "https://hpass.app";
 const URL = "https://hpass.app";
-// globalDefaults.clean = true;
 
 // Selecting elements
 const el = {};
@@ -70,18 +66,20 @@ function createSplashScreen(opts) {
   <li>Paste password from the clipboard where you need it.
   </ol>
   <br>
-  <hr/>
   Generated password is uniquely determined by Hint
-  together with
+  together with:
+   <hr/>
+  <p>
   <ul>
   <li>Secret (= ${opts.salt} )
-  <li>Special Character (= ${opts.pepper} ), and
-  <li>Length (= ${opts.length} ) options
+  <li>Special Character (= ${opts.pepper} )
+  <li>Length (= ${opts.length} )
   <ul>
+  </p>
   <br>
-  To display and change these options click on the gear icon
+  To display and change these settings click on the gear icon
   in the top-left corner.
-  Note, that to generate the same password values for
+  Note - that to generate the same password -
   Hint, Secret, Special Character and Length have to be exactly the same.
   See Help page under ? icon for more details.`;
   // <h4>Current options are:</h4><br> 
@@ -113,52 +111,64 @@ function createSplashScreen(opts) {
   console.log("createSplashScreen: at the end");
 }
 
+function setGenericOptions() {
+  console.log("setGenericOptions: null options in localStorage!");
+  // opts = defaults;
+  let opts = {...globalDefaults};
+  const charset = CHARS.digits + CHARS.lower + CHARS.upper;
+  opts.salt = get_random_string(16, charset);
+  window.localStorage.setItem("options", JSON.stringify(opts));
+  let msg = `<br>Randomly generated secret is
+      <br><br><strong>${opts.salt}</strong><br><br>
+      You can use it as is or you can to change it
+      to some personalized value easy for you to remember.
+      <br><br>NOTE: to generate the same passwords on multiple
+      devices this secret and other options must be the same
+      on all devices.`;
+  createSplashScreen(opts);
+  console.log("setGenericOptions: set opts= ", opts);
+  return opts;
+}
+
 if ("serviceWorker" in navigator) {
   const swPath = "sw.js";
   console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
     .register(swPath)
     .then((reg) => {
-      const defaults = { ...globalDefaults };
-      // const salt = getPass({ hint: "", length: 8 });
-      // defaults.salt = salt;
-      // globalDefaults.salt = salt;
+      // const defaults = {...globalDefaults};
       console.log("app: sw registered!", reg);
       console.log("app: before createSplashScreen");
-      // createSplashScreen();
       console.log("app: after createSplashScreen");
       let opts = JSON.parse(window.localStorage.getItem("options"));
       if (opts === null) {
-        // alert("app: null opts in localStorage!");
-        console.log("app: register: null opts in localStorage!");
-        opts = defaults;
-        const charset = CHARS.digits + CHARS.lower + CHARS.upper;
-        opts.salt = get_random_string(16, charset);
-        window.localStorage.setItem("options", JSON.stringify(opts));
-        // let msg = `<br> Default secret is<br><br> ${opts.salt}`;
-        // msg = msg + "<br><br> You should change it";
-        // msg = msg + "<br>to some personalized value.";
-        let msg = `<br>Randomly generated secret is
-            <br><br><strong>${opts.salt}</strong><br><br>
-            You can use it as is or you can to change it
-            to some personalized value easy for you to remember.
-            <br><br>NOTE: to generate the same passwords on multiple
-            devices this secret and other options should be the same
-            on all devices.`;
-        // alert("app: register: options set to default values on install");
-        // showPopup(msg, LONGPOPUP);
-        createSplashScreen(opts);
-        console.log("app: register: opts=defaults= ", opts);
+        console.log("app: register: null options in localStorage!");
+        opts = setGenericOptions();
+        // // opts = defaults;
+        // opts = {...globalDefaults};
+        // const charset = CHARS.digits + CHARS.lower + CHARS.upper;
+        // opts.salt = get_random_string(16, charset);
+        // window.localStorage.setItem("options", JSON.stringify(opts));
+        // let msg = `<br>Randomly generated secret is
+        //     <br><br><strong>${opts.salt}</strong><br><br>
+        //     You can use it as is or you can to change it
+        //     to some personalized value easy for you to remember.
+        //     <br><br>NOTE: to generate the same passwords on multiple
+        //     devices this secret and other options must be the same
+        //     on all devices.`;
+        // createSplashScreen(opts);
+        // console.log("app: register: opts=defaults= ", opts);
       } else {
-        // alert("app: register: options exists in localStorage!");
         console.log("app: register: exist already: opts= ", opts);
       }
       console.log("app: register: globalDefaults= ", globalDefaults);
       el.pepper.value = opts.pepper;
       el.salt.value = opts.salt;
       el.length.value = opts.length;
-      el.length.min = opts.minlength;
-      el.length.max = opts.maxlength;
+      // el.length.min = opts.minlength;
+      // el.length.max = opts.maxlength;
+      el.length.min = MINLENGTH;
+      el.length.max = MAXLENGTH;
       console.log("app: register: els set to opts= ", opts);
       //
       // NOTE: if you are working with DevTools
@@ -410,25 +420,27 @@ el.share.addEventListener("click", function () {
 });
 
 el.reset.addEventListener("click", function () {
-  let msg = "Double click<br>to restore defaults.<br>";
-  msg = msg + "WARNING: your current<br>settings will be lost.";
-  console.log("app: reset: msg= ", msg);
+  let msg = "Double click<br>to reset settings.<br>";
+  msg = msg + "<br>WARNING: current<br>values will be lost.";
+  console.log("app: 1: reset: msg= ", msg);
   showPopup(msg, 3 * SHORTPOPUP, "red");
 });
 
 el.reset.addEventListener("dblclick", function () {
-  console.log("app: reset: el= ", el);
-  console.log("app: reset: globalDefaults= ", globalDefaults);
-  el.pepper.value = globalDefaults.pepper;
-  el.salt.value = globalDefaults.salt;
-  el.length.value = globalDefaults.length;
+  console.log("app: 2: reset: el= ", el);
+  console.log("app: 2: reset: globalDefaults= ", globalDefaults);
+  const opts = {};
+  opts.salt = el.salt.value = globalDefaults.salt;
+  opts.pepper = el.pepper.value = globalDefaults.pepper;
+  opts.length = el.length.value = globalDefaults.length;
   // el.length.min = MINLENGTH;
   // el.length.max = MAXLENGTH;
-  console.log("app: reset: el.pepper.value= ", el.pepper.value);
-  console.log("app: reset: el.salt.value= ", el.salt.value);
-  console.log("app: reset: el.length.value= ", el.length.value);
+  console.log("app: 2: reset: el.salt.value= ", el.salt.value);
+  console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
+  console.log("app: 2: reset: el.length.value= ", el.length.value);
   // console.log("app: reset: el.length.min= ", el.length.min);
   // console.log("app: reset: el.length.max= ", el.length.max);
+  localStorage.setItem("options", JSON.stringify(globalDefaults));
   showPopup("defaults restored!", SHORTPOPUP);
 });
 
@@ -465,20 +477,20 @@ el.hint.addEventListener("input", () => {
   }, 0);
 });
 
-function setGenericOpts(opts) {
-  /*   */
-  // sites = {fb: {salt: "fb-salt", pepper: "fb-pepper", length: 9}};
-  // window.localStorage.setItem("sites", JSON.stringify(sites));
-  const x = JSON.parse(window.localStorage.getItem("options"));
-  if (x === null) {
-    localStorage.setItem("options",  JSON.stringify(opts));
-    console.log(`setGenericOpts: options were null, saved=`, opts);
-  }
-  if (deepEqual(x, globalDefaults)) {
-    localStorage.setItem("options",  JSON.stringify(opts));
-    console.log(`setGenericOpts: options were null, saved=`, opts);
-  }
-}
+// function setGenericOpts(opts) {
+//   /*   */
+//   // sites = {fb: {salt: "fb-salt", pepper: "fb-pepper", length: 9}};
+//   // window.localStorage.setItem("sites", JSON.stringify(sites));
+//   const x = JSON.parse(window.localStorage.getItem("options"));
+//   if (x === null) {
+//     localStorage.setItem("options",  JSON.stringify(opts));
+//     console.log(`setGenericOpts: options were null, saved=`, opts);
+//   }
+//   if (deepEqual(x, globalDefaults)) {
+//     localStorage.setItem("options",  JSON.stringify(opts));
+//     console.log(`setGenericOpts: options were null, saved=`, opts);
+//   }
+// }
 
 // function setHintOpts(hint, {salt: opts.salt, pepper: opts.pepper, length: opts.length});
 function setHintOpts(hint, opts) {
@@ -488,8 +500,17 @@ function setHintOpts(hint, opts) {
   if (!eqLength) {
     alert('Wrong length!');
   }
-  const generic = JSON.parse(window.localStorage.getItem("options"));
+  /*
+  SyntaxError: "[object Object]" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at setHintOpts (app.js:499:24)
+    at HTMLImageElement.generateFun (app.js:553:3)
+  */
+  const x = JSON.parse(window.localStorage.getItem("options"));
+  const generic = (x === null) ? setGenericOptions() : x;
+  console.log(`setHintOpts: generic=`, generic);
   console.log(`setHintOpts: opts=`, opts);
+  // setHintOpts: generic= null
   const diff = objDiff(opts, generic);
   console.log(`setHintOpts: diff= `, diff);
   // const theSameAsGlobal = deepEqual(generic, opts);
@@ -500,7 +521,7 @@ function setHintOpts(hint, opts) {
   }
   if (hint === "") {
     console.log(`setHintOpts: hint= ${hint} :: opts=`, JSON.stringify(opts));
-    let msg = `WARNING: global options set to:`;
+    let msg = `NOTE: generic settings set to:`;
     msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
     msg = `${msg}\nLength= ${opts.length}`;
     alert(msg);
@@ -523,8 +544,8 @@ function setHintOpts(hint, opts) {
 function getHintOpts(hint) {
   let opts = JSON.parse(localStorage.getItem("options"));
   if (opts === null) {
-    opts = globalDefaults;
-    localStorage.setItem("options", opts);
+    opts = {...globalDefaults};
+    localStorage.setItem("options", JSON.stringify(opts));
   }
   console.log("getHintOpts: generic opts= ", opts);
   const sites = JSON.parse(window.localStorage.getItem("sites"));
@@ -542,12 +563,18 @@ function generateFun(event) {
   // toggleSize();
   // navigator.vibrate(10); does not work on iOS
   const opts = {};
-  opts.pepper = el.pepper.value;
-  opts.salt = el.salt.value;
-  opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
+  const salt = opts.salt = el.salt.value;
+  const pepper = opts.pepper = el.pepper.value;
+  let length = opts.length = el.length.value;
+  length = (length === "") ? globalDefaults.length : Math.max(Math.min(length, MAXLENGTH), MINLENGTH);
+  // opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
+  console.log("generateFun:0: opts= ", opts);
   el.length.value = opts.length;
+  opts.salt = el.salt.value = (salt === "") ? globalDefaults.salt : salt;
+  opts.pepper = el.pepper.value = (pepper === "") ? globalDefaults.pepper : pepper;
+  opts.length = el.length.value = (length === "") ? globalDefaults.length : length;
   // window.localStorage.setItem("options", JSON.stringify(opts));
-  console.log("generateFun: opts= ", opts);
+  console.log("generateFun:1: opts= ", opts);
   setHintOpts(el.hint.value, opts);
   let args = { ...opts }; // deep copy
   args.burn = el.burn.value;
