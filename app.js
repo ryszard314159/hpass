@@ -420,10 +420,16 @@ el.share.addEventListener("click", function () {
 });
 
 el.reset.addEventListener("click", function () {
-  let msg = "Double click<br>to reset settings.<br>";
-  msg = msg + "<br>WARNING: current<br>values will be lost.";
+  // const msg = "(1) Double click to reset settings.
+  //            <br>";
+  // msg = msg + "<br>WARNING: current<br>values will be lost.";
+  const msg = `
+  <br>(1) Double click to reset settings.
+  <br>(2) Change settings as you wish.
+  <br>(3) With empty "Enter Hint" box click > to save them.
+  `;
   console.log("app: 1: reset: msg= ", msg);
-  showPopup(msg, 3 * SHORTPOPUP, "red");
+  showPopup(msg, 9 * SHORTPOPUP, "red");
 });
 
 el.reset.addEventListener("dblclick", function () {
