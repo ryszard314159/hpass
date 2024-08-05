@@ -22,8 +22,8 @@
     <br />
 
     <h1>What is HPASS?</h1>
-    HPASS(&trade;) is a lightweight, intuitive, simple and easy-to-use tool to
-    create strong passwords.
+    HPASS(&trade;, &copy;) is a lightweight, intuitive, simple and easy-to-use tool to
+    create and use strong and unique passwords.
 
     <h2>Why?</h2>
     If you think there is room for improvement in your current approach to
@@ -33,8 +33,8 @@
     >. It is an often recommended and widely used solution, but not without
     problems.
     <p>
-      HPASS(&trade;) uses an alternative approach with one major advantage:
-      passwords are generated locally, on-demand and never stored anywhere.
+      HPASS(&trade;, &copy;) uses an alternative approach with one major advantage:
+      passwords are generated locally, on-demand, and never stored anywhere.
       Three <em>generic settings</em>  (
       <strong>Secret</strong>,
       <strong>Special Character</strong>,
@@ -51,6 +51,7 @@
       for detailed description of these parameters and how
       they are used to generate passwords.
     </p>
+    <!--
     <p>
       Large number of sites and apps offer strong random password generation,
       but quite extensive search (see links below) failed to find any which
@@ -75,6 +76,7 @@
       generates passwords only following few fixed templates, etc. Take a look,
       and decide for yourself.
     </p>
+  -->
     <h2>Typical usage</h2>
     <p>
       Assume you need a password for a website:
@@ -85,7 +87,8 @@
         style="width: 2rem; height: 0.8rem"
       />). This will generate password and copy it to the clipboard -
       you can paste it where it is needed. As a convenience feature, if you
-      enter the whole URL the app will automatically extract secondary domain
+      enter the whole URL the app will automatically extract
+      <a href="https://en.wikipedia.org/wiki/Second-level_domain">second-level domain (SLD)</a>
       (i.e. "abc" in this example) as a password <tt><strong>Hint</strong></tt
       >.
     </p>
@@ -130,25 +133,28 @@
     >
       the only secure data is the one that is kept in your head</a
     >
-    (barring any mind-reading capabilities :). Given that, if you are still
+    (barring any
+    <a href="https://link.springer.com/article/10.1007/s10676-016-9398-9">mind-reading capabilities</a>).
+    Given that, if you are still
     concerned about some bad actors breaking into your device
     and stealing settings you use to generate password, there are some steps you
     can take to make your passwords virtually 100% secure by paying (small)
     inconvenience price. For example you can:
     <ol>
       <li>
-        Use <strong>Top Secret</strong> and <strong>Burn</strong> for extra layer
-        of security.
-        These two parameters are never stored.
+        Use <strong>Top Secret</strong> and/or <strong>Burn</strong> for extra layer
+        of security. These two parameters are never stored.
+      </li>
+      <li>Instead of using secondary domain use some nickname
+        e.g. "cr" instead "consumerreports" for https://www.consumerreports.org
       </li>
       <li>
-        "decorate" hint with some extra characters e.g. instead of using
-        <tt>abc</tt> you can always append some character(s) (known only to
-        you!) to it
+        obfuscate secondary domain in some known only to you fashion e.g.
+        append some character(s), insert space before the last character, etc.
       </li>
       <li>use generated password as a hint and generate password again</li>
     </ol>
-    You can probably invent more simple schemes to accomplish the same goal i.e.
+    You can probably invent infinite number of similar simple schemes to accomplish the same goal i.e.
     that the part of the whole password generating procedure is stored only in
     your head :)
     <!-- Of course, if the sites you need to login into where the
@@ -195,10 +201,82 @@
         to hacking, safety, lock-in for browser build-in password managers.
       </li>
     </ul>
+
+    <h2>Similar applications</h2>
+
+<!--
+LessPass:
+LessPass is an open-source password manager that generates passwords using a deterministic algorithm. It uses a master password and site-specific information to create unique passwords for each service.
+Password Hasher Plus:
+This is a browser extension that generates site-specific passwords based on a master password and the domain name. It uses a combination of HMAC-SHA256 and PBKDF2 for password generation.
+Master Password:
+Master Password is an algorithm and app that generates unique passwords for different sites using a master password and site name. It's available on multiple platforms and doesn't store passwords.
+Spectre:
+Spectre (formerly 1Password's Password Generator) is a stateless password manager that uses a master password and site information to generate unique passwords. It's available as a web app and browser extension.
+HashPass:
+HashPass is a simple web-based tool that uses SHA-256 hashing to generate site-specific passwords from a master password and domain name.
+PWGen:
+PWGen is a command-line tool that can generate reproducible passwords using various algorithms, including HMAC-SHA1.
+https://sitepassword.alanhkarp.com/
+-->
+
+    <ol>
+      <li>
+        <a href="https://www.lesspass.com">LessPass</a> -
+        generates passwords based on your master password,
+        the domain of the site, and your username or email.
+        It's a web-based tool with browser extensions and mobile apps.
+      </li>
+      <li>
+        <a href="https://masterpassword.app">Master Password</a> -
+        uses a master password, your name,
+        and the site domain to generate passwords.
+        It's available as a web app, desktop application, and mobile app.
+      </li>
+      <li>
+        <a href="https://spectre.app">Spectre</a> -
+        Instead of saving and sending passwords across the internet,
+        Spectre calculates the password you need,
+        only when you need it, then throws it away again.
+      </li>
+      <li>
+        <a href="https://supergenpass.com/">SuperGenPass</a> -
+        generates passwords using a master password and the domain of the site.
+        It's available as a bookmarklet and browser extension.
+      </li>
+      <li>
+        <a href="https://scottparry.co/labs/hashpass">HashPass</a> -
+        Remember one master password to access all of your passwords, anywhere, anytime,
+        on any device.
+        Never storing any data or having to synchronize anything.
+      </li>
+      <li>
+        <a href="https://addons.mozilla.org/en-US/firefox/addon/password-hasher-plus/versions/">Password Hasher Plus</a> -
+        A browser extension that creates site-specific passwords based on a master password,
+        the domain name, and other customizable parameters
+      </li>
+      <li>
+        <a href="https://passwordmaker.org/passwordmaker.html">PasswordMaker</a>
+      </li>
+      <li>
+        <a href="https://sitepassword.alanhkarp.com/">SitePassword</a>
+      </li>
+    </ol>
+
     <h2>Further reading</h2>
     <!-- https://www.pcmag.com/opinions/warning-dont-let-google-manage-your-passwords -->
 
     <ol>
+      <li>
+        <a href="https://crypto.stackexchange.com/questions/11464/what-are-the-pros-and-cons-of-deterministic-site-specific-password-generation-fr">
+          What are the pros and cons of deterministic site-specific password generation from a master pass?
+        </a>
+      </li>
+      <li>
+        <a href="https://tonyarcieri.com/4-fatal-flaws-in-deterministic-password-managers">
+          4 fatal flaws in deterministic password managers
+        </a>
+      </li>
       <li>
         <a href="https://sites.google.com/site/smzmo7qyrridijpujf8bcw/home">
           Good writeup about passwords (Google site)
