@@ -72,6 +72,14 @@
     <link rel="icon" type="image/png" sizes="64x64" href="/icons/logo.64.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/logo.32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/logo.16.png" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- <script type="importmap">
+      {
+        "imports": {
+          "crypto-js": "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
+        }
+      }
+      </script> -->
     <script defer type="module" src="core/lib.js"></script>
     <script defer type="module" src="app.js"></script>
     <script defer type="module" src="sw.js"></script>
@@ -95,10 +103,23 @@
     <br/><br/><br/><br/>
     <!-- <div style="justify-content: center; align-items: center"> -->
     <audio id="clickSound" src="click-sound.wav" preload="auto"></audio>
+    <div id="passwordContainer" class="modal" style="display: flex;">
+      <!-- <form id="passwordForm" class=""> -->
+      <!-- <div> -->
+        <input id="currentPassword" class="pwd" enterkeyhint="Enter" placeholder="Current Password"/>
+        <img id="logop" class="pwd" src="icons/logo.svg" />
+      <!-- </div> -->
+      <!-- </form> -->
+      <!-- <form id="newPasswordForm" class=""> -->
+      <!-- <div> -->
+        <input id="newPassword" class="pwd" enterkeyhint="Enter" placeholder="New Password"/>
+      <!-- </div> -->
+      <!-- </form> -->
+    </div>
     <div id="hintContainer">
       <form id="hintForm" class="">
         <img id="gear" class="" src="icons/gear.svg">
-        <input id="hint" placeholder="Enter Hint"/>
+        <input id="hint" enterkeyhint="Enter" placeholder="Enter Hint"/>
         <img id="generate" class="" src="icons/generate.svg">
       </form>
     </div>

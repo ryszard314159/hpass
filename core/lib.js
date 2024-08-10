@@ -39,6 +39,79 @@ CHARS.digits = "0123456789";
 CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
 CHARS.upper = CHARS.lower.toUpperCase();
 CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+// const IV_LENGTH = 16; //16 bytes (128 bits) for the IV is standard for AES.
+// const KEY_LENGTH = 24; // 24 bytes (192 bits) for the key is required for AES-192.
+
+// import { scrypt, randomBytes, createCipheriv, createDecipheriv } from 'crypto';
+
+// const crypto = require('crypto');
+// const { scrypt, randomBytes, createCipheriv, createDecipheriv } = crypto;
+
+// import CryptoJS from "crypto-js";
+
+// // Function to encrypt data
+// async function encrypt(text, password) {
+//   return new Promise((resolve, reject) => {
+//     scrypt(password, 'salt', KEY_LENGTH, (err, key) => {
+//       if (err) reject(err);
+//       const iv = randomBytes(IV_LENGTH); // Initialization vector
+//       const cipher = createCipheriv('aes-192-cbc', key, iv);
+//       let encrypted = cipher.update(text, 'utf8', 'hex');
+//       encrypted += cipher.final('hex');
+//       resolve(iv.toString('hex') + ':' + encrypted);
+//     });
+//   });
+// }
+
+// Function to decrypt data
+// async function decrypt(encrypted, password) {
+//   return new Promise((resolve, reject) => {
+//     scrypt(password, 'salt', KEY_LENGTH, (err, key) => {
+//       if (err) reject(err);
+//       const [ivHex, encryptedText] = encrypted.split(':');
+//       const iv = Buffer.from(ivHex, 'hex');
+//       const decipher = createDecipheriv('aes-192-cbc', key, iv);
+//       let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+//       decrypted += decipher.final('utf8');
+//       resolve(decrypted);
+//     });
+//   });
+// }
+
+// Example usage
+// (async () => {
+//   const password = 'Password used to generate key';
+//   const text = 'some clear text data';
+
+//   try {
+//     const encrypted = await encrypt(text, password);
+//     console.log('Encrypted:', encrypted);
+
+//     const decrypted = await decrypt(encrypted, password);
+//     console.log('Decrypted:', decrypted);
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// })();
+
+// 
+// https://stackoverflow.com/questions/13335967/export-data-in-localstorage-for-later-re-import
+function exportLocalStorage(encrypted=true) {
+  const data = JSON.stringify(localStorage);
+}
+
+function importLocalStorage(encrypted=true) {
+  const data = JSON.parse(/*paste stringified JSON from clipboard*/);
+  Object.keys(data).forEach(function (k) {
+    localStorage.setItem(k, JSON.stringify(data[k]));
+  });
+}
+
+/*
+function foo(decrypted=false) {
+   console.log(`decrypted= ${decrypted}`);
+}
+*/
 
 function objDiff(x, y) {
   const diff = {};
@@ -274,5 +347,7 @@ function getPass(args = {}) {
   return passwd;
 }
 
-export { getPass, deepEqual, get_random_string, setsAreEqual, setsDiff, objDiff, rig,
+export { deepEqual, get_random_string, setsAreEqual, setsDiff, objDiff, rig,
   CHARS, MAXLENGTH, MINLENGTH };
+export { getPass };
+// export { encrypt, decrypt };

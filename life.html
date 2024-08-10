@@ -182,7 +182,7 @@
       // if ((changes.length === maxlen) && (Math.min(...changes) === Math.max(...changes))) {
       // start new game if changes array reached maxlen length and it is constant
       if ((changes.length === maxlen) && (new Set(changes)).size === 1) {
-        console.log(`updateGrid: new game! changes= ${changes}`);
+        // console.log(`updateGrid: new game! changes= ${changes}`);
         start();
       }
     }

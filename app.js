@@ -5,7 +5,9 @@ TODO:
 "use strict";
 import { deepEqual, get_random_string, getPass, objDiff,
   CHARS, MAXLENGTH, MINLENGTH } from "./core/lib.js";
+import { getOptions, setOptions, getCallerInfo, createPasswordHash, setPasswordHash } from "./core/storage.js";
 
+let PASSWORD = "";
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
 
@@ -29,7 +31,9 @@ el.gear = document.getElementById("gear");
 el.generate = document.getElementById("generate");
 el.hintForm = document.getElementById("hintForm");
 // el.generateDiv = document.getElementById("generateDiv");
-el.passwords = document.getElementById("passwords");
+el.passwordContainer = document.getElementById("passwordContainer");
+el.currentPassword = document.getElementById("currentPassword");
+el.newPassword = document.getElementById("newPassword");
 el.hidesettings = document.getElementById("hidesettings");
 el.settings = document.getElementById("settings");
 el.help = document.getElementById("help");
@@ -54,7 +58,98 @@ el.clickSound = document.getElementById('clickSound');
 el.fileInputModal = document.getElementById("fileInputModal");
 el.importButton = document.getElementById("importButton");
 
+
+
+// init => bb54068aea85faa7e487530083366be9962390af822e4c71ef1aca7033c83e66
+
+// document.addEventListener("keydown", (event) => {
+//   console.log(`Global Key pressed: key=${event.key}, code: ${event.code}`);
+// });
+
+el.currentPassword.addEventListener("keydown", (event) => {
+  const debug = false;
+  if (debug) console.log(`el.currentPassword: event key: ${event.key}, code: ${event.code}`);
+  if (event.key === 'Enter') {
+    if (debug) console.log('currentPassword: Enter key pressed!');
+    // event.preventDefault();
+    // el.currentPassword.blur();
+    setTimeout(() => {
+      const pwd = el.currentPassword.value;
+      let oldHash = localStorage.getItem("pwdHash");
+      if (oldHash === null) {
+        alert("pwdHash was null, options removed & PASSWORD set to empty string");
+        localStorage.clear();
+        oldHash = CryptoJS.SHA256(pwd).toString();
+        localStorage.setItem("pwdHash", oldHash);
+      }
+      const pwdHash = CryptoJS.SHA256(pwd).toString();
+      if (debug) {
+        console.log(`currentPassword: PASSWORD= ${PASSWORD}`);
+        console.log(`currentPassword: pwd= ${pwd}`);
+        console.log(`currentPassword: pwdHash= ${pwdHash}`);
+        console.log(`currentPassword: oldHash= ${oldHash}`);
+        console.log(`currentPassword: typeof(oldHash)= ${typeof(oldHash)}`);
+        console.log(`currentPassword: typeof(pwdHash)= ${typeof(pwdHash)}`);
+      }
+      if (pwdHash === oldHash) {
+        el.passwordContainer.style.display = "none";
+      } else {
+        if (debug) console.log(`currentPassword: Wrong password - try again!`);
+        alert("Wrong password - try again!")
+      }
+      el.newPassword.focus();
+    }, 0);
+  }
+});
+
+// el.newPassword.addEventListener("keydown", (event) => {
+el.newPassword.addEventListener("keydown", (event) => {
+  const debug = false;
+  // event.preventDefault();
+  if (debug) console.log(`el.newPassword: event key: ${event.key}, code: ${event.code}`);
+  if (event.key === 'Enter') {
+    // event.preventDefault();
+    if (debug) console.log('newPassword: Enter key pressed!');
+    const oldHash = localStorage.getItem("pwdHash");
+    const h = createPasswordHash(el.currentPassword.value)
+    if (h !== oldHash) {
+      alert("Incorrect Current Password!");
+    } else {
+      const v = el.newPassword.value;
+      PASSWORD = (v.length > 0) ? v : null;
+      // const newHash = CryptoJS.SHA256(PASSWORD).toString();
+      // localStorage.setItem("pwdHash", newHash);
+      setPasswordHash(PASSWORD);
+      let msg = `Password to access HPASS changed to:`
+      msg = PASSWORD.length > 0 ? `${msg} ${PASSWORD}` : `${msg} empty string`
+      if (debug) console.log(`msg= ${msg}`);
+      alert(msg);
+      el.passwordContainer.style.display = "none";
+    }
+    // Perform desired actions here
+  }
+});
+
+// (async () => {
+//   try {
+//     const { scrypt } = await import('crypto');
+    
+//     // Example usage of scrypt
+//     const password = 'password';
+//     const salt = 'salt';
+//     scrypt(password, salt, 16, (err, derivedKey) => {
+//       if (err) throw err;
+//       console.log(derivedKey.toString('hex')); // Prints the derived key
+//     });
+//   } catch (error) {
+//     console.error('Error importing crypto module:', error);
+//   }
+// })();
+
+
 function createSplashScreen(opts) {
+  const pwdHash = CryptoJS.SHA256(PASSWORD).toString();
+  localStorage.setItem("pwdHash", pwdHash);
   let msg = `<h3>Basic usage:</h3>
   <ol>
   <li>Enter a password hint in Enter Hint box.
@@ -81,7 +176,9 @@ function createSplashScreen(opts) {
   in the top-left corner.
   Note - that to generate the same password -
   Hint, Secret, Special Character and Length have to be exactly the same.
-  See Help page under ? icon for more details.`;
+  See Help page under ? icon for more details.
+  <br>
+  Current Password is: ${PASSWORD}`;
   // <h4>Current options are:</h4><br> 
   // <ol>
   // <li>Secret = ${opts.salt}
@@ -112,12 +209,14 @@ function createSplashScreen(opts) {
 }
 
 function setGenericOptions() {
-  console.log("setGenericOptions: null options in localStorage!");
+  const debug = false;
+  if (debug) console.log("setGenericOptions: null options in localStorage!");
   // opts = defaults;
   let opts = {...globalDefaults};
   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
   opts.salt = get_random_string(16, charset);
-  window.localStorage.setItem("options", JSON.stringify(opts));
+  setOptions(opts, PASSWORD);
+  // setOptions_("setGenericOptions", opts);
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
       You can use it as is or you can to change it
@@ -126,7 +225,7 @@ function setGenericOptions() {
       devices this secret and other options must be the same
       on all devices.`;
   createSplashScreen(opts);
-  console.log("setGenericOptions: set opts= ", opts);
+  if (debug) console.log("setGenericOptions: set opts= ", opts);
   return opts;
 }
 
@@ -140,24 +239,10 @@ if ("serviceWorker" in navigator) {
       console.log("app: sw registered!", reg);
       console.log("app: before createSplashScreen");
       console.log("app: after createSplashScreen");
-      let opts = JSON.parse(window.localStorage.getItem("options"));
+      let opts = getOptions(PASSWORD);
       if (opts === null) {
         console.log("app: register: null options in localStorage!");
         opts = setGenericOptions();
-        // // opts = defaults;
-        // opts = {...globalDefaults};
-        // const charset = CHARS.digits + CHARS.lower + CHARS.upper;
-        // opts.salt = get_random_string(16, charset);
-        // window.localStorage.setItem("options", JSON.stringify(opts));
-        // let msg = `<br>Randomly generated secret is
-        //     <br><br><strong>${opts.salt}</strong><br><br>
-        //     You can use it as is or you can to change it
-        //     to some personalized value easy for you to remember.
-        //     <br><br>NOTE: to generate the same passwords on multiple
-        //     devices this secret and other options must be the same
-        //     on all devices.`;
-        // createSplashScreen(opts);
-        // console.log("app: register: opts=defaults= ", opts);
       } else {
         console.log("app: register: exist already: opts= ", opts);
       }
@@ -338,32 +423,36 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
 // el.menu.classList.toggle("slide-in");
 
 el.gear.addEventListener("click", () => {
-  console.log("app: gear click:0: el.gear.src= ", el.gear.src);
+  const debug = false;
+  if (debug) console.log("app: gear click:0: el.gear.src= ", el.gear.src);
   const x = el.gear.src.split("/").slice(-1)[0];
   el.gear.src = (x == "gear.svg") ? "icons/cross.svg" : "icons/gear.svg";
   el.gear.style.backgroundColor = (x == "gear.svg") ? "red" : "lightgreen";
   // el.gear.backgroundColor = "pink";
-  console.log("app: gear click:1: el.gear.src= ", el.gear.src);
-  console.log(
-    "app: gear click:1: el.gear.style.backgrounColor= ",
-    el.gear.style.backgroundColor
-  );
-  console.log("app: gear click:1: x= ", x);
-  console.log(
-    "apps:1: settings zIndex= ", el.settings.style.zIndex,
-    "apps:1: hidesettings zIndex= ", el.hidesettings.style.zIndex
-  );
-
-  console.log(
-    "apps:3: settings display= ", getComputedStyle(el.settings).display,
-    "apps:3: hidesettings display= ", getComputedStyle(el.hidesettings).display
-  );
+  if (debug) {
+    console.log("app: gear click:1: el.gear.src= ", el.gear.src);
+    console.log(
+      "app: gear click:1: el.gear.style.backgrounColor= ",
+      el.gear.style.backgroundColor
+    );
+    console.log("app: gear click:1: x= ", x);
+    console.log(
+      "apps:1: settings zIndex= ", el.settings.style.zIndex,
+      "apps:1: hidesettings zIndex= ", el.hidesettings.style.zIndex
+    );
+    console.log(
+      "apps:3: settings display= ", getComputedStyle(el.settings).display,
+      "apps:3: hidesettings display= ", getComputedStyle(el.hidesettings).display
+    );
+  }
   el.hidesettings.style.display = getComputedStyle(el.hidesettings).display === "none" ? "block" : "none";
   el.settings.style.display = getComputedStyle(el.settings).display === "none" ? "block" : "none";
-  console.log(
-    "apps:4: settings display= ", getComputedStyle(el.settings).display,
-    "apps:4: hidesettings display= ", getComputedStyle(el.hidesettings).display
-  );
+  if (debug){
+    console.log(
+      "apps:4: settings display= ", getComputedStyle(el.settings).display,
+      "apps:4: hidesettings display= ", getComputedStyle(el.hidesettings).display
+    );
+  }
 });
 
 {}
@@ -397,15 +486,18 @@ function cleanClean(v) {
 }
 
 el.save.addEventListener("click", function () {
+  const debug = false;
   const opts = { ...globalDefaults };
-  console.log("apps:0: save: opts= ", opts);
-  console.log("apps:0: save: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
+  if (debug) {
+    console.log("apps:0: save: opts= ", opts);
+    console.log("apps:0: save: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
+  }
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
   opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
-  window.localStorage.setItem("options", JSON.stringify(opts));
+  setOptions(opts, PASSWORD);
   el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
-  console.log("apps:1: save: opts= ", opts);
+  if (debug) console.log("apps:1: save: opts= ", opts);
   showPopup("settings saved!", SHORTPOPUP);
   exportSettings();
 });
@@ -420,6 +512,7 @@ el.share.addEventListener("click", function () {
 });
 
 el.reset.addEventListener("click", function () {
+  const debug = false;
   // const msg = "(1) Double click to reset settings.
   //            <br>";
   // msg = msg + "<br>WARNING: current<br>values will be lost.";
@@ -428,48 +521,58 @@ el.reset.addEventListener("click", function () {
   <br>(2) Change settings as you wish.
   <br>(3) With empty "Enter Hint" box click > to save them.
   `;
-  console.log("app: 1: reset: msg= ", msg);
+  if (debug) console.log("app: 1: reset: msg= ", msg);
   showPopup(msg, 9 * SHORTPOPUP, "red");
 });
 
 el.reset.addEventListener("dblclick", function () {
-  console.log("app: 2: reset: el= ", el);
-  console.log("app: 2: reset: globalDefaults= ", globalDefaults);
+  const debug = false;
+  if (debug) {
+    console.log("app: 2: reset: el= ", el);
+    console.log("app: 2: reset: globalDefaults= ", globalDefaults);
+  }
   const opts = {};
   opts.salt = el.salt.value = globalDefaults.salt;
   opts.pepper = el.pepper.value = globalDefaults.pepper;
   opts.length = el.length.value = globalDefaults.length;
   // el.length.min = MINLENGTH;
   // el.length.max = MAXLENGTH;
-  console.log("app: 2: reset: el.salt.value= ", el.salt.value);
-  console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
-  console.log("app: 2: reset: el.length.value= ", el.length.value);
-  // console.log("app: reset: el.length.min= ", el.length.min);
-  // console.log("app: reset: el.length.max= ", el.length.max);
-  localStorage.setItem("options", JSON.stringify(globalDefaults));
+  if (debug) {
+    console.log("app: 2: reset: el.salt.value= ", el.salt.value);
+    console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
+    console.log("app: 2: reset: el.length.value= ", el.length.value);
+  }
+  setOptions(globalDefaults, PASSWORD);
   showPopup("defaults restored!", SHORTPOPUP);
 });
 
 el.hint.addEventListener("mouseout", () => {
-  console.log("app:0: museout:: el.hint.value= ", el.hint.value);
+  const debug = false;
+  if (debug) console.log("app:0: museout:: el.hint.value= ", el.hint.value);
   // if (cleaned) {
-  console.log("app:1: mouseout: el.hint.value= ", el.hint.value);
+  // console.log("app:1: mouseout: el.hint.value= ", el.hint.value);
   el.hint.value = cleanHint(el.hint.value); // cleaned);
-  console.log("app:2: mouseout: el.hint.value= ", el.hint.value);
-  console.log("app:3: mouseout: el.hint.value= ", el.hint.value);
+  if (debug) console.log("app:2: mouseout: el.hint.value= ", el.hint.value);
+  // console.log("app:3: mouseout: el.hint.value= ", el.hint.value);
 });
 
 // const el = {};
 // el.hint = document.getElementById("hint");
 // el.salt = document.getElementById("salt");
 
-el.hint.addEventListener("input", () => {
+el.hint.addEventListener("keydown", (event) => {
+  const debug = false;
+  const msg = `el.hint.addEventListener: event key: ${event.key}, code: ${event.code}`;
+  if (debug) alert(msg);
+  if (debug) console.log(msg);
   setTimeout(() => {
-    // let sites = JSON.parse(window.localStorage.getItem("sites"));
     el.hint.value = el.hint.value.toLowerCase().trim();
     let opts = getHintOpts(el.hint.value);
-    console.log(`hint: keypressed: value= ${el.hint.value}`);
-    console.log(`hint: opts=`, opts);
+    if (debug) {
+      console.log(`hint: keypressed: value= ${el.hint.value}`);
+      console.log(msg);
+      console.log(`hint: opts=`, opts);
+    }
     if (opts !== undefined) {
       el.salt.value = opts.salt;
       el.pepper.value = opts.pepper;
@@ -478,94 +581,76 @@ el.hint.addEventListener("input", () => {
     } else {
       alert('hint: opts undefined?!')
     }
-    // window.localStorage.setItem(JSON.stringify(opts));
-    // window.localStorage.setItem("options", JSON.stringify(opts));
   }, 0);
 });
 
-// function setGenericOpts(opts) {
-//   /*   */
-//   // sites = {fb: {salt: "fb-salt", pepper: "fb-pepper", length: 9}};
-//   // window.localStorage.setItem("sites", JSON.stringify(sites));
-//   const x = JSON.parse(window.localStorage.getItem("options"));
-//   if (x === null) {
-//     localStorage.setItem("options",  JSON.stringify(opts));
-//     console.log(`setGenericOpts: options were null, saved=`, opts);
-//   }
-//   if (deepEqual(x, globalDefaults)) {
-//     localStorage.setItem("options",  JSON.stringify(opts));
-//     console.log(`setGenericOpts: options were null, saved=`, opts);
-//   }
-// }
-
 // function setHintOpts(hint, {salt: opts.salt, pepper: opts.pepper, length: opts.length});
 function setHintOpts(hint, opts) {
+  const debug = false;
   // set only global options if hint === ""
   const eqLength = Object.keys(opts).length === Object.keys(globalDefaults).length;
   console.assert(eqLength, "setHintsOpts: wrong length!");
   if (!eqLength) {
     alert('Wrong length!');
   }
-  /*
-  SyntaxError: "[object Object]" is not valid JSON
-    at JSON.parse (<anonymous>)
-    at setHintOpts (app.js:499:24)
-    at HTMLImageElement.generateFun (app.js:553:3)
-  */
-  const x = JSON.parse(window.localStorage.getItem("options"));
+  const x = getOptions(PASSWORD);
   const generic = (x === null) ? setGenericOptions() : x;
-  console.log(`setHintOpts: generic=`, generic);
-  console.log(`setHintOpts: opts=`, opts);
-  // setHintOpts: generic= null
+  if (debug) {
+    console.log(`setHintOpts: generic=`, generic);
+    console.log(`setHintOpts: opts=`, opts);
+  }// setHintOpts: generic= null
   const diff = objDiff(opts, generic);
-  console.log(`setHintOpts: diff= `, diff);
+  if (debug) console.log(`setHintOpts: diff= `, diff);
   // const theSameAsGlobal = deepEqual(generic, opts);
   // if (theSameAsGeneric) {
   if (Object.keys(diff).length === 0) {
-    console.log("setHintOpts: new opts the same as global - do nothing");
+    if (debug) console.log("setHintOpts: new opts the same as global - do nothing");
     return;
   }
   if (hint === "") {
-    console.log(`setHintOpts: hint= ${hint} :: opts=`, JSON.stringify(opts));
+    if (debug) console.log(`setHintOpts: hint= ${hint} :: opts=`, JSON.stringify(opts));
     let msg = `NOTE: generic settings set to:`;
     msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
     msg = `${msg}\nLength= ${opts.length}`;
     alert(msg);
-    localStorage.setItem("options",  JSON.stringify(opts));
+    setOptions(opts, PASSWORD);
     return;
   }
   let sites = JSON.parse(window.localStorage.getItem("sites"));
-  console.log(`setHintOpts: hint= ${hint}`);
+  if (debug) console.log(`setHintOpts: hint= ${hint}`);
   if (sites === null) {
     sites = {[hint]: diff};
-    console.log(`setHintOpts: sites was null, sites=`, sites);
+    if (debug) console.log(`setHintOpts: sites was null, sites=`, sites);
   } else {
     sites[hint] = diff; // store ony values different from generic
-    console.log(`setHintOpts: sites was not null, sites=`, sites);
+    if (debug) console.log(`setHintOpts: sites was not null, sites=`, sites);
   }
   window.localStorage.setItem("sites",  JSON.stringify(sites));
 }
 
 // ...
 function getHintOpts(hint) {
-  let opts = JSON.parse(localStorage.getItem("options"));
+  const debug = false;
+  let opts = getOptions(PASSWORD);
   if (opts === null) {
     opts = {...globalDefaults};
-    localStorage.setItem("options", JSON.stringify(opts));
+    setOptions(opts, PASSWORD);
+    // setOptions_("getHintOpts", opts);
   }
-  console.log("getHintOpts: generic opts= ", opts);
+  if (debug) console.log("getHintOpts: generic opts= ", opts);
   const sites = JSON.parse(window.localStorage.getItem("sites"));
   if (sites !== null && sites[hint] !== undefined) {
-    console.log(`getHintOpts: hint-specific: sites[${hint}]= `, sites[hint]);
+    if (debug) console.log(`getHintOpts: hint-specific: sites[${hint}]= `, sites[hint]);
     opts = {...opts, ...sites[hint]};
   }
-  console.log("getHintOpts: final opts= ", opts);
+  if (debug) console.log("getHintOpts: final opts= ", opts);
   return opts;
 }
 
 function generateFun(event) {
+  const debug = false;
   event.preventDefault();
-  console.log("generateFun: event.preventDefault() added");
+  if (debug) console.log("generateFun: event.preventDefault() added");
   // toggleSize();
   // navigator.vibrate(10); does not work on iOS
   const opts = {};
@@ -574,13 +659,12 @@ function generateFun(event) {
   let length = opts.length = el.length.value;
   length = (length === "") ? globalDefaults.length : Math.max(Math.min(length, MAXLENGTH), MINLENGTH);
   // opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
-  console.log("generateFun:0: opts= ", opts);
+  if (debug) console.log("generateFun:0: opts= ", opts);
   el.length.value = opts.length;
   opts.salt = el.salt.value = (salt === "") ? globalDefaults.salt : salt;
   opts.pepper = el.pepper.value = (pepper === "") ? globalDefaults.pepper : pepper;
   opts.length = el.length.value = (length === "") ? globalDefaults.length : length;
-  // window.localStorage.setItem("options", JSON.stringify(opts));
-  console.log("generateFun:1: opts= ", opts);
+  if (debug) console.log("generateFun:1: opts= ", opts);
   setHintOpts(el.hint.value, opts);
   let args = { ...opts }; // deep copy
   args.burn = el.burn.value;
@@ -589,7 +673,7 @@ function generateFun(event) {
   // el.peak.value = "";
   args.hint = el.hint.value;
   // setHintOpts(args.hint, {salt: opts.salt, pepper: opts.pepper, length: opts.length});
-  console.log("generate:1: opts=", opts);
+  if (debug) console.log("generate:1: opts=", opts);
   args.digits = false;
   args.unicode = false;
   args.digits = false;
@@ -620,6 +704,7 @@ el.hintForm.addEventListener('submit', function (event) {
 });
 
 function handleFeedback() {
+  const debug = false;
   if (navigator.vibrate) { // haptic
       navigator.vibrate(50); // vibrate for 100ms
   }
@@ -627,11 +712,11 @@ function handleFeedback() {
       // Ensure the audio is ready to play
       el.clickSound.currentTime = 0; // Reset audio to start
       el.clickSound.play();
-      console.log("handleFeedback: sound played");
+      if (debug) console.log("handleFeedback: sound played");
   }
-  console.log("handleFeedback: animation added to classList");
+  if (debug) console.log("handleFeedback: animation added to classList");
   // el.generate.style.animation = 'moveGenerateBtn 0.25s forwards';
-  console.log("handleFeedback: animation added to classList");
+  if (debug) console.log("handleFeedback: animation added to classList");
   el.generate.classList.add('animateGenerate');
   // Reset position after animation ends
   el.generate.addEventListener('animationend', () => {
@@ -757,15 +842,18 @@ window.addEventListener("click", function(event) {
 
 // Function to import settings from a JSON file
 function importSettings(event) {
+  const debug = false;
   // const fileInput = document.getElementById('importFileInput');
   // const file = fileInput.files[0];
   const file = el.importFileInput.files[0];
 
   if (file) {
-      console.log('Selected file:', file);
-      console.log('File name:', file.name);
-      console.log('File type:', file.type);
-      console.log('File size:', file.size);
+      if (debug) {
+        console.log('Selected file:', file);
+        console.log('File name:', file.name);
+        console.log('File type:', file.type);
+        console.log('File size:', file.size);
+      }
       const reader = new FileReader();
       reader.onload = function(e) {
           try {
@@ -778,9 +866,11 @@ function importSettings(event) {
               // Apply the settings to your application
               // applySettings(settings);
               localStorage.setItem("sites", JSON.stringify(settings));
-              console.log("importSettings: imported= ", importedSettings);
-              console.log("importSettings: old= ", oldSettings);
-              console.log('importSettings: Settings applied:', settings);
+              if (debug) {
+                console.log("importSettings: imported= ", importedSettings);
+                console.log("importSettings: old= ", oldSettings);
+                console.log('importSettings: Settings applied:', settings);
+              }
               // Close the modal after successful import
               modal.style.display = "none";
           } catch (error) {
@@ -879,3 +969,10 @@ document.getElementById('importFileInput').addEventListener('change', importSett
 //     })
 //     .catch((err) => console.error("app: clipboard copy error= ", err));
 // }
+
+/*
+'U2FsdGVkX1/BlhWQE+BYYkj8J3tunv53GwiPnZhGmBeNqA8v7KkH7xa7fAgH7BYqupfUR+4PaPraYjR//EiErw=='
+'U2FsdGVkX1/eTTDthZtlzGuGnwlVioyYJusnsD1oxI6qTWBk5AGjiP6nLNwC9z7W9/7AQ6c6mjUX5r14sW3cqg=='
+'U2FsdGVkX19ZmHO9F8yk9hDq7VDL8cn4tTfPseBRhnNdLWTZjhIWxJU88gziiM63mT+cMIpFmOwdqTU3SyeloQ=='
+'U2FsdGVkX19gaVelwShd87Px2HPiRix2ZrDVa/pMyNV59WO0nVQei5zTkLUilBZ7Os1hqr/JRjHFuQ/7Zjw0qg=='
+*/

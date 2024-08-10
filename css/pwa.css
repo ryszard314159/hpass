@@ -226,6 +226,39 @@ form {
   z-index: 1;
 }
 
+#passwordForm, #newPasswordForm {
+  flex-direction: column;
+}
+
+#passwordContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background: pink; */
+  /* background-color: rgba(181, 192, 201, 0.9); */
+  /* background-color: rgba(204, 206, 209, 0.9); */
+  background-image: url("../icons/granite.png");
+  /* background-color: rgba(204, 206, 209, 0.9); */
+  /* background-color: rgba(255, 255, 255, ); white with 50% transparency */
+  /* background-blend-mode: overlay; */
+  background-size: cover;
+  /* vertical-align: middle; */
+  /* position: absolute; */
+  /* top: 10%; */
+  /* z-index: 9; */
+  /* margin-top: -4rem; */
+  /* width: 100vw; */
+  /* height: 100vh; */
+  /* justify-content: center; */
+}
+#currentPassword, #newPassword, #logop {
+  margin: 4rem 0 0 0;
+  font-size: 2rem;
+  width: 80%;
+  /* justify-content: center; */
+  text-align: center;
+}
+
 #hintContainer {
   /* position: absolute; */
   top: 10%;
@@ -273,6 +306,21 @@ form {
   justify-content: center;
   background: transparent;
   font-size: 1.5rem;
+  /* background: rgba(255, 255, 255, 1); */
+}
+
+#currentPassword, #newPassword {
+  position: relative;
+  width: 80%;
+  /* height: 100%; */
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  /* float: right; */
+  text-align: center;
+  /* align-items: center; */
+  justify-content: center;
+  font-size: 2rem;
   /* background: rgba(255, 255, 255, 1); */
 }
 
