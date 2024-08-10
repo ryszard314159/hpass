@@ -47,14 +47,19 @@ function getOptions(PASSWORD) {
   const info = getCallerInfo();
   const tag = `getOptions:`;
   if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
+  let v = null;
   try {
     const x = localStorage.getItem("options");
-    if (debug) console.log(`${tag} options= ${x}`);
-    const dx = CryptoJS.AES.decrypt(x, PASSWORD).toString(CryptoJS.enc.Utf8);
-    if (debug) console.log(`${tag} PASSWORD= ${PASSWORD}`);
-    if (debug) console.log(`${tag} decrypted options= ${dx}`);
-    const v = JSON.parse(dx);
-    if (debug) console.log(`${tag} v= `, v);
+    if (x !== null) {
+      if (debug) console.log(`${tag} options= ${x}`);
+      const dx = CryptoJS.AES.decrypt(x, PASSWORD).toString(CryptoJS.enc.Utf8);
+      if (debug) console.log(`${tag} PASSWORD= ${PASSWORD}`);
+      if (debug) console.log(`${tag} decrypted options= ${dx}`);
+      v = JSON.parse(dx);
+      if (debug) console.log(`${tag} v= `, v);
+    } else {
+      v = null;
+    }
     return v;
   }
   catch (err) {

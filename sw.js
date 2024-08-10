@@ -8,6 +8,7 @@ const appAssets = [
   "help.html",
   "app.js",
   "core/lib.js",
+  "core/storage.js",
   "settings.json",
   "css/pwa.css",
   "css/style.css",
@@ -20,6 +21,7 @@ const appAssets = [
   "icons/reset.svg",
   "icons/generate.svg",
   "icons/back.svg",
+  "icons/granite.png",
   "privacy/index.html",
 ];
 
