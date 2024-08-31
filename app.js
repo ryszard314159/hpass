@@ -538,6 +538,7 @@ el.share.addEventListener("click", function () {
 });
 
 el.reset.addEventListener("click", function (event) {
+  // alert("reset clicked!");
   console.log("reset Event listener triggered!"); // Should log when clicked
   event.preventDefault();
   const debug = false;
