@@ -34,6 +34,7 @@ el.hintForm = document.getElementById("hintForm");
 el.passwordContainer = document.getElementById("passwordContainer");
 el.currentPassword = document.getElementById("currentPassword");
 el.newPassword = document.getElementById("newPassword");
+el.changePassword = document.getElementById("changePassword");
 el.hidesettings = document.getElementById("hidesettings");
 el.settings = document.getElementById("settings");
 el.help = document.getElementById("help");
@@ -57,6 +58,8 @@ el.version = document.getElementById("version");
 el.clickSound = document.getElementById('clickSound');
 el.fileInputModal = document.getElementById("fileInputModal");
 el.importButton = document.getElementById("importButton");
+el.hamburger = document.getElementById("hamburger");
+el.navMenu = document.getElementById("nav-menu");
 
 
 
@@ -65,6 +68,29 @@ el.importButton = document.getElementById("importButton");
 // document.addEventListener("keydown", (event) => {
 //   console.log(`Global Key pressed: key=${event.key}, code: ${event.code}`);
 // });
+
+el.hamburger.addEventListener("click", function() {
+  // const e = el.navMenu;
+  // console.log("hamburger clicked!");
+  // console.log(`1: el.navMenu.style.display= ${el.navMenu.style.display}`)
+  // console.log(`1: getComputedStyle(el.navMenu).display= ${getComputedStyle(el.navMenu).display}`)
+  // console.log(`1: el.navMenu.style.zIndex= ${el.navMenu.style.zIndex}`)
+  // console.log(`1: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
+  // console.log(`1: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
+  // e.style.display = getComputedStyle(e).display === "" ? "block" : "";
+  // console.log(`2: el.navMenu.style.display= ${el.navMenu.style.display}`)
+  // console.log(`2: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
+  el.navMenu.classList.toggle("show");
+  // el.hamburger.classList.toggle("cross");
+  // el.hamburger.textContent = "X";
+  // el.hamburger.innerHTML = el.hamburger.innerHTML === "☰" ? "\u2715" : "☰";
+  el.hamburger.innerHTML = el.hamburger.innerHTML === "☰" ? "&times" : "☰";
+});
+
+el.changePassword.addEventListener("click", function() {
+  el.newPassword.classList.toggle("show");
+  el.navMenu.classList.toggle("show");
+});
 
 el.currentPassword.addEventListener("keydown", (event) => {
   const debug = false;
@@ -511,21 +537,27 @@ el.share.addEventListener("click", function () {
   showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
 });
 
-el.reset.addEventListener("click", function () {
+el.reset.addEventListener("click", function (event) {
+  console.log("reset Event listener triggered!"); // Should log when clicked
+  event.preventDefault();
   const debug = false;
+  localStorage.clear();
+  window.location.reload();
   // const msg = "(1) Double click to reset settings.
   //            <br>";
   // msg = msg + "<br>WARNING: current<br>values will be lost.";
-  const msg = `
-  <br>(1) Double click to reset settings.
-  <br>(2) Change settings as you wish.
-  <br>(3) With empty "Enter Hint" box click > to save them.
-  `;
-  if (debug) console.log("app: 1: reset: msg= ", msg);
-  showPopup(msg, 9 * SHORTPOPUP, "red");
+  // const msg = `
+  // <br>(1) Double click to reset settings.
+  // <br>(2) Change settings as you wish.
+  // <br>(3) With empty "Enter Hint" box click > to save them.
+  // `;
+  // if (debug) console.log("app: 1: reset: msg= ", msg);
+  // showPopup(msg, 9 * SHORTPOPUP, "red");
 });
 
-el.reset.addEventListener("dblclick", function () {
+el.reset.addEventListener("dblclick", function (event) {
+  console.log("Event listener triggered!"); // Should log when clicked
+  event.preventDefault(); // Add this line
   const debug = false;
   if (debug) {
     console.log("app: 2: reset: el= ", el);

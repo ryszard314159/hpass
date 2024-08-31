@@ -99,8 +99,12 @@
     <div id="passwordContainer" class="modal" style="display: flex;">
       <!-- <form id="passwordForm" class=""> -->
       <!-- <div> -->
-        <input id="currentPassword" class="pwd" enterkeyhint="Enter" placeholder="Current Password"/>
+  
         <img id="logop" class="pwd" src="icons/logo.svg" />
+        <input id="currentPassword" class="pwd" enterkeyhint="Enter" placeholder="Master Password"/>
+        <!-- <img id="hamburger" class="pwd" src="icons/hamburger-menu.svg" /> -->
+        <!-- <div class="hamburger" id="hamburger">&#9776</div> -->
+        <div class="hamburger" id="hamburger">☰</div> 
       <!-- </div> -->
       <!-- </form> -->
       <!-- <form id="newPasswordForm" class=""> -->
@@ -108,6 +112,17 @@
         <input id="newPassword" class="pwd" enterkeyhint="Enter" placeholder="New Password"/>
       <!-- </div> -->
       <!-- </form> -->
+      <nav class="nav-menu" id="nav-menu">
+        <ul>
+          <li><a href="help.html"> <img class="btn" src="icons/help.svg">Help</a></li>
+          <li><a href="info.html"> <img class="btn" src="icons/info.svg">Info</a></li>
+          <li><a id="reset"> <img class="btn" src="icons/reset.svg">Reset</a></li>
+          <li><a href="#contact">info@hpass.app</a></li>
+          <li><a id="changePassword" href="#home">Change Password</a></li>
+          <li><a id="export">Export</a></li>
+          <li><a id="import">Import</a></li>
+        </ul>
+      </nav>
     </div>
     <div id="hintContainer">
       <form id="hintForm" class="">
@@ -169,10 +184,10 @@
         </a>
         <span class="tooltiptext">Basic help and usage guide</span>
       </div>
-      <div class="tooltip">
+      <!-- <div class="tooltip">
         <img id="reset" class="btn" src="icons/reset.svg" />
         <span class="tooltiptext">Reset settings</span>
-      </div>
+      </div> -->
       <div class="tooltip">
         <img id="share" class="btn" src="icons/share.svg" />
         <span class="tooltiptext">Share HPASS!</span>
