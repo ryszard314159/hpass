@@ -33,12 +33,19 @@ function getCallerInfo() {
   return null;
 }
 
+function getKey(PASSWORD) {
+  const niter = 999;
+  const CRYPTO_KEY = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
+  return CRYPTO_KEY.toString();
+}
+
 function setOptions(opts, PASSWORD) {
   const debug = false;
   //  const parent = getCallerFunctionName();
   if (debug) console.log("setOptions: caller info: ", getCallerInfo());
   const sopts = JSON.stringify(opts);
-  const encrypted = CryptoJS.AES.encrypt(sopts, PASSWORD);
+  // const encrypted = CryptoJS.AES.encrypt(sopts, PASSWORD);
+  const encrypted = CryptoJS.AES.encrypt(sopts, getKey(PASSWORD));
   localStorage.setItem("options", encrypted);
 }
 
@@ -52,7 +59,8 @@ function getOptions(PASSWORD) {
     const x = localStorage.getItem("options");
     if (x !== null) {
       if (debug) console.log(`${tag} options= ${x}`);
-      const dx = CryptoJS.AES.decrypt(x, PASSWORD).toString(CryptoJS.enc.Utf8);
+      // const dx = CryptoJS.AES.decrypt(x, PASSWORD).toString(CryptoJS.enc.Utf8);
+      const dx = CryptoJS.AES.decrypt(x, getKey(PASSWORD)).toString(CryptoJS.enc.Utf8);
       if (debug) console.log(`${tag} PASSWORD= ${PASSWORD}`);
       if (debug) console.log(`${tag} decrypted options= ${dx}`);
       v = JSON.parse(dx);

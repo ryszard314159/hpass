@@ -8,6 +8,7 @@ import { deepEqual, get_random_string, getPass, objDiff,
 import { getOptions, setOptions, getCallerInfo, createPasswordHash, setPasswordHash } from "./core/storage.js";
 
 let PASSWORD = "";
+let CRYPTO_KEY = null;
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
 
@@ -61,7 +62,19 @@ el.importButton = document.getElementById("importButton");
 el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
 
+// TODO: clear cache for password input box
+function clearInputCache(inputId) {
+  const inputElement = document.getElementById(inputId);
 
+  // Clear the input value
+  inputElement.value = "";
+
+  // Reset autocomplete attribute
+  inputElement.setAttribute("autocomplete", "off");
+
+  // Optionally, trigger a change event
+  inputElement.dispatchEvent(new Event('change'));
+}
 
 // init => bb54068aea85faa7e487530083366be9962390af822e4c71ef1aca7033c83e66
 
@@ -80,16 +93,20 @@ el.hamburger.addEventListener("click", function() {
   // e.style.display = getComputedStyle(e).display === "" ? "block" : "";
   // console.log(`2: el.navMenu.style.display= ${el.navMenu.style.display}`)
   // console.log(`2: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
+  // if (el.hamburger.textContent === "☰") {
+  //   el.newPassword.style.display = "none";
+  // }
+  // el.newPassword.classList.toggle("show");
   el.navMenu.classList.toggle("show");
-  // el.hamburger.classList.toggle("cross");
-  // el.hamburger.textContent = "X";
-  // el.hamburger.innerHTML = el.hamburger.innerHTML === "☰" ? "\u2715" : "☰";
-  el.hamburger.innerHTML = el.hamburger.innerHTML === "☰" ? "&times" : "☰";
+  el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
+  el.newPassword.style.display = "none";
 });
 
 el.changePassword.addEventListener("click", function() {
-  el.newPassword.classList.toggle("show");
+  // el.newPassword.classList.toggle("show");
+  el.newPassword.style.display = "block";
   el.navMenu.classList.toggle("show");
+  el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
 });
 
 el.currentPassword.addEventListener("keydown", (event) => {

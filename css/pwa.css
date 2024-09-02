@@ -752,18 +752,22 @@ margin-top: 9rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2rem;
+  text-align: center;
+  font-size: 1.5rem;
   /* width: 2rem; */
   /* height: 2rem; */
   /* aspect-ratio: 2; */
   /* overflow: hidden; /* add this */
-  padding: 1rem 2rem 0 0;
+  padding: 1rem 1rem 0.5rem 1rem;
   /* margin: 0.5rem 2rem 0 0; */
   cursor: pointer;
   position: absolute;
   z-index: 99;
   top: 0;
   right: 0;
+  /* border-radius: 50%; /* makes the background circular */
+  background-color: yellow;
+  line-height: 3rem; /* adjust to match the height */
 }
 
 
