@@ -33,6 +33,7 @@ function getCallerInfo() {
   return null;
 }
 
+// https://en.wikipedia.org/wiki/Key_derivation_function
 function getKey(PASSWORD) {
   const niter = 999;
   const CRYPTO_KEY = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});

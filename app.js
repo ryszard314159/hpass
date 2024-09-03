@@ -61,6 +61,25 @@ el.fileInputModal = document.getElementById("fileInputModal");
 el.importButton = document.getElementById("importButton");
 el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
+el.email = document.getElementById("email");
+
+function openEmailClient(email, subject, body) {
+  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailtoLink;
+}
+
+el.email.addEventListener("click", function() {
+  openEmailClient("info@hpass.app", "subject", "This is the email body");
+});
+
+// function openEmailClient(email) {
+//   const mailtoLink = `mailto:${email}`;
+//   window.location.href = mailtoLink;
+// }
+
+// el.email.addEventListener("click", function() {
+//   openEmailClient("info@hpass.app")
+// });
 
 // TODO: clear cache for password input box
 function clearInputCache(inputId) {
@@ -81,6 +100,7 @@ function clearInputCache(inputId) {
 // document.addEventListener("keydown", (event) => {
 //   console.log(`Global Key pressed: key=${event.key}, code: ${event.code}`);
 // });
+
 
 el.hamburger.addEventListener("click", function() {
   // const e = el.navMenu;
@@ -529,7 +549,7 @@ function cleanClean(v) {
 }
 
 el.save.addEventListener("click", function () {
-  const debug = false;
+  const debug = true;
   const opts = { ...globalDefaults };
   if (debug) {
     console.log("apps:0: save: opts= ", opts);
