@@ -3,12 +3,19 @@ TODO:
 1 - restore does not work for Secret
 */
 "use strict";
+
+// import { PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE } from './globals.js';
+// import { SHORTPOPUP, LONGPOPUP, globalDefaults } from './globals.js';
+
 import { deepEqual, get_random_string, getPass, objDiff,
   CHARS, MAXLENGTH, MINLENGTH } from "./core/lib.js";
-import { getOptions, setOptions, getCallerInfo, createPasswordHash, setPasswordHash } from "./core/storage.js";
+import { getOptions, setOptions, getCallerInfo, createPasswordHash,
+  setPasswordHash, kdf } from "./core/storage.js";
 
-let PASSWORD = "";
-let CRYPTO_KEY = null;
+let PASSWORD = '';
+let CRYPTO_KEY = '';
+const CRYPTO_KEY_SIZE = 8; // 256
+
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
 
@@ -62,6 +69,17 @@ el.importButton = document.getElementById("importButton");
 el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
 el.email = document.getElementById("email");
+el.importFileInput = document.getElementById('importFileInput');
+
+// const PASSWORD = { value: "" };
+// const passwordChangeEvent = new CustomEvent('passwordChange', {
+//   detail: { value: PASSWORD.value }
+// });
+// document.addEventListener('passwordChange', (e) => {
+//   console.log(`passwordChange: e.detail.value: ${e.detail.value}`);
+//   console.log(`passwordChange: PASSWORD.value: ${PASSWORD.value}`);
+//   CRYPTO_KE = kdf(PASSWORD.value);
+// });
 
 function openEmailClient(email, subject, body) {
   const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -101,25 +119,27 @@ function clearInputCache(inputId) {
 //   console.log(`Global Key pressed: key=${event.key}, code: ${event.code}`);
 // });
 
-
+// const e = el.navMenu;
+// console.log("hamburger clicked!");
+// console.log(`1: el.navMenu.style.display= ${el.navMenu.style.display}`)
+// console.log(`1: getComputedStyle(el.navMenu).display= ${getComputedStyle(el.navMenu).display}`)
+// console.log(`1: el.navMenu.style.zIndex= ${el.navMenu.style.zIndex}`)
+// console.log(`1: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
+// console.log(`1: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
+// e.style.display = getComputedStyle(e).display === "" ? "block" : "";
+// console.log(`2: el.navMenu.style.display= ${el.navMenu.style.display}`)
+// console.log(`2: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
+// if (el.hamburger.textContent === "☰") {
+//   el.newPassword.style.display = "none";
+// }
+// el.newPassword.classList.toggle("show");
 el.hamburger.addEventListener("click", function() {
-  // const e = el.navMenu;
-  // console.log("hamburger clicked!");
-  // console.log(`1: el.navMenu.style.display= ${el.navMenu.style.display}`)
-  // console.log(`1: getComputedStyle(el.navMenu).display= ${getComputedStyle(el.navMenu).display}`)
-  // console.log(`1: el.navMenu.style.zIndex= ${el.navMenu.style.zIndex}`)
-  // console.log(`1: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
-  // console.log(`1: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
-  // e.style.display = getComputedStyle(e).display === "" ? "block" : "";
-  // console.log(`2: el.navMenu.style.display= ${el.navMenu.style.display}`)
-  // console.log(`2: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
-  // if (el.hamburger.textContent === "☰") {
-  //   el.newPassword.style.display = "none";
-  // }
-  // el.newPassword.classList.toggle("show");
   el.navMenu.classList.toggle("show");
   el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
   el.newPassword.style.display = "none";
+  // PASSWORD.value = `PASSWORD:${Math.trunc((Math.random() * 1000))}`;
+  // document.dispatchEvent(passwordChangeEvent);
+  // console.log(`hamburger: PASSWORD.value= ${PASSWORD.value}`);
 });
 
 el.changePassword.addEventListener("click", function() {
@@ -179,7 +199,8 @@ el.newPassword.addEventListener("keydown", (event) => {
       alert("Incorrect Current Password!");
     } else {
       const v = el.newPassword.value;
-      PASSWORD = (v.length > 0) ? v : null;
+      PASSWORD = (v.length > 0) ? v : null; // password changed
+      CRYPTO_KEY = kdf(PASSWORD);
       // const newHash = CryptoJS.SHA256(PASSWORD).toString();
       // localStorage.setItem("pwdHash", newHash);
       setPasswordHash(PASSWORD);
@@ -278,8 +299,7 @@ function setGenericOptions() {
   let opts = {...globalDefaults};
   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
   opts.salt = get_random_string(16, charset);
-  setOptions(opts, PASSWORD);
-  // setOptions_("setGenericOptions", opts);
+  setOptions(opts, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
       You can use it as is or you can to change it
@@ -302,7 +322,7 @@ if ("serviceWorker" in navigator) {
       console.log("app: sw registered!", reg);
       console.log("app: before createSplashScreen");
       console.log("app: after createSplashScreen");
-      let opts = getOptions(PASSWORD);
+      let opts = getOptions(PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
       if (opts === null) {
         console.log("app: register: null options in localStorage!");
         opts = setGenericOptions();
@@ -558,11 +578,12 @@ el.save.addEventListener("click", function () {
   opts.pepper = el.pepper.value;
   opts.salt = el.salt.value;
   opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
-  setOptions(opts, PASSWORD);
+  setOptions(opts, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
   el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
   if (debug) console.log("apps:1: save: opts= ", opts);
   showPopup("settings saved!", SHORTPOPUP);
-  exportSettings();
+  // exportSettings();
+  exportLocalStorage();
 });
 
 el.share.addEventListener("click", function () {
@@ -612,7 +633,7 @@ el.reset.addEventListener("dblclick", function (event) {
     console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
     console.log("app: 2: reset: el.length.value= ", el.length.value);
   }
-  setOptions(globalDefaults, PASSWORD);
+  setOptions(globalDefaults, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
   showPopup("defaults restored!", SHORTPOPUP);
 });
 
@@ -663,7 +684,7 @@ function setHintOpts(hint, opts) {
   if (!eqLength) {
     alert('Wrong length!');
   }
-  const x = getOptions(PASSWORD);
+  const x = getOptions(PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE)
   const generic = (x === null) ? setGenericOptions() : x;
   if (debug) {
     console.log(`setHintOpts: generic=`, generic);
@@ -683,7 +704,7 @@ function setHintOpts(hint, opts) {
     msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
     msg = `${msg}\nLength= ${opts.length}`;
     alert(msg);
-    setOptions(opts, PASSWORD);
+    setOptions(opts, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
     return;
   }
   let sites = JSON.parse(window.localStorage.getItem("sites"));
@@ -701,10 +722,10 @@ function setHintOpts(hint, opts) {
 // ...
 function getHintOpts(hint) {
   const debug = false;
-  let opts = getOptions(PASSWORD);
+  let opts = getOptions(PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE)
   if (opts === null) {
     opts = {...globalDefaults};
-    setOptions(opts, PASSWORD);
+    setOptions(opts, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
     // setOptions_("getHintOpts", opts);
   }
   if (debug) console.log("getHintOpts: generic opts= ", opts);
@@ -873,6 +894,19 @@ function exportSettings(filename = "hpass-site-settings.json") {
   document.body.removeChild(link);
 }
 
+// Function to export localStorage as a JSON file
+function exportLocalStorage(filename = "hpass-localStorage.json") {
+  // Convert settings object to JSON string
+  const x = JSON.stringify(localStorage, null, 2);
+  const blob = new Blob([x], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = window.URL.createObjectURL(blob);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 // // Sample settings data (initial/default settings)
 // let settings = {
 //   theme: 'dark',
@@ -954,6 +988,35 @@ function importSettings(event) {
   }
 }
 
+// Function to import localStorage from a JSON file
+function importLocalStorage(event) {
+  const debug = true;
+  const file = el.importFileInput.files[0];
+  if (debug) console.log("importLocalStorage: file=", file);
+  if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          try {
+              // Parse the JSON string from the file
+              if (debug) console.log("importLocalStorage: e.target.result=", e.target.result);
+              const importedLocalStorage = JSON.parse(e.target.result);
+              localStorage.clear();
+              for (let k in importedLocalStorage) {
+                localStorage.setItem(k, importedLocalStorage[k]);
+              }
+              const modal = document.getElementById("fileInputModal");
+              modal.style.display = "none"; // TODO: modal is not defined
+          } catch (error) {
+              console.error('Error parsing JSON file:', error);
+              alert('Failed to import settings. Please ensure the file is a valid JSON.');
+          }
+      };
+      reader.readAsText(file);
+  } else {
+      alert('No file selected.');
+  }
+}
+
 // Function to apply the settings to your application (example implementation)
 function applySettings(settings) {
   // Apply the settings (e.g., update the UI, save to local storage, etc.)
@@ -962,9 +1025,10 @@ function applySettings(settings) {
 }
 
 // Attach the change event to handle file selection
-document.getElementById('importFileInput').addEventListener('change', importSettings);
+// document.getElementById('importFileInput').addEventListener('change', importSettings);
+// document.getElementById('importFileInput').addEventListener('change', importLocalStorage);
 
-
+el.importFileInput.addEventListener('change', importLocalStorage);
 
 
 // const tooltip = document.querySelector('.tooltip');

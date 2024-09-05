@@ -18,6 +18,7 @@ const appAssets = [
   "icons/logo.svg",
   "icons/info.svg",
   "icons/help.svg",
+  "icons/email.svg",
   "icons/reset.svg",
   "icons/generate.svg",
   "icons/back.svg",
@@ -64,11 +65,15 @@ self.addEventListener("activate", (e) => {
 
 const staticCache = (req) => {
   return fetch(req).then((networkRes) => {
-    return caches.open(`static-${version}`).then((cache) => {
-         cache.put(req, networkRes.clone()); // Put a clone of the network     66  response in the cache
-         return networkRes; // Return the original network response
-       });
-     });
+    if (networkRes.ok && networkRes.status !== 206) { // Add this check
+      return caches.open(`static-${version}`).then((cache) => {
+        cache.put(req, networkRes.clone()); // Put a clone of the network response in the cache
+        return networkRes; // Return the original network response
+      });
+    } else {
+      return networkRes; // Return the original network response without caching
+    }
+  });
 };
 
 

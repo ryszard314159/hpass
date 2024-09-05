@@ -1,6 +1,9 @@
 
 "use strict";
 
+// let CRYPTO_KEY = null;
+// import { PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE } from './globals.js';
+
 function getCallerInfo() {
   try {
       throw new Error();
@@ -34,35 +37,68 @@ function getCallerInfo() {
 }
 
 // https://en.wikipedia.org/wiki/Key_derivation_function
-function getKey(PASSWORD) {
+// function getKey(PASSWORD) {
+//   const niter = 999;
+//   CRYPTO_KE = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
+//   // return CRYPTO_KEY.toString();
+// }
+
+function kdf(pwd, keySize) {
   const niter = 999;
-  const CRYPTO_KEY = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
-  return CRYPTO_KEY.toString();
+  // const k = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
+  const k = CryptoJS.PBKDF2(pwd, "", { keySize: keySize, iterations: niter});
+  return k.toString();
 }
 
-function setOptions(opts, PASSWORD) {
-  const debug = false;
+// function validKey(key, keySize) {
+//   const size = CryptoJS.enc.Utf8.parse(key).words.length;
+//   return size === keySize * 2;
+// }
+
+// 0 - calculate size of tryKey
+// 1 - if password is undefined convert it to an empty string
+// 2 - if the size of tryKey is
+function validKey(tryKey, keySize, pwd) {
+  const size = CryptoJS.enc.Utf8.parse(tryKey).words.length;
+  const key = (size != keySize * 2) ? kdf(pwd, keySize) : tryKey;
+  return key;
+}
+
+function setOptions(opts, pwd, tryKey, keySize) {
+  const debug = true;
   //  const parent = getCallerFunctionName();
   if (debug) console.log("setOptions: caller info: ", getCallerInfo());
+  if (debug) console.log("setOptions:0: pwd: ", pwd);
+  if (debug) console.log("setOptions:0: tryKey: ", tryKey);
+  if (debug) console.log(`setOptions:1: tryKey= ${tryKey}`);
+  // CRYPTO_KEY = validKey(CRYPTO_KEY, keySize) ? kdf(PASSWORD, keySize) : CRYPTO_KEY;
+  const key = validKey(tryKey, keySize, pwd);
+  if (debug) console.log(`setOptions:1: key= ${key}`);
   const sopts = JSON.stringify(opts);
   // const encrypted = CryptoJS.AES.encrypt(sopts, PASSWORD);
-  const encrypted = CryptoJS.AES.encrypt(sopts, getKey(PASSWORD));
+  // const encrypted = CryptoJS.AES.encrypt(sopts, getKey(PASSWORD));
+  const encrypted = CryptoJS.AES.encrypt(sopts, key);
   localStorage.setItem("options", encrypted);
+  return key;
 }
 
-function getOptions(PASSWORD) {
-  const debug = false;
+function getOptions(pwd, tryKey, keySize) {
+  const debug = true;
   const info = getCallerInfo();
   const tag = `getOptions:`;
   if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
   let v = null;
+  const key = validKey(tryKey, keySize, pwd)
   try {
     const x = localStorage.getItem("options");
     if (x !== null) {
       if (debug) console.log(`${tag} options= ${x}`);
+      if (debug) console.log(`${tag} pwd= ${pwd}`);
+      if (debug) console.log(`${tag} key= ${key}`);
       // const dx = CryptoJS.AES.decrypt(x, PASSWORD).toString(CryptoJS.enc.Utf8);
-      const dx = CryptoJS.AES.decrypt(x, getKey(PASSWORD)).toString(CryptoJS.enc.Utf8);
-      if (debug) console.log(`${tag} PASSWORD= ${PASSWORD}`);
+      // const dx = CryptoJS.AES.decrypt(x, getKey(PASSWORD)).toString(CryptoJS.enc.Utf8);
+      const dx = CryptoJS.AES.decrypt(x, key).toString(CryptoJS.enc.Utf8);
+      if (debug) console.log(`${tag} pwd= ${pwd}`);
       if (debug) console.log(`${tag} decrypted options= ${dx}`);
       v = JSON.parse(dx);
       if (debug) console.log(`${tag} v= `, v);
@@ -95,11 +131,12 @@ function getPasswordHash() {
   return h;
 }
 
-function setPasswordHash(PASSWORD) {
-  const h = createPasswordHash(PASSWORD);
+function setPasswordHash(pwd) {
+  const h = createPasswordHash(pwd);
   localStorage.setItem("pwdHash", h);
   return h;
 }
 
 export {getOptions, setOptions, getCallerInfo};
-export {getPasswordHash, setPasswordHash, createPasswordHash}
+export {getPasswordHash, setPasswordHash, createPasswordHash};
+export {kdf}; //, CRYPTO_KEY};
