@@ -160,12 +160,12 @@ el.masterPassword.addEventListener("keydown", (event) => {
         alert("Wrong password - try again!")
       }
       el.newPassword.focus();
-    }, 0);
+    }, 9);
   }
 });
 
 el.newPassword.addEventListener("keydown", (event) => {
-  const debug = true;
+  const debug = false;
   // event.preventDefault();
   // if (debug) console.log(`el.newPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key !== 'Enter') return;
@@ -294,28 +294,29 @@ function setGenericOptions() {
 }
 
 if ("serviceWorker" in navigator) {
+  const debug = false;
   const swPath = "sw.js";
-  console.log("apps: before registration: swPath= ", swPath);
+  if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
     .register(swPath)
     .then((reg) => {
-      console.log("app: sw registered!", reg);
-      console.log("app: before createSplashScreen");
-      console.log("app: after createSplashScreen");
+      if (debug) console.log("app: sw registered!", reg);
+      if (debug) console.log("app: before createSplashScreen");
+      if (debug) console.log("app: after createSplashScreen");
       let opts = storageGet("options", PASSWORD);
       if (opts === null) {
-        console.log("app: register: null options in localStorage!");
+        if (debug) console.log("app: register: null options in localStorage!");
         opts = setGenericOptions();
       } else {
-        console.log("app: register: exist already: opts= ", opts);
+        if (debug) console.log("app: register: exist already: opts= ", opts);
       }
-      console.log("app: register: globalDefaults= ", globalDefaults);
+      if (debug) console.log("app: register: globalDefaults= ", globalDefaults);
       el.pepper.value = opts.pepper;
       el.salt.value = opts.salt;
       el.length.value = opts.length;
       el.length.min = MINLENGTH;
       el.length.max = MAXLENGTH;
-      console.log("app: register: els set to opts= ", opts);
+      if (debug) console.log("app: register: els set to opts= ", opts);
       //
       // NOTE: if you are working with DevTools
       //       make sure that the Bypass for Network checkbox
@@ -328,13 +329,13 @@ if ("serviceWorker" in navigator) {
       //
       if (navigator.serviceWorker.controller) {
         const msg = { type: "GET_VERSION" };
-        console.log(
+        if (debug) console.log(
           `app: register: This page is currently controlled by: ${navigator.serviceWorker.controller}`
         );
-        console.log("app: register: msg= ", msg);
+        if (debug) console.log("app: register: msg= ", msg);
         navigator.serviceWorker.controller.postMessage(msg);
       } else {
-        console.log(
+        if (debug) console.log(
           "app: register: This page is not currently controlled by a service worker."
         );
       }
@@ -345,7 +346,8 @@ if ("serviceWorker" in navigator) {
 }
 
 navigator.serviceWorker.addEventListener("message", (event) => {
-  console.log("app: message: event= ", event);
+  const debug = false;
+  if (debug) console.log("app: message: event= ", event);
   if (event.data && event.data.type === "VERSION") {
     // console.log("app: message: event.data= ", event.data);
     el.version.innerHTML = `${event.data.version}`;
@@ -489,10 +491,11 @@ el.gear.addEventListener("click", () => {
 
 const ops = ["pepper", "salt", "length", "burn", "peak"];
 ops.forEach((x) => {
+  const debug = false;
   let cross = `${x}Cross`;
-  console.log("app:0: ops.forEach: x= ", x, " cross= ", cross);
+  if (debug) console.log("app:0: ops.forEach: x= ", x, " cross= ", cross);
   el[cross].addEventListener("click", () => {
-    console.log("app:1: ops.forEach: x= ", x, " cross= ", cross);
+    if (debug) console.log("app:1: ops.forEach: x= ", x, " cross= ", cross);
     el[x].value = null;
   });
 });
@@ -531,17 +534,17 @@ el.share.addEventListener("click", function () {
 
 el.reset.addEventListener("click", function (event) {
   // alert("reset clicked!");
-  console.log("reset Event listener triggered!"); // Should log when clicked
-  event.preventDefault();
   const debug = false;
+  if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
+  event.preventDefault();
   localStorage.clear();
   window.location.reload();
 });
 
 el.reset.addEventListener("dblclick", function (event) {
-  console.log("Event listener triggered!"); // Should log when clicked
-  event.preventDefault(); // Add this line
   const debug = false;
+  if (debug) console.log("Event listener triggered!"); // Should log when clicked
+  event.preventDefault(); // Add this line
   if (debug) {
     console.log("app: 2: reset: el= ", el);
     console.log("app: 2: reset: globalDefaults= ", globalDefaults);
@@ -639,7 +642,9 @@ function setHintOpts(hint, opts) {
 
 // ...
 function getHintOpts(hint) {
-  const debug = false;
+  const debug = true;
+  // alert(`getHintOpts: hint= ${hint}`)
+  if (debug) console.log("getHintOpts: hint= ", hint)
   let opts = storageGet("options", PASSWORD);
   if (opts === null) {
     opts = {...globalDefaults};
@@ -647,6 +652,7 @@ function getHintOpts(hint) {
   }
   if (debug) console.log("getHintOpts: generic opts= ", opts);
   const sites = storageGet("sites", PASSWORD);
+  if (debug) console.log("getHintOpts: sites= ", sites);
   if (sites !== null && sites[hint] !== undefined) {
     if (debug) console.log(`getHintOpts: hint-specific: sites[${hint}]= `, sites[hint]);
     opts = {...opts, ...sites[hint]};

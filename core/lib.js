@@ -27,6 +27,7 @@ CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
 CHARS.upper = CHARS.lower.toUpperCase();
 CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 const CRYPTO = {key: '', prefix: 'prefix:'};
+CRYPTO.encryptedStorage = false;
 if (typeof(window) !== 'undefined') {
   // TODO: CRYPTO.options = { keySize: 8, iterations: 999, hasher: CryptoJS.algo.SHA512};
   CRYPTO.options = { keySize: 2, iterations: 999, hasher: CryptoJS.algo.SHA512};
@@ -418,41 +419,42 @@ function decryptJSON(json) {
 }
 
 function storageSet(storageKey, obj, pwd) {
-  const debug = true;
-  validateKey(pwd); // validate CRYPTO.key
-  const s = JSON.stringify(obj);
-  const encrypted = CryptoJS.AES.encrypt(s, CRYPTO.key);
-  localStorage.setItem(storageKey, encrypted);
+  const debug = false;
+  let value = JSON.stringify(obj);
+  if (debug) console.log("storageSet:0: value= ", value);
+  if (CRYPTO.encryptedStorage) {
+    validateKey(pwd); // validate CRYPTO.key
+    value = CryptoJS.AES.encrypt(value, CRYPTO.key);
+  }
+  localStorage.setItem(storageKey, value);
   if (debug) {
     console.log(`storageSet: storageKey= ${storageKey}`);
     console.log(`storageSet: pwd= ${pwd}`)
     console.log("storageSet: obj= ", obj);
-    console.log("storageSet: s= ", s);
+    console.log("storageSet:1: value= ", value);
     console.log("storageSet: CRYPTO.key= ", CRYPTO.key);
-    console.log(`storageSet: encrypted= ${encrypted}`);
   }
 }
 
 function storageGet(storageKey, pwd) {
-  const debug = true;
+  const debug = false;
   if (debug) console.log(`storageGet: storageKey= ${storageKey}, pwd= ${pwd}`);
-  if (debug) console.log(`storageGet:0: CRYPTO.key= ${CRYPTO.key}`)
-  validateKey(pwd); // validate CRYPTO.key
-  if (debug) console.log(`storageGet:1: CRYPTO.key= ${CRYPTO.key}`);
-  const e = localStorage.getItem(storageKey);
-  if (debug) console.log(`storageGet: e= ${e}`);
-  if ( e === null ) {
-    return null;
-  } else {
-    const d = CryptoJS.AES.decrypt(e, CRYPTO.key).toString(CryptoJS.enc.Utf8);
-    if (debug) console.log(`storageGet: d= ${d}`);
-    const o = JSON.parse(d);
-    return o;
+  let value = localStorage.getItem(storageKey);
+  if (debug) console.log(`storageGet:0: value= ${value}`);
+  if (value === null) return value;
+  if (CRYPTO.encryptedStorage) {
+    if (debug) console.log(`storageGet:0: CRYPTO.key= ${CRYPTO.key}`);
+    validateKey(pwd); // validate CRYPTO.key
+    if (debug) console.log(`storageGet:1: CRYPTO.key= ${CRYPTO.key}`);
+    value = CryptoJS.AES.decrypt(value, CRYPTO.key).toString(CryptoJS.enc.Utf8);
   }
+  if (debug) console.log(`storageGet:1: value= ${value}`);
+  value = JSON.parse(value);
+  return value;
 };
 
 function getOptions(pwd) {
-  const debug = true;
+  const debug = false;
   const info = getCallerInfo();
   const tag = `getOptions:`;
   if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
@@ -485,6 +487,7 @@ function getOptions(pwd) {
 // TODO: change to SHA.512
 function createHash(pwd) {
   // crypto.createHash('sha256').update(pwd).digest().toString()
+  if (!CRYPTO.encryptedStorage) return pwd;
   const h = CryptoJS.SHA1(pwd).toString();
   if (localStorage.getItem('pwdHash') === null) {
     localStorage.setItem('pwdHash', h);
@@ -496,7 +499,7 @@ function createHash(pwd) {
 }
 
 function encryptLocalStorage(oldPassword, newPassword, keys) {
-  const debug = true;
+  const debug = false;
   if (debug) console.log(`encryptLocalStorage: oldPassword= ${oldPassword}, newPassword= ${newPassword}`);
   if (debug) console.log(`encryptLocalStorage: keys= ${keys}`);
   keys.forEach(k => {

@@ -252,7 +252,7 @@ form {
   /* height: 100vh; */
   /* justify-content: center; */
 }
-#currentPassword, #newPassword, #logop {
+#masterPassword, #newPassword, #logop {
   margin: 4rem 0 0 0;
   font-size: 4rem;
   /* width: 80%; */
@@ -314,7 +314,7 @@ form {
   /* background: rgba(255, 255, 255, 1); */
 }
 
-#currentPassword, #newPassword {
+#masterPassword, #newPassword {
   position: relative;
   width: 80%;
   /* height: 100%; */
@@ -773,7 +773,7 @@ margin-top: 9rem;
 
 /* Hidden menu */
 .nav-menu {
-  display: none; /* Hidden by default */
+  display: none;
   position: absolute;
   top: 0; /* Adjust based on your layout */
   right: 0;
@@ -785,9 +785,14 @@ margin-top: 9rem;
   /* border-radius: 5px; */
 }
 
+/* .nav-menu.hide
+{
+  display: none;
+} */
+
 .nav-menu.show
 {
-  display: block;
+  display: block !important;
 }
 
 /* Menu items styling */

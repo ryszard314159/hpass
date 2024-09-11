@@ -3,6 +3,9 @@
   "name": "hpass",
   "version": "1.0.0",
   "dependencies": {
-    "crypto-js": "^4.2.0"
+    "crypto-js": "^4.2.0",
+    "node-localstorage": "^3.0.5",
+    "webcrypto": "^0.1.1",
+    "webcrypto-shim": "^0.1.7"
   }
 }

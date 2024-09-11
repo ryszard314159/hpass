@@ -27,12 +27,15 @@ const appAssets = [
 ];
 
 self.addEventListener("install", (installEvent) => {
+  const debug = false;
   const msg = { install: true };
   const installChannel = new BroadcastChannel("installChannel");
   installChannel.postMessage(msg);
-  console.log("sw: install: installChannel msg= ", msg);
-  console.log("sw: install: installEvent= ", installEvent);
-  console.log(`sw: install: open: static-version= ${version}`);
+  if (debug) {
+    console.log("sw: install: installChannel msg= ", msg);
+    console.log("sw: install: installEvent= ", installEvent);
+    console.log(`sw: install: open: static-version= ${version}`);
+  }
   installEvent.waitUntil(
     caches.open(`static-${version}`).then((cache) => cache.addAll(appAssets))
   );
@@ -84,7 +87,8 @@ self.addEventListener("fetch", (e) => {
 });
 
 self.addEventListener("load", (e) => {
-  console.log("sw: load event detected: e= ", e);
+  const debug = false;
+  if (debug) console.log("sw: load event detected: e= ", e);
 });
 
 self.addEventListener("install", function (event) {
@@ -98,10 +102,11 @@ self.addEventListener("activate", function (event) {
 // service-worker.js
 // Listen to the request
 self.addEventListener("message", (event) => {
-  console.log("sw: message: event= ", event);
+  const debug = false;
+  if (debug) console.log("sw: message: event= ", event);
   if (event.data && event.data.type === "GET_VERSION") {
     // Select who we want to respond
-    console.log("sw: message: event.data= ", event.data);
+    if (debug) console.log("sw: message: event.data= ", event.data);
     self.clients
       .matchAll({
         includeUncontrolled: true,
@@ -112,7 +117,7 @@ self.addEventListener("message", (event) => {
           // Send a response - the clients
           // array is ordered by last focused
           const msg = { type: "VERSION", version: version };
-          console.log("sw: message: postMessage: msg= ", msg);
+          if (debug) console.log("sw: message: postMessage: msg= ", msg);
           clients[0].postMessage(msg);
         }
       });

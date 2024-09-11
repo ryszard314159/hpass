@@ -73,8 +73,8 @@
         }
       }
       </script> -->
-    <script defer type="module" src="core/lib.js"></script>
-    <script defer type="module" src="storage.js"></script>
+    <!-- <script defer type="module" src="core/lib.js"></script>
+    <script defer type="module" src="storage.js"></script> -->
     <script defer type="module" src="app.js"></script>
     <script defer type="module" src="sw.js"></script>
     <script
@@ -102,7 +102,7 @@
       <!-- <div> -->
   
         <img id="logop" class="pwd" src="icons/logo.svg" />
-        <input id="currentPassword" class="pwd" enterkeyhint="Enter" placeholder="Master Password"/>
+        <input id="masterPassword" class="pwd" enterkeyhint="Enter" placeholder="Master Password"/>
         <!-- <img id="hamburger" class="pwd" src="icons/hamburger-menu.svg" /> -->
         <!-- <div class="hamburger" id="hamburger">&#9776</div> -->
         <div class="hamburger" id="hamburger"><span>☰</span></div> 
@@ -117,10 +117,11 @@
         <ul>
           <li><a href="help.html"> <img class="btn" src="icons/help.svg">Help</a></li>
           <li><a href="info.html"> <img class="btn" src="icons/info.svg">Info</a></li>
-          <li><a id="reset"> <img class="btn" src="icons/reset.svg">Reset</a></li>
           <li><a id="email"> <img class="btn" src="icons/email.svg">Support</a></li>
-          <li><a id="save"> <img class="btn" src="icons/export.svg">Export Settings</a></li>
-          <li><a id="importButton"> <img class="btn" src="icons/import.svg">Import Settings</a></li>
+          <li><a id="reset"> <img class="btn" src="icons/reset.svg">Reset</a></li>
+          <li><a id="crypt"> <img class="btn" src="icons/email.svg">Decrypt</a></li>
+          <li><a id="save"> <img class="btn export" src="icons/export.svg">Export Settings</a></li>
+          <li><a id="importButton"> <img class="btn import" src="icons/import.svg">Import Settings</a></li>
           <li><a id="changePassword" href="#home">Change Password</a></li>
         </ul>
       </nav>
@@ -191,7 +192,7 @@
       </div> -->
 
       <div class="tooltip">
-        <img id="save" class="btn" src="icons/export.svg" />
+        <img id="save" class="btn export" src="icons/export.svg" />
         <span class="tooltiptext">Export settings</span>
       </div>
       <div class="tooltip">
@@ -199,13 +200,14 @@
         <span class="tooltiptext">Share HPASS!</span>
       </div>
       <div class="tooltip">
-        <img id="importButton" class="btn" src="icons/import.svg" />
+        <img id="importButton" class="btn import" src="icons/import.svg" />
         <span class="tooltiptext">Import settings</span>
       </div>
       <div id="fileInputModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <p>Select a JSON file to import sites settings:</p><br>
+            <!-- <p>Select a JSON file to import sites settings:</p><br> -->
+            <p>Select a file:</p><br>
             <input type="file" id="importFileInput" accept="application/json">
         </div>
       </div>
