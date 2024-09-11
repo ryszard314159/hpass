@@ -1,20 +1,41 @@
 /*
 TODO:
 1 - restore does not work for Secret
+2 - If you need high-performance, high-security cryptography,
+    you may want to consider native libraries or more modern JavaScript libraries
+    like Web Cryptography API (W3C) :: https://www.w3.org/TR/WebCryptoAPI/
+    or Forge.
 */
 "use strict";
 
-// import { PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE } from './globals.js';
-// import { SHORTPOPUP, LONGPOPUP, globalDefaults } from './globals.js';
-
 import { deepEqual, get_random_string, getPass, objDiff,
   CHARS, MAXLENGTH, MINLENGTH } from "./core/lib.js";
-import { getOptions, setOptions, getCallerInfo, createPasswordHash,
-  setPasswordHash, kdf } from "./core/storage.js";
+import { storageGet, storageSet, getCallerInfo, createHash,
+         kdf, CRYPTO, encryptLocalStorage } from "./core/lib.js";
+
+// simulate localStorage in nodejs
+if (typeof(window) === 'undefined') {
+const localStorage = {};
+localStorage.setItem = function(key, value) {
+  this[key] = value;
+};
+localStorage.getItem = function(key) {
+  const v = typeof(this[key]) !== 'undefined'? this[key] : null
+  return v;
+};
+localStorage.removeItem = function(key) {
+  delete this[key];
+};
+localStorage.clear = function() {
+  const keep = [ 'setItem', 'getItem', 'removeItem', 'clear' ];
+  Object.keys(localStorage).forEach(function(k) {
+    if (keep.includes(k)) return;
+    localStorage.removeItem(k);
+  })
+};
+}
 
 let PASSWORD = '';
-let CRYPTO_KEY = '';
-const CRYPTO_KEY_SIZE = 8; // 256
 
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
@@ -27,7 +48,6 @@ const URL = "https://hpass.app";
 
 // Selecting elements
 const el = {};
-// el.overlay = document.getElementById("overlay");
 el.hint = document.getElementById("hint");
 el.salt = document.getElementById("salt");
 el.pepper = document.getElementById("pepper");
@@ -38,9 +58,8 @@ el.range = document.getElementById("range");
 el.gear = document.getElementById("gear");
 el.generate = document.getElementById("generate");
 el.hintForm = document.getElementById("hintForm");
-// el.generateDiv = document.getElementById("generateDiv");
 el.passwordContainer = document.getElementById("passwordContainer");
-el.currentPassword = document.getElementById("currentPassword");
+el.masterPassword = document.getElementById("masterPassword");
 el.newPassword = document.getElementById("newPassword");
 el.changePassword = document.getElementById("changePassword");
 el.hidesettings = document.getElementById("hidesettings");
@@ -50,11 +69,8 @@ el.save = document.getElementById("save");
 el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
-// el.back = document.getElementById("back");
-// el.menu = document.getElementById("menu");
 el.adunit = document.getElementById("adunit");
 el.more = document.getElementById("more");
-// el.menuList = document.getElementById("menuList");
 el.notify = document.getElementById("notify");
 el.pepperCross = document.getElementById("pepperCross");
 el.saltCross = document.getElementById("saltCross");
@@ -70,16 +86,8 @@ el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
 el.email = document.getElementById("email");
 el.importFileInput = document.getElementById('importFileInput');
+el.fileInputModal = document.getElementById("fileInputModal");
 
-// const PASSWORD = { value: "" };
-// const passwordChangeEvent = new CustomEvent('passwordChange', {
-//   detail: { value: PASSWORD.value }
-// });
-// document.addEventListener('passwordChange', (e) => {
-//   console.log(`passwordChange: e.detail.value: ${e.detail.value}`);
-//   console.log(`passwordChange: PASSWORD.value: ${PASSWORD.value}`);
-//   CRYPTO_KE = kdf(PASSWORD.value);
-// });
 
 function openEmailClient(email, subject, body) {
   const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -89,15 +97,6 @@ function openEmailClient(email, subject, body) {
 el.email.addEventListener("click", function() {
   openEmailClient("info@hpass.app", "subject", "This is the email body");
 });
-
-// function openEmailClient(email) {
-//   const mailtoLink = `mailto:${email}`;
-//   window.location.href = mailtoLink;
-// }
-
-// el.email.addEventListener("click", function() {
-//   openEmailClient("info@hpass.app")
-// });
 
 // TODO: clear cache for password input box
 function clearInputCache(inputId) {
@@ -113,71 +112,51 @@ function clearInputCache(inputId) {
   inputElement.dispatchEvent(new Event('change'));
 }
 
-// init => bb54068aea85faa7e487530083366be9962390af822e4c71ef1aca7033c83e66
-
-// document.addEventListener("keydown", (event) => {
-//   console.log(`Global Key pressed: key=${event.key}, code: ${event.code}`);
-// });
-
-// const e = el.navMenu;
-// console.log("hamburger clicked!");
-// console.log(`1: el.navMenu.style.display= ${el.navMenu.style.display}`)
-// console.log(`1: getComputedStyle(el.navMenu).display= ${getComputedStyle(el.navMenu).display}`)
-// console.log(`1: el.navMenu.style.zIndex= ${el.navMenu.style.zIndex}`)
-// console.log(`1: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
-// console.log(`1: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
-// e.style.display = getComputedStyle(e).display === "" ? "block" : "";
-// console.log(`2: el.navMenu.style.display= ${el.navMenu.style.display}`)
-// console.log(`2: getComputedStyle(e).display= ${getComputedStyle(e).display}`)
-// if (el.hamburger.textContent === "☰") {
-//   el.newPassword.style.display = "none";
-// }
-// el.newPassword.classList.toggle("show");
 el.hamburger.addEventListener("click", function() {
-  el.navMenu.classList.toggle("show");
+  setTimeout(function() {
+    el.navMenu.classList.toggle("show");
+  }, 1);
   el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
   el.newPassword.style.display = "none";
-  // PASSWORD.value = `PASSWORD:${Math.trunc((Math.random() * 1000))}`;
-  // document.dispatchEvent(passwordChangeEvent);
-  // console.log(`hamburger: PASSWORD.value= ${PASSWORD.value}`);
 });
 
 el.changePassword.addEventListener("click", function() {
-  // el.newPassword.classList.toggle("show");
-  el.newPassword.style.display = "block";
   el.navMenu.classList.toggle("show");
   el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
+  el.newPassword.style.display = "block";
 });
 
-el.currentPassword.addEventListener("keydown", (event) => {
+el.navMenu.classList.remove("show");
+
+el.masterPassword.addEventListener("keydown", (event) => {
   const debug = false;
-  if (debug) console.log(`el.currentPassword: event key: ${event.key}, code: ${event.code}`);
+  if (debug) console.log(`el.masterPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key === 'Enter') {
-    if (debug) console.log('currentPassword: Enter key pressed!');
+    if (debug) console.log('masterPassword: Enter key pressed!');
     // event.preventDefault();
-    // el.currentPassword.blur();
+    // el.masterPassword.blur();
     setTimeout(() => {
-      const pwd = el.currentPassword.value;
+      const pwd = el.masterPassword.value;
       let oldHash = localStorage.getItem("pwdHash");
       if (oldHash === null) {
         alert("pwdHash was null, options removed & PASSWORD set to empty string");
         localStorage.clear();
-        oldHash = CryptoJS.SHA256(pwd).toString();
+        oldHash = createHash(pwd);
         localStorage.setItem("pwdHash", oldHash);
       }
-      const pwdHash = CryptoJS.SHA256(pwd).toString();
+      const pwdHash = createHash(pwd);
       if (debug) {
-        console.log(`currentPassword: PASSWORD= ${PASSWORD}`);
-        console.log(`currentPassword: pwd= ${pwd}`);
-        console.log(`currentPassword: pwdHash= ${pwdHash}`);
-        console.log(`currentPassword: oldHash= ${oldHash}`);
-        console.log(`currentPassword: typeof(oldHash)= ${typeof(oldHash)}`);
-        console.log(`currentPassword: typeof(pwdHash)= ${typeof(pwdHash)}`);
+        console.log(`masterPassword: PASSWORD= ${PASSWORD}`);
+        console.log(`masterPassword: pwd= ${pwd}`);
+        console.log(`masterPassword: pwdHash= ${pwdHash}`);
+        console.log(`masterPassword: oldHash= ${oldHash}`);
+        console.log(`masterPassword: typeof(oldHash)= ${typeof(oldHash)}`);
+        console.log(`masterPassword: typeof(pwdHash)= ${typeof(pwdHash)}`);
       }
       if (pwdHash === oldHash) {
         el.passwordContainer.style.display = "none";
       } else {
-        if (debug) console.log(`currentPassword: Wrong password - try again!`);
+        if (debug) console.log(`masterPassword: Wrong password - try again!`);
         alert("Wrong password - try again!")
       }
       el.newPassword.focus();
@@ -185,39 +164,44 @@ el.currentPassword.addEventListener("keydown", (event) => {
   }
 });
 
-// el.newPassword.addEventListener("keydown", (event) => {
 el.newPassword.addEventListener("keydown", (event) => {
-  const debug = false;
+  const debug = true;
   // event.preventDefault();
-  if (debug) console.log(`el.newPassword: event key: ${event.key}, code: ${event.code}`);
-  if (event.key === 'Enter') {
-    // event.preventDefault();
-    if (debug) console.log('newPassword: Enter key pressed!');
-    const oldHash = localStorage.getItem("pwdHash");
-    const h = createPasswordHash(el.currentPassword.value)
-    if (h !== oldHash) {
-      alert("Incorrect Current Password!");
-    } else {
-      const v = el.newPassword.value;
-      PASSWORD = (v.length > 0) ? v : null; // password changed
-      CRYPTO_KEY = kdf(PASSWORD);
-      // const newHash = CryptoJS.SHA256(PASSWORD).toString();
-      // localStorage.setItem("pwdHash", newHash);
-      setPasswordHash(PASSWORD);
-      let msg = `Password to access HPASS changed to:`
-      msg = PASSWORD.length > 0 ? `${msg} ${PASSWORD}` : `${msg} empty string`
-      if (debug) console.log(`msg= ${msg}`);
-      alert(msg);
-      el.passwordContainer.style.display = "none";
+  // if (debug) console.log(`el.newPassword: event key: ${event.key}, code: ${event.code}`);
+  if (event.key !== 'Enter') return;
+  const oldHash = localStorage.getItem("pwdHash");
+  const newHash = createHash(el.masterPassword.value)
+  if (debug) console.log(`oldHash= ${oldHash}`);
+  if (debug) console.log(`newHash= ${newHash}`);
+  let msg = `Master Password (='${PASSWORD}')`;
+  if (debug) console.log(`0:msg= ${msg}`);
+  if (newHash !== oldHash) {
+    alert("Incorrect Master Password!");
+  } else {
+    const v = el.newPassword.value;
+    const newPassword = (v.length > 0) ? v : ''; // null changed to ''
+    const oldPassword = PASSWORD;
+    msg =  (newPassword !== oldPassword) ? `${msg} changed.` : `${msg} NOT changed.`
+    if (debug) console.log(`1:msg= ${msg}`);
+    if (debug) console.log(`newPassword= ${newPassword}, oldPassword= ${oldPassword}`);
+    if (newPassword !== oldPassword) {
+      PASSWORD = newPassword;
+      CRYPTO.key = kdf(newPassword);
+      const h = createHash(newPassword);
+      localStorage.setItem("pwdHash", h);
+      msg = `${msg}\nNew Master Password is: ${newPassword}`
+      encryptLocalStorage(oldPassword, newPassword, ["options", "sites"]);
     }
-    // Perform desired actions here
+    if (debug) console.log(`msg= ${msg}`);
+    if (debug) console.log("CRYPTO= ", CRYPTO);
+    alert(msg);
+    el.passwordContainer.style.display = "none";
   }
 });
 
 // (async () => {
 //   try {
-//     const { scrypt } = await import('crypto');
-    
+//     const { scrypt } = await import('crypto');  
 //     // Example usage of scrypt
 //     const password = 'password';
 //     const salt = 'salt';
@@ -230,13 +214,21 @@ el.newPassword.addEventListener("keydown", (event) => {
 //   }
 // })();
 
-
 function createSplashScreen(opts) {
-  const pwdHash = CryptoJS.SHA256(PASSWORD).toString();
+  const pwdHash = createHash(PASSWORD);
   localStorage.setItem("pwdHash", pwdHash);
-  let msg = `<h3>Basic usage:</h3>
+  let msg = `<h3>To start using HPASS:</h3>
+  <ul>
+  <li>Read the <strong>Basics</strong> below.
+  <li>Close this menu.
+  <li>Enter Master Password (default=${PASSWORD}).
+  <li>For good protection change this default to
+      the long and meaningful for you string/phrase.
+      Write it down and store it in safe location.
+  </ul>
+  <h3>Basics:</h3>
   <ol>
-  <li>Enter a password hint in Enter Hint box.
+  <li>Enter a site password hint in Enter Hint box.
       This can be a full name, or your favorite nick name,
       of the site you need the password for e.g. facebook or fb etc.
   <li>Click on <strong style="font-size: 1.2rem;">></strong>
@@ -245,7 +237,7 @@ function createSplashScreen(opts) {
   <li>Paste password from the clipboard where you need it.
   </ol>
   <br>
-  Generated password is uniquely determined by Hint
+  Generated password is uniquely determined by site Hint
   together with:
    <hr/>
   <p>
@@ -259,17 +251,9 @@ function createSplashScreen(opts) {
   To display and change these settings click on the gear icon
   in the top-left corner.
   Note - that to generate the same password -
-  Hint, Secret, Special Character and Length have to be exactly the same.
+  site Hint, Secret, Special Character and Length have to be exactly the same.
   See Help page under ? icon for more details.
-  <br>
-  Current Password is: ${PASSWORD}`;
-  // <h4>Current options are:</h4><br> 
-  // <ol>
-  // <li>Secret = ${opts.salt}
-  // <li>Special Character = ${opts.pepper}
-  // <li>Length = ${opts.length}
-  // </ol>
-  // <br>
+  <br>`;
   const container = document.createElement("div"); // container
   container.id = "splash-screen-container";
   container.className = "modal";
@@ -283,8 +267,6 @@ function createSplashScreen(opts) {
   closeButton.addEventListener('click', function() {
     container.style.display = "none";
   });
-  // const paragraph = document.createElement('p');
-  // paragraph.textContent = 'Select a JSON file to import sites settings:';
   content.appendChild(closeButton);
   container.appendChild(content);
   container.style.display = "block";
@@ -295,11 +277,10 @@ function createSplashScreen(opts) {
 function setGenericOptions() {
   const debug = false;
   if (debug) console.log("setGenericOptions: null options in localStorage!");
-  // opts = defaults;
   let opts = {...globalDefaults};
   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
   opts.salt = get_random_string(16, charset);
-  setOptions(opts, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
+  storageSet("options", opts, PASSWORD);
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
       You can use it as is or you can to change it
@@ -318,11 +299,10 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register(swPath)
     .then((reg) => {
-      // const defaults = {...globalDefaults};
       console.log("app: sw registered!", reg);
       console.log("app: before createSplashScreen");
       console.log("app: after createSplashScreen");
-      let opts = getOptions(PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
+      let opts = storageGet("options", PASSWORD);
       if (opts === null) {
         console.log("app: register: null options in localStorage!");
         opts = setGenericOptions();
@@ -333,8 +313,6 @@ if ("serviceWorker" in navigator) {
       el.pepper.value = opts.pepper;
       el.salt.value = opts.salt;
       el.length.value = opts.length;
-      // el.length.min = opts.minlength;
-      // el.length.max = opts.maxlength;
       el.length.min = MINLENGTH;
       el.length.max = MAXLENGTH;
       console.log("app: register: els set to opts= ", opts);
@@ -361,13 +339,15 @@ if ("serviceWorker" in navigator) {
         );
       }
     })
-    .catch(console.error("app: registration failed"));
+    .catch((error) => {
+      console.error("app: registration failed: error", error);
+    });
 }
 
 navigator.serviceWorker.addEventListener("message", (event) => {
   console.log("app: message: event= ", event);
   if (event.data && event.data.type === "VERSION") {
-    console.log("app: message: event.data= ", event.data);
+    // console.log("app: message: event.data= ", event.data);
     el.version.innerHTML = `${event.data.version}`;
   }
 });
@@ -444,14 +424,11 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   const p = document.createElement("div");
   p.innerHTML = msg;
   p.style.display = "block";
-  // p.style.position = "absolute";
   p.style.position = "fixed";
   p.style.fontSize = "1.5rem";
   p.style.backgroundColor = bkg;
   p.style.border = "0.1px solid black";
   p.style.zIndex = 9;
-  // p.style.top = "20%";
-  // p.style.right = "10%";
   p.style.top = "50%";
   p.style.left = "50%";
   p.style.transform = "translate(-50%, -100%)"
@@ -461,7 +438,6 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   p.style.padding = "1rem 0 1rem 0";
   p.style.overflow = "auto";
   p.style.boxShadow = "4pt 4pt 4pt grey";
-  // p.style.classList = "popup";
   const x = document.createElement("button");
   x.innerHTML = "⨉" // "X";
   x.style.fontSize = "2rem";
@@ -477,33 +453,6 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   });
   setTimeout(() => p.remove(), timeOut);
 }
-
-// function closeOverlay() {
-//   // Code to close the overlay, e.g., remove the .overlay element from the DOM
-//   document.querySelector('.overlay').remove();
-// }
-// el.overlay.addEventListener("click", closeOverlay);
-
-// el.gear.addEventListener("click", () => {
-//   el.adunit.classList.toggle("slide-in");
-//   el.menu.classList.toggle("slide-in");
-//   console.log("app: gear click:0: el.gear.src= ", el.gear.src);
-//   const x = el.gear.src.split("/").slice(-1)[0];
-//   el.gear.src = x == "gear.svg" ? "icons/cross.svg" : "icons/gear.svg";
-//   el.gear.style.backgroundColor = x == "gear.svg" ? "red" : "lightgray";
-//   // el.gear.backgroundColor = "pink";
-//   console.log("app: gear click:1: el.gear.src= ", el.gear.src);
-//   console.log(
-//     "app: gear click:1: el.gear.style.backgrounColor= ",
-//     el.gear.style.backgroundColor
-//   );
-//   console.log("app: gear click:1: x= ", x);
-// });
-
-// Switch over/under positions of adunut and menu elements...
-
-// el.adunit.classList.toggle("slide-in");
-// el.menu.classList.toggle("slide-in");
 
 el.gear.addEventListener("click", () => {
   const debug = false;
@@ -538,21 +487,6 @@ el.gear.addEventListener("click", () => {
   }
 });
 
-{}
-// const zIndexA = getComputedStyle(el.hidesettings).zIndex;
-// const zIndexB = getComputedStyle(el.settings).zIndex;
-// console.log("apps: zIndexA= ", zIndexA, "zIndexB= ", zIndexB);
-// el.hidesettings.style.zIndex = zIndexB;
-// el.settings.style.zIndex = zIndexA;
-// console.log(
-//   "apps:2: settings zIndex= ", el.settings.style.zIndex,
-//   "apps:2: hidesettings zIndex= ", el.hidesettings.style.zIndex
-// );
-
-// el.back.addEventListener("click", () => {
-//   el.menu.classList.toggle("slide-in");
-// });
-
 const ops = ["pepper", "salt", "length", "burn", "peak"];
 ops.forEach((x) => {
   let cross = `${x}Cross`;
@@ -568,29 +502,29 @@ function cleanClean(v) {
   return valid.has(v) ? v : true;
 }
 
-el.save.addEventListener("click", function () {
-  const debug = true;
-  const opts = { ...globalDefaults };
-  if (debug) {
-    console.log("apps:0: save: opts= ", opts);
-    console.log("apps:0: save: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
-  }
-  opts.pepper = el.pepper.value;
-  opts.salt = el.salt.value;
-  opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
-  setOptions(opts, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
-  el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
-  if (debug) console.log("apps:1: save: opts= ", opts);
-  showPopup("settings saved!", SHORTPOPUP);
-  // exportSettings();
-  exportLocalStorage();
+document.querySelectorAll('.export').forEach(function(element) {
+  element.addEventListener('click', function() {
+    // el.save.addEventListener("click", function () {
+    const debug = false;
+    const opts = { ...globalDefaults };
+    if (debug) {
+      console.log("apps:0: save: opts= ", opts);
+      console.log("apps:0: save: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
+    }
+    opts.pepper = el.pepper.value;
+    opts.salt = el.salt.value;
+    opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
+    // setOptions(opts, PASSWORD);
+    storageSet("options", opts, PASSWORD);
+    el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
+    if (debug) console.log("apps:1: save: opts= ", opts);
+    showPopup("settings saved!", SHORTPOPUP);
+    // exportSettings();
+    exportLocalStorage();
+  });
 });
 
 el.share.addEventListener("click", function () {
-  // const opts = { ...globalDefaults };
-  // console.log("apps:0: share: opts= ", opts);
-  // copyToClipboard(opts.url);
-  // showPopup(`${opts.url}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
   copyToClipboard(URL);
   showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
 });
@@ -602,16 +536,6 @@ el.reset.addEventListener("click", function (event) {
   const debug = false;
   localStorage.clear();
   window.location.reload();
-  // const msg = "(1) Double click to reset settings.
-  //            <br>";
-  // msg = msg + "<br>WARNING: current<br>values will be lost.";
-  // const msg = `
-  // <br>(1) Double click to reset settings.
-  // <br>(2) Change settings as you wish.
-  // <br>(3) With empty "Enter Hint" box click > to save them.
-  // `;
-  // if (debug) console.log("app: 1: reset: msg= ", msg);
-  // showPopup(msg, 9 * SHORTPOPUP, "red");
 });
 
 el.reset.addEventListener("dblclick", function (event) {
@@ -626,30 +550,21 @@ el.reset.addEventListener("dblclick", function (event) {
   opts.salt = el.salt.value = globalDefaults.salt;
   opts.pepper = el.pepper.value = globalDefaults.pepper;
   opts.length = el.length.value = globalDefaults.length;
-  // el.length.min = MINLENGTH;
-  // el.length.max = MAXLENGTH;
   if (debug) {
     console.log("app: 2: reset: el.salt.value= ", el.salt.value);
     console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
     console.log("app: 2: reset: el.length.value= ", el.length.value);
   }
-  setOptions(globalDefaults, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
+  storageSet("options", globalDefaults, PASSWORD);
   showPopup("defaults restored!", SHORTPOPUP);
 });
 
 el.hint.addEventListener("mouseout", () => {
   const debug = false;
   if (debug) console.log("app:0: museout:: el.hint.value= ", el.hint.value);
-  // if (cleaned) {
-  // console.log("app:1: mouseout: el.hint.value= ", el.hint.value);
   el.hint.value = cleanHint(el.hint.value); // cleaned);
   if (debug) console.log("app:2: mouseout: el.hint.value= ", el.hint.value);
-  // console.log("app:3: mouseout: el.hint.value= ", el.hint.value);
 });
-
-// const el = {};
-// el.hint = document.getElementById("hint");
-// el.salt = document.getElementById("salt");
 
 el.hint.addEventListener("keydown", (event) => {
   const debug = false;
@@ -668,32 +583,35 @@ el.hint.addEventListener("keydown", (event) => {
       el.salt.value = opts.salt;
       el.pepper.value = opts.pepper;
       el.length.value = opts.length;
-      // alert('hint: el values set!')
     } else {
       alert('hint: opts undefined?!')
     }
   }, 0);
 });
 
-// function setHintOpts(hint, {salt: opts.salt, pepper: opts.pepper, length: opts.length});
+function matchingKeys(x, y) {
+  const v = x.every(item => y.includes(item)) && y.every(item => x.includes(item));
+  return v;
+}
+
+// arguments:
+//    hint,
+//          {salt: opts.salt, pepper: opts.pepper, length: opts.length});
 function setHintOpts(hint, opts) {
   const debug = false;
-  // set only global options if hint === ""
-  const eqLength = Object.keys(opts).length === Object.keys(globalDefaults).length;
-  console.assert(eqLength, "setHintsOpts: wrong length!");
-  if (!eqLength) {
-    alert('Wrong length!');
+  const q = matchingKeys(Object.keys(opts), Object.keys(globalDefaults));
+  console.assert(q, "setHintsOpts: invalid keys: opts= ", opts);
+  if (!q) {
+    alert('setHintOpts: invalid keys opts!');
   }
-  const x = getOptions(PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE)
+  const x = storageGet("options", PASSWORD);
   const generic = (x === null) ? setGenericOptions() : x;
   if (debug) {
     console.log(`setHintOpts: generic=`, generic);
     console.log(`setHintOpts: opts=`, opts);
-  }// setHintOpts: generic= null
+  }
   const diff = objDiff(opts, generic);
   if (debug) console.log(`setHintOpts: diff= `, diff);
-  // const theSameAsGlobal = deepEqual(generic, opts);
-  // if (theSameAsGeneric) {
   if (Object.keys(diff).length === 0) {
     if (debug) console.log("setHintOpts: new opts the same as global - do nothing");
     return;
@@ -704,10 +622,10 @@ function setHintOpts(hint, opts) {
     msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
     msg = `${msg}\nLength= ${opts.length}`;
     alert(msg);
-    setOptions(opts, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
+    storageSet("options", opts, PASSWORD);
     return;
   }
-  let sites = JSON.parse(window.localStorage.getItem("sites"));
+  let sites = storageGet("sites", PASSWORD);
   if (debug) console.log(`setHintOpts: hint= ${hint}`);
   if (sites === null) {
     sites = {[hint]: diff};
@@ -716,20 +634,19 @@ function setHintOpts(hint, opts) {
     sites[hint] = diff; // store ony values different from generic
     if (debug) console.log(`setHintOpts: sites was not null, sites=`, sites);
   }
-  window.localStorage.setItem("sites",  JSON.stringify(sites));
+  storageSet("sites", sites, PASSWORD);
 }
 
 // ...
 function getHintOpts(hint) {
   const debug = false;
-  let opts = getOptions(PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE)
+  let opts = storageGet("options", PASSWORD);
   if (opts === null) {
     opts = {...globalDefaults};
-    setOptions(opts, PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE);
-    // setOptions_("getHintOpts", opts);
+    storageSet("options", opts, PASSWORD);
   }
   if (debug) console.log("getHintOpts: generic opts= ", opts);
-  const sites = JSON.parse(window.localStorage.getItem("sites"));
+  const sites = storageGet("sites", PASSWORD);
   if (sites !== null && sites[hint] !== undefined) {
     if (debug) console.log(`getHintOpts: hint-specific: sites[${hint}]= `, sites[hint]);
     opts = {...opts, ...sites[hint]};
@@ -742,14 +659,11 @@ function generateFun(event) {
   const debug = false;
   event.preventDefault();
   if (debug) console.log("generateFun: event.preventDefault() added");
-  // toggleSize();
-  // navigator.vibrate(10); does not work on iOS
   const opts = {};
   const salt = opts.salt = el.salt.value;
   const pepper = opts.pepper = el.pepper.value;
   let length = opts.length = el.length.value;
   length = (length === "") ? globalDefaults.length : Math.max(Math.min(length, MAXLENGTH), MINLENGTH);
-  // opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
   if (debug) console.log("generateFun:0: opts= ", opts);
   el.length.value = opts.length;
   opts.salt = el.salt.value = (salt === "") ? globalDefaults.salt : salt;
@@ -760,10 +674,7 @@ function generateFun(event) {
   let args = { ...opts }; // deep copy
   args.burn = el.burn.value;
   args.peak = el.peak.value;
-  // el.burn.value = "";
-  // el.peak.value = "";
   args.hint = el.hint.value;
-  // setHintOpts(args.hint, {salt: opts.salt, pepper: opts.pepper, length: opts.length});
   if (debug) console.log("generate:1: opts=", opts);
   args.digits = false;
   args.unicode = false;
@@ -777,16 +688,6 @@ function generateFun(event) {
   const passwd = getPass(args);
   navigator.clipboard.writeText(passwd);
   showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
-  // const status = copyToClipboard(passwd);
-  // console.log("generateFun: status= ", status);
-  // if (copyToClipboard(passwd)) {
-  // if (status) {
-  //   console.log("generateFun: status= ", status);
-  //   // alert("copyToClipboard SUCCESS!");
-  //   // showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
-  // } else {
-  //   alert("copyToClipboard FAILED");
-  // }
 }
 
 el.hintForm.addEventListener('submit', function (event) {
@@ -820,10 +721,6 @@ function handleFeedback() {
 
 el.generate.addEventListener("click", handleFeedback)
 el.generate.addEventListener("click", generateFun);
-// el.generate.addEventListener("click", function (event) {
-//   event.preventDefault();
-//   // Add your button click handling logic here
-// });
 
 el.hint.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
@@ -844,7 +741,6 @@ function handleLinkClick(event) {
     link.clickCount = 0;
   }
   link.clickCount++;
-  // link.clickCount = !link.clickCount ? 0 : link.clickCount + 1;
   if (link.clickCount === 2) {
     window.location.href = link.href;
   }
@@ -866,34 +762,6 @@ saveAsFile('posts.json', posts)
 
 // ChatGPT...
 
-// Function to export settings as a JSON file
-function exportSettings(filename = "hpass-site-settings.json") {
-  // Convert settings object to JSON string
-  const sites = JSON.parse(localStorage.getItem("sites"));
-  const settingsJSON = JSON.stringify(sites, null, 2);
-
-  // Create a Blob from the JSON string
-  const blob = new Blob([settingsJSON], { type: 'application/json' });
-
-  // Create a link element
-  const link = document.createElement('a');
-
-  // Set the download attribute with a filename
-  link.download = filename;
-
-  // Create a URL for the Blob and set it as the href attribute
-  link.href = window.URL.createObjectURL(blob);
-
-  // Append the link to the document body (required for Firefox)
-  document.body.appendChild(link);
-
-  // Programmatically click the link to trigger the download
-  link.click();
-
-  // Remove the link from the document
-  document.body.removeChild(link);
-}
-
 // Function to export localStorage as a JSON file
 function exportLocalStorage(filename = "hpass-localStorage.json") {
   // Convert settings object to JSON string
@@ -907,30 +775,14 @@ function exportLocalStorage(filename = "hpass-localStorage.json") {
   document.body.removeChild(link);
 }
 
-// // Sample settings data (initial/default settings)
-// let settings = {
-//   theme: 'dark',
-//   notifications: true,
-//   autoSave: false,
-//   // add other settings here
-// };
-
-// Get the modal
-// const modal = document.getElementById("fileInputModal");
-
-// Get the button that opens the modal
-// const btn = document.getElementById("importButton");
-
-// Get the <span> element that closes the modal
 const span = document.getElementsByClassName("close")[0];
 
-// When the user clicks the button, open the modal 
-el.importButton.addEventListener("click", function() {
-  // modal.style.display = "block";
-  el.fileInputModal.style.display = "block";
-  // document.getElementById('importFileInput').click();
-  // el.importFileInput.click();
-})
+// When the user clicks the button, open the modal
+document.body.querySelectorAll(".import").forEach(function(element) {
+  element.addEventListener("click", function() {
+    el.fileInputModal.style.display = "block";
+  });
+});
 
 // When the user clicks on <span> (x), close the modal
 span.addEventListener("click", function() {
@@ -942,55 +794,18 @@ window.addEventListener("click", function(event) {
   if (event.target == el.fileInputModal) {
     el.fileInputModal.style.display = "none";
   }
-})
-
-// Function to import settings from a JSON file
-function importSettings(event) {
-  const debug = false;
-  // const fileInput = document.getElementById('importFileInput');
-  // const file = fileInput.files[0];
-  const file = el.importFileInput.files[0];
-
-  if (file) {
-      if (debug) {
-        console.log('Selected file:', file);
-        console.log('File name:', file.name);
-        console.log('File type:', file.type);
-        console.log('File size:', file.size);
-      }
-      const reader = new FileReader();
-      reader.onload = function(e) {
-          try {
-              // Parse the JSON string from the file
-              const importedSettings = JSON.parse(e.target.result);
-              const oldSettings = JSON.parse(localStorage.getItem("sites"));
-              // Update the application settings
-              const settings = { ...oldSettings, ...importedSettings };
-
-              // Apply the settings to your application
-              // applySettings(settings);
-              localStorage.setItem("sites", JSON.stringify(settings));
-              if (debug) {
-                console.log("importSettings: imported= ", importedSettings);
-                console.log("importSettings: old= ", oldSettings);
-                console.log('importSettings: Settings applied:', settings);
-              }
-              // Close the modal after successful import
-              modal.style.display = "none";
-          } catch (error) {
-              console.error('Error parsing JSON file:', error);
-              alert('Failed to import settings. Please ensure the file is a valid JSON.');
-          }
-      };
-      reader.readAsText(file);
-  } else {
-      alert('No file selected.');
+  if (el.navMenu.classList.contains("show") && 
+      !el.navMenu.contains(event.target) && event.target != el.hamburger) {
+    el.navMenu.classList.remove("show");
+    el.hamburger.textContent = '☰';
+    el.newPassword.style.display = "none";
   }
-}
+});
+
 
 // Function to import localStorage from a JSON file
 function importLocalStorage(event) {
-  const debug = true;
+  const debug = false;
   const file = el.importFileInput.files[0];
   if (debug) console.log("importLocalStorage: file=", file);
   if (file) {
@@ -1004,8 +819,8 @@ function importLocalStorage(event) {
               for (let k in importedLocalStorage) {
                 localStorage.setItem(k, importedLocalStorage[k]);
               }
-              const modal = document.getElementById("fileInputModal");
-              modal.style.display = "none"; // TODO: modal is not defined
+              // const modal = document.getElementById("fileInputModal");
+              el.fileInputModal.style.display = "none"; // TODO: modal is not defined
           } catch (error) {
               console.error('Error parsing JSON file:', error);
               alert('Failed to import settings. Please ensure the file is a valid JSON.');
@@ -1024,89 +839,4 @@ function applySettings(settings) {
   // Your code to apply the settings goes here
 }
 
-// Attach the change event to handle file selection
-// document.getElementById('importFileInput').addEventListener('change', importSettings);
-// document.getElementById('importFileInput').addEventListener('change', importLocalStorage);
-
 el.importFileInput.addEventListener('change', importLocalStorage);
-
-
-// const tooltip = document.querySelector('.tooltip');
-// const helpLink = document.querySelector('#help');
-
-// tooltip.addEventListener('touchstart', (e) => {
-//   tooltip.classList.add('show-tooltip');
-// });
-
-// tooltip.addEventListener('touchend', (e) => {
-//   setTimeout(() => {
-//     tooltip.classList.remove('show-tooltip');
-//     helpLink.href && (window.location.href = helpLink.href);
-//   }, 500);
-// });
-
-
-
-// showPopup(`${passwd}<br><br>copied to clipboard:1`, SHORTPOPUP);
-// console.log("app: generate: passwd=", passwd, "type= ", typeof passwd);
-// if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-// iOS device
-// from https://developer.apple.com/forums/thread/691873 (modified)
-// IMPORTANT PART: the method body for the new ClipboardItem should return a new Promise
-// that contains resolve(new Blob([<DATA_TO_COPY>])
-// async function getIt() {
-//   return getPass(args);
-// }
-
-// const clipboardItem = new ClipboardItem({
-//   "text/plain": new Blob([copyText], { type: "text/plain" }),
-// });
-
-// const clipboardItem = new ClipboardItem({
-//   "text/plain": (async () => {
-//     const passwd = await getIt();
-//     if (!passwd) return new Blob();
-//     return new Blob([passwd], { type: "text/plain" });
-//   })(),
-// });
-
-// const string = await blob.text();
-// const type = blob.type;
-// const blob2 = new Blob([string], {type: type});
-
-// navigator.clipboard
-//   .write([clipboardItem])
-//   .then(() => {
-//     // y.text().then(x => console.log("x= ", x))
-//     // clipboardItem.text().then((p) => {
-//     console.log("app: copied successfully! passwd= ", passwd);
-//     // console.log("app: copied successfully! p= ", p);
-//     showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
-//     // });
-//   })
-//   .catch((error) => {
-//     console.error("app: Failed to copy to clipboard:", error);
-//   });
-
-// showPopup(`${passwd}<br><br>copied to clipboard:3`, SHORTPOPUP);
-
-// Now, we can write to the clipboard in Safari
-// navigator.clipboard.write([clipboardItem]);
-//
-// } else {
-//   // Non-iOS device
-//   navigator.clipboard
-//     .writeText(passwd)
-//     .then(() => {
-//       console.log("app: non-iOS: clipboard copy success! passwd= ", passwd);
-//       showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
-//     })
-//     .catch((err) => console.error("app: clipboard copy error= ", err));
-// }
-
-/*
-'U2FsdGVkX1/BlhWQE+BYYkj8J3tunv53GwiPnZhGmBeNqA8v7KkH7xa7fAgH7BYqupfUR+4PaPraYjR//EiErw=='
-'U2FsdGVkX1/eTTDthZtlzGuGnwlVioyYJusnsD1oxI6qTWBk5AGjiP6nLNwC9z7W9/7AQ6c6mjUX5r14sW3cqg=='
-'U2FsdGVkX19ZmHO9F8yk9hDq7VDL8cn4tTfPseBRhnNdLWTZjhIWxJU88gziiM63mT+cMIpFmOwdqTU3SyeloQ=='
-'U2FsdGVkX19gaVelwShd87Px2HPiRix2ZrDVa/pMyNV59WO0nVQei5zTkLUilBZ7Os1hqr/JRjHFuQ/7Zjw0qg=='
-*/

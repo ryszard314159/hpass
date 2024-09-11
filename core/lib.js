@@ -17,19 +17,6 @@
  */
 
 "use strict";
-// import { assert } from "assert";
-// import assert from "node:assert/strict";
-// let assert = require("assert");
-// let assert;
-// if (typeof window !== "undefined" && window) {
-//   assert = console.assert;
-//   // console.log(`lib:0: assert = ${assert}`)
-// } else {
-//   // import {assert} from  require("assert");
-//   // console.log(`lib:1: assert = ${assert}`)
-// }
-// import assert from "assert";
-// const PASSWORDS = []; // global storage
 
 const MINLENGTH = 4;
 const MAXLENGTH = 128;
@@ -39,6 +26,11 @@ CHARS.digits = "0123456789";
 CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
 CHARS.upper = CHARS.lower.toUpperCase();
 CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+const CRYPTO = {key: '', prefix: 'prefix:'};
+if (typeof(window) !== 'undefined') {
+  // TODO: CRYPTO.options = { keySize: 8, iterations: 999, hasher: CryptoJS.algo.SHA512};
+  CRYPTO.options = { keySize: 2, iterations: 999, hasher: CryptoJS.algo.SHA512};
+}
 // const IV_LENGTH = 16; //16 bytes (128 bits) for the IV is standard for AES.
 // const KEY_LENGTH = 24; // 24 bytes (192 bits) for the key is required for AES-192.
 
@@ -107,16 +99,9 @@ function importLocalStorage(encrypted=true) {
   });
 }
 
-/*
-function foo(decrypted=false) {
-   console.log(`decrypted= ${decrypted}`);
-}
-*/
-
 function objDiff(x, y) {
   const diff = {};
   for (let key in x) {
-      // if (x.hasOwnProperty(key) && x[key] !== y[key]) {
       if (x[key] !== y[key]) {
           diff[key] = x[key];
       }
@@ -180,9 +165,7 @@ function deepEqual(obj1, obj2) {
  * @returns
  */
 function shuffle_string(string, gint = rig(MP31, seed)) {
-  let z = string.split(""),
-    i,
-    j;
+  let z = string.split(""), i, j;
   for (i = z.length - 1; i > 0; i--) {
     j = gint.next().value % i;
     [z[i], z[j]] = [z[j], z[i]];
@@ -351,3 +334,178 @@ export { deepEqual, get_random_string, setsAreEqual, setsDiff, objDiff, rig,
   CHARS, MAXLENGTH, MINLENGTH };
 export { getPass };
 // export { encrypt, decrypt };
+
+// *** //
+
+
+// "use strict";
+
+// let CRYPTO_KEY = null;
+// import { PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE } from './globals.js';
+
+// const CRYPTO_PREFIX = "prefix:"
+
+function getCallerInfo() {
+  try {
+      throw new Error();
+  } catch (e) {
+      if (e.stack) {
+          const stackLines = e.stack.split("\n");
+          // The first two lines are the error and the current function, so we want the caller of the caller
+          const callerLine = stackLines[3].trim(); // Adjust index if needed
+          const match = callerLine.match(/at (\S+) \((.*):(\d+):(\d+)\)/);
+          if (match) {
+              return {
+                  functionName: match[1],
+                  filePath: match[2],
+                  lineNumber: match[3],
+                  columnNumber: match[4]
+              };
+          } else {
+              const altMatch = callerLine.match(/at (.*):(\d+):(\d+)/);
+              if (altMatch) {
+                  return {
+                      functionName: '<anonymous>',
+                      filePath: altMatch[1],
+                      lineNumber: altMatch[2],
+                      columnNumber: altMatch[3]
+                  };
+              }
+          }
+      }
+  }
+  return null;
+}
+
+// https://en.wikipedia.org/wiki/Key_derivation_function
+// function getKey(PASSWORD) {
+//   const niter = 999;
+//   CRYPTO_KE = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
+//   // return CRYPTO_KEY.toString();
+// }
+
+// function kdf(pwd, keySize) {
+function kdf(pwd) {
+  // const options = { keySize: keySize, iterations: 999, hasher: CryptoJS.algo.SHA512};
+  // const k = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
+  // CryptoJS.PBKDF2(password, salt, { keySize: keySize, iterations: iterations, hasher: hasher });
+  console.log(`kdf: pwd= ${pwd}`);
+  const k = CryptoJS.PBKDF2(pwd, "salt", CRYPTO.options).toString();
+  return k;
+}
+
+// function validKey(key, keySize) {
+//   const size = CryptoJS.enc.Utf8.parse(key).words.length;
+//   return size === keySize * 2;
+// }
+
+// 0 - calculate size of tryKey
+// 1 - if password is undefined convert it to an empty string
+// 2 - if the size of tryKey is
+function validateKey(pwd) {
+  const size = CryptoJS.enc.Utf8.parse(CRYPTO.key).words.length;
+  CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
+}
+
+function encryptJSON(json) {
+  const s = JSON.stringify(json);
+  return CryptoJS.AES.encrypt(s, CRYPTO.key);
+}
+
+function decryptJSON(json) {
+  const s = JSON.stringify(json);
+  return CryptoJS.AES.encrypt(s, CRYPTO.key);
+}
+
+function storageSet(storageKey, obj, pwd) {
+  const debug = true;
+  validateKey(pwd); // validate CRYPTO.key
+  const s = JSON.stringify(obj);
+  const encrypted = CryptoJS.AES.encrypt(s, CRYPTO.key);
+  localStorage.setItem(storageKey, encrypted);
+  if (debug) {
+    console.log(`storageSet: storageKey= ${storageKey}`);
+    console.log(`storageSet: pwd= ${pwd}`)
+    console.log("storageSet: obj= ", obj);
+    console.log("storageSet: s= ", s);
+    console.log("storageSet: CRYPTO.key= ", CRYPTO.key);
+    console.log(`storageSet: encrypted= ${encrypted}`);
+  }
+}
+
+function storageGet(storageKey, pwd) {
+  const debug = true;
+  if (debug) console.log(`storageGet: storageKey= ${storageKey}, pwd= ${pwd}`);
+  if (debug) console.log(`storageGet:0: CRYPTO.key= ${CRYPTO.key}`)
+  validateKey(pwd); // validate CRYPTO.key
+  if (debug) console.log(`storageGet:1: CRYPTO.key= ${CRYPTO.key}`);
+  const e = localStorage.getItem(storageKey);
+  if (debug) console.log(`storageGet: e= ${e}`);
+  if ( e === null ) {
+    return null;
+  } else {
+    const d = CryptoJS.AES.decrypt(e, CRYPTO.key).toString(CryptoJS.enc.Utf8);
+    if (debug) console.log(`storageGet: d= ${d}`);
+    const o = JSON.parse(d);
+    return o;
+  }
+};
+
+function getOptions(pwd) {
+  const debug = true;
+  const info = getCallerInfo();
+  const tag = `getOptions:`;
+  if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
+  let opts;
+  validateKey(pwd);
+  try {
+    const x = localStorage.getItem("options");
+    if (x !== null) {
+      if (debug) console.log(`${tag} options= ${x}`);
+      if (debug) console.log(`${tag} pwd= ${pwd}`);
+      if (debug) console.log(`${tag} CRYPTO.key= ${CRYPTO.key}`);
+      const dx = CryptoJS.AES.decrypt(x, CRYPTO.key).toString(CryptoJS.enc.Utf8);
+      if (debug) console.log(`${tag} pwd= ${pwd}`);
+      if (debug) console.log(`${tag} decrypted options= ${dx}`);
+      opts = JSON.parse(dx);
+      if (debug) console.log(`${tag} opts= `, opts);
+    } else {
+      opts = null;
+    }
+    return opts;
+  }
+  catch (err) {
+    if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
+    if (debug) console.log(`${tag} ERROR: ${err.message}`);
+    alert(`${tag} ERROR= ${err.message}`);
+    return null;
+  }
+}
+
+// TODO: change to SHA.512
+function createHash(pwd) {
+  // crypto.createHash('sha256').update(pwd).digest().toString()
+  const h = CryptoJS.SHA1(pwd).toString();
+  if (localStorage.getItem('pwdHash') === null) {
+    localStorage.setItem('pwdHash', h);
+    console.log(`createHash: pwd= ${pwd}`);
+    console.log(`createHash: h= ${h}`);
+    alert(`Password hash did not exist`);
+  }
+  return h;
+}
+
+function encryptLocalStorage(oldPassword, newPassword, keys) {
+  const debug = true;
+  if (debug) console.log(`encryptLocalStorage: oldPassword= ${oldPassword}, newPassword= ${newPassword}`);
+  if (debug) console.log(`encryptLocalStorage: keys= ${keys}`);
+  keys.forEach(k => {
+    const v = storageGet(k, oldPassword);
+    if (debug) console.log(`encryptLocalStorage: k= ${k}`, "v= ", v);
+    if (v !== null) storageSet(k, v, newPassword);
+  })
+}
+
+export {storageGet, storageSet, getCallerInfo};
+export {createHash};
+export {kdf, CRYPTO, encryptLocalStorage};
