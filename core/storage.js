@@ -4,6 +4,8 @@
 // let CRYPTO_KEY = null;
 // import { PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE } from './globals.js';
 
+const CRYPTO_PREFIX = "prefix:"
+
 function getCallerInfo() {
   try {
       throw new Error();
@@ -44,9 +46,11 @@ function getCallerInfo() {
 // }
 
 function kdf(pwd, keySize) {
-  const niter = 999;
+  const options = { keySize: keySize, iterations: 999, hasher: CryptoJS.algo.SHA512};
   // const k = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
-  const k = CryptoJS.PBKDF2(pwd, "", { keySize: keySize, iterations: niter});
+  // CryptoJS.PBKDF2(password, salt, { keySize: keySize, iterations: iterations, hasher: hasher });
+  salt = "salt";
+  const k = CryptoJS.PBKDF2(pwd, salt, options);
   return k.toString();
 }
 
@@ -77,6 +81,8 @@ function setOptions(opts, pwd, tryKey, keySize) {
   const sopts = JSON.stringify(opts);
   // const encrypted = CryptoJS.AES.encrypt(sopts, PASSWORD);
   // const encrypted = CryptoJS.AES.encrypt(sopts, getKey(PASSWORD));
+  // TODO: add prefix to validate correct encrypt/decrypt
+  // TODO: const encrypted = CryptoJS.AES.encrypt(CRYPTO_PREFIX + sopts, key);
   const encrypted = CryptoJS.AES.encrypt(sopts, key);
   localStorage.setItem("options", encrypted);
   return key;
@@ -97,6 +103,9 @@ function getOptions(pwd, tryKey, keySize) {
       if (debug) console.log(`${tag} key= ${key}`);
       // const dx = CryptoJS.AES.decrypt(x, PASSWORD).toString(CryptoJS.enc.Utf8);
       // const dx = CryptoJS.AES.decrypt(x, getKey(PASSWORD)).toString(CryptoJS.enc.Utf8);
+      // TODO: const x = CryptoJS.AES.decrypt(x, key).toString(CryptoJS.enc.Utf8);
+      // TODO: const dx = x.replace(new RegExp('^' + CRYPTO_PREFIX), '')
+      // TODO: correct = x.length - CRYPTO_PREFIX.length === dx.length
       const dx = CryptoJS.AES.decrypt(x, key).toString(CryptoJS.enc.Utf8);
       if (debug) console.log(`${tag} pwd= ${pwd}`);
       if (debug) console.log(`${tag} decrypted options= ${dx}`);
@@ -140,3 +149,14 @@ function setPasswordHash(pwd) {
 export {getOptions, setOptions, getCallerInfo};
 export {getPasswordHash, setPasswordHash, createPasswordHash};
 export {kdf}; //, CRYPTO_KEY};
+
+/*
+
+// CryptoJS.PBKDF2(password, salt, { keySize: keySize, iterations: iterations, hasher: hasher });
+options = { keySize: 16/8, iterations:3, hasher: CryptoJS.algo.SHA512 }
+msg = "message"
+prefix = "prefix:"
+key = CryptoJS.PBKDF2("pwd", "salt", options).toString()
+encrypted = CryptoJS.AES.encrypt(prefix + msg, key).toString()
+decrypted = CryptoJS.AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8)
+*/

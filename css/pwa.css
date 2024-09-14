@@ -238,9 +238,9 @@ form {
   /* background: pink; */
   /* background-color: rgba(181, 192, 201, 0.9); */
   /* background-color: rgba(204, 206, 209, 0.9); */
-  background-image: url("../icons/granite.png");
+  /* background-image: url("../icons/granite.png"); */
   /* background-color: rgba(204, 206, 209, 0.9); */
-  /* background-color: rgba(255, 255, 255, ); white with 50% transparency */
+  background-color: rgba(255, 178, 102, 0.95); /*white with 50% transparency
   /* background-blend-mode: overlay; */
   background-size: cover;
   /* vertical-align: middle; */

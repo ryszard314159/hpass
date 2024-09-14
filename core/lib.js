@@ -26,12 +26,65 @@ CHARS.digits = "0123456789";
 CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
 CHARS.upper = CHARS.lower.toUpperCase();
 CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-const CRYPTO = {key: '', prefix: 'prefix:'};
-CRYPTO.encryptedStorage = false;
+
+const CRYPTO = {key: '', prefix: 'prefix:', passwd: 'z'};
+CRYPTO.encryptedItems = ["options", "sites"];
+CRYPTO.encryptedStorage = true;
+CRYPTO.encryptedIO = false;
+CRYPTO.encryptedAll = false;
 if (typeof(window) !== 'undefined') {
   // TODO: CRYPTO.options = { keySize: 8, iterations: 999, hasher: CryptoJS.algo.SHA512};
   CRYPTO.options = { keySize: 2, iterations: 999, hasher: CryptoJS.algo.SHA512};
 }
+
+// CRYPTO.handlers = {
+//   encryptedStorage: (property, value) => {
+//     const debug = false;
+//     console.log(`encryptedStorage: property= ${property}, value= ${value}`);
+//     let encrypted = storageGet('encrypted', null);
+//     console.log(`encryptedStorage:1: storageGet('encrypted')= ${encrypted}`);
+//     if (!encrypted) {
+//       encryptLocalStorage(CRYPTO.passwd, CRYPTO.passwd, CRYPTO.encryptedItems);
+//       storageSet("encrypted", true, null);
+//     } else {
+//       decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+//       storageSet("encrypted", false, null);
+//     }
+//     encrypted = storageGet('encrypted', null);
+//     console.log(`encryptedStorage:2: encrypted= ${encrypted}`);
+//     // ... do something
+//   },
+//   encryptedIO: (property, value) => {
+//     console.log(`EncryptedIO State changed: ${property} = ${value}`);
+//     // ... do something
+//   }
+// };
+
+// const CryptoProxy = new Proxy(CRYPTO, {
+//   set: function(target, property, value) {
+//     if (target[property] !== value) {
+//       target[property] = value;
+//       const handler = target.handlers[property];
+//       if (handler) {
+//         handler(property, value);
+//       } else {
+//         console.log('property is unknown');
+//       }
+//     }
+//     return true;
+//   }
+// });
+
+function EncryptedStorageHandler(property, value) {
+  console.log(`EncryptedStorage State changed: ${property} = ${value}`);
+  // ... do something
+}
+
+function EncryptedAllHandler(property, value) {
+  console.log(`EncryptedAll State changed: ${property} = ${value}`);
+  // ... do something
+}
+
 // const IV_LENGTH = 16; //16 bytes (128 bits) for the IV is standard for AES.
 // const KEY_LENGTH = 24; // 24 bytes (192 bits) for the key is required for AES-192.
 
@@ -331,9 +384,9 @@ function getPass(args = {}) {
   return passwd;
 }
 
-export { deepEqual, get_random_string, setsAreEqual, setsDiff, objDiff, rig,
-  CHARS, MAXLENGTH, MINLENGTH };
-export { getPass };
+export {
+  CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
+};
 // export { encrypt, decrypt };
 
 // *** //
@@ -390,7 +443,7 @@ function kdf(pwd) {
   // const options = { keySize: keySize, iterations: 999, hasher: CryptoJS.algo.SHA512};
   // const k = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
   // CryptoJS.PBKDF2(password, salt, { keySize: keySize, iterations: iterations, hasher: hasher });
-  console.log(`kdf: pwd= ${pwd}`);
+  // console.log(`kdf: pwd= ${pwd}`);
   const k = CryptoJS.PBKDF2(pwd, "salt", CRYPTO.options).toString();
   return k;
 }
@@ -403,9 +456,22 @@ function kdf(pwd) {
 // 0 - calculate size of tryKey
 // 1 - if password is undefined convert it to an empty string
 // 2 - if the size of tryKey is
-function validateKey(pwd) {
-  const size = CryptoJS.enc.Utf8.parse(CRYPTO.key).words.length;
-  CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
+// function validateKey(pwd) {
+//   const size = CryptoJS.enc.Utf8.parse(CRYPTO.key).words.length;
+//   CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
+// }
+
+function createKey(pwd) {
+  const debug = false;
+  const old = CRYPTO.key;
+  CRYPTO.key = kdf(pwd);
+  if (debug) {
+    console.log(`createKey: pwd= ${pwd}`);
+    console.log(`createKey: old CRYPTO.key= ${old}`);
+    console.log(`createKey: new CRYPTO.key= ${CRYPTO.key}`);
+  }
+  // const size = CryptoJS.enc.Utf8.parse(CRYPTO.key).words.length;
+  // CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
 }
 
 function encryptJSON(json) {
@@ -422,8 +488,8 @@ function storageSet(storageKey, obj, pwd) {
   const debug = false;
   let value = JSON.stringify(obj);
   if (debug) console.log("storageSet:0: value= ", value);
-  if (CRYPTO.encryptedStorage) {
-    validateKey(pwd); // validate CRYPTO.key
+  if (pwd !== null) {
+    // validateKey(pwd);
     value = CryptoJS.AES.encrypt(value, CRYPTO.key);
   }
   localStorage.setItem(storageKey, value);
@@ -442,9 +508,9 @@ function storageGet(storageKey, pwd) {
   let value = localStorage.getItem(storageKey);
   if (debug) console.log(`storageGet:0: value= ${value}`);
   if (value === null) return value;
-  if (CRYPTO.encryptedStorage) {
+  if (pwd !== null) {
     if (debug) console.log(`storageGet:0: CRYPTO.key= ${CRYPTO.key}`);
-    validateKey(pwd); // validate CRYPTO.key
+    // validateKey(pwd); // validate CRYPTO.key
     if (debug) console.log(`storageGet:1: CRYPTO.key= ${CRYPTO.key}`);
     value = CryptoJS.AES.decrypt(value, CRYPTO.key).toString(CryptoJS.enc.Utf8);
   }
@@ -484,31 +550,55 @@ function getOptions(pwd) {
   }
 }
 
-// TODO: change to SHA.512
 function createHash(pwd) {
-  // crypto.createHash('sha256').update(pwd).digest().toString()
-  if (!CRYPTO.encryptedStorage) return pwd;
+  // TODO: crypto.createHash('sha256').update(pwd).digest().toString()
   const h = CryptoJS.SHA1(pwd).toString();
-  if (localStorage.getItem('pwdHash') === null) {
-    localStorage.setItem('pwdHash', h);
-    console.log(`createHash: pwd= ${pwd}`);
-    console.log(`createHash: h= ${h}`);
-    alert(`Password hash did not exist`);
-  }
   return h;
 }
 
-function encryptLocalStorage(oldPassword, newPassword, keys) {
+function encryptLocalStorage(password, keys) {
   const debug = false;
-  if (debug) console.log(`encryptLocalStorage: oldPassword= ${oldPassword}, newPassword= ${newPassword}`);
+  // const encrypted = localStorage.getItem('encrypted');
+  const encrypted = storageGet("encrypted", null);
+  if (debug) console.log("encryptLocalStorage: password= ", password);
+  if (debug) console.log("encryptLocalStorage: keys= ", keys);
+  if (debug) console.log("encryptLocalStorage: encrypted= ", encrypted);
   if (debug) console.log(`encryptLocalStorage: keys= ${keys}`);
+  if (encrypted) {
+    alert("WARNING: encryptLocalStorage: already encrypted!");
+    return;
+  }
   keys.forEach(k => {
-    const v = storageGet(k, oldPassword);
+    const v = storageGet(k, null);
     if (debug) console.log(`encryptLocalStorage: k= ${k}`, "v= ", v);
-    if (v !== null) storageSet(k, v, newPassword);
-  })
+    if (v !== null) storageSet(k, v, password);
+  });
+  storageSet('encrypted', true, null);
+  CRYPTO.encryptedStorage = true;
 }
 
-export {storageGet, storageSet, getCallerInfo};
-export {createHash};
-export {kdf, CRYPTO, encryptLocalStorage};
+function decryptLocalStorage(password, keys) {
+  const debug = false;
+  const encrypted = storageGet('encrypted', null);
+  if (encrypted !== CRYPTO.encryptedStorage) alert("decryptLocalStorage: encrypted !== CRYPTO.encryptedStorage")
+  if (debug) console.log("decryptLocalStorage: password= ", password);
+  if (debug) console.log("decryptLocalStorage: keys= ", keys);
+  if (debug) console.log("decryptLocalStorage: encrypted= ", encrypted);
+  if (!encrypted) {
+    alert("WARNING: decryptLocalStorage: already decrypted!");
+    return;
+  }
+  keys.forEach(k => {
+    const v = storageGet(k, password);
+    if (debug) console.log(`decryptLocalStorage: k= ${k}`, "v= ", v);
+    if (v !== null) storageSet(k, v, null);
+  });
+  storageSet('encrypted', false, null);
+  CRYPTO.encryptedStorage = false;
+}
+
+export { storageGet, storageSet, getCallerInfo, createHash,
+  kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage };
+// export { CryptoProxy };
+
+

@@ -11,7 +11,8 @@ TODO:
 import { deepEqual, get_random_string, getPass, objDiff,
   CHARS, MAXLENGTH, MINLENGTH } from "./core/lib.js";
 import { storageGet, storageSet, getCallerInfo, createHash,
-         kdf, CRYPTO, encryptLocalStorage } from "./core/lib.js";
+         kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage } from "./core/lib.js";
+// import { CryptoProxy } from "./core/lib.js";
 
 // simulate localStorage in nodejs
 if (typeof(window) === 'undefined') {
@@ -35,7 +36,7 @@ localStorage.clear = function() {
 };
 }
 
-let PASSWORD = '';
+// let PASSWORD = '';
 
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
@@ -87,7 +88,7 @@ el.navMenu = document.getElementById("nav-menu");
 el.email = document.getElementById("email");
 el.importFileInput = document.getElementById('importFileInput');
 el.fileInputModal = document.getElementById("fileInputModal");
-
+el.crypt = document.getElementById("crypt");
 
 function openEmailClient(email, subject, body) {
   const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -96,6 +97,33 @@ function openEmailClient(email, subject, body) {
 
 el.email.addEventListener("click", function() {
   openEmailClient("info@hpass.app", "subject", "This is the email body");
+});
+
+// let isEncrypted = true;
+el.crypt.addEventListener("click", function() {
+  // console.log("crypt: clicked!");
+  const x = document.getElementById("crypt-text");
+  // let isEncrypted = CryptoProxy.encryptedStorage;
+  let isEncrypted = storageGet("encrypted", null);
+  try {
+    if (isEncrypted) {
+      console.log(`el.crypt.addEventListener: el.masterPassword.value= ${el.masterPassword.value}`);
+      if (el.masterPassword.value != CRYPTO.passwd) {
+        alert(`Enter correct Master Password to decrypt settings!`);
+        return;
+      }
+      decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+    } else {
+      encryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+    }
+  } catch (error) {
+    console.error("el.crypt.addEventListener: error= ", error)
+    alert("el.crypt.addEventListener: error=");
+  }
+  // CryptoProxy.encryptedStorage = !CryptoProxy.encryptedStorage;
+  // console.log(`crypt:1: CRYPTO.encryptedStorage= ${CRYPTO.encryptedStorage}`);
+  x.textContent = isEncrypted ? "Decrypted" : "Encrypted";
+  el.crypt.src = isEncrypted ? "icons/eye-show.svg" : "icons/eye-hide.svg";
 });
 
 // TODO: clear cache for password input box
@@ -136,17 +164,23 @@ el.masterPassword.addEventListener("keydown", (event) => {
     // event.preventDefault();
     // el.masterPassword.blur();
     setTimeout(() => {
-      const pwd = el.masterPassword.value;
       let oldHash = localStorage.getItem("pwdHash");
       if (oldHash === null) {
-        alert("pwdHash was null, options removed & PASSWORD set to empty string");
-        localStorage.clear();
-        oldHash = createHash(pwd);
+        alert("pwdHash was null, options removed & Master Password set to empty string");
+        // localStorage.clear();
+        CRYPTO.encryptedItems.forEach((key => {
+          localStorage.removeItem(key);
+        }));
+        CRYPTO.passwd = '';
+        oldHash = createHash('');
         localStorage.setItem("pwdHash", oldHash);
+        return;
       }
+      const pwd = el.masterPassword.value;
       const pwdHash = createHash(pwd);
+      // localStorage.setItem("pwdHash", oldHash);
       if (debug) {
-        console.log(`masterPassword: PASSWORD= ${PASSWORD}`);
+        console.log(`masterPassword: CRYPTO.passwd= ${CRYPTO.passwd}`);
         console.log(`masterPassword: pwd= ${pwd}`);
         console.log(`masterPassword: pwdHash= ${pwdHash}`);
         console.log(`masterPassword: oldHash= ${oldHash}`);
@@ -173,24 +207,24 @@ el.newPassword.addEventListener("keydown", (event) => {
   const newHash = createHash(el.masterPassword.value)
   if (debug) console.log(`oldHash= ${oldHash}`);
   if (debug) console.log(`newHash= ${newHash}`);
-  let msg = `Master Password (='${PASSWORD}')`;
+  let msg = `Master Password (='${CRYPTO.passwd}')`;
   if (debug) console.log(`0:msg= ${msg}`);
   if (newHash !== oldHash) {
     alert("Incorrect Master Password!");
   } else {
     const v = el.newPassword.value;
     const newPassword = (v.length > 0) ? v : ''; // null changed to ''
-    const oldPassword = PASSWORD;
-    msg =  (newPassword !== oldPassword) ? `${msg} changed.` : `${msg} NOT changed.`
+    msg =  (newPassword !== CRYPTO.passwd) ? `${msg} changed.` : `${msg} NOT changed.`
+    if (debug) console.log(`newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
     if (debug) console.log(`1:msg= ${msg}`);
-    if (debug) console.log(`newPassword= ${newPassword}, oldPassword= ${oldPassword}`);
-    if (newPassword !== oldPassword) {
-      PASSWORD = newPassword;
-      CRYPTO.key = kdf(newPassword);
+    if (newPassword !== CRYPTO.passwd) {
       const h = createHash(newPassword);
       localStorage.setItem("pwdHash", h);
       msg = `${msg}\nNew Master Password is: ${newPassword}`
-      encryptLocalStorage(oldPassword, newPassword, ["options", "sites"]);
+      decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+      CRYPTO.key = kdf(newPassword);
+      CRYPTO.passwd = newPassword;
+      encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
     }
     if (debug) console.log(`msg= ${msg}`);
     if (debug) console.log("CRYPTO= ", CRYPTO);
@@ -215,13 +249,14 @@ el.newPassword.addEventListener("keydown", (event) => {
 // })();
 
 function createSplashScreen(opts) {
-  const pwdHash = createHash(PASSWORD);
+  const debug = false;
+  const pwdHash = createHash(CRYPTO.passwd);
   localStorage.setItem("pwdHash", pwdHash);
   let msg = `<h3>To start using HPASS:</h3>
   <ul>
   <li>Read the <strong>Basics</strong> below.
   <li>Close this menu.
-  <li>Enter Master Password (default=${PASSWORD}).
+  <li>Enter Master Password (default='${CRYPTO.passwd}').
   <li>For good protection change this default to
       the long and meaningful for you string/phrase.
       Write it down and store it in safe location.
@@ -271,7 +306,7 @@ function createSplashScreen(opts) {
   container.appendChild(content);
   container.style.display = "block";
   document.body.appendChild(container);
-  console.log("createSplashScreen: at the end");
+  if (debug) console.log("createSplashScreen: at the end");
 }
 
 function setGenericOptions() {
@@ -280,7 +315,8 @@ function setGenericOptions() {
   let opts = {...globalDefaults};
   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
   opts.salt = get_random_string(16, charset);
-  storageSet("options", opts, PASSWORD);
+  storageSet("options", opts, CRYPTO.passwd);
+  storageSet("encrypted", true, null); // flag indicated that storage is encrypted
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
       You can use it as is or you can to change it
@@ -303,7 +339,7 @@ if ("serviceWorker" in navigator) {
       if (debug) console.log("app: sw registered!", reg);
       if (debug) console.log("app: before createSplashScreen");
       if (debug) console.log("app: after createSplashScreen");
-      let opts = storageGet("options", PASSWORD);
+      let opts = storageGet("options", CRYPTO.passwd);
       if (opts === null) {
         if (debug) console.log("app: register: null options in localStorage!");
         opts = setGenericOptions();
@@ -370,19 +406,14 @@ function copyToClipboard(string) {
     textarea.setAttribute("contenteditable", true);
     textarea.style.position = "fixed"; // prevent scroll from jumping to the bottom when focus is set.
     textarea.value = string;
-
     document.body.appendChild(textarea);
-
     textarea.focus();
     textarea.select();
-
     const range = document.createRange();
     range.selectNodeContents(textarea);
-
     const sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
-
     textarea.setSelectionRange(0, textarea.value.length);
     result = document.execCommand("copy");
   } catch (err) {
@@ -391,7 +422,6 @@ function copyToClipboard(string) {
   } finally {
     document.body.removeChild(textarea);
   }
-
   // manual copy fallback using prompt
   if (!result) {
     const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
@@ -517,8 +547,8 @@ document.querySelectorAll('.export').forEach(function(element) {
     opts.pepper = el.pepper.value;
     opts.salt = el.salt.value;
     opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
-    // setOptions(opts, PASSWORD);
-    storageSet("options", opts, PASSWORD);
+    // setOptions(opts, CRYPTO.passwd);
+    storageSet("options", opts, CRYPTO.passwd);
     el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
     if (debug) console.log("apps:1: save: opts= ", opts);
     showPopup("settings saved!", SHORTPOPUP);
@@ -558,7 +588,7 @@ el.reset.addEventListener("dblclick", function (event) {
     console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
     console.log("app: 2: reset: el.length.value= ", el.length.value);
   }
-  storageSet("options", globalDefaults, PASSWORD);
+  storageSet("options", globalDefaults, CRYPTO.passwd);
   showPopup("defaults restored!", SHORTPOPUP);
 });
 
@@ -607,7 +637,7 @@ function setHintOpts(hint, opts) {
   if (!q) {
     alert('setHintOpts: invalid keys opts!');
   }
-  const x = storageGet("options", PASSWORD);
+  const x = storageGet("options", CRYPTO.passwd);
   const generic = (x === null) ? setGenericOptions() : x;
   if (debug) {
     console.log(`setHintOpts: generic=`, generic);
@@ -625,10 +655,10 @@ function setHintOpts(hint, opts) {
     msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
     msg = `${msg}\nLength= ${opts.length}`;
     alert(msg);
-    storageSet("options", opts, PASSWORD);
+    storageSet("options", opts, CRYPTO.passwd);
     return;
   }
-  let sites = storageGet("sites", PASSWORD);
+  let sites = storageGet("sites", CRYPTO.passwd);
   if (debug) console.log(`setHintOpts: hint= ${hint}`);
   if (sites === null) {
     sites = {[hint]: diff};
@@ -637,7 +667,7 @@ function setHintOpts(hint, opts) {
     sites[hint] = diff; // store ony values different from generic
     if (debug) console.log(`setHintOpts: sites was not null, sites=`, sites);
   }
-  storageSet("sites", sites, PASSWORD);
+  storageSet("sites", sites, CRYPTO.passwd);
 }
 
 // ...
@@ -645,13 +675,13 @@ function getHintOpts(hint) {
   const debug = true;
   // alert(`getHintOpts: hint= ${hint}`)
   if (debug) console.log("getHintOpts: hint= ", hint)
-  let opts = storageGet("options", PASSWORD);
+  let opts = storageGet("options", CRYPTO.passwd);
   if (opts === null) {
     opts = {...globalDefaults};
-    storageSet("options", opts, PASSWORD);
+    storageSet("options", opts, CRYPTO.passwd);
   }
   if (debug) console.log("getHintOpts: generic opts= ", opts);
-  const sites = storageGet("sites", PASSWORD);
+  const sites = storageGet("sites", CRYPTO.passwd);
   if (debug) console.log("getHintOpts: sites= ", sites);
   if (sites !== null && sites[hint] !== undefined) {
     if (debug) console.log(`getHintOpts: hint-specific: sites[${hint}]= `, sites[hint]);
