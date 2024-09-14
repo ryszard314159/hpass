@@ -672,7 +672,7 @@ function setHintOpts(hint, opts) {
 
 // ...
 function getHintOpts(hint) {
-  const debug = true;
+  const debug = false;
   // alert(`getHintOpts: hint= ${hint}`)
   if (debug) console.log("getHintOpts: hint= ", hint)
   let opts = storageGet("options", CRYPTO.passwd);
