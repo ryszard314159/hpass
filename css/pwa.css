@@ -763,7 +763,7 @@ margin-top: 9rem;
   cursor: pointer;
   position: absolute;
   z-index: 99;
-  top: 0;
+  bottom: 0;
   right: 0;
   /* border-radius: 50%; /* makes the background circular */
   background-color: yellow;
