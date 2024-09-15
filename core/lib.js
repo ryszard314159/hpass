@@ -30,11 +30,16 @@ CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 const CRYPTO = {key: '', prefix: 'prefix:', passwd: 'z'};
 CRYPTO.encryptedItems = ["options", "sites"];
 CRYPTO.encryptedStorage = true;
+CRYPTO.decryptedIOuntil = 0;
 CRYPTO.encryptedIO = false;
 CRYPTO.encryptedAll = false;
+CRYPTO.decryptedIOspan = 60000;
 if (typeof(window) !== 'undefined') {
   // TODO: CRYPTO.options = { keySize: 8, iterations: 999, hasher: CryptoJS.algo.SHA512};
   CRYPTO.options = { keySize: 2, iterations: 999, hasher: CryptoJS.algo.SHA512};
+}
+CRYPTO.enableDecryptedIO = () => {
+  CRYPTO.decryptedIOuntil = Date.now() + CRYPTO.decryptedIOspan;
 }
 
 // CRYPTO.handlers = {

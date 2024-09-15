@@ -85,18 +85,30 @@ el.fileInputModal = document.getElementById("fileInputModal");
 el.importButton = document.getElementById("importButton");
 el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
-el.email = document.getElementById("email");
+// el.email = document.getElementById("email");
 el.importFileInput = document.getElementById('importFileInput');
 el.fileInputModal = document.getElementById("fileInputModal");
 el.crypt = document.getElementById("crypt");
 
-function openEmailClient(email, subject, body) {
-  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  window.location.href = mailtoLink;
-}
+// function openEmailClient(email, subject, body) {
+//   const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+//   window.location.href = mailtoLink;
+// }
 
-el.email.addEventListener("click", function() {
-  openEmailClient("info@hpass.app", "subject", "This is the email body");
+// el.email.addEventListener("click", function() {
+//   openEmailClient("info@hpass.app", "subject", "This is the email body");
+// });
+
+document.querySelectorAll('.email').forEach(function(element) {
+  element.addEventListener('click', function() {
+    // openEmailClient("info@hpass.app", "subject", "This is the email body");
+    const email = "info@hpass.app";
+    const subject = "subject";
+    const body = "This is the email body";
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoLink;
+  }
+)
 });
 
 // let isEncrypted = true;
@@ -124,6 +136,17 @@ el.crypt.addEventListener("click", function() {
   // console.log(`crypt:1: CRYPTO.encryptedStorage= ${CRYPTO.encryptedStorage}`);
   x.textContent = isEncrypted ? "Decrypted" : "Encrypted";
   el.crypt.src = isEncrypted ? "icons/eye-show.svg" : "icons/eye-hide.svg";
+});
+
+document.querySelectorAll(".crypt").forEach(function(element) {
+  element.addEventListener("click", function (event) {
+    // alert("querySelectorAll('.crypt'): clicked!");
+    // let isEncrypted = storageGet("encrypted", null);
+    const show = element.src.endsWith("icons/eye-show.svg");
+    if (show) CRYPTO.enableDecryptedIO();
+    element.src = show ? "icons/eye-hide.svg" : "icons/eye-show.svg";
+    console.log("cypt: element.src=", element.src);
+  })
 });
 
 // TODO: clear cache for password input box
@@ -256,9 +279,9 @@ function createSplashScreen(opts) {
   <ul>
   <li>Read the <strong>Basics</strong> below.
   <li>Close this menu.
-  <li>Enter Master Password (default='${CRYPTO.passwd}').
-  <li>For good protection change this default to
-      the long and meaningful for you string/phrase.
+  <li>Enter Master Password (<strong>default='${CRYPTO.passwd}'</strong>).
+  <li>Change Master Password to a strong one.
+      See Help (under ? icon) for guidance.
       Write it down and store it in safe location.
   </ul>
   <h3>Basics:</h3>
@@ -562,13 +585,17 @@ el.share.addEventListener("click", function () {
   showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
 });
 
-el.reset.addEventListener("click", function (event) {
+// el.reset.addEventListener("click", function (event) {
+document.querySelectorAll(".reset").forEach(function(element) {
   // alert("reset clicked!");
-  const debug = false;
-  if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
-  event.preventDefault();
-  localStorage.clear();
-  window.location.reload();
+  element.addEventListener("click", function (event) {
+    // alrte("reset clicked!");
+    const debug = false;
+    if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
+    event.preventDefault();
+    localStorage.clear();
+    window.location.reload();
+  })
 });
 
 el.reset.addEventListener("dblclick", function (event) {

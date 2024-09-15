@@ -770,6 +770,17 @@ margin-top: 9rem;
   line-height: 3rem; /* adjust to match the height */
 }
 
+#topIcons {
+  display: inline-flex;
+  justify-content: space-around;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  line-height: 3rem;
+  margin: 0 0 0 1rem;
+}
+
 
 /* Hidden menu */
 .nav-menu {
