@@ -33,7 +33,7 @@ CRYPTO.encryptedStorage = true;
 CRYPTO.decryptedIOuntil = 0;
 CRYPTO.encryptedIO = false;
 CRYPTO.encryptedAll = false;
-CRYPTO.decryptedIOspan = 60000 / 2;
+CRYPTO.decryptedIOspan = 60000 / 4;
 CRYPTO.decryptedIOEnabled = false;
 if (typeof(window) !== 'undefined') {
   // TODO: CRYPTO.options = { keySize: 8, iterations: 999, hasher: CryptoJS.algo.SHA512};
