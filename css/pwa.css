@@ -763,7 +763,7 @@ margin-top: 9rem;
   cursor: pointer;
   position: absolute;
   z-index: 99;
-  bottom: 0;
+  top: 3rem;
   right: 0;
   /* border-radius: 50%; /* makes the background circular */
   background-color: yellow;
@@ -827,6 +827,15 @@ margin-top: 9rem;
   text-decoration: underline;
 }
 
+/* .glow {
+  background-color: red;
+  font-size: 4rem;
+} */
+
+.glow {
+  border: 2px solid red;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
 
 
 /* .tooltip.show-tooltip .tooltiptext {

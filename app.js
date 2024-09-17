@@ -142,10 +142,18 @@ document.querySelectorAll(".crypt").forEach(function(element) {
   element.addEventListener("click", function (event) {
     // alert("querySelectorAll('.crypt'): clicked!");
     // let isEncrypted = storageGet("encrypted", null);
-    const show = element.src.endsWith("icons/eye-show.svg");
+    const hide = element.src.endsWith("icons/eye-hide.svg"); // toggle hide/show
+    element.src = hide ? "icons/eye-show.svg" : "icons/eye-hide.svg"; // // toggle hide/show
+    const show = hide; // toggle hide/show
     if (show) CRYPTO.enableDecryptedIO();
-    element.src = show ? "icons/eye-hide.svg" : "icons/eye-show.svg";
-    console.log("cypt: element.src=", element.src);
+    if (!show) CRYPTO.disableDecryptedIO();
+    if (show) element.classList.add("glow");
+    if (!show) element.classList.remove("glow");
+    console.log("crypt:2: element.src=", element.src);
+    console.log("crypt:2: hide=", hide);
+    console.log("crypt:2: element.classList= ", element.classList);
+    console.log(`crypt:2: CRYPTO.decryptedIOuntil= ${CRYPTO.decryptedIOuntil}`);
+    console.log(`crypt:2: CRYPTO.decryptedIOEnabled= ${CRYPTO.decryptedIOEnabled}`);
   })
 });
 
@@ -176,6 +184,14 @@ el.changePassword.addEventListener("click", function() {
   el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
   el.newPassword.style.display = "block";
 });
+
+document.querySelectorAll(".change").forEach(function(element) {
+  element.addEventListener("click", function (event) {
+    // el.navMenu.classList.toggle("show");
+    // el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
+    el.newPassword.style.display = "block";
+  }
+)});
 
 el.navMenu.classList.remove("show");
 
@@ -828,6 +844,9 @@ saveAsFile('posts.json', posts)
 // Function to export localStorage as a JSON file
 function exportLocalStorage(filename = "hpass-localStorage.json") {
   // Convert settings object to JSON string
+  if (CRYPTO.decryptedIOEnabled) {
+    decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+  }
   const x = JSON.stringify(localStorage, null, 2);
   const blob = new Blob([x], { type: 'application/json' });
   const link = document.createElement('a');
@@ -836,6 +855,9 @@ function exportLocalStorage(filename = "hpass-localStorage.json") {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  if (CRYPTO.decryptedIOEnabled) {
+    encryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+  }
 }
 
 const span = document.getElementsByClassName("close")[0];
