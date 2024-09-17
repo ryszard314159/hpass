@@ -1,5 +1,6 @@
 /*
 TODO:
+0 - ML-KEM to replace CryptoJS https://www.npmjs.com/package/mlkem
 1 - restore does not work for Secret
 2 - If you need high-performance, high-security cryptography,
     you may want to consider native libraries or more modern JavaScript libraries
@@ -99,6 +100,35 @@ el.crypt = document.getElementById("crypt");
 //   openEmailClient("info@hpass.app", "subject", "This is the email body");
 // });
 
+function noIdlingHere() {
+  function yourFunction() {
+      // alert('inactive!');
+      el.passwordContainer.style.display = "block";
+      el.navMenu.classList.toggle("show");
+      // your function for too long inactivity goes here
+      // e.g. window.location.href = 'logout.php';
+  }
+  let t; // must be declared here
+  function resetTimer() {
+      clearTimeout(t); // global function
+      t = setTimeout(yourFunction, 60000/10);  // time is in milliseconds (10 min)
+  } 
+  // window.addEventListener('load', resetTimer, true);
+  // window.addEventListener('mousemove', resetTimer, true);
+  // window.addEventListener('mousedown', resetTimer, true);
+  // window.addEventListener('touchstart', resetTimer, true);
+  // window.addEventListener('touchmove', resetTimer, true);
+  // window.addEventListener('click', resetTimer, true);
+  // window.addEventListener('keydown', resetTimer, true);
+  // window.addEventListener('scroll', resetTimer, true);
+  // window.addEventListener('wheel', resetTimer, true);
+  ['load', 'mousemove', 'mousedown', 'touchstart', 'touchmove', 'click',
+    'keydown', 'scroll', 'wheel'].forEach((x) => {
+    window.addEventListener(x, resetTimer, true);
+  });
+};
+noIdlingHere();
+
 document.querySelectorAll('.email').forEach(function(element) {
   element.addEventListener('click', function() {
     // openEmailClient("info@hpass.app", "subject", "This is the email body");
@@ -175,7 +205,7 @@ el.hamburger.addEventListener("click", function() {
   setTimeout(function() {
     el.navMenu.classList.toggle("show");
   }, 1);
-  el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
+  // el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
   el.newPassword.style.display = "none";
 });
 
@@ -882,7 +912,7 @@ window.addEventListener("click", function(event) {
   if (el.navMenu.classList.contains("show") && 
       !el.navMenu.contains(event.target) && event.target != el.hamburger) {
     el.navMenu.classList.remove("show");
-    el.hamburger.textContent = '☰';
+    // el.hamburger.textContent = '☰';
     el.newPassword.style.display = "none";
   }
 });

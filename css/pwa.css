@@ -152,24 +152,27 @@ button {
   vertical-align: middle; */
 }
 
-.btnContainer {
-  /* display: inline-flex; */
-  display: flex;
-  /* justify-content: space-between; */
-  justify-content: space-around;
-  /* align-items: center; */
-  /* vertical-align: middle; */
-}
-
 /* .btnContained:hover {
   font-weight: bolder;
   background-color: lightgreen;
   border-radius: 50%;
 } */
 
+.btnContainer {
+  /* display: inline-flex; */
+  display: flex;
+  /* height: 2rem; */
+  /* justify-content: space-around; */
+  justify-content: space-between;
+  width: 100%;
+  /* align-items: center; */
+  /* vertical-align: middle; */
+}
+
 .btn {
-  width: 2rem;
+  /* width: 2rem; */
   height: 2rem;
+  /* aspect-ratio: 1/1; */
   /* background-color: rgb(238, 236, 236); */
   padding: 0.2rem;
   margin: 0.5rem;
@@ -177,6 +180,7 @@ button {
   border-radius: 50%;
   vertical-align: middle;
 }
+
 .btn:hover {
   font-weight: bolder;
   background-color: lightgrey;
@@ -235,6 +239,9 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100vh;
+width: 100vw;
+/* position: relative; */
   /* background: pink; */
   /* background-color: rgba(181, 192, 201, 0.9); */
   /* background-color: rgba(204, 206, 209, 0.9); */
@@ -763,7 +770,7 @@ margin-top: 9rem;
   cursor: pointer;
   position: absolute;
   z-index: 99;
-  top: 3rem;
+  top: 0;
   right: 0;
   /* border-radius: 50%; /* makes the background circular */
   background-color: yellow;
@@ -772,28 +779,38 @@ margin-top: 9rem;
 
 #topIcons {
   display: inline-flex;
+  width: 100%;
   justify-content: space-around;
+  background-color: lightgray;
   position: absolute;
   z-index: 1;
   top: 0;
   left: 0;
-  line-height: 3rem;
-  margin: 0 0 0 1rem;
+  /* line-height: 4rem; */
+  margin: 0 0 0 0;
 }
 
 
 /* Hidden menu */
 .nav-menu {
   display: none;
-  position: absolute;
-  top: 0; /* Adjust based on your layout */
-  right: 0;
+  /* position: absolute; */
+  /* top: 0; Adjust based on your layout */
+  /* right: 0; */
   background-color: rgba(255, 255, 255, 0.9);
   padding: 10% 5% 5% 5%;
   text-align: justify;
   text-align-last: left;
   z-index: 9;
   /* border-radius: 5px; */
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  right: 0%;
+  transform: translateY(-50%);
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
 }
 
 /* .nav-menu.hide
