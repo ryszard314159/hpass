@@ -172,6 +172,7 @@ button {
 .btn {
   /* width: 2rem; */
   height: 2rem;
+  /* width: 3rem; */
   /* aspect-ratio: 1/1; */
   /* background-color: rgb(238, 236, 236); */
   padding: 0.2rem;
@@ -770,12 +771,24 @@ margin-top: 9rem;
   /* margin: 0.5rem 2rem 0 0; */
   cursor: pointer;
   position: absolute;
-  z-index: 99;
-  top: 0;
+  /* z-index: 99; */
+  /* top: 2rem; */
   right: 0;
   /* border-radius: 50%; /* makes the background circular */
   background-color: yellow;
   line-height: 1.5rem; /* adjust to match the height */
+}
+
+#hamburger {
+  display: flex;
+  width: 2rem;
+  height: 2rem;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: yellow;
+  border-radius: 0%;
+  /* z-index: 9999; */
 }
 
 #topIcons {
@@ -784,8 +797,9 @@ margin-top: 9rem;
   justify-content: space-around;
   background-color: lightgray;
   position: absolute;
-  z-index: 1;
+  z-index: 99;
   top: 0;
+  right: 2rem;
   left: 0;
   /* line-height: 4rem; */
   margin: 0 0 0 0;
@@ -799,6 +813,7 @@ margin-top: 9rem;
   /* top: 0; Adjust based on your layout */
   /* right: 0; */
   background-color: rgba(255, 255, 255, 0.9);
+  /* background-color: pink; */
   padding: 10% 5% 5% 5%;
   text-align: justify;
   text-align-last: left;

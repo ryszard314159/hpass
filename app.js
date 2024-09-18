@@ -127,7 +127,7 @@ function noIdlingHere() {
     window.addEventListener(x, resetTimer, true);
   });
 };
-noIdlingHere();
+// noIdlingHere();
 
 document.querySelectorAll('.email').forEach(function(element) {
   element.addEventListener('click', function() {
@@ -174,8 +174,16 @@ document.querySelectorAll(".crypt").forEach(function(element) {
     // let isEncrypted = storageGet("encrypted", null);
     const hide = element.src.endsWith("icons/eye-hide.svg"); // toggle hide/show
     if (hide) { // check if password is correct
-      masterPassword
-
+      const pwd = el.masterPassword.value;
+      const hash = createHash(pwd);
+      // const storedHash = storageGet("pwdHash", null);
+      const storedHash = localStorage.getItem("pwdHash");
+      console.log("crypt: hash= ", hash);
+      console.log("crypt: storedHash= ", storedHash);
+      if (hash !== storedHash) {
+        alert("Correct Master Password needed for decrypted export!")
+        return;
+      }
     }
     element.src = hide ? "icons/eye-show.svg" : "icons/eye-hide.svg"; // // toggle hide/show
     const show = hide; // toggle hide/show
@@ -183,11 +191,11 @@ document.querySelectorAll(".crypt").forEach(function(element) {
     if (!show) CRYPTO.disableDecryptedIO();
     if (show) element.classList.add("glow");
     if (!show) element.classList.remove("glow");
-    console.log("crypt:2: element.src=", element.src);
-    console.log("crypt:2: hide=", hide);
-    console.log("crypt:2: element.classList= ", element.classList);
-    console.log(`crypt:2: CRYPTO.decryptedIOuntil= ${CRYPTO.decryptedIOuntil}`);
-    console.log(`crypt:2: CRYPTO.decryptedIOEnabled= ${CRYPTO.decryptedIOEnabled}`);
+    // console.log("crypt:2: element.src=", element.src);
+    // console.log("crypt:2: hide=", hide);
+    // console.log("crypt:2: element.classList= ", element.classList);
+    // console.log(`crypt:2: CRYPTO.decryptedIOuntil= ${CRYPTO.decryptedIOuntil}`);
+    // console.log(`crypt:2: CRYPTO.decryptedIOEnabled= ${CRYPTO.decryptedIOEnabled}`);
   })
 });
 

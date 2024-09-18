@@ -527,7 +527,7 @@ function storageSet(storageKey, obj, pwd) {
 }
 
 function storageGet(storageKey, pwd) {
-  const debug = false;
+  const debug = true;
   if (debug) console.log(`storageGet: storageKey= ${storageKey}, pwd= ${pwd}`);
   let value = localStorage.getItem(storageKey);
   if (debug) console.log(`storageGet:0: value= ${value}`);
