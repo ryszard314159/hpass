@@ -142,37 +142,41 @@ document.querySelectorAll('.email').forEach(function(element) {
 });
 
 // let isEncrypted = true;
-el.crypt.addEventListener("click", function() {
-  // console.log("crypt: clicked!");
-  const x = document.getElementById("crypt-text");
-  // let isEncrypted = CryptoProxy.encryptedStorage;
-  let isEncrypted = storageGet("encrypted", null);
-  try {
-    if (isEncrypted) {
-      console.log(`el.crypt.addEventListener: el.masterPassword.value= ${el.masterPassword.value}`);
-      if (el.masterPassword.value != CRYPTO.passwd) {
-        alert(`Enter correct Master Password to decrypt settings!`);
-        return;
-      }
-      decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
-    } else {
-      encryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
-    }
-  } catch (error) {
-    console.error("el.crypt.addEventListener: error= ", error)
-    alert("el.crypt.addEventListener: error=");
-  }
-  // CryptoProxy.encryptedStorage = !CryptoProxy.encryptedStorage;
-  // console.log(`crypt:1: CRYPTO.encryptedStorage= ${CRYPTO.encryptedStorage}`);
-  x.textContent = isEncrypted ? "Decrypted" : "Encrypted";
-  el.crypt.src = isEncrypted ? "icons/eye-show.svg" : "icons/eye-hide.svg";
-});
+// el.crypt.addEventListener("click", function() {
+//   // console.log("crypt: clicked!");
+//   const x = document.getElementById("crypt-text");
+//   // let isEncrypted = CryptoProxy.encryptedStorage;
+//   let isEncrypted = storageGet("encrypted", null);
+//   try {
+//     if (isEncrypted) {
+//       console.log(`el.crypt.addEventListener: el.masterPassword.value= ${el.masterPassword.value}`);
+//       if (el.masterPassword.value != CRYPTO.passwd) {
+//         alert(`Enter correct Master Password to decrypt settings!`);
+//         return;
+//       }
+//       decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+//     } else {
+//       encryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+//     }
+//   } catch (error) {
+//     console.error("el.crypt.addEventListener: error= ", error)
+//     alert("el.crypt.addEventListener: error=");
+//   }
+//   // CryptoProxy.encryptedStorage = !CryptoProxy.encryptedStorage;
+//   // console.log(`crypt:1: CRYPTO.encryptedStorage= ${CRYPTO.encryptedStorage}`);
+//   x.textContent = isEncrypted ? "Decrypted" : "Encrypted";
+//   el.crypt.src = isEncrypted ? "icons/eye-show.svg" : "icons/eye-hide.svg";
+// });
 
 document.querySelectorAll(".crypt").forEach(function(element) {
   element.addEventListener("click", function (event) {
     // alert("querySelectorAll('.crypt'): clicked!");
     // let isEncrypted = storageGet("encrypted", null);
     const hide = element.src.endsWith("icons/eye-hide.svg"); // toggle hide/show
+    if (hide) { // check if password is correct
+      masterPassword
+
+    }
     element.src = hide ? "icons/eye-show.svg" : "icons/eye-hide.svg"; // // toggle hide/show
     const show = hide; // toggle hide/show
     if (show) CRYPTO.enableDecryptedIO();
@@ -205,7 +209,7 @@ el.hamburger.addEventListener("click", function() {
   setTimeout(function() {
     el.navMenu.classList.toggle("show");
   }, 1);
-  // el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
+  el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
   el.newPassword.style.display = "none";
 });
 
@@ -986,7 +990,7 @@ window.addEventListener("click", function(event) {
   if (el.navMenu.classList.contains("show") && 
       !el.navMenu.contains(event.target) && event.target != el.hamburger) {
     el.navMenu.classList.remove("show");
-    // el.hamburger.textContent = '☰';
+    el.hamburger.textContent = '☰';
     el.newPassword.style.display = "none";
   }
 });
