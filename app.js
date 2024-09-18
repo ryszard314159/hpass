@@ -111,7 +111,7 @@ function noIdlingHere() {
   let t; // must be declared here
   function resetTimer() {
       clearTimeout(t); // global function
-      t = setTimeout(yourFunction, 60000/10);  // time is in milliseconds (10 min)
+      t = setTimeout(yourFunction, 60000);  // time is in milliseconds (1 min)
   } 
   // window.addEventListener('load', resetTimer, true);
   // window.addEventListener('mousemove', resetTimer, true);
