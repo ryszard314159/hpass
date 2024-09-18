@@ -240,7 +240,8 @@ form {
   flex-direction: column;
   align-items: center;
   height: 100vh;
-width: 100vw;
+  width: 100vw;
+  /* top: 2rem; */
 /* position: relative; */
   /* background: pink; */
   /* background-color: rgba(181, 192, 201, 0.9); */
@@ -765,7 +766,7 @@ margin-top: 9rem;
   /* height: 2rem; */
   /* aspect-ratio: 2; */
   /* overflow: hidden; /* add this */
-  padding: 1rem 1rem 0.5rem 1rem;
+  padding: 1rem 2rem 0.5rem 1rem;
   /* margin: 0.5rem 2rem 0 0; */
   cursor: pointer;
   position: absolute;
@@ -804,10 +805,11 @@ margin-top: 9rem;
   z-index: 9;
   /* border-radius: 5px; */
   position: absolute;
-  top: 50%;
+  top: 0;
   left: 0%;
   right: 0%;
-  transform: translateY(-50%);
+  /* top: 15%; */
+  /* transform: translateY(-15%); */
   /* display: flex; */
   justify-content: center;
   align-items: center;

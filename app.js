@@ -604,14 +604,40 @@ function cleanClean(v) {
   return valid.has(v) ? v : true;
 }
 
-document.querySelectorAll('.export').forEach(function(element) {
-  element.addEventListener('click', function() {
+// document.querySelectorAll('.export').forEach(function(element) {
+//   element.addEventListener('click', function(event) {
+//     // el.save.addEventListener("click", function () {
+//     const debug = true;
+//     const opts = { ...globalDefaults };
+//     if (debug) {
+//       console.log("apps:0: export: opts= ", opts);
+//       console.log("apps:0: export: event.type= ", event.type);
+//       console.log("apps:0: export: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
+//     }
+//     opts.pepper = el.pepper.value;
+//     opts.salt = el.salt.value;
+//     opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
+//     // setOptions(opts, CRYPTO.passwd);
+//     storageSet("options", opts, CRYPTO.passwd);
+//     el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
+//     if (debug) console.log("apps:1: save: opts= ", opts);
+//     showPopup("settings saved!", SHORTPOPUP);
+//     // exportSettings();
+//     // if (event === "dblclick") {
+//     //   // extra code for dblclick
+//     // }
+//     exportLocalStorage();
+//   });
+// });
+
+function handleExport(event) {
     // el.save.addEventListener("click", function () {
     const debug = false;
     const opts = { ...globalDefaults };
     if (debug) {
-      console.log("apps:0: save: opts= ", opts);
-      console.log("apps:0: save: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
+      console.log("apps:0: export: opts= ", opts);
+      console.log("apps:0: export: event.type= ", event.type);
+      console.log("apps:0: export: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
     }
     opts.pepper = el.pepper.value;
     opts.salt = el.salt.value;
@@ -620,11 +646,59 @@ document.querySelectorAll('.export').forEach(function(element) {
     storageSet("options", opts, CRYPTO.passwd);
     el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
     if (debug) console.log("apps:1: save: opts= ", opts);
-    showPopup("settings saved!", SHORTPOPUP);
-    // exportSettings();
+    // showPopup("settings saved!", SHORTPOPUP);
+    if (CRYPTO.decryptedIOEnabled) alert("Plain text export!");
     exportLocalStorage();
+    CRYPTO.disableDecryptedIO();
+    document.querySelectorAll(".crypt").forEach(function(element) {
+      element.classList.remove("glow");
+    });
+};
+
+document.querySelectorAll('.export').forEach(function(element) {
+  element.addEventListener('click', function (event) {
+    console.log(".export:click:1: event.type ", event.type);
+    handleExport(event);
   });
 });
+// let clickTimeout = null;
+// document.querySelectorAll('.export').forEach(function(element) {
+//   // element.addEventListener('click', function (event) {
+//   //   console.log("click:1: event.type ", event.type);
+//   //   clearTimeout(clickTimeout);
+//   //   clickTimeout = setTimeout(function () {
+//   //     handleExport(event);
+//   //   }, 900);
+//   //   console.log("click:2: event.type ", event.type);
+//   // });
+//   element.addEventListener('dblclick', function (event) {
+//     console.log("dblclick:1: event.type ", event.type);
+//     clearTimeout(clickTimeout);
+//     handleExport(event);
+//     console.log("dblclick:2: event.type ", event.type);
+//   });
+// });
+
+// document.querySelectorAll('.export').forEach(function(element) {
+//   element.addEventListener('click', function(event) {
+//     console.log('click: event.target= ', event.target);
+//     console.log('click: event.eventPhase= ', event.eventPhase);
+//   });
+
+//   let parent = element.parentNode;
+//   while (parent) {
+//     // console.log('Parent element:', parent);
+//     parent.addEventListener('click', function(event) {
+//       console.log('click: detected on parent:', parent);
+//     });
+//     parent = parent.parentNode;
+//   };
+// });
+
+  // element.addEventListener('click', function(event) {
+  //   console.log('Click detected');
+  // });
+// });
 
 el.share.addEventListener("click", function () {
   copyToClipboard(URL);

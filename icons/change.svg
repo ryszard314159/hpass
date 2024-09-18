@@ -1,164 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
 
-<svg:svg
-   width="76.406631"
-   height="87.353828"
-   viewBox="0 0 76.406632 87.353826"
-   version="1.1"
-   id="svg5"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="change.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:document-units="mm"
-     showgrid="false"
-     inkscape:zoom="5.1459257"
-     inkscape:cx="38.282714"
-     inkscape:cy="68.889452"
-     inkscape:window-width="1170"
-     inkscape:window-height="1016"
-     inkscape:window-x="26"
-     inkscape:window-y="23"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="layer1">
-    <svg
-       width="100"
-       height="100">
-      <rect
-         x="0"
-         y="0"
-         width="100"
-         height="100"
-         fill="#000000" />
-    </svg>
-  </sodipodi:namedview>
-  <svg:defs
-     id="defs2">
-    <svg:marker
-       style="overflow:visible"
-       id="Arrow1Mend"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Arrow1Mend"
-       inkscape:isstock="true">
-      <svg:path
-         transform="matrix(-0.4,0,0,-0.4,-4,0)"
-         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
-         d="M 0,0 5,-5 -12.5,0 5,5 Z"
-         id="path3435" />
-    </svg:marker>
-    <svg:marker
-       id="ExperimentalArrow"
-       refX="5"
-       refY="3"
-       orient="auto-start-reverse"
-       inkscape:stockid="ExperimentalArrow"
-       inkscape:isstock="true">
-      <svg:path
-         style="fill:context-stroke"
-         d="M 10,3 0,6 V 0 Z"
-         id="path3679" />
-    </svg:marker>
-    <svg:marker
-       style="overflow:visible"
-       id="marker3714"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Arrow2Lend"
-       inkscape:isstock="true">
-      <svg:path
-         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
-         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
-         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
-         id="path3712" />
-    </svg:marker>
-    <svg:marker
-       style="overflow:visible"
-       id="Arrow1Send"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Arrow1Send"
-       inkscape:isstock="true">
-      <svg:path
-         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
-         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
-         d="M 0,0 5,-5 -12.5,0 5,5 Z"
-         id="path3441" />
-    </svg:marker>
-    <svg:marker
-       style="overflow:visible"
-       id="TriangleInL"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="TriangleInL"
-       inkscape:isstock="true">
-      <svg:path
-         transform="scale(-0.8)"
-         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
-         d="M 5.77,0 -2.88,5 V -5 Z"
-         id="path3559" />
-    </svg:marker>
-    <svg:marker
-       style="overflow:visible"
-       id="Arrow2Lend"
-       refX="0"
-       refY="0"
-       orient="auto"
-       inkscape:stockid="Arrow2Lend"
-       inkscape:isstock="true">
-      <svg:path
-         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
-         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
-         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:0.625;stroke-linejoin:round"
-         id="path3447" />
-    </svg:marker>
-  </svg:defs>
-  <svg:g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-13.904615,6.2990797)">
-    <svg:rect
-       style="fill:none;fill-opacity:0.819608;stroke:#000000;stroke-width:4.20286;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-       id="rect1272"
-       width="59.937691"
-       height="39.612606"
-       x="22.414354"
-       y="30.807133" />
-    <svg:path
-       id="path2070"
-       style="fill:none;fill-opacity:0.819608;stroke:#000000;stroke-width:4.46586;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 52.458563,5.481036 A 20.070961,26.830232 0 0 0 32.47378,30.720054 H 72.491034 A 20.070961,26.830232 0 0 0 52.458563,5.481036 Z" />
-    <svg:path
-       style="fill:none;fill-opacity:0.819608;stroke:#000000;stroke-width:5.29134;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
-       id="path5696"
-       sodipodi:type="arc"
-       sodipodi:cx="51.108673"
-       sodipodi:cy="49.383793"
-       sodipodi:rx="11.06968"
-       sodipodi:ry="10.925541"
-       sodipodi:start="0.55677574"
-       sodipodi:end="5.3066736"
-       sodipodi:open="true"
-       sodipodi:arc-type="arc"
-       d="m 60.506426,55.157413 a 11.06968,10.925541 0 0 1 -11.308218,4.987978 11.06968,10.925541 0 0 1 -8.916329,-8.485472 11.06968,10.925541 0 0 1 4.638746,-11.335167 11.06968,10.925541 0 0 1 12.386141,0.0067" />
-    <svg:path
-       style="fill:none;fill-opacity:0.819608;stroke:#000000;stroke-width:0.949801;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#marker3714)"
-       d="m 62.088138,44.679337 c 2.271915,1.957334 2.271915,1.957334 2.271915,1.957334"
-       id="path6470" />
-  </svg:g>
-</svg:svg>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+ width="100" height="100" viewBox="0 0 100 100" fill="none">
+  <!-- <circle>  marker-end="url(#end-arrow)" -->
+  <circle cx="50" cy="50" r="50" stroke="none" fill="none" />
+  <path d="M 82 80 A 43 43 0 1 1 82 20"
+    stroke="black" stroke-width="6" fill="none"
+    marker-end="url(#end-arrow)"
+  />
+  <circle cx="82" cy="80" r="3" stroke="none" fill="black" />
+  <rect x="30" y="45" width="40" height="30" fill="none" stroke="black" stroke-width="6"
+        rx="2" ry="2"
+  />
+  <line x1="40" y1="45" x2="40" y2="35" stroke="black" stroke-width="6" />
+  <line x1="60" y1="45" x2="60" y2="35" stroke="black" stroke-width="6" />
+  <!-- Semi-circle -->
+<path d="M 40 35 A 10 10 0 1 1 60 35" 
+      stroke="black" 
+      stroke-width="6" 
+      fill="none" />
+  <defs>
+    <marker id="start-circle" 
+            viewBox="0 0 10 10" 
+            refX="5" 
+            refY="5" 
+            markerWidth="5" 
+            markerHeight="5" 
+            orient="auto">
+      <circle cx="5" cy="5" r="5" fill="blue" />
+    </marker>
+    <marker id="end-arrow" 
+            viewBox="0 0 10 10" 
+            refX="3.5"
+            refY="4.5"
+            markerWidth="5"
+            markerHeight="5" 
+            orient="auto">
+      <path d="M 0 2 L 10 5 L 0 8 Z" fill="black" />
+    </marker>
+  </defs>
+</svg>
+
+
