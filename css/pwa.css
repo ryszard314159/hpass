@@ -169,18 +169,32 @@ button {
   /* vertical-align: middle; */
 }
 
+#hamburger {
+  display: flex;
+  width: 2rem;
+  /* height: 100%; */
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: yellow;
+}
+
 .btn {
-  /* width: 2rem; */
   height: 2rem;
-  /* width: 3rem; */
-  /* aspect-ratio: 1/1; */
-  /* background-color: rgb(238, 236, 236); */
   padding: 0.2rem;
   margin: 0.5rem;
-  /* border-radius: 0.8rem; */
   border-radius: 50%;
   vertical-align: middle;
 }
+  /* width: 2rem; */
+  /* border-radius: 0.8rem; */
+  /* width: 3rem; */
+  /* aspect-ratio: 1/1; */
+  /* background-color: rgb(238, 236, 236); */
+  /* border-radius: 0%; */
+  /* padding: 0 0rem 0 0; */
+  /* z-index: 9999; */
 
 .btn:hover {
   font-weight: bolder;
@@ -757,7 +771,7 @@ margin-top: 9rem;
 }
 
 /* Hamburger icon styles */
-.hamburger {
+.hamburgerrr {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -775,20 +789,8 @@ margin-top: 9rem;
   /* top: 2rem; */
   right: 0;
   /* border-radius: 50%; /* makes the background circular */
-  background-color: yellow;
+  background-color: pink;
   line-height: 1.5rem; /* adjust to match the height */
-}
-
-#hamburger {
-  display: flex;
-  width: 2rem;
-  height: 2rem;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background-color: yellow;
-  border-radius: 0%;
-  /* z-index: 9999; */
 }
 
 #topIcons {
@@ -799,10 +801,10 @@ margin-top: 9rem;
   position: absolute;
   z-index: 99;
   top: 0;
-  right: 2rem;
   left: 0;
+  /* right: 2rem; */
   /* line-height: 4rem; */
-  margin: 0 0 0 0;
+  /* margin: 0 9rem 0 0; */
 }
 
 
@@ -814,7 +816,6 @@ margin-top: 9rem;
   /* right: 0; */
   background-color: rgba(255, 255, 255, 0.9);
   /* background-color: pink; */
-  padding: 10% 5% 5% 5%;
   text-align: justify;
   text-align-last: left;
   z-index: 9;
@@ -823,6 +824,8 @@ margin-top: 9rem;
   top: 0;
   left: 0%;
   right: 0%;
+  /* margin: 0 1rem 0 1rem; */
+  /* padding: 10% 5% 5% 5%; */
   /* top: 15%; */
   /* transform: translateY(-15%); */
   /* display: flex; */

@@ -103,31 +103,30 @@ el.crypt = document.getElementById("crypt");
 function noIdlingHere() {
   function yourFunction() {
       // alert('inactive!');
+      const secretInputs = document.querySelectorAll('.secret');
+      secretInputs.forEach((input) => {
+        input.value = '';
+        // Remove associated storage (if applicable)
+        localStorage.removeItem(input.name);
+        sessionStorage.removeItem(input.name);
+      });
       el.passwordContainer.style.display = "block";
-      el.navMenu.classList.toggle("show");
+      // el.navMenu.classList.toggle("show");
       // your function for too long inactivity goes here
       // e.g. window.location.href = 'logout.php';
   }
   let t; // must be declared here
+  const idleTime = 60000/4; // 15 secs
   function resetTimer() {
       clearTimeout(t); // global function
-      t = setTimeout(yourFunction, 60000);  // time is in milliseconds (1 min)
+      t = setTimeout(yourFunction, idleTime);  // time is in milliseconds (1 min)
   } 
-  // window.addEventListener('load', resetTimer, true);
-  // window.addEventListener('mousemove', resetTimer, true);
-  // window.addEventListener('mousedown', resetTimer, true);
-  // window.addEventListener('touchstart', resetTimer, true);
-  // window.addEventListener('touchmove', resetTimer, true);
-  // window.addEventListener('click', resetTimer, true);
-  // window.addEventListener('keydown', resetTimer, true);
-  // window.addEventListener('scroll', resetTimer, true);
-  // window.addEventListener('wheel', resetTimer, true);
   ['load', 'mousemove', 'mousedown', 'touchstart', 'touchmove', 'click',
     'keydown', 'scroll', 'wheel'].forEach((x) => {
     window.addEventListener(x, resetTimer, true);
   });
 };
-// noIdlingHere();
+noIdlingHere();
 
 document.querySelectorAll('.email').forEach(function(element) {
   element.addEventListener('click', function() {
