@@ -167,6 +167,27 @@ document.querySelectorAll('.email').forEach(function(element) {
 //   el.crypt.src = isEncrypted ? "icons/eye-show.svg" : "icons/eye-hide.svg";
 // });
 
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    const element = mutation.target;
+    console.log({
+      id: element.id,
+      name: element.name,
+      value: element.value,
+      tagName: element.tagName,
+      className: element.className,
+    });
+  });
+});
+
+document.querySelectorAll(".options").forEach(function(element) {
+  observer.observe(element, {
+    attributes: true,
+    childList: true,
+    subtree: true,
+  });
+});
+
 document.querySelectorAll(".crypt").forEach(function(element) {
   element.addEventListener("click", function (event) {
     // alert("querySelectorAll('.crypt'): clicked!");
