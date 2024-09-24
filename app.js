@@ -171,13 +171,10 @@ document.querySelectorAll('.email').forEach(function(element) {
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     const element = mutation.target;
-    console.log({
-      id: element.id,
-      name: element.name,
-      value: element.value,
-      tagName: element.tagName,
-      className: element.className,
-    });
+    // const o = {id: element.id, name: element.name, value: element.value, tagName: element.tagName, className: element.className
+    const o = {id: element.id, value: element.value,
+               tagName: element.tagName, className: element.className};
+    console.log("observer: mutated object= ", o);
   });
 });
 
