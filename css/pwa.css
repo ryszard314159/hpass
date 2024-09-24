@@ -173,13 +173,15 @@ button {
   display: flex;
   width: 2rem;
   /* height: 100%; */
-  flex-grow: 1;
+  /* flex-grow: 1; */
   justify-content: center;
   align-items: center;
   text-align: center;
   background-color: yellow;
 }
-
+.top-icon {
+  flex-grow: 1;
+}
 .btn {
   height: 2rem;
   padding: 0.2rem;

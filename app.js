@@ -1,8 +1,9 @@
 /*
 TODO:
-0 - ML-KEM to replace CryptoJS https://www.npmjs.com/package/mlkem
-1 - restore does not work for Secret
-2 - If you need high-performance, high-security cryptography,
+0 - use rcz: "start_url": "/hpass/"; main: "start_url": "/", - the same for scope
+1 - ML-KEM to replace CryptoJS https://www.npmjs.com/package/mlkem
+2 - restore does not work for Secret
+3 - If you need high-performance, high-security cryptography,
     you may want to consider native libraries or more modern JavaScript libraries
     like Web Cryptography API (W3C) :: https://www.w3.org/TR/WebCryptoAPI/
     or Forge.
@@ -416,6 +417,8 @@ function setGenericOptions() {
   let opts = {...globalDefaults};
   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
   opts.salt = get_random_string(16, charset);
+  if (debug) console.log("setGenericOptions: opts= ", opts);
+  if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
   storageSet("options", opts, CRYPTO.passwd);
   storageSet("encrypted", true, null); // flag indicated that storage is encrypted
   let msg = `<br>Randomly generated secret is
@@ -425,11 +428,23 @@ function setGenericOptions() {
       <br><br>NOTE: to generate the same passwords on multiple
       devices this secret and other options must be the same
       on all devices.`;
+  if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
   createSplashScreen(opts);
-  if (debug) console.log("setGenericOptions: set opts= ", opts);
+  if (debug) console.log("setGenericOptions: returning opts= ", opts);
   return opts;
 }
 
+
+//
+// NOTE: if you are working with DevTools
+//       make sure that the Bypass for Network checkbox
+//       is unchecked. If it is checked .controller will
+//       be null
+// See:
+// (1) https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/controller
+//      "...This property returns null if the request is a force refresh..."
+// (2) https://www.youtube.com/watch?v=1d3KgacJv1I (Debugging Serviceworker Controller null)
+//
 if ("serviceWorker" in navigator) {
   const debug = false;
   const swPath = "sw.js";
@@ -444,6 +459,7 @@ if ("serviceWorker" in navigator) {
       if (opts === null) {
         if (debug) console.log("app: register: null options in localStorage!");
         opts = setGenericOptions();
+        if (debug) console.log("app: register: set to generic: opts= ", opts);
       } else {
         if (debug) console.log("app: register: exist already: opts= ", opts);
       }
@@ -454,16 +470,6 @@ if ("serviceWorker" in navigator) {
       el.length.min = MINLENGTH;
       el.length.max = MAXLENGTH;
       if (debug) console.log("app: register: els set to opts= ", opts);
-      //
-      // NOTE: if you are working with DevTools
-      //       make sure that the Bypass for Network checkbox
-      //       is unchecked. If it is checked .controller will
-      //       be null
-      // See:
-      // (1) https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/controller
-      //      "...This property returns null if the request is a force refresh..."
-      // (2) https://www.youtube.com/watch?v=1d3KgacJv1I (Debugging Serviceworker Controller null)
-      //
       if (navigator.serviceWorker.controller) {
         const msg = { type: "GET_VERSION" };
         if (debug) console.log(
@@ -639,7 +645,7 @@ function cleanClean(v) {
 // document.querySelectorAll('.export').forEach(function(element) {
 //   element.addEventListener('click', function(event) {
 //     // el.save.addEventListener("click", function () {
-//     const debug = true;
+//     const debug = false;
 //     const opts = { ...globalDefaults };
 //     if (debug) {
 //       console.log("apps:0: export: opts= ", opts);
@@ -898,7 +904,7 @@ function generateFun(event) {
   args.upper = false;
   args.punctuation = false;
   args.no_shuffle = false;
-  args.debug = true;
+  args.debug = false;
   args.verbose = true;
   const passwd = getPass(args);
   navigator.clipboard.writeText(passwd);

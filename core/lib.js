@@ -27,7 +27,7 @@ CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
 CHARS.upper = CHARS.lower.toUpperCase();
 CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
-const CRYPTO = {key: '', prefix: 'prefix:', passwd: 'z'};
+const CRYPTO = {key: null, prefix: 'prefix:', passwd: 'z'};
 CRYPTO.encryptedItems = ["options", "sites"];
 CRYPTO.encryptedStorage = true;
 CRYPTO.decryptedIOuntil = 0;
@@ -485,15 +485,20 @@ function kdf(pwd) {
 //   CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
 // }
 
+function validateKey(pwd) {
+  CRYPTO.key = (CRYPTO.key === null) ? createKey(pwd) : CRYPTO.key;
+}
+
 function createKey(pwd) {
   const debug = false;
-  const old = CRYPTO.key;
-  CRYPTO.key = kdf(pwd);
+  const oldKey = CRYPTO.key;
+  const newKey = kdf(pwd);
   if (debug) {
     console.log(`createKey: pwd= ${pwd}`);
-    console.log(`createKey: old CRYPTO.key= ${old}`);
-    console.log(`createKey: new CRYPTO.key= ${CRYPTO.key}`);
+    console.log(`createKey: oldKey= ${oldKey}`);
+    console.log(`createKey: newKey= ${newKey}`);
   }
+  return newKey;
   // const size = CryptoJS.enc.Utf8.parse(CRYPTO.key).words.length;
   // CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
 }
@@ -513,7 +518,7 @@ function storageSet(storageKey, obj, pwd) {
   let value = JSON.stringify(obj);
   if (debug) console.log("storageSet:0: value= ", value);
   if (pwd !== null) {
-    // validateKey(pwd);
+    validateKey(pwd);
     value = CryptoJS.AES.encrypt(value, CRYPTO.key);
   }
   localStorage.setItem(storageKey, value);
@@ -531,14 +536,17 @@ function storageGet(storageKey, pwd) {
   if (debug) console.log(`storageGet: storageKey= ${storageKey}, pwd= ${pwd}`);
   let value = localStorage.getItem(storageKey);
   if (debug) console.log(`storageGet:0: value= ${value}`);
-  if (value === null) return value;
+  if (value === null) {
+    if (debug) console.log(`storageGet:1: returning value= ${value}`);
+    return value;
+  }
   if (pwd !== null) {
-    if (debug) console.log(`storageGet:0: CRYPTO.key= ${CRYPTO.key}`);
-    // validateKey(pwd); // validate CRYPTO.key
-    if (debug) console.log(`storageGet:1: CRYPTO.key= ${CRYPTO.key}`);
+    if (debug) console.log(`storageGet:2: CRYPTO.key= ${CRYPTO.key}`);
+    validateKey(pwd); // validate CRYPTO.key
+    if (debug) console.log(`storageGet:3: CRYPTO.key= ${CRYPTO.key}`);
     value = CryptoJS.AES.decrypt(value, CRYPTO.key).toString(CryptoJS.enc.Utf8);
   }
-  if (debug) console.log(`storageGet:1: value= ${value}`);
+  if (debug) console.log(`storageGet:4: value= ${value}`);
   value = JSON.parse(value);
   return value;
 };
