@@ -108,7 +108,7 @@
           <div class="top-icon" id="topEmail"><span><img class="btn email" src="icons/email.svg" title="Email Support"></span></div>
           <div class="top-icon" id="topImport"><span><img class="btn import" src="icons/import.svg" title="Import Settings"></span></div>
           <div class="top-icon" id="topExport"><span><img class="btn export" src="icons/export.svg" title="Export Settings"></span></div>
-          <div class="top-icon" id="topCrypt"><span><img class="btn crypt" src="icons/eye-hide.svg" title="Plain Text IO"></span></div>
+          <!-- <div class="top-icon" id="topCrypt"><span><img class="btn crypt" src="icons/eye-hide.svg" title="Plain Text IO"></span></div> -->
           <div class="top-icon" id="topChange"><span><img class="btn change" src="icons/change.svg" title="Change Password"></span></div>
           <div class="top-icon" id="topReset"><span><img class="btn reset" src="icons/reset.svg" title="Reset"></span></div>
           <div class="top-icon" id="hamburger"><span class="btn">☰</span></div>
@@ -134,9 +134,9 @@
           <li><a id="email"> <img class="btn email" src="icons/email.svg">Support</a></li>
           <li><a id="importButton"> <img class="btn import" src="icons/import.svg">Import Settings</a></li>
           <li><a id="save"> <img class="btn export" src="icons/export.svg">Export Settings</a></li>
-          <li><a> <img id="crypt" class="btn crypt" src="icons/eye-hide.svg">
+          <!-- <li><a> <img id="crypt" class="btn crypt" src="icons/eye-hide.svg">
             <span id="crypt-text">Encrypted Export</span></a>
-          </li>
+          </li> -->
           <!-- <li><a> <img id="crypt" class="btn crypt" src="icons/eye-show.svg">
             <span id="crypt-text">Decrypted Export</span></a></li> -->
           <li><a id="changePassword" href="#home"><img class="btn change" src="icons/change.svg" title="Change Password">Change Password</a></li>
@@ -194,50 +194,45 @@
       </div>
     </div>
     <hr>
+        <!-- <div class="tooltip">
+      <a id="help" style="display: block;" href="help.html" onclick="return handleLinkClick(event)">
+          <img class="btn" src="icons/help.svg">
+      </a>
+      <span class="tooltiptext">Basic help and usage guide</span>
+    </div> -->
+    <!-- <div class="tooltip">
+      <img id="save" class="btn export" src="icons/export.svg" />
+      <span class="tooltiptext">Export settings</span>
+    </div> -->
+    <!-- <span class="tooltiptext">Share HPASS!</span> -->
     <div id="saveDiv" class="btnContainer">
-      <div class="tooltip">
-        <a id="help" style="display: block;" href="help.html" onclick="return handleLinkClick(event)">
-          <!-- <figure> -->
-            <img class="btn" src="icons/help.svg">
-            <!-- <figcaption>Help</figcaption> -->
-          <!-- </figure> -->
-        </a>
-        <span class="tooltiptext">Basic help and usage guide</span>
-      </div>
-      <!-- <div class="tooltip">
-        <img id="reset" class="btn" src="icons/reset.svg" />
-        <span class="tooltiptext">Reset settings</span>
-      </div> -->
-
-      <div class="tooltip">
-        <img id="save" class="btn export" src="icons/export.svg" />
-        <span class="tooltiptext">Export settings</span>
-      </div>
-      <div class="tooltip">
-        <img id="share" class="btn" src="icons/share.svg" />
-        <span class="tooltiptext">Share HPASS!</span>
-      </div>
-      <div class="tooltip">
-        <img id="importButton" class="btn import" src="icons/import.svg" />
-        <span class="tooltiptext">Import settings</span>
-      </div>
+      <!-- <div class=""> -->
+        <img id="share" class="btn share" src="icons/share.svg" title="Share!"/>
+      <!-- </div> -->
+      <!-- <div class=""> -->
+        <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
+      <!-- </div> -->
       <div id="fileInputModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <!-- <p>Select a JSON file to import sites settings:</p><br> -->
             <p>Select a file:</p><br>
             <input type="file" id="importFileInput" accept="application/json">
         </div>
       </div>
-      <div class="tooltip">
+    </div>
+      <!-- <div class="tooltip">
+        <img id="importButton" class="btn import" src="icons/import.svg" />
+        <span class="tooltiptext">Import settings</span>
+      </div> -->
+
+      <!-- <div class="tooltip">
         <a id="info" style="display: block;"
             href="info.html"
             onclick="return handleLinkClick(event)">
             <img class="btn" src="icons/info.svg"/>
         </a>
         <span class="tooltiptext">More on usage, security, etc.</span>
-      </div>
-    </div>
+      </div> -->
     <hr />
     <div id="versionContainer">
       <div class="flex-item">

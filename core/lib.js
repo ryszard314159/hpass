@@ -27,9 +27,9 @@ CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
 CHARS.upper = CHARS.lower.toUpperCase();
 CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
-const CRYPTO = {key: null, prefix: 'prefix:', passwd: 'z'};
+const CRYPTO = {key: null, prefix: 'prefix:', passwd: ''};
 CRYPTO.encryptedItems = ["options", "sites"];
-CRYPTO.encryptedStorage = true;
+// CRYPTO.encryptedStorage = true;
 CRYPTO.decryptedIOuntil = 0;
 CRYPTO.encryptedIO = false;
 CRYPTO.encryptedAll = false;
@@ -606,13 +606,13 @@ function encryptLocalStorage(password, keys) {
     if (v !== null) storageSet(k, v, password);
   });
   storageSet('encrypted', true, null);
-  CRYPTO.encryptedStorage = true;
+  // CRYPTO.encryptedStorage = true;
 }
 
 function decryptLocalStorage(password, keys) {
-  const debug = false;
+  const debug = true;
   const encrypted = storageGet('encrypted', null);
-  if (encrypted !== CRYPTO.encryptedStorage) alert("decryptLocalStorage: encrypted !== CRYPTO.encryptedStorage")
+  // if (encrypted !== CRYPTO.encryptedStorage) alert("decryptLocalStorage: encrypted !== CRYPTO.encryptedStorage")
   if (debug) console.log("decryptLocalStorage: password= ", password);
   if (debug) console.log("decryptLocalStorage: keys= ", keys);
   if (debug) console.log("decryptLocalStorage: encrypted= ", encrypted);
@@ -626,7 +626,7 @@ function decryptLocalStorage(password, keys) {
     if (v !== null) storageSet(k, v, null);
   });
   storageSet('encrypted', false, null);
-  CRYPTO.encryptedStorage = false;
+  // CRYPTO.encryptedStorage = false;
 }
 
 export { storageGet, storageSet, getCallerInfo, createHash,

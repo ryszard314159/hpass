@@ -1,6 +1,7 @@
 /*
 TODO:
 0 - use rcz: "start_url": "/hpass/"; main: "start_url": "/", - the same for scope
+* - https://stripe.com for payments
 1 - ML-KEM to replace CryptoJS https://www.npmjs.com/package/mlkem
 2 - restore does not work for Secret
 3 - If you need high-performance, high-security cryptography,
@@ -90,7 +91,7 @@ el.navMenu = document.getElementById("nav-menu");
 // el.email = document.getElementById("email");
 el.importFileInput = document.getElementById('importFileInput');
 el.fileInputModal = document.getElementById("fileInputModal");
-el.crypt = document.getElementById("crypt");
+// el.crypt = document.getElementById("crypt");
 
 // function openEmailClient(email, subject, body) {
 //   const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -117,7 +118,7 @@ function noIdlingHere() {
       // e.g. window.location.href = 'logout.php';
   }
   let t; // must be declared here
-  const idleTime = 60000/4; // 15 secs
+  const idleTime = 60000; // 60 secs
   function resetTimer() {
       clearTimeout(t); // global function
       t = setTimeout(yourFunction, idleTime);  // time is in milliseconds (1 min)
@@ -133,8 +134,8 @@ document.querySelectorAll('.email').forEach(function(element) {
   element.addEventListener('click', function() {
     // openEmailClient("info@hpass.app", "subject", "This is the email body");
     const email = "info@hpass.app";
-    const subject = "subject";
-    const body = "This is the email body";
+    const subject = "create meaningful subject";
+    const body = "Detailed question / comment/ suggestion";
     const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoLink;
   }
@@ -170,11 +171,12 @@ document.querySelectorAll('.email').forEach(function(element) {
 
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
+    const debug = false;
     const element = mutation.target;
     // const o = {id: element.id, name: element.name, value: element.value, tagName: element.tagName, className: element.className
     const o = {id: element.id, value: element.value,
                tagName: element.tagName, className: element.className};
-    console.log("observer: mutated object= ", o);
+    if (debug) console.log("observer: mutated object= ", o);
   });
 });
 
@@ -186,36 +188,31 @@ document.querySelectorAll(".options").forEach(function(element) {
   });
 });
 
-document.querySelectorAll(".crypt").forEach(function(element) {
-  element.addEventListener("click", function (event) {
-    // alert("querySelectorAll('.crypt'): clicked!");
-    // let isEncrypted = storageGet("encrypted", null);
-    const hide = element.src.endsWith("icons/eye-hide.svg"); // toggle hide/show
-    if (hide) { // check if password is correct
-      const pwd = el.masterPassword.value;
-      const hash = createHash(pwd);
-      // const storedHash = storageGet("pwdHash", null);
-      const storedHash = localStorage.getItem("pwdHash");
-      console.log("crypt: hash= ", hash);
-      console.log("crypt: storedHash= ", storedHash);
-      if (hash !== storedHash) {
-        alert("Correct Master Password needed for decrypted export!")
-        return;
-      }
-    }
-    element.src = hide ? "icons/eye-show.svg" : "icons/eye-hide.svg"; // // toggle hide/show
-    const show = hide; // toggle hide/show
-    if (show) CRYPTO.enableDecryptedIO();
-    if (!show) CRYPTO.disableDecryptedIO();
-    if (show) element.classList.add("glow");
-    if (!show) element.classList.remove("glow");
-    // console.log("crypt:2: element.src=", element.src);
-    // console.log("crypt:2: hide=", hide);
-    // console.log("crypt:2: element.classList= ", element.classList);
-    // console.log(`crypt:2: CRYPTO.decryptedIOuntil= ${CRYPTO.decryptedIOuntil}`);
-    // console.log(`crypt:2: CRYPTO.decryptedIOEnabled= ${CRYPTO.decryptedIOEnabled}`);
-  })
-});
+// document.querySelectorAll(".crypt").forEach(function(element) {
+//   element.addEventListener("click", function (event) {
+//     // alert("querySelectorAll('.crypt'): clicked!");
+//     // let isEncrypted = storageGet("encrypted", null);
+//     const hide = element.src.endsWith("icons/eye-hide.svg"); // toggle hide/show
+//     if (hide) { // check if password is correct
+//       const pwd = el.masterPassword.value;
+//       const hash = createHash(pwd);
+//       // const storedHash = storageGet("pwdHash", null);
+//       const storedHash = localStorage.getItem("pwdHash");
+//       console.log("crypt: hash= ", hash);
+//       console.log("crypt: storedHash= ", storedHash);
+//       if (hash !== storedHash) {
+//         alert("Correct Master Password needed for decrypted export!")
+//         return;
+//       }
+//     }
+//     element.src = hide ? "icons/eye-show.svg" : "icons/eye-hide.svg"; // // toggle hide/show
+//     const show = hide; // toggle hide/show
+//     if (show) CRYPTO.enableDecryptedIO();
+//     if (!show) CRYPTO.disableDecryptedIO();
+//     if (show) element.classList.add("glow");
+//     if (!show) element.classList.remove("glow");
+//   })
+// });
 
 // TODO: clear cache for password input box
 function clearInputCache(inputId) {
@@ -298,35 +295,47 @@ el.masterPassword.addEventListener("keydown", (event) => {
 });
 
 el.newPassword.addEventListener("keydown", (event) => {
-  const debug = false;
+  const debug = true;
   // event.preventDefault();
   // if (debug) console.log(`el.newPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key !== 'Enter') return;
-  const oldHash = localStorage.getItem("pwdHash");
-  const newHash = createHash(el.masterPassword.value)
-  if (debug) console.log(`oldHash= ${oldHash}`);
-  if (debug) console.log(`newHash= ${newHash}`);
+  const storedHash = localStorage.getItem("pwdHash");
+  const currentHash = createHash(el.masterPassword.value)
+  if (debug) console.log(`newPassword: storedHash= ${storedHash}`);
+  if (debug) console.log(`newPassword: currentHash= ${currentHash}`);
   let msg = `Master Password (='${CRYPTO.passwd}')`;
   if (debug) console.log(`0:msg= ${msg}`);
-  if (newHash !== oldHash) {
+  if (currentHash !== storedHash) {
     alert("Incorrect Master Password!");
+    return;
   } else {
     const v = el.newPassword.value;
     const newPassword = (v.length > 0) ? v : ''; // null changed to ''
-    msg =  (newPassword !== CRYPTO.passwd) ? `${msg} changed.` : `${msg} NOT changed.`
-    if (debug) console.log(`newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
-    if (debug) console.log(`1:msg= ${msg}`);
+    // msg =  (newPassword !== CRYPTO.passwd) ? `${msg} changed.` : `${msg} NOT changed.`
+    if (debug) console.log(`newPassword: newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
+    if (debug) console.log(`newPassword:1: msg= ${msg}`);
     if (newPassword !== CRYPTO.passwd) {
+      msg = `${msg} changed.`
       const h = createHash(newPassword);
       localStorage.setItem("pwdHash", h);
+      if (debug) console.log(`newPassword: new password= ${newPassword}`);
+      if (debug) console.log(`newPassword: new password hash= ${h}`);
       msg = `${msg}\nNew Master Password is: ${newPassword}`
+      if (debug) console.log(`newPassword: decrypted with CRYPTO.passwd= ${CRYPTO.passwd}`);
+      if (debug) console.log(`newPassword: decrypted with CRYPTO.key= ${CRYPTO.key}`);
       decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
       CRYPTO.key = kdf(newPassword);
+      CRYPTO.oldPassword = CRYPTO.passwd;
       CRYPTO.passwd = newPassword;
       encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
+      if (debug) console.log(`newPassword: encrypted with CRYPTO.passwd= ${CRYPTO.passwd}`);
+      if (debug) console.log(`newPassword: encrypted with CRYPTO.key= ${CRYPTO.key}`);
+    } else {
+      msg = `${msg} NOT changed.`
     }
-    if (debug) console.log(`msg= ${msg}`);
-    if (debug) console.log("CRYPTO= ", CRYPTO);
+    if (debug) console.log(`newPassword:2: msg= ${msg}`);
+    if (debug) console.log("newPassword: CRYPTO.passwd= ", CRYPTO.passwd);
+    if (debug) console.log("newPassword: CRYPTO.oldPassword= ", CRYPTO.oldPassword);
     alert(msg);
     el.passwordContainer.style.display = "none";
   }
@@ -431,7 +440,6 @@ function setGenericOptions() {
   return opts;
 }
 
-
 //
 // NOTE: if you are working with DevTools
 //       make sure that the Bypass for Network checkbox
@@ -443,7 +451,7 @@ function setGenericOptions() {
 // (2) https://www.youtube.com/watch?v=1d3KgacJv1I (Debugging Serviceworker Controller null)
 //
 if ("serviceWorker" in navigator) {
-  const debug = false;
+  const debug = true;
   const swPath = "sw.js";
   if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
@@ -452,6 +460,8 @@ if ("serviceWorker" in navigator) {
       if (debug) console.log("app: sw registered!", reg);
       if (debug) console.log("app: before createSplashScreen");
       if (debug) console.log("app: after createSplashScreen");
+      if (debug) console.log(`app: CRYPTO.passwd= ${CRYPTO.passwd}`);
+      if (debug) console.log(`app: CRYPTO.key= ${CRYPTO.key}`);
       let opts = storageGet("options", CRYPTO.passwd);
       if (opts === null) {
         if (debug) console.log("app: register: null options in localStorage!");
@@ -481,7 +491,7 @@ if ("serviceWorker" in navigator) {
       }
     })
     .catch((error) => {
-      console.error("app: registration failed: error", error);
+      console.error("app: registration failed: error=", error);
     });
 }
 
@@ -639,40 +649,15 @@ function cleanClean(v) {
   return valid.has(v) ? v : true;
 }
 
-// document.querySelectorAll('.export').forEach(function(element) {
-//   element.addEventListener('click', function(event) {
-//     // el.save.addEventListener("click", function () {
-//     const debug = false;
-//     const opts = { ...globalDefaults };
-//     if (debug) {
-//       console.log("apps:0: export: opts= ", opts);
-//       console.log("apps:0: export: event.type= ", event.type);
-//       console.log("apps:0: export: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
-//     }
-//     opts.pepper = el.pepper.value;
-//     opts.salt = el.salt.value;
-//     opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
-//     // setOptions(opts, CRYPTO.passwd);
-//     storageSet("options", opts, CRYPTO.passwd);
-//     el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
-//     if (debug) console.log("apps:1: save: opts= ", opts);
-//     showPopup("settings saved!", SHORTPOPUP);
-//     // exportSettings();
-//     // if (event === "dblclick") {
-//     //   // extra code for dblclick
-//     // }
-//     exportLocalStorage();
-//   });
-// });
-
-function handleExport(event) {
+function handleExport(event, args) {
     // el.save.addEventListener("click", function () {
     const debug = false;
     const opts = { ...globalDefaults };
     if (debug) {
-      console.log("apps:0: export: opts= ", opts);
-      console.log("apps:0: export: event.type= ", event.type);
-      console.log("apps:0: export: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
+      console.log("handleExport: args.decrypted= ", args.decrypted);
+      // console.log("handleExport: event.type= ", event.type);
+      // console.log("handleExport: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
+      // return;
     }
     opts.pepper = el.pepper.value;
     opts.salt = el.salt.value;
@@ -680,60 +665,39 @@ function handleExport(event) {
     // setOptions(opts, CRYPTO.passwd);
     storageSet("options", opts, CRYPTO.passwd);
     el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
-    if (debug) console.log("apps:1: save: opts= ", opts);
+    if (debug) console.log("handleExport save: opts= ", opts);
     // showPopup("settings saved!", SHORTPOPUP);
+    // if (kind === "decrypted") CRYPTO.enableDecryptedIO();
     if (CRYPTO.decryptedIOEnabled) alert("Plain text export!");
-    exportLocalStorage();
-    CRYPTO.disableDecryptedIO();
-    document.querySelectorAll(".crypt").forEach(function(element) {
-      element.classList.remove("glow");
-    });
+    exportLocalStorage({decrypted: args.decrypted});
+    // CRYPTO.disableDecryptedIO();
+    // document.querySelectorAll(".crypt").forEach(function(element) {
+    //   element.classList.remove("glow");
+    // });
 };
 
 document.querySelectorAll('.export').forEach(function(element) {
+  const timeDiffThreshold = 300;
+  let lastClickTime = 0;
+  let pendingClick = null;
   element.addEventListener('click', function (event) {
-    console.log(".export:click:1: event.type ", event.type);
-    handleExport(event);
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastClickTime;
+    lastClickTime = currentTime;
+    clearTimeout(pendingClick);
+    if (timeDiff > timeDiffThreshold) {
+      pendingClick = setTimeout(function() {
+        const args = {decrypted: false}
+        console.log(".export: args= ", args); // Single click
+        handleExport(event, args);
+      }, timeDiffThreshold);
+    } else {
+      const args = {decrypted: true}
+      console.log(".export: args= ", args);  // Double click
+      handleExport(event, args);
+    }
   });
 });
-// let clickTimeout = null;
-// document.querySelectorAll('.export').forEach(function(element) {
-//   // element.addEventListener('click', function (event) {
-//   //   console.log("click:1: event.type ", event.type);
-//   //   clearTimeout(clickTimeout);
-//   //   clickTimeout = setTimeout(function () {
-//   //     handleExport(event);
-//   //   }, 900);
-//   //   console.log("click:2: event.type ", event.type);
-//   // });
-//   element.addEventListener('dblclick', function (event) {
-//     console.log("dblclick:1: event.type ", event.type);
-//     clearTimeout(clickTimeout);
-//     handleExport(event);
-//     console.log("dblclick:2: event.type ", event.type);
-//   });
-// });
-
-// document.querySelectorAll('.export').forEach(function(element) {
-//   element.addEventListener('click', function(event) {
-//     console.log('click: event.target= ', event.target);
-//     console.log('click: event.eventPhase= ', event.eventPhase);
-//   });
-
-//   let parent = element.parentNode;
-//   while (parent) {
-//     // console.log('Parent element:', parent);
-//     parent.addEventListener('click', function(event) {
-//       console.log('click: detected on parent:', parent);
-//     });
-//     parent = parent.parentNode;
-//   };
-// });
-
-  // element.addEventListener('click', function(event) {
-  //   console.log('Click detected');
-  // });
-// });
 
 el.share.addEventListener("click", function () {
   copyToClipboard(URL);
@@ -751,6 +715,10 @@ document.querySelectorAll(".reset").forEach(function(element) {
     localStorage.clear();
     window.location.reload();
   })
+});
+
+document.getElementById("lock").addEventListener("click", function () {
+  window.location.reload();
 });
 
 el.reset.addEventListener("dblclick", function (event) {
@@ -981,37 +949,66 @@ saveAsFile('posts.json', posts)
 // ChatGPT...
 
 // Function to export localStorage as a JSON file
-function exportLocalStorage(filename = "hpass-localStorage.json") {
+// function exportLocalStorage(filename = "hpass-localStorage.json") {
+function exportLocalStorage(args = {}) {
+  args = {fileName: "hpass-localStorage.json", decrypted: false, ...args};
+  const debug = false;
+  if (debug) console.log(`exportLocalStorage: args.decrypted= ${args.decrypted}`)
   // Convert settings object to JSON string
-  if (CRYPTO.decryptedIOEnabled) {
+  // if (CRYPTO.decryptedIOEnabled) {
+  if (args.decrypted) {
+    alert("Plain text export!");
     decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+  } else {
+    alert("Double Click for decrypted (plain text) export!");
   }
   const x = JSON.stringify(localStorage, null, 2);
   const blob = new Blob([x], { type: 'application/json' });
   const link = document.createElement('a');
-  link.download = filename;
+  link.download = args.fileName;
   link.href = window.URL.createObjectURL(blob);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  if (CRYPTO.decryptedIOEnabled) {
-    encryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
-  }
+  // if (CRYPTO.decryptedIOEnabled) {
+  if (args.decrypted) encryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
 }
+
+// function foo(args = {}) {
+//   args = {fileName: "hpass-localStorage.json", decrypted: false, ...args};
+//   console.log('args= ', args)
+// }
 
 const span = document.getElementsByClassName("close")[0];
 
 // When the user clicks the button, open the modal
 document.body.querySelectorAll(".import").forEach(function(element) {
+  const debug = false;
+  if (debug) console.log(".import: selected");
   element.addEventListener("click", function() {
+    if (debug) console.log(".import: clicked");
     el.fileInputModal.style.display = "block";
   });
 });
 
+document.body.querySelectorAll(".close").forEach(function(element) {
+  const debug = false;
+  if (debug) console.log(".close: selected");
+  element.addEventListener("click", function(event) {
+    const ep = element.parentElement;
+    const epp = ep.parentElement;
+    if (debug) console.log(".close: clicked");
+    if (debug) console.log(".close: element= ", element);
+    if (debug) console.log(".close: ep= ", ep);
+    if (debug) console.log(".close: epp= ", epp);
+    epp.style.display = "none";
+  });
+});
+
 // When the user clicks on <span> (x), close the modal
-span.addEventListener("click", function() {
-  el.fileInputModal.style.display = "none";
-})
+// span.addEventListener("click", function() {
+//   el.fileInputModal.style.display = "none";
+// })
 
 // When the user clicks anywhere outside of the modal, close it
 window.addEventListener("click", function(event) {
