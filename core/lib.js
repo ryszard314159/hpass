@@ -485,9 +485,9 @@ function kdf(pwd) {
 //   CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
 // }
 
-function validateKey(pwd) {
-  CRYPTO.key = (CRYPTO.key === null) ? createKey(pwd) : CRYPTO.key;
-}
+// function validateKey(pwd) {
+//   CRYPTO.key = (CRYPTO.key === null) ? createKey(pwd) : CRYPTO.key;
+// }
 
 function createKey(pwd) {
   const debug = false;
@@ -514,25 +514,25 @@ function decryptJSON(json) {
 }
 
 function storageSet(storageKey, obj, pwd) {
-  const debug = false;
-  let value = JSON.stringify(obj);
+  const debug = true;
+  let value = (pwd !== null) ? JSON.stringify(obj) : obj;
+  if (debug) console.log("storageSet:0: obj= ", obj);
   if (debug) console.log("storageSet:0: value= ", value);
   if (pwd !== null) {
-    validateKey(pwd);
+    // validateKey(pwd);
+    CRYPTO.key = createKey(pwd);
     value = CryptoJS.AES.encrypt(value, CRYPTO.key);
   }
   localStorage.setItem(storageKey, value);
   if (debug) {
     console.log(`storageSet: storageKey= ${storageKey}`);
-    console.log(`storageSet: pwd= ${pwd}`)
-    console.log("storageSet: obj= ", obj);
+    console.log(`storageSet: pwd= ${pwd}, CRYPTO.key= ${CRYPTO.key}`);
     console.log("storageSet:1: value= ", value);
-    console.log("storageSet: CRYPTO.key= ", CRYPTO.key);
   }
 }
 
 function storageGet(storageKey, pwd) {
-  const debug = false;
+  const debug = true;
   if (debug) console.log(`storageGet: storageKey= ${storageKey}, pwd= ${pwd}`);
   let value = localStorage.getItem(storageKey);
   if (debug) console.log(`storageGet:0: value= ${value}`);
@@ -541,46 +541,53 @@ function storageGet(storageKey, pwd) {
     return value;
   }
   if (pwd !== null) {
-    if (debug) console.log(`storageGet:2: CRYPTO.key= ${CRYPTO.key}`);
-    validateKey(pwd); // validate CRYPTO.key
-    if (debug) console.log(`storageGet:3: CRYPTO.key= ${CRYPTO.key}`);
+    if (debug) console.log(`storageGet:2: pwd= ${pwd}, CRYPTO.key= ${CRYPTO.key}`);
+    // validateKey(pwd); // validate CRYPTO.key
+    CRYPTO.key = createKey(pwd);
+    if (debug) console.log(`storageGet:3: pwd= ${pwd}, CRYPTO.key= ${CRYPTO.key}`);
     value = CryptoJS.AES.decrypt(value, CRYPTO.key).toString(CryptoJS.enc.Utf8);
   }
   if (debug) console.log(`storageGet:4: value= ${value}`);
-  value = JSON.parse(value);
+  try {
+    value = JSON.parse(value);
+  } catch (error) {
+    console.log("storageGet: JSON parse error=", error);
+  } finally {
+    console.log("storageGet: JSON parse error: value=", value);
+  }
   return value;
 };
 
-function getOptions(pwd) {
-  const debug = false;
-  const info = getCallerInfo();
-  const tag = `getOptions:`;
-  if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
-  let opts;
-  validateKey(pwd);
-  try {
-    const x = localStorage.getItem("options");
-    if (x !== null) {
-      if (debug) console.log(`${tag} options= ${x}`);
-      if (debug) console.log(`${tag} pwd= ${pwd}`);
-      if (debug) console.log(`${tag} CRYPTO.key= ${CRYPTO.key}`);
-      const dx = CryptoJS.AES.decrypt(x, CRYPTO.key).toString(CryptoJS.enc.Utf8);
-      if (debug) console.log(`${tag} pwd= ${pwd}`);
-      if (debug) console.log(`${tag} decrypted options= ${dx}`);
-      opts = JSON.parse(dx);
-      if (debug) console.log(`${tag} opts= `, opts);
-    } else {
-      opts = null;
-    }
-    return opts;
-  }
-  catch (err) {
-    if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
-    if (debug) console.log(`${tag} ERROR: ${err.message}`);
-    alert(`${tag} ERROR= ${err.message}`);
-    return null;
-  }
-}
+// function getOptions(pwd) {
+//   const debug = false;
+//   const info = getCallerInfo();
+//   const tag = `getOptions:`;
+//   if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
+//   let opts;
+//   validateKey(pwd);
+//   try {
+//     const x = localStorage.getItem("options");
+//     if (x !== null) {
+//       if (debug) console.log(`${tag} options= ${x}`);
+//       if (debug) console.log(`${tag} pwd= ${pwd}`);
+//       if (debug) console.log(`${tag} CRYPTO.key= ${CRYPTO.key}`);
+//       const dx = CryptoJS.AES.decrypt(x, CRYPTO.key).toString(CryptoJS.enc.Utf8);
+//       if (debug) console.log(`${tag} pwd= ${pwd}`);
+//       if (debug) console.log(`${tag} decrypted options= ${dx}`);
+//       opts = JSON.parse(dx);
+//       if (debug) console.log(`${tag} opts= `, opts);
+//     } else {
+//       opts = null;
+//     }
+//     return opts;
+//   }
+//   catch (err) {
+//     if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
+//     if (debug) console.log(`${tag} ERROR: ${err.message}`);
+//     alert(`${tag} ERROR= ${err.message}`);
+//     return null;
+//   }
+// }
 
 function createHash(pwd) {
   // TODO: crypto.createHash('sha256').update(pwd).digest().toString()
@@ -629,7 +636,7 @@ function decryptLocalStorage(password, keys) {
   // CRYPTO.encryptedStorage = false;
 }
 
-export { storageGet, storageSet, getCallerInfo, createHash,
+export { storageGet, storageSet, getCallerInfo, createHash, createKey,
   kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage };
 // export { CryptoProxy };
 

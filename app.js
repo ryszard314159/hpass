@@ -13,7 +13,7 @@ TODO:
 
 import { deepEqual, get_random_string, getPass, objDiff,
   CHARS, MAXLENGTH, MINLENGTH } from "./core/lib.js";
-import { storageGet, storageSet, getCallerInfo, createHash,
+import { storageGet, storageSet, getCallerInfo, createHash, createKey,
          kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage } from "./core/lib.js";
 // import { CryptoProxy } from "./core/lib.js";
 
@@ -262,7 +262,7 @@ el.masterPassword.addEventListener("keydown", (event) => {
     setTimeout(() => {
       let oldHash = localStorage.getItem("pwdHash");
       if (oldHash === null) {
-        alert("pwdHash was null, options removed & Master Password set to empty string");
+        alert("Password Hash was null,\noptions removed & Master Password set to empty string");
         // localStorage.clear();
         CRYPTO.encryptedItems.forEach((key => {
           localStorage.removeItem(key);
@@ -306,7 +306,13 @@ el.newPassword.addEventListener("keydown", (event) => {
   let msg = `Master Password (='${CRYPTO.passwd}')`;
   if (debug) console.log(`0:msg= ${msg}`);
   if (currentHash !== storedHash) {
-    alert("Incorrect Master Password!");
+    let m = "Incorrect Master Password!"
+    if (debug) {
+      m = `${m}\nstoredHash= ${storedHash}`;
+      m = `${m}\ncurrentHash= ${currentHash}`;
+      m = `${m}\nel.masterPassword.value= ${el.masterPassword.value}`;
+    }
+    alert(m);
     return;
   } else {
     const v = el.newPassword.value;
@@ -317,14 +323,15 @@ el.newPassword.addEventListener("keydown", (event) => {
     if (newPassword !== CRYPTO.passwd) {
       msg = `${msg} changed.`
       const h = createHash(newPassword);
-      localStorage.setItem("pwdHash", h);
+      // localStorage.setItem("pwdHash", h);
+      storageSet("pwdHash", h, null);
       if (debug) console.log(`newPassword: new password= ${newPassword}`);
       if (debug) console.log(`newPassword: new password hash= ${h}`);
       msg = `${msg}\nNew Master Password is: ${newPassword}`
       if (debug) console.log(`newPassword: decrypted with CRYPTO.passwd= ${CRYPTO.passwd}`);
       if (debug) console.log(`newPassword: decrypted with CRYPTO.key= ${CRYPTO.key}`);
       decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
-      CRYPTO.key = kdf(newPassword);
+      CRYPTO.key = createKey(CRYPTO.passwd);
       CRYPTO.oldPassword = CRYPTO.passwd;
       CRYPTO.passwd = newPassword;
       encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
@@ -336,6 +343,11 @@ el.newPassword.addEventListener("keydown", (event) => {
     if (debug) console.log(`newPassword:2: msg= ${msg}`);
     if (debug) console.log("newPassword: CRYPTO.passwd= ", CRYPTO.passwd);
     if (debug) console.log("newPassword: CRYPTO.oldPassword= ", CRYPTO.oldPassword);
+    if (debug) {
+      msg = `${msg}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
+      msg = `${msg}\npwdHash= ${storageGet("pwdHash", null)}`;
+      msg = `${msg}\nCRYPTO.key= ${CRYPTO.key}`;
+    }
     alert(msg);
     el.passwordContainer.style.display = "none";
   }
@@ -457,11 +469,23 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register(swPath)
     .then((reg) => {
+      CRYPTO.key = createKey(CRYPTO.passwd);
+      const storedHash = storageGet("pwdHash", null);
+      const h = createHash(CRYPTO.passwd);
+      storageSet("pwdHash", h, null);
       if (debug) console.log("app: sw registered!", reg);
       if (debug) console.log("app: before createSplashScreen");
       if (debug) console.log("app: after createSplashScreen");
+      if (debug) console.log(`app: storedHash= ${storedHash}`);
       if (debug) console.log(`app: CRYPTO.passwd= ${CRYPTO.passwd}`);
+      if (debug) console.log(`app: new hash= ${h}`);
       if (debug) console.log(`app: CRYPTO.key= ${CRYPTO.key}`);
+      if (debug) {
+        let msg = `serviceWorker: storedHash= ${storedHash}\nnew hash= ${h}`;
+        msg = `${msg}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
+        msg = `${msg}\nCRYPTO.key= ${CRYPTO.key}`;
+        alert(msg);
+      }
       let opts = storageGet("options", CRYPTO.passwd);
       if (opts === null) {
         if (debug) console.log("app: register: null options in localStorage!");
