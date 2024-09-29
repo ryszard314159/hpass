@@ -11,6 +11,7 @@ TODO:
 */
 "use strict";
 
+// import { JSONStorage } from "node-localstorage";
 import { deepEqual, get_random_string, getPass, objDiff,
   CHARS, MAXLENGTH, MINLENGTH } from "./core/lib.js";
 import { storageGet, storageSet, getCallerInfo, createHash, createKey,
@@ -307,11 +308,16 @@ el.newPassword.addEventListener("keydown", (event) => {
   const masterPassword = el.masterPassword.value;
   const masterHash = createHash(masterPassword);
   const storedHash = localStorage.getItem("pwdHash");
+  let msg;
+  msg = `before Master Password change.`;
+  msg = `${msg}\nmasterPassword: ${masterPassword}, masterHash: ${masterHash.slice(0,6)}...`;
+  msg = `${msg}\nCRYPTO.passwd: ${CRYPTO.passwd},  storedHash: ${storedHash.slice(0,6)}...`;
+  alert(msg);
   if (masterHash !== storedHash) {
     let m = "Incorrect Master Password!"
     if (debug) {
-      m = `${m}\nstoredHash= ${storedHash}`;
-      m = `${m}\nmasterHash= ${masterHash}`;
+      m = `${m}\nstoredHash= ${storedHash.slice(0,6)}...`;
+      m = `${m}\nmasterHash= ${masterHash.slice(0,6)}...`;
       m = `${m}\nmasterPassword= ${masterPassword}`;
       m = `${m}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
     }
@@ -340,12 +346,12 @@ el.newPassword.addEventListener("keydown", (event) => {
   CRYPTO.passwd = newPassword;
   storageSet({key: "pwdHash", value: newHash, pwd: CRYPTO.passwd, encrypt: false, from: "el.newPassword"});
   localStorage.setItem("pwd", newPassword);
-  let msg = `Master Password changed.`;
-  msg = `${msg}\nold: ${masterPassword}`;
-  msg = `${msg}\nnew: ${newPassword}`;
-  msg = `${msg}\nstoredHash: ${storedHash}`;
-  msg = `${msg}\nnewHash: ${newHash}`;
+  msg = `Master Password changed.`;
+  msg = `${msg}\nold: ${masterPassword}, storedHash: ${storedHash.slice(0,6)}...`;
+  msg = `${msg}\nnew: ${newPassword}, newHash: ${newHash.slice(0,6)}...`;
+  msg = `${msg}\nCRYPTO.passwd: ${CRYPTO.passwd}`;
   alert(msg);
+  alert(`after Master Password changed: localStorage= ${JSON.stringify(localStorage)}`);
   el.passwordContainer.style.display = "none";
 });
 
@@ -458,9 +464,8 @@ function setGenericOptions() {
   if (debug) console.log("setGenericOptions: opts= ", opts);
   if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
   if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
-  storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, encrypt: true, from: "setGenericOptions"});
-  storageSet({key: "encrypted", value: true, pwd: CRYPTO.passwd, encrypt: false,
-              from: "setGenericOptions"}); // flag indicated that storage is encrypted
+  storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "setGenericOptions"});
+  storageSet({key: "encrypted", value: true, encrypt: false, from: "setGenericOptions"});
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
       You can use it as is or you can to change it
@@ -494,7 +499,7 @@ if ("serviceWorker" in navigator) {
       CRYPTO.key = createKey(CRYPTO.passwd);
       const storedHash = storageGet({key: "pwdHash", pwd: CRYPTO.passwd, decrypt: false});
       const h = createHash(CRYPTO.passwd);
-      storageSet({key: "pwdHash", value: h, pwd: CRYPTO.passwd, encrypt: false, from: "serviceWorker"});
+      storageSet({key: "pwdHash", value: h, encrypt: false, from: "serviceWorker"});
       localStorage.setItem("pwd", CRYPTO.passwd);
       if (debug) console.log("app: sw registered!", reg);
       if (debug) console.log("app: before createSplashScreen");
@@ -710,7 +715,7 @@ function handleExport(event, args) {
     opts.salt = el.salt.value;
     opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
     // setOptions(opts, CRYPTO.passwd);
-    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, encrypt: true, from: "handleExport"});
+    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "handleExport"});
     el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
     if (debug) console.log("handleExport save: opts= ", opts);
     // showPopup("settings saved!", SHORTPOPUP);
@@ -759,8 +764,10 @@ document.querySelectorAll(".reset").forEach(function(element) {
     const debug = false;
     if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
     event.preventDefault();
+    // alert(`.reset:0: localStorage= ${JSON.stringify(localStorage)}`);
     localStorage.clear();
     window.location.reload();
+    // alert(`.reset:1: localStorage= ${JSON.stringify(localStorage)}`);
   })
 });
 
@@ -768,26 +775,26 @@ document.getElementById("lock").addEventListener("click", function () {
   window.location.reload();
 });
 
-el.reset.addEventListener("dblclick", function (event) {
-  const debug = false;
-  if (debug) console.log("Event listener triggered!"); // Should log when clicked
-  event.preventDefault(); // Add this line
-  if (debug) {
-    console.log("app: 2: reset: el= ", el);
-    console.log("app: 2: reset: globalDefaults= ", globalDefaults);
-  }
-  const opts = {};
-  opts.salt = el.salt.value = globalDefaults.salt;
-  opts.pepper = el.pepper.value = globalDefaults.pepper;
-  opts.length = el.length.value = globalDefaults.length;
-  if (debug) {
-    console.log("app: 2: reset: el.salt.value= ", el.salt.value);
-    console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
-    console.log("app: 2: reset: el.length.value= ", el.length.value);
-  }
-  storageSet({key: "options", value: globalDefaults, pwd: CRYPTO.passwd, encrypt: true, from: "el.reset"});
-  showPopup("defaults restored!", SHORTPOPUP);
-});
+// el.reset.addEventListener("dblclick", function (event) {
+//   const debug = false;
+//   if (debug) console.log("Event listener triggered!"); // Should log when clicked
+//   event.preventDefault(); // Add this line
+//   if (debug) {
+//     console.log("app: 2: reset: el= ", el);
+//     console.log("app: 2: reset: globalDefaults= ", globalDefaults);
+//   }
+//   const opts = {};
+//   opts.salt = el.salt.value = globalDefaults.salt;
+//   opts.pepper = el.pepper.value = globalDefaults.pepper;
+//   opts.length = el.length.value = globalDefaults.length;
+//   if (debug) {
+//     console.log("app: 2: reset: el.salt.value= ", el.salt.value);
+//     console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
+//     console.log("app: 2: reset: el.length.value= ", el.length.value);
+//   }
+//   storageSet({key: "options", value: globalDefaults, pwd: CRYPTO.passwd, from: "el.reset"});
+//   showPopup("defaults restored!", SHORTPOPUP);
+// });
 
 el.hint.addEventListener("mouseout", () => {
   const debug = false;
@@ -852,7 +859,7 @@ function setHintOpts(hint, opts) {
     msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
     msg = `${msg}\nLength= ${opts.length}`;
     alert(msg);
-    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, encrypt: true, from: "setHintOpts"});
+    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "setHintOpts"});
     return;
   }
   let sites = storageGet({key: "sites", pwd: CRYPTO.passwd, decrypt: true});
@@ -864,7 +871,7 @@ function setHintOpts(hint, opts) {
     sites[hint] = diff; // store ony values different from generic
     if (debug) console.log(`setHintOpts: sites was not null, sites=`, sites);
   }
-  storageSet({key: "sites", value: sites, pwd: CRYPTO.passwd, encrypt: true, from: "setHintOpts"});
+  storageSet({key: "sites", value: sites, pwd: CRYPTO.passwd, from: "setHintOpts"});
 }
 
 // ...
@@ -875,7 +882,7 @@ function getHintOpts(hint) {
   let opts = storageGet({key: "options", pwd: CRYPTO.passwd, decrypt: true});
   if (opts === null) {
     opts = {...globalDefaults};
-    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, encrypt: true, from: "getHintOpts"});
+    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "getHintOpts"});
   }
   if (debug) console.log("getHintOpts: generic opts= ", opts);
   const sites = storageGet({key: "sites", pwd: CRYPTO.passwd, decrypt: true});

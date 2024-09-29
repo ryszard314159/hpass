@@ -521,10 +521,12 @@ function decryptJSON(json) {
 function storageSet(args) {
   const debug = false;
   const debugLevel = 9;
-  args = {key: null, value: null, pwd: null, encrypt: null, ...args};
-  if (args.key === null || args.value === null || args.pwd === null || args.encrypt === null) {
+  args = {key: null, value: null, pwd: null, encrypt: true, ...args};
+  // let msg = (args.key === null || args.value === null || args.encrypt === null) ? "null" : '';
+  let msg = (args.value === undefined || args.value === "undefined") ? `undefined` : '';
+  if (msg !== '') {
     console.log("storageSet: getCallStack= ", getCallStack());
-    alert(`storegeSet: ERROR null args= ${JSON.stringify(args)}`);
+    alert(`ERROR: storageSet: msg=${msg} args= ${JSON.stringify(args)}`);
   }
   const validKeys = new Set(["options", "sites", "pwdHash", "encrypted"]);
   if (!validKeys.has(args.key)) {
@@ -534,7 +536,7 @@ function storageSet(args) {
     console.log("storageSet: getCallStack()= ", getCallStack());
   }
   let rawValue = (typeof(args.value) !== 'string') ? JSON.stringify(args.value) : args.value;
-  let msg = `storageSet: args= ${JSON.stringify(args)}\storageSet: rawValue= ${rawValue}`;
+  msg = `storageSet: args= ${JSON.stringify(args)}\storageSet: rawValue= ${rawValue}`;
   if (debugLevel > 9) localStorage.setItem('pwd', args.pwd);
   if (args.encrypt) {
     // validateKey(pwd);
@@ -679,14 +681,14 @@ function encryptLocalStorage(password, keys) {
   keys.forEach(key => {
     const value = storageGet({key: key, pwd: password, decrypt: true});
     // if (debug) console.log(`encryptLocalStorage: k= ${k}`, "v= ", v);
-    if (value === null) {
-      alert(`encryptLocalStorage: ERROR: value==null for key= ${key}`);
-    } else {
+    // if (value === null) {
+    //   alert(`encryptLocalStorage: ERROR: value==null for key= ${key}`);
+    // } else {
       if (!CRYPTO.encryptedItems.includes(key)) {
         alert(`encryptLocalStorage: ERROR: invalid key= ${key}`);
       }
-      storageSet({key: key, value: value, pwd: password, encrypt: true, from: `encryptLocalStorage`});
-    }
+      storageSet({key: key, value: value, pwd: password, from: `encryptLocalStorage`});
+    // }
   });
   storageSet({key: "encrypted", value: true, pwd: password, encrypt: false, from: "encryptLocalStorage"});
   // CRYPTO.encryptedStorage = true;
