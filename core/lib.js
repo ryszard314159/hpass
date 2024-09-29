@@ -519,34 +519,53 @@ function decryptJSON(json) {
 }
 
 function storageSet(args) {
-  const debug = false;
-  const debugLevel = 9;
+  const debug = 0;
   args = {key: null, value: null, pwd: null, encrypt: true, ...args};
+  // const debugLevel = 9;
+  let err = 0;
+  const validTypes = new Set(["string", "object", "boolean"]);
+  let msg;
+  if (!validTypes.has(typeof(args.value))) {
+    msg = `ERROR: storageSet: invalid typeof(args.value)= ${typeof(args.value)}`;
+    err++;
+  }
   // let msg = (args.key === null || args.value === null || args.encrypt === null) ? "null" : '';
-  let msg = (args.value === undefined || args.value === "undefined") ? `undefined` : '';
-  if (msg !== '') {
-    console.log("storageSet: getCallStack= ", getCallStack());
-    alert(`ERROR: storageSet: msg=${msg} args= ${JSON.stringify(args)}`);
+  if (args.value === undefined || args.value === "undefined") {
+    msg = `${msg}\nERROR: storageSet: args.value= ${args.value}, args.key= ${args.key}}`;
+    err++;
   }
   const validKeys = new Set(["options", "sites", "pwdHash", "encrypted"]);
   if (!validKeys.has(args.key)) {
-    alert(`ERROR: storageSet: invalid key= ${args.key}`);
-    alert(`ERROR: storageSet: args= ${JSON.stringify(args)}`);
-    console.log(`storageSet: args= ${JSON.stringify(args)}`);
-    console.log("storageSet: getCallStack()= ", getCallStack());
+    msg = `${msg}\nERROR: storageSet: invalid args.key= ${args.key}`;
+    err++;
   }
   let rawValue = (typeof(args.value) !== 'string') ? JSON.stringify(args.value) : args.value;
-  msg = `storageSet: args= ${JSON.stringify(args)}\storageSet: rawValue= ${rawValue}`;
-  if (debugLevel > 9) localStorage.setItem('pwd', args.pwd);
+  msg = `${msg}\nINFO: storageSet: rawValue= ${rawValue}`;
+  // if (debugLevel > 9) localStorage.setItem('pwd', args.pwd);
+  let finalValue = rawValue;
   if (args.encrypt) {
     // validateKey(pwd);
     CRYPTO.key = createKey(args.pwd);
-    const encryptedValue = CryptoJS.AES.encrypt(rawValue, CRYPTO.key);
-    localStorage.setItem(args.key, encryptedValue);
-    msg = `${msg}\nstorageSet: encryptedValue= ${encryptedValue}`;
-    msg = `${msg}\nstorageSet: CRYPTO.key= ${CRYPTO.key}`;
-  } else {
-    localStorage.setItem(args.key, rawValue);
+    const encryptedValue = CryptoJS.AES.encrypt(rawValue, CRYPTO.key).toString();
+    if (encryptedValue === undefined || encryptedValue === 'undefined') {
+      msg = `${msg}\nINFO: storageSet: undefined encryptedValue= ${encryptedValue}`;
+      err++;
+    }
+    msg = `${msg}\nINFO: storageSet: rawValue= ${rawValue}`;
+    msg = `${msg}\nINFO: storageSet: encryptedValue= ${encryptedValue}`;
+    msg = `${msg}\nINFO: storageSet: CRYPTO.key= ${CRYPTO.key}`;
+    finalValue = encryptedValue;
+  }
+  localStorage.setItem(args.key, finalValue);
+  if (1) {
+    if (localStorage.getItem(args.key) === 'undefined') {
+      msg = `${msg}\nERROR: storageSet: stored undefined for args.key= ${args.key}, rawValue= ${rawValue}`;
+      err++;
+    }
+  }
+  if (err > 0 || debug > 1) {
+    alert(msg);
+    console.log("ERROR: storageSet: CallStack= ", getCallStack());
   }
   // if (args.from !== undefined) {
   // write some log
@@ -554,15 +573,15 @@ function storageSet(args) {
     log = `${args.from}:${args.key}|${log}`;
     localStorage.setItem("log", log);
   // }
-  if (debug) {
-    // function getCallStack() {
-    //   const error = new Error();
-    //   return error.stack;
-    // }
-    console.log("storageSet: getCallStack: ", getCallStack());
-    console.log(msg);
-    alert(msg);
-  }
+  // if (debug) {
+  //   // function getCallStack() {
+  //   //   const error = new Error();
+  //   //   return error.stack;
+  //   // }
+  //   console.log("storageSet: getCallStack: ", getCallStack());
+  //   console.log(msg);
+  //   alert(msg);
+  // }
 }
 
 // function storageGet(storageKey, pwd) {
