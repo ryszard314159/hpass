@@ -102,6 +102,11 @@ el.fileInputModal = document.getElementById("fileInputModal");
 //   openEmailClient("info@hpass.app", "subject", "This is the email body");
 // });
 
+// function getCallStack() {
+//   const error = new Error();
+//   return error.stack;
+// }
+
 function noIdlingHere() {
   function yourFunction() {
       // alert('inactive!');
@@ -270,11 +275,11 @@ el.masterPassword.addEventListener("keydown", (event) => {
         CRYPTO.passwd = '';
         oldHash = createHash('');
         localStorage.setItem("pwdHash", oldHash);
+        localStorage.setItem("pwd", CRYPTO.passwd);
         return;
       }
       const pwd = el.masterPassword.value;
       const pwdHash = createHash(pwd);
-      // localStorage.setItem("pwdHash", oldHash);
       if (debug) {
         console.log(`masterPassword: CRYPTO.passwd= ${CRYPTO.passwd}`);
         console.log(`masterPassword: pwd= ${pwd}`);
@@ -299,59 +304,73 @@ el.newPassword.addEventListener("keydown", (event) => {
   // event.preventDefault();
   // if (debug) console.log(`el.newPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key !== 'Enter') return;
+  const masterPassword = el.masterPassword.value;
+  const masterHash = createHash(masterPassword);
   const storedHash = localStorage.getItem("pwdHash");
-  const currentHash = createHash(el.masterPassword.value)
-  if (debug) console.log(`newPassword: storedHash= ${storedHash}`);
-  if (debug) console.log(`newPassword: currentHash= ${currentHash}`);
-  let msg = `Master Password (='${CRYPTO.passwd}')`;
-  if (debug) console.log(`0:msg= ${msg}`);
-  if (currentHash !== storedHash) {
+  if (masterHash !== storedHash) {
     let m = "Incorrect Master Password!"
     if (debug) {
       m = `${m}\nstoredHash= ${storedHash}`;
-      m = `${m}\ncurrentHash= ${currentHash}`;
-      m = `${m}\nel.masterPassword.value= ${el.masterPassword.value}`;
+      m = `${m}\nmasterHash= ${masterHash}`;
+      m = `${m}\nmasterPassword= ${masterPassword}`;
+      m = `${m}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
     }
     alert(m);
     return;
-  } else {
-    const v = el.newPassword.value;
-    const newPassword = (v.length > 0) ? v : ''; // null changed to ''
-    // msg =  (newPassword !== CRYPTO.passwd) ? `${msg} changed.` : `${msg} NOT changed.`
-    if (debug) console.log(`newPassword: newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
-    if (debug) console.log(`newPassword:1: msg= ${msg}`);
-    if (newPassword !== CRYPTO.passwd) {
-      msg = `${msg} changed.`
-      const h = createHash(newPassword);
-      // localStorage.setItem("pwdHash", h);
-      storageSet("pwdHash", h, null);
-      if (debug) console.log(`newPassword: new password= ${newPassword}`);
-      if (debug) console.log(`newPassword: new password hash= ${h}`);
-      msg = `${msg}\nNew Master Password is: ${newPassword}`
-      if (debug) console.log(`newPassword: decrypted with CRYPTO.passwd= ${CRYPTO.passwd}`);
-      if (debug) console.log(`newPassword: decrypted with CRYPTO.key= ${CRYPTO.key}`);
-      decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
-      CRYPTO.key = createKey(CRYPTO.passwd);
-      CRYPTO.oldPassword = CRYPTO.passwd;
-      CRYPTO.passwd = newPassword;
-      encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
-      if (debug) console.log(`newPassword: encrypted with CRYPTO.passwd= ${CRYPTO.passwd}`);
-      if (debug) console.log(`newPassword: encrypted with CRYPTO.key= ${CRYPTO.key}`);
-    } else {
-      msg = `${msg} NOT changed.`
-    }
-    if (debug) console.log(`newPassword:2: msg= ${msg}`);
-    if (debug) console.log("newPassword: CRYPTO.passwd= ", CRYPTO.passwd);
-    if (debug) console.log("newPassword: CRYPTO.oldPassword= ", CRYPTO.oldPassword);
-    if (debug) {
-      msg = `${msg}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
-      msg = `${msg}\npwdHash= ${storageGet("pwdHash", null)}`;
-      msg = `${msg}\nCRYPTO.key= ${CRYPTO.key}`;
-    }
-    alert(msg);
-    el.passwordContainer.style.display = "none";
   }
+  if (masterPassword !== CRYPTO.passwd) {
+    let m = "Incorrect Master Password!"
+    if (debug) {
+      m = `${m}\nmasterPassword= ${masterPassword}`;
+      m = `${m}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
+    }
+    alert(m);
+  }
+  const newPassword = el.newPassword.value;
+  const newHash = createHash(newPassword);
+  if (typeof(newPassword) !== 'string') {
+    alert(`el.newPassword: ERROR: non-string: typeof(el.value)= ${typeof(newPassword)}`)
+  }
+  if (newPassword === masterPassword) {
+    alert(`Master Password (=${masterPassword}) NOT changed`);
+    return;
+  }
+  decryptLocalStorage(masterPassword, CRYPTO.encryptedItems);
+  encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
+  CRYPTO.passwd = newPassword;
+  storageSet({key: "pwdHash", value: newHash, pwd: CRYPTO.passwd, encrypt: false, from: "el.newPassword"});
+  localStorage.setItem("pwd", newPassword);
+  let msg = `Master Password changed.`;
+  msg = `${msg}\nold: ${masterPassword}`;
+  msg = `${msg}\nnew: ${newPassword}`;
+  msg = `${msg}\nstoredHash: ${storedHash}`;
+  msg = `${msg}\nnewHash: ${newHash}`;
+  alert(msg);
+  el.passwordContainer.style.display = "none";
 });
+
+// if (debug) console.log(`newPassword: storedHash= ${storedHash}`);
+// if (debug) console.log(`newPassword: currentHash= ${currentHash}`);
+    // // msg =  (newPassword !== CRYPTO.passwd) ? `${msg} changed.` : `${msg} NOT changed.`
+    // if (debug) console.log(`newPassword: newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
+    // if (debug) console.log(`newPassword:1: msg= ${msg}`);
+    // if (debug) alert(`el.newPassword: newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
+    // if (debug) console.log(`newPassword: new password= ${newPassword}`);
+    // if (debug) console.log(`newPassword: new password hash= ${h}`);
+    // if (debug) console.log(`newPassword: decrypted with CRYPTO.passwd= ${CRYPTO.passwd}`);
+    // if (debug) console.log(`newPassword: decrypted with CRYPTO.key= ${CRYPTO.key}`);
+    // if (debug) alert(`el.newPassword: before decrypt: CRYPTO.passwd= ${CRYPTO.passwd}`);
+    // if (debug) console.log(`newPassword: encrypted with CRYPTO.passwd= ${CRYPTO.passwd}`);
+    // if (debug) console.log(`newPassword: encrypted with CRYPTO.key= ${CRYPTO.key}`);
+    // if (debug) console.log(`newPassword:2: msg= ${msg}`);
+    // if (debug) console.log("newPassword: CRYPTO.passwd= ", CRYPTO.passwd);
+    // if (debug) console.log("newPassword: CRYPTO.oldPassword= ", CRYPTO.oldPassword);
+    // if (debug) {
+    //   msg = `${msg}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
+    //   msg = `${msg}\npwdHash= ${storageGet({key: "pwdHash", pwd: CRYPTO.passwd, decrypt: false})}`;
+    //   msg = `${msg}\nCRYPTO.key= ${CRYPTO.key}`;
+    // }
+    // if (debug) alert(`el.newPassword: before encrypt: newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
 
 // (async () => {
 //   try {
@@ -372,6 +391,7 @@ function createSplashScreen(opts) {
   const debug = false;
   const pwdHash = createHash(CRYPTO.passwd);
   localStorage.setItem("pwdHash", pwdHash);
+  localStorage.setItem("pwd", CRYPTO.passwd);
   let msg = `<h3>To start using HPASS:</h3>
   <ul>
   <li>Read the <strong>Basics</strong> below.
@@ -437,8 +457,10 @@ function setGenericOptions() {
   opts.salt = get_random_string(16, charset);
   if (debug) console.log("setGenericOptions: opts= ", opts);
   if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
-  storageSet("options", opts, CRYPTO.passwd);
-  storageSet("encrypted", true, null); // flag indicated that storage is encrypted
+  if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
+  storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, encrypt: true, from: "setGenericOptions"});
+  storageSet({key: "encrypted", value: true, pwd: CRYPTO.passwd, encrypt: false,
+              from: "setGenericOptions"}); // flag indicated that storage is encrypted
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
       You can use it as is or you can to change it
@@ -463,16 +485,17 @@ function setGenericOptions() {
 // (2) https://www.youtube.com/watch?v=1d3KgacJv1I (Debugging Serviceworker Controller null)
 //
 if ("serviceWorker" in navigator) {
-  const debug = true;
+  const debug = false;
   const swPath = "sw.js";
   if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
     .register(swPath)
     .then((reg) => {
       CRYPTO.key = createKey(CRYPTO.passwd);
-      const storedHash = storageGet("pwdHash", null);
+      const storedHash = storageGet({key: "pwdHash", pwd: CRYPTO.passwd, decrypt: false});
       const h = createHash(CRYPTO.passwd);
-      storageSet("pwdHash", h, null);
+      storageSet({key: "pwdHash", value: h, pwd: CRYPTO.passwd, encrypt: false, from: "serviceWorker"});
+      localStorage.setItem("pwd", CRYPTO.passwd);
       if (debug) console.log("app: sw registered!", reg);
       if (debug) console.log("app: before createSplashScreen");
       if (debug) console.log("app: after createSplashScreen");
@@ -486,7 +509,7 @@ if ("serviceWorker" in navigator) {
         msg = `${msg}\nCRYPTO.key= ${CRYPTO.key}`;
         alert(msg);
       }
-      let opts = storageGet("options", CRYPTO.passwd);
+      let opts = storageGet({key: "options", pwd: CRYPTO.passwd, decrypt: true});
       if (opts === null) {
         if (debug) console.log("app: register: null options in localStorage!");
         opts = setGenericOptions();
@@ -687,7 +710,7 @@ function handleExport(event, args) {
     opts.salt = el.salt.value;
     opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
     // setOptions(opts, CRYPTO.passwd);
-    storageSet("options", opts, CRYPTO.passwd);
+    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, encrypt: true, from: "handleExport"});
     el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
     if (debug) console.log("handleExport save: opts= ", opts);
     // showPopup("settings saved!", SHORTPOPUP);
@@ -762,7 +785,7 @@ el.reset.addEventListener("dblclick", function (event) {
     console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
     console.log("app: 2: reset: el.length.value= ", el.length.value);
   }
-  storageSet("options", globalDefaults, CRYPTO.passwd);
+  storageSet({key: "options", value: globalDefaults, pwd: CRYPTO.passwd, encrypt: true, from: "el.reset"});
   showPopup("defaults restored!", SHORTPOPUP);
 });
 
@@ -811,7 +834,7 @@ function setHintOpts(hint, opts) {
   if (!q) {
     alert('setHintOpts: invalid keys opts!');
   }
-  const x = storageGet("options", CRYPTO.passwd);
+  const x = storageGet({key: "options", pwd: CRYPTO.passwd, decrypt: true});
   const generic = (x === null) ? setGenericOptions() : x;
   if (debug) {
     console.log(`setHintOpts: generic=`, generic);
@@ -829,10 +852,10 @@ function setHintOpts(hint, opts) {
     msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
     msg = `${msg}\nLength= ${opts.length}`;
     alert(msg);
-    storageSet("options", opts, CRYPTO.passwd);
+    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, encrypt: true, from: "setHintOpts"});
     return;
   }
-  let sites = storageGet("sites", CRYPTO.passwd);
+  let sites = storageGet({key: "sites", pwd: CRYPTO.passwd, decrypt: true});
   if (debug) console.log(`setHintOpts: hint= ${hint}`);
   if (sites === null) {
     sites = {[hint]: diff};
@@ -841,7 +864,7 @@ function setHintOpts(hint, opts) {
     sites[hint] = diff; // store ony values different from generic
     if (debug) console.log(`setHintOpts: sites was not null, sites=`, sites);
   }
-  storageSet("sites", sites, CRYPTO.passwd);
+  storageSet({key: "sites", value: sites, pwd: CRYPTO.passwd, encrypt: true, from: "setHintOpts"});
 }
 
 // ...
@@ -849,13 +872,13 @@ function getHintOpts(hint) {
   const debug = false;
   // alert(`getHintOpts: hint= ${hint}`)
   if (debug) console.log("getHintOpts: hint= ", hint)
-  let opts = storageGet("options", CRYPTO.passwd);
+  let opts = storageGet({key: "options", pwd: CRYPTO.passwd, decrypt: true});
   if (opts === null) {
     opts = {...globalDefaults};
-    storageSet("options", opts, CRYPTO.passwd);
+    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, encrypt: true, from: "getHintOpts"});
   }
   if (debug) console.log("getHintOpts: generic opts= ", opts);
-  const sites = storageGet("sites", CRYPTO.passwd);
+  const sites = storageGet({key: "sites", pwd: CRYPTO.passwd, decrypt: true});
   if (debug) console.log("getHintOpts: sites= ", sites);
   if (sites !== null && sites[hint] !== undefined) {
     if (debug) console.log(`getHintOpts: hint-specific: sites[${hint}]= `, sites[hint]);

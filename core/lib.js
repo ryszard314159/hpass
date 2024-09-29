@@ -27,7 +27,7 @@ CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
 CHARS.upper = CHARS.lower.toUpperCase();
 CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
-const CRYPTO = {key: null, prefix: 'prefix:', passwd: ''};
+const CRYPTO = {key: null, prefix: 'prefix:', passwd: '0'};
 CRYPTO.encryptedItems = ["options", "sites"];
 // CRYPTO.encryptedStorage = true;
 CRYPTO.decryptedIOuntil = 0;
@@ -98,6 +98,11 @@ CRYPTO.enableDecryptedIO = () => {
 //     return true;
 //   }
 // });
+
+function getCallStack() {
+  const error = new Error();
+  return error.stack;
+}
 
 function EncryptedStorageHandler(property, value) {
   console.log(`EncryptedStorage State changed: ${property} = ${value}`);
@@ -513,49 +518,109 @@ function decryptJSON(json) {
   return CryptoJS.AES.encrypt(s, CRYPTO.key);
 }
 
-function storageSet(storageKey, obj, pwd) {
-  const debug = true;
-  let value = (pwd !== null) ? JSON.stringify(obj) : obj;
-  if (debug) console.log("storageSet:0: obj= ", obj);
-  if (debug) console.log("storageSet:0: value= ", value);
-  if (pwd !== null) {
-    // validateKey(pwd);
-    CRYPTO.key = createKey(pwd);
-    value = CryptoJS.AES.encrypt(value, CRYPTO.key);
+function storageSet(args) {
+  const debug = false;
+  const debugLevel = 9;
+  args = {key: null, value: null, pwd: null, encrypt: null, ...args};
+  if (args.key === null || args.value === null || args.pwd === null || args.encrypt === null) {
+    console.log("storageSet: getCallStack= ", getCallStack());
+    alert(`storegeSet: ERROR null args= ${JSON.stringify(args)}`);
   }
-  localStorage.setItem(storageKey, value);
+  const validKeys = new Set(["options", "sites", "pwdHash", "encrypted"]);
+  if (!validKeys.has(args.key)) {
+    alert(`ERROR: storageSet: invalid key= ${args.key}`);
+    alert(`ERROR: storageSet: args= ${JSON.stringify(args)}`);
+    console.log(`storageSet: args= ${JSON.stringify(args)}`);
+    console.log("storageSet: getCallStack()= ", getCallStack());
+  }
+  let rawValue = (typeof(args.value) !== 'string') ? JSON.stringify(args.value) : args.value;
+  let msg = `storageSet: args= ${JSON.stringify(args)}\storageSet: rawValue= ${rawValue}`;
+  if (debugLevel > 9) localStorage.setItem('pwd', args.pwd);
+  if (args.encrypt) {
+    // validateKey(pwd);
+    CRYPTO.key = createKey(args.pwd);
+    const encryptedValue = CryptoJS.AES.encrypt(rawValue, CRYPTO.key);
+    localStorage.setItem(args.key, encryptedValue);
+    msg = `${msg}\nstorageSet: encryptedValue= ${encryptedValue}`;
+    msg = `${msg}\nstorageSet: CRYPTO.key= ${CRYPTO.key}`;
+  } else {
+    localStorage.setItem(args.key, rawValue);
+  }
+  // if (args.from !== undefined) {
+  // write some log
+    let log = localStorage.getItem("log");
+    log = `${args.from}:${args.key}|${log}`;
+    localStorage.setItem("log", log);
+  // }
   if (debug) {
-    console.log(`storageSet: storageKey= ${storageKey}`);
-    console.log(`storageSet: pwd= ${pwd}, CRYPTO.key= ${CRYPTO.key}`);
-    console.log("storageSet:1: value= ", value);
+    // function getCallStack() {
+    //   const error = new Error();
+    //   return error.stack;
+    // }
+    console.log("storageSet: getCallStack: ", getCallStack());
+    console.log(msg);
+    alert(msg);
   }
 }
 
-function storageGet(storageKey, pwd) {
-  const debug = true;
-  if (debug) console.log(`storageGet: storageKey= ${storageKey}, pwd= ${pwd}`);
-  let value = localStorage.getItem(storageKey);
-  if (debug) console.log(`storageGet:0: value= ${value}`);
-  if (value === null) {
-    if (debug) console.log(`storageGet:1: returning value= ${value}`);
-    return value;
+// function storageGet(storageKey, pwd) {
+function storageGet(args) {
+  args = {key: null, pwd: null, decrypt: null, ...args};
+  if (args.storageKey === null || args.pwd === null || args.decrypt === null) {
+    console.log("storageGet: getCallStack= ", getCallStack());
+    alert(`ERROR: storageGet: null args, args= ${JSON.stringify(args)}`)
   }
-  if (pwd !== null) {
-    if (debug) console.log(`storageGet:2: pwd= ${pwd}, CRYPTO.key= ${CRYPTO.key}`);
+  const debug = false;
+  const encryptedItems = new Set(["options", "sites"]);
+  if (encryptedItems.has(args.key) && args.pwd === null) {
+    alert(`storageGet: args= ${JSON.stringify(args)}`);
+    console.log("storageGet: CallStack= ", getCallStack());
+  }
+  let rawValue = localStorage.getItem(args.key);
+  let decryptedValue = null;
+  if (rawValue === null) {
+    if (debug) console.log(`storageGet:1: returning rawValue= ${rawValue}`);
+    return rawValue;
+  }
+  if (args.decrypt) {
+    if (debug) console.log(`storageGet:2: CRYPTO.key= ${CRYPTO.key}`);
     // validateKey(pwd); // validate CRYPTO.key
-    CRYPTO.key = createKey(pwd);
-    if (debug) console.log(`storageGet:3: pwd= ${pwd}, CRYPTO.key= ${CRYPTO.key}`);
-    value = CryptoJS.AES.decrypt(value, CRYPTO.key).toString(CryptoJS.enc.Utf8);
+    CRYPTO.key = createKey(args.pwd);
+    if (debug) console.log(`storageGet:3: CRYPTO.key= ${CRYPTO.key}`);
+    try {
+    decryptedValue = CryptoJS.AES.decrypt(rawValue, CRYPTO.key).toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+      alert(`storageGet: rawValue= ${rawValue}, args.pwd= ${args.pwd}, CRYPTO.key= ${CRYPTO.key}`);
+      console.log("storageGet: error= ", error);
+    }
+  } else {
+    decryptedValue = rawValue; // no decryption if pwd === null
   }
-  if (debug) console.log(`storageGet:4: value= ${value}`);
+  let finalValue = decryptedValue;
   try {
-    value = JSON.parse(value);
+    finalValue = JSON.parse(decryptedValue);
   } catch (error) {
-    console.log("storageGet: JSON parse error=", error);
-  } finally {
-    console.log("storageGet: JSON parse error: value=", value);
+    if (debug) {
+      console.log("storageGet:c: JSON parse error=", error);
+      console.log(`storageGet:c: key= ${args.key}, pwd= ${args.pwd}`);
+      console.log(`storageGet:c: args= ${JSON.stringify(args)}`);
+      console.log(`storageGet:c: rawValue= ${rawValue}`);
+      console.log(`storageGet:c: decryptedValue= ${decryptedValue}`);
+      console.log("storageGet:c: finalValue= ", finalValue);
+    }
+  // } finally {
+  //   console.log(`storageGet:f: storageKey= ${storageKey}, pwd= ${pwd}`);
+  //   console.log(`storageGet:f: rawValue= ${rawValue}`);
+  //   console.log(`storageGet:f: decryptedValue= ${decryptedValue}`);
+  //   console.log("storageGet:f: finalValue= ", finalValue);
   }
-  return value;
+  if (debug) {
+    console.log(`storageGet: args= ${JSON.stringify(args)}`);
+    console.log(`storageGet: rawValue= ${rawValue}`);
+    console.log(`storageGet: decryptedValue= ${decryptedValue}`);
+    console.log("storageGet: finalValue= ", finalValue);
+  }
+  return finalValue;
 };
 
 // function getOptions(pwd) {
@@ -597,28 +662,39 @@ function createHash(pwd) {
 
 function encryptLocalStorage(password, keys) {
   const debug = false;
+  if (debug) alert(`encryptLocalStorage: start: password= ${password}`);
+  // check if keys are valid...
+  const valid = keys.every((x) => CRYPTO.encryptedItems.includes(x)) &&
+                CRYPTO.encryptedItems.every((x) => keys.includes(x));
+  if (!valid) alert(`encryptLocalStorage: ERROR: invalid keys= ${JSONstringify(keys)}`);
   // const encrypted = localStorage.getItem('encrypted');
-  const encrypted = storageGet("encrypted", null);
+  const encrypted = storageGet({key: "encrypted", pwd: password, decrypt: false});
   if (debug) console.log("encryptLocalStorage: password= ", password);
-  if (debug) console.log("encryptLocalStorage: keys= ", keys);
   if (debug) console.log("encryptLocalStorage: encrypted= ", encrypted);
   if (debug) console.log(`encryptLocalStorage: keys= ${keys}`);
   if (encrypted) {
     alert("WARNING: encryptLocalStorage: already encrypted!");
     return;
   }
-  keys.forEach(k => {
-    const v = storageGet(k, null);
-    if (debug) console.log(`encryptLocalStorage: k= ${k}`, "v= ", v);
-    if (v !== null) storageSet(k, v, password);
+  keys.forEach(key => {
+    const value = storageGet({key: key, pwd: password, decrypt: true});
+    // if (debug) console.log(`encryptLocalStorage: k= ${k}`, "v= ", v);
+    if (value === null) {
+      alert(`encryptLocalStorage: ERROR: value==null for key= ${key}`);
+    } else {
+      if (!CRYPTO.encryptedItems.includes(key)) {
+        alert(`encryptLocalStorage: ERROR: invalid key= ${key}`);
+      }
+      storageSet({key: key, value: value, pwd: password, encrypt: true, from: `encryptLocalStorage`});
+    }
   });
-  storageSet('encrypted', true, null);
+  storageSet({key: "encrypted", value: true, pwd: password, encrypt: false, from: "encryptLocalStorage"});
   // CRYPTO.encryptedStorage = true;
 }
 
 function decryptLocalStorage(password, keys) {
-  const debug = true;
-  const encrypted = storageGet('encrypted', null);
+  const debug = false;
+  const encrypted = storageGet({key: "encrypted", pwd: password, decrypt: false});
   // if (encrypted !== CRYPTO.encryptedStorage) alert("decryptLocalStorage: encrypted !== CRYPTO.encryptedStorage")
   if (debug) console.log("decryptLocalStorage: password= ", password);
   if (debug) console.log("decryptLocalStorage: keys= ", keys);
@@ -627,12 +703,20 @@ function decryptLocalStorage(password, keys) {
     alert("WARNING: decryptLocalStorage: already decrypted!");
     return;
   }
-  keys.forEach(k => {
-    const v = storageGet(k, password);
-    if (debug) console.log(`decryptLocalStorage: k= ${k}`, "v= ", v);
-    if (v !== null) storageSet(k, v, null);
+  console.log("decryptLocalStorage:0: localStorage= ", localStorage);
+  keys.forEach(key => {
+    const value = storageGet({key: key, pwd: password, decrypt: true});
+    if (debug) console.log(`decryptLocalStorage: key= ${key}, value= ${value}`);
+    // if (o === null) alert(`decryptLocalStorage: null for key= ${key}`);
+    if (key === true) {
+      alert(`decryptLocalStorage: key===true, keys=${JSON.stringify(keys)}`);
+    }
+    if (value !== null) {
+      storageSet({key: key, value: value, pwd: password, encrypt: false, from: `decryptLocalStorage@709`});
+    }
   });
-  storageSet('encrypted', false, null);
+  storageSet({key: "encrypted", value: false, pwd: password, encrypt: false, from: "decryptLocalStorage@712"});
+  console.log("decryptLocalStorage:1: localStorage= ", localStorage);
   // CRYPTO.encryptedStorage = false;
 }
 
