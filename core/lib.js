@@ -175,13 +175,6 @@ function exportLocalStorage(encrypted=true) {
   const data = JSON.stringify(localStorage);
 }
 
-function importLocalStorage(encrypted=true) {
-  const data = JSON.parse(/*paste stringified JSON from clipboard*/);
-  Object.keys(data).forEach(function (k) {
-    localStorage.setItem(k, JSON.stringify(data[k]));
-  });
-}
-
 function objDiff(x, y) {
   const diff = {};
   for (let key in x) {
@@ -524,9 +517,9 @@ function storageSet(args) {
   // const debugLevel = 9;
   let err = 0;
   const validTypes = new Set(["string", "object", "boolean"]);
-  let msg;
+  let msg = 'storageSet: START';
   if (!validTypes.has(typeof(args.value))) {
-    msg = `ERROR: storageSet: invalid typeof(args.value)= ${typeof(args.value)}`;
+    msg = `${msg}\nERROR: storageSet: invalid typeof(args.value)= ${typeof(args.value)}`;
     err++;
   }
   // let msg = (args.key === null || args.value === null || args.encrypt === null) ? "null" : '';
@@ -534,14 +527,13 @@ function storageSet(args) {
     msg = `${msg}\nERROR: storageSet: args.value= ${args.value}, args.key= ${args.key}}`;
     err++;
   }
-  const validKeys = new Set(["options", "sites", "pwdHash", "encrypted"]);
+  const validKeys = new Set(["options", "sites", "pwdHash", "encrypted", "pwd"]);
   if (!validKeys.has(args.key)) {
     msg = `${msg}\nERROR: storageSet: invalid args.key= ${args.key}`;
     err++;
   }
   let rawValue = (typeof(args.value) !== 'string') ? JSON.stringify(args.value) : args.value;
   msg = `${msg}\nINFO: storageSet: rawValue= ${rawValue}`;
-  // if (debugLevel > 9) localStorage.setItem('pwd', args.pwd);
   let finalValue = rawValue;
   if (args.encrypt) {
     // validateKey(pwd);
@@ -587,7 +579,7 @@ function storageSet(args) {
 // function storageGet(storageKey, pwd) {
 function storageGet(args) {
   args = {key: null, pwd: null, decrypt: null, ...args};
-  if (args.storageKey === null || args.pwd === null || args.decrypt === null) {
+  if (args.storageKey === null || args.decrypt === null) {
     console.log("storageGet: getCallStack= ", getCallStack());
     alert(`ERROR: storageGet: null args, args= ${JSON.stringify(args)}`)
   }
@@ -609,9 +601,12 @@ function storageGet(args) {
     CRYPTO.key = createKey(args.pwd);
     if (debug) console.log(`storageGet:3: CRYPTO.key= ${CRYPTO.key}`);
     try {
-    decryptedValue = CryptoJS.AES.decrypt(rawValue, CRYPTO.key).toString(CryptoJS.enc.Utf8);
+      decryptedValue = CryptoJS.AES.decrypt(rawValue, CRYPTO.key).toString(CryptoJS.enc.Utf8);
     } catch (error) {
-      alert(`storageGet: rawValue= ${rawValue}, args.pwd= ${args.pwd}, CRYPTO.key= ${CRYPTO.key}`);
+      let msg = `ERROR: storageGet: rawValue= ${rawValue}, args= ${JSON.stringify(args)}`;
+      msg = `${msg}\nERROR: storageGet: CRYPTO.key= ${CRYPTO.key}`;
+      msg = `${msg}\nERROR: storageGet: error= ${error}`;
+      alert(msg);
       console.log("storageGet: error= ", error);
     }
   } else {
@@ -644,36 +639,6 @@ function storageGet(args) {
   return finalValue;
 };
 
-// function getOptions(pwd) {
-//   const debug = false;
-//   const info = getCallerInfo();
-//   const tag = `getOptions:`;
-//   if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
-//   let opts;
-//   validateKey(pwd);
-//   try {
-//     const x = localStorage.getItem("options");
-//     if (x !== null) {
-//       if (debug) console.log(`${tag} options= ${x}`);
-//       if (debug) console.log(`${tag} pwd= ${pwd}`);
-//       if (debug) console.log(`${tag} CRYPTO.key= ${CRYPTO.key}`);
-//       const dx = CryptoJS.AES.decrypt(x, CRYPTO.key).toString(CryptoJS.enc.Utf8);
-//       if (debug) console.log(`${tag} pwd= ${pwd}`);
-//       if (debug) console.log(`${tag} decrypted options= ${dx}`);
-//       opts = JSON.parse(dx);
-//       if (debug) console.log(`${tag} opts= `, opts);
-//     } else {
-//       opts = null;
-//     }
-//     return opts;
-//   }
-//   catch (err) {
-//     if (debug) console.log(`${tag}: caller info:`, getCallerInfo());
-//     if (debug) console.log(`${tag} ERROR: ${err.message}`);
-//     alert(`${tag} ERROR= ${err.message}`);
-//     return null;
-//   }
-// }
 
 function createHash(pwd) {
   // TODO: crypto.createHash('sha256').update(pwd).digest().toString()
@@ -682,13 +647,12 @@ function createHash(pwd) {
 }
 
 function encryptLocalStorage(password, keys) {
-  const debug = 1;
+  const debug = 0;
   if (debug > 1) alert(`encryptLocalStorage: start: password= ${password}`);
   // check if keys are valid...
   const valid = keys.every((x) => CRYPTO.encryptedItems.includes(x)) &&
                 CRYPTO.encryptedItems.every((x) => keys.includes(x));
   if (!valid) alert(`encryptLocalStorage: ERROR: invalid keys= ${JSONstringify(keys)}`);
-  // const encrypted = localStorage.getItem('encrypted');
   const encrypted = storageGet({key: "encrypted", pwd: password, decrypt: false});
   if (debug > 1) console.log("encryptLocalStorage: password= ", password);
   if (debug > 1) console.log("encryptLocalStorage: encrypted= ", encrypted);
@@ -715,7 +679,7 @@ function encryptLocalStorage(password, keys) {
 }
 
 function decryptLocalStorage(password, keys) {
-  const debug = 1;
+  const debug = 0;
   const encrypted = storageGet({key: "encrypted", pwd: password, decrypt: false});
   // if (encrypted !== CRYPTO.encryptedStorage) alert("decryptLocalStorage: encrypted !== CRYPTO.encryptedStorage")
   if (debug > 1) console.log("decryptLocalStorage: password= ", password);

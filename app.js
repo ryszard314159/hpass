@@ -275,10 +275,8 @@ el.masterPassword.addEventListener("keydown", (event) => {
         }));
         CRYPTO.passwd = '';
         oldHash = createHash('');
-        localStorage.setItem("pwdHash", oldHash);
-        if (debug > 1) storageSet({key: "pwdHash", value: oldHash});
-        if (debug > 1) storageSet({key: "pwd", value: CRYPTO.passwd});
-        localStorage.setItem("pwd", CRYPTO.passwd);
+        storageSet({key: "pwdHash", value: oldHash, encrypt: false, from: "el.masterPassword"});
+        storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "el.masterPassword"});
         return;
       }
       const pwd = el.masterPassword.value;
@@ -303,18 +301,27 @@ el.masterPassword.addEventListener("keydown", (event) => {
 });
 
 el.newPassword.addEventListener("keydown", (event) => {
-  const debug = true;
+  const debug = false;
   // event.preventDefault();
   // if (debug) console.log(`el.newPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key !== 'Enter') return;
   const masterPassword = el.masterPassword.value;
+  const newPassword = el.newPassword.value;
+  if (newPassword === masterPassword) {
+    alert(`Master Password (=${masterPassword}) NOT changed`);
+    el.newPassword.style.display = "none";
+    el.newPassword.value = '';
+    el.masterPassword.value = '';
+    return;
+  }
+  const storedHash = storageGet({key: "pwdHash", decrypt: false});
   const masterHash = createHash(masterPassword);
-  const storedHash = localStorage.getItem("pwdHash");
-  let msg;
-  msg = `before Master Password change.`;
+  const newHash = createHash(newPassword);
+  let msg = `before Master Password change.`;
   msg = `${msg}\nmasterPassword: ${masterPassword}, masterHash: ${masterHash.slice(0,6)}...`;
+  msg = `${msg}\nnewPassword: ${newPassword}, newHash: ${newHash.slice(0,6)}...`;
   msg = `${msg}\nCRYPTO.passwd: ${CRYPTO.passwd},  storedHash: ${storedHash.slice(0,6)}...`;
-  alert(msg);
+  if (debug) alert(msg);
   if (masterHash !== storedHash || masterPassword !== CRYPTO.passwd) {
     let m = "Incorrect Master Password!"
     if (debug) {
@@ -324,29 +331,44 @@ el.newPassword.addEventListener("keydown", (event) => {
       m = `${m}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
     }
     alert(m);
+    el.newPassword.value = '';
+    el.masterPassword.value = '';
     return;
   }
-  const newPassword = el.newPassword.value;
-  const newHash = createHash(newPassword);
   if (typeof(newPassword) !== 'string') {
     alert(`el.newPassword: ERROR: non-string: typeof(el.value)= ${typeof(newPassword)}`)
   }
-  if (newPassword === masterPassword) {
-    alert(`Master Password (=${masterPassword}) NOT changed`);
-    return;
-  }
   decryptLocalStorage(masterPassword, CRYPTO.encryptedItems);
   CRYPTO.passwd = newPassword;
-  storageSet({key: "pwdHash", value: newHash, pwd: CRYPTO.passwd, encrypt: false, from: "el.newPassword"});
-  localStorage.setItem("pwd", newPassword);
+  storageSet({key: "pwdHash", value: newHash, encrypt: false, from: "el.newPassword"});
+  storageSet({key: "pwd", value: newPassword, encrypt: false, from: "el.newPassword"});
   encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
-  msg = `Master Password changed.`;
-  msg = `${msg}\nold: ${masterPassword}, storedHash: ${storedHash.slice(0,6)}...`;
-  msg = `${msg}\nnew: ${newPassword}, newHash: ${newHash.slice(0,6)}...`;
-  msg = `${msg}\nCRYPTO.passwd: ${CRYPTO.passwd}`;
+  msg = `Master Password changed:`;
+  msg = `${msg}\nOld Password= ${masterPassword}`;
+  msg = `${msg}\nNew Password= ${newPassword}`;
+  if (debug) {
+    msg = `${msg}\nstoredHash: ${storedHash.slice(0,6)}...`;
+    msg = `${msg}\nnewHash: ${newHash.slice(0,6)}...`;
+    msg = `${msg}\nCRYPTO.passwd: ${CRYPTO.passwd}`;
+    }
   alert(msg);
-  alert(`after Master Password changed: localStorage= ${JSON.stringify(localStorage)}`);
+  if (debug) {
+    alert(`after Master Password changed: localStorage= ${JSON.stringify(localStorage)}`);
+  }
+  el.newPassword.value = '';
+  el.masterPassword.value = '';
   el.passwordContainer.style.display = "none";
+  el.newPassword.style.display = "none";
+  // DEBUG CODE
+  const salt = document.getElementById("salt").value;
+  const pepper = document.getElementById("pepper").value;
+  const length = document.getElementById("length").value;
+  if (pepper === 'undefined' || salt === 'undefined') {
+    alert(`ERROR: el.newPassword: salt= ${salt}, pepper= ${pepper}, length= ${length}`);
+    console.log(`ERROR: el.newPassword: CallStack= `, getCallStack());
+    alert(`ERROR: el.newPassword: call stack generated...`);
+  }
+  return;
 });
 
 // if (debug) console.log(`newPassword: storedHash= ${storedHash}`);
@@ -390,8 +412,8 @@ el.newPassword.addEventListener("keydown", (event) => {
 function createSplashScreen(opts) {
   const debug = false;
   const pwdHash = createHash(CRYPTO.passwd);
-  localStorage.setItem("pwdHash", pwdHash);
-  localStorage.setItem("pwd", CRYPTO.passwd);
+  storageSet({key: "pwdHash", value: pwdHash, encrypt: false, from: "createSplashScreen"});
+  storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "createSplashScreen"});
   let msg = `<h3>To start using HPASS:</h3>
   <ul>
   <li>Read the <strong>Basics</strong> below.
@@ -494,7 +516,7 @@ if ("serviceWorker" in navigator) {
       const storedHash = storageGet({key: "pwdHash", pwd: CRYPTO.passwd, decrypt: false});
       const h = createHash(CRYPTO.passwd);
       storageSet({key: "pwdHash", value: h, encrypt: false, from: "serviceWorker"});
-      localStorage.setItem("pwd", CRYPTO.passwd);
+      storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "serviceWorker"});
       if (debug) console.log("app: sw registered!", reg);
       if (debug) console.log("app: before createSplashScreen");
       if (debug) console.log("app: after createSplashScreen");
@@ -766,7 +788,8 @@ document.querySelectorAll(".reset").forEach(function(element) {
 });
 
 document.getElementById("lock").addEventListener("click", function () {
-  window.location.reload();
+  // window.location.reload();
+  el.passwordContainer.style.display = "block";
 });
 
 // el.reset.addEventListener("dblclick", function (event) {
@@ -1086,7 +1109,7 @@ function importLocalStorage(event) {
               const importedLocalStorage = JSON.parse(e.target.result);
               localStorage.clear();
               for (let k in importedLocalStorage) {
-                localStorage.setItem(k, importedLocalStorage[k]);
+                storageSet({key: k, value: importedLocalStorage[k], encrypt: false, from: "importLocalStorage"});
               }
               // const modal = document.getElementById("fileInputModal");
               el.fileInputModal.style.display = "none"; // TODO: modal is not defined
@@ -1100,6 +1123,13 @@ function importLocalStorage(event) {
       alert('No file selected.');
   }
 }
+
+// function importLocalStorage(encrypted=true) {
+//   const data = JSON.parse(/*paste stringified JSON from clipboard*/);
+//   Object.keys(data).forEach(function (k) {
+//     local?Storage.setItem(k, JSON.stringify(data[k]));
+//   });
+// }
 
 // Function to apply the settings to your application (example implementation)
 function applySettings(settings) {
