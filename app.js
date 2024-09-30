@@ -276,6 +276,8 @@ el.masterPassword.addEventListener("keydown", (event) => {
         CRYPTO.passwd = '';
         oldHash = createHash('');
         localStorage.setItem("pwdHash", oldHash);
+        if (debug > 1) storageSet({key: "pwdHash", value: oldHash});
+        if (debug > 1) storageSet({key: "pwd", value: CRYPTO.passwd});
         localStorage.setItem("pwd", CRYPTO.passwd);
         return;
       }
@@ -313,7 +315,7 @@ el.newPassword.addEventListener("keydown", (event) => {
   msg = `${msg}\nmasterPassword: ${masterPassword}, masterHash: ${masterHash.slice(0,6)}...`;
   msg = `${msg}\nCRYPTO.passwd: ${CRYPTO.passwd},  storedHash: ${storedHash.slice(0,6)}...`;
   alert(msg);
-  if (masterHash !== storedHash) {
+  if (masterHash !== storedHash || masterPassword !== CRYPTO.passwd) {
     let m = "Incorrect Master Password!"
     if (debug) {
       m = `${m}\nstoredHash= ${storedHash.slice(0,6)}...`;
@@ -323,14 +325,6 @@ el.newPassword.addEventListener("keydown", (event) => {
     }
     alert(m);
     return;
-  }
-  if (masterPassword !== CRYPTO.passwd) {
-    let m = "Incorrect Master Password!"
-    if (debug) {
-      m = `${m}\nmasterPassword= ${masterPassword}`;
-      m = `${m}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
-    }
-    alert(m);
   }
   const newPassword = el.newPassword.value;
   const newHash = createHash(newPassword);
@@ -342,10 +336,10 @@ el.newPassword.addEventListener("keydown", (event) => {
     return;
   }
   decryptLocalStorage(masterPassword, CRYPTO.encryptedItems);
-  encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
   CRYPTO.passwd = newPassword;
   storageSet({key: "pwdHash", value: newHash, pwd: CRYPTO.passwd, encrypt: false, from: "el.newPassword"});
   localStorage.setItem("pwd", newPassword);
+  encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
   msg = `Master Password changed.`;
   msg = `${msg}\nold: ${masterPassword}, storedHash: ${storedHash.slice(0,6)}...`;
   msg = `${msg}\nnew: ${newPassword}, newHash: ${newHash.slice(0,6)}...`;
