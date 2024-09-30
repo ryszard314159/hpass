@@ -421,37 +421,37 @@ export {
 
 // const CRYPTO_PREFIX = "prefix:"
 
-function getCallerInfo() {
-  try {
-      throw new Error();
-  } catch (e) {
-      if (e.stack) {
-          const stackLines = e.stack.split("\n");
-          // The first two lines are the error and the current function, so we want the caller of the caller
-          const callerLine = stackLines[3].trim(); // Adjust index if needed
-          const match = callerLine.match(/at (\S+) \((.*):(\d+):(\d+)\)/);
-          if (match) {
-              return {
-                  functionName: match[1],
-                  filePath: match[2],
-                  lineNumber: match[3],
-                  columnNumber: match[4]
-              };
-          } else {
-              const altMatch = callerLine.match(/at (.*):(\d+):(\d+)/);
-              if (altMatch) {
-                  return {
-                      functionName: '<anonymous>',
-                      filePath: altMatch[1],
-                      lineNumber: altMatch[2],
-                      columnNumber: altMatch[3]
-                  };
-              }
-          }
-      }
-  }
-  return null;
-}
+// function getCallerInfo() {
+//   try {
+//       throw new Error();
+//   } catch (e) {
+//       if (e.stack) {
+//           const stackLines = e.stack.split("\n");
+//           // The first two lines are the error and the current function, so we want the caller of the caller
+//           const callerLine = stackLines[3].trim(); // Adjust index if needed
+//           const match = callerLine.match(/at (\S+) \((.*):(\d+):(\d+)\)/);
+//           if (match) {
+//               return {
+//                   functionName: match[1],
+//                   filePath: match[2],
+//                   lineNumber: match[3],
+//                   columnNumber: match[4]
+//               };
+//           } else {
+//               const altMatch = callerLine.match(/at (.*):(\d+):(\d+)/);
+//               if (altMatch) {
+//                   return {
+//                       functionName: '<anonymous>',
+//                       filePath: altMatch[1],
+//                       lineNumber: altMatch[2],
+//                       columnNumber: altMatch[3]
+//                   };
+//               }
+//           }
+//       }
+//   }
+//   return null;
+// }
 
 // https://en.wikipedia.org/wiki/Key_derivation_function
 // function getKey(PASSWORD) {
@@ -706,8 +706,8 @@ function decryptLocalStorage(password, keys) {
   // CRYPTO.encryptedStorage = false;
 }
 
-export { storageGet, storageSet, getCallerInfo, createHash, createKey,
-  kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage };
+export { storageGet, storageSet, createHash, createKey,
+  kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage, getCallStack };
 // export { CryptoProxy };
 
 

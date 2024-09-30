@@ -14,7 +14,7 @@ TODO:
 // import { JSONStorage } from "node-localstorage";
 import { deepEqual, get_random_string, getPass, objDiff,
   CHARS, MAXLENGTH, MINLENGTH } from "./core/lib.js";
-import { storageGet, storageSet, getCallerInfo, createHash, createKey,
+import { storageGet, storageSet, getCallStack, createHash, createKey,
          kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage } from "./core/lib.js";
 // import { CryptoProxy } from "./core/lib.js";
 
