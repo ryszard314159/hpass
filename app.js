@@ -309,6 +309,19 @@ el.masterPassword.addEventListener("keydown", (event) => {
   }
 });
 
+function checkOptions() {
+if (el.pepper === 'undefined' || el.salt === 'undefined' || Number(el.length) < 4) {
+  alert(`ERROR: el.newPassword: salt= ${el.salt}, pepper= ${el.pepper}, length= ${el.length}`);
+  console.log(`ERROR: el.newPassword: CallStack= `, getCallStack());
+  alert(`ERROR: el.newPassword: call stack generated... values restored storage`);
+  const opts = storageGet({key: "options", pwd: newPassword});
+  alert(`ERROR: el.newPassword: from storage: opts= ${JSON.stringify(opts)}`);
+  el.salt = opts.salt;
+  el.pepper = opts.pepper;
+  el.length = opts.length;
+}
+}
+
 el.newPassword.addEventListener("keydown", (event) => {
   const debug = false;
   // event.preventDefault();
@@ -369,16 +382,10 @@ el.newPassword.addEventListener("keydown", (event) => {
   el.passwordContainer.style.display = "none";
   el.newPassword.style.display = "none";
   // DEBUG CODE
-  if (el.pepper === 'undefined' || el.salt === 'undefined' || Number(el.length) < 4) {
-    alert(`ERROR: el.newPassword: salt= ${el.salt}, pepper= ${el.pepper}, length= ${el.length}`);
-    console.log(`ERROR: el.newPassword: CallStack= `, getCallStack());
-    alert(`ERROR: el.newPassword: call stack generated... values restored storage`);
-    const opts = storageGet({key: "options", pwd: newPassword});
-    alert(`ERROR: el.newPassword: from storage: opts= ${JSON.stringify(opts)}`);
-    el.salt = opts.salt;
-    el.pepper = opts.pepper;
-    el.length = opts.length;
-  }
+  const displayedOpts = {salt: el.salt, pepper: el.pepper, length: el.length};
+  const storedOpts = storageGet({key: "options", pwd: newPassword, decrypt: true});
+  alert(`el.newPassword:\ndisplayed= ${JSON.stringify(displayedOpts)}\nstored= ${JSON.stringify(storedOpts)}`);
+  checkOptions();
   return;
 });
 

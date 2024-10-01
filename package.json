@@ -3,9 +3,25 @@
   "name": "hpass",
   "version": "1.0.0",
   "dependencies": {
+    "chromedriver": "^129.0.1",
     "crypto-js": "^4.2.0",
     "node-localstorage": "^3.0.5",
+    "selenium-webdriver": "^4.25.0",
     "webcrypto": "^0.1.1",
     "webcrypto-shim": "^0.1.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-webpack": "^0.5.1",
+    "webpack": "^5.95.0"
+  },
+  "jest": {
+    "runner": "jest-webpack",
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest"
+    }
   }
 }

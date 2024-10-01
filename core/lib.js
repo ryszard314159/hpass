@@ -27,7 +27,7 @@ CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
 CHARS.upper = CHARS.lower.toUpperCase();
 CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
-const CRYPTO = {key: null, prefix: 'prefix:', passwd: '0'};
+const CRYPTO = {key: null, prefix: 'prefix:', passwd: ''};
 CRYPTO.encryptedItems = ["options", "sites"];
 // CRYPTO.encryptedStorage = true;
 CRYPTO.decryptedIOuntil = 0;
@@ -510,7 +510,7 @@ function decryptJSON(json) {
 
 function storageSet(args) {
   const debug = 0;
-  args = {key: null, value: null, pwd: null, encrypt: true, ...args};
+  args = {key: null, value: null, pwd: null, encrypt: true, ignoreEncryption: true, ...args};
   // const debugLevel = 9;
   let err = 0;
   const validTypes = new Set(["string", "object", "boolean"]);
@@ -532,7 +532,7 @@ function storageSet(args) {
   let rawValue = (typeof(args.value) !== 'string') ? JSON.stringify(args.value) : args.value;
   msg = `${msg}\nINFO: storageSet: rawValue= ${rawValue}`;
   let finalValue = rawValue;
-  if (args.encrypt) {
+  if (args.encrypt && !args.ignoreEncryption) {
     // validateKey(pwd);
     CRYPTO.key = createKey(args.pwd);
     const encryptedValue = CryptoJS.AES.encrypt(rawValue, CRYPTO.key).toString();
@@ -575,24 +575,25 @@ function storageSet(args) {
 
 // function storageGet(storageKey, pwd) {
 function storageGet(args) {
-  args = {key: null, pwd: null, decrypt: null, ...args};
+  args = {key: null, pwd: null, decrypt: null, ignoreEncryption: true, ...args};
   if (args.storageKey === null || args.decrypt === null) {
     console.log("storageGet: getCallStack= ", getCallStack());
     alert(`ERROR: storageGet: null args, args= ${JSON.stringify(args)}`)
   }
-  const debug = false;
+  const debug = true;
   const encryptedItems = new Set(["options", "sites"]);
   if (encryptedItems.has(args.key) && args.pwd === null) {
     alert(`storageGet: args= ${JSON.stringify(args)}`);
     console.log("storageGet: CallStack= ", getCallStack());
   }
   let rawValue = localStorage.getItem(args.key);
-  let decryptedValue = null;
   if (rawValue === null) {
+    alert(`ERROR: storageGet: null value for args.key= ${args.key}`)
     if (debug) console.log(`storageGet:1: returning rawValue= ${rawValue}`);
     return rawValue;
   }
-  if (args.decrypt) {
+  let decryptedValue = rawValue;
+  if (args.decrypt && !args.ignoreEncryption) {
     if (debug) console.log(`storageGet:2: CRYPTO.key= ${CRYPTO.key}`);
     // validateKey(pwd); // validate CRYPTO.key
     CRYPTO.key = createKey(args.pwd);
@@ -606,8 +607,6 @@ function storageGet(args) {
       alert(msg);
       console.log("storageGet: error= ", error);
     }
-  } else {
-    decryptedValue = rawValue; // no decryption if pwd === null
   }
   let finalValue = decryptedValue;
   try {
