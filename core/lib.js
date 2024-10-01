@@ -171,9 +171,6 @@ function EncryptedAllHandler(property, value) {
 
 // 
 // https://stackoverflow.com/questions/13335967/export-data-in-localstorage-for-later-re-import
-function exportLocalStorage(encrypted=true) {
-  const data = JSON.stringify(localStorage);
-}
 
 function objDiff(x, y) {
   const diff = {};

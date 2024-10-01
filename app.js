@@ -18,6 +18,8 @@ import { storageGet, storageSet, getCallStack, createHash, createKey,
          kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage } from "./core/lib.js";
 // import { CryptoProxy } from "./core/lib.js";
 
+const debug = 1;
+
 // simulate localStorage in nodejs
 if (typeof(window) === 'undefined') {
 const localStorage = {};
@@ -92,6 +94,13 @@ el.navMenu = document.getElementById("nav-menu");
 // el.email = document.getElementById("email");
 el.importFileInput = document.getElementById('importFileInput');
 el.fileInputModal = document.getElementById("fileInputModal");
+
+if (debug) {
+  window.addEventListener("DOMContentLoaded", function() {
+    alert(`window.addEventListener("DOMContentLoaded"): el.salt.value= ${el.salt.value}`);
+  });
+}
+
 // el.crypt = document.getElementById("crypt");
 
 // function openEmailClient(email, subject, body) {
@@ -360,13 +369,15 @@ el.newPassword.addEventListener("keydown", (event) => {
   el.passwordContainer.style.display = "none";
   el.newPassword.style.display = "none";
   // DEBUG CODE
-  const salt = document.getElementById("salt").value;
-  const pepper = document.getElementById("pepper").value;
-  const length = document.getElementById("length").value;
-  if (pepper === 'undefined' || salt === 'undefined') {
-    alert(`ERROR: el.newPassword: salt= ${salt}, pepper= ${pepper}, length= ${length}`);
+  if (el.pepper === 'undefined' || el.salt === 'undefined' || Number(el.length) < 4) {
+    alert(`ERROR: el.newPassword: salt= ${el.salt}, pepper= ${el.pepper}, length= ${el.length}`);
     console.log(`ERROR: el.newPassword: CallStack= `, getCallStack());
-    alert(`ERROR: el.newPassword: call stack generated...`);
+    alert(`ERROR: el.newPassword: call stack generated... values restored storage`);
+    const opts = storageGet({key: "options", pwd: newPassword});
+    alert(`ERROR: el.newPassword: from storage: opts= ${JSON.stringify(opts)}`);
+    el.salt = opts.salt;
+    el.pepper = opts.pepper;
+    el.length = opts.length;
   }
   return;
 });
@@ -1020,7 +1031,6 @@ saveAsFile('posts.json', posts)
 // ChatGPT...
 
 // Function to export localStorage as a JSON file
-// function exportLocalStorage(filename = "hpass-localStorage.json") {
 function exportLocalStorage(args = {}) {
   args = {fileName: "hpass-localStorage.json", decrypted: false, ...args};
   const debug = false;
