@@ -941,7 +941,7 @@ function saveOptions(args) {
   sites = cleanUp(sites);
   if (debug > 0) console.log(`after cleanUp: typeof(sites)= ${typeof(sites)}, sites= `, sites);
   if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
-  if (sites[hint] !== null) {
+  if (sites !== null) {
     if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
     storageSet({key: "sites", value: sites, from: "storeOptions"});
     msg = `Hint-specific settings ${replacedOrCreated}.`;
