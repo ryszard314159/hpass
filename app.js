@@ -13,12 +13,13 @@ TODO:
 
 // import { JSONStorage } from "node-localstorage";
 import { deepEqual, get_random_string, getPass, objDiff,
-  CHARS, MAXLENGTH, MINLENGTH } from "./core/lib.js";
+  CHARS, MAXLENGTH, MINLENGTH, 
+  cleanUp} from "./core/lib.js";
 import { storageGet, storageSet, getCallStack, createHash, createKey,
          kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage } from "./core/lib.js";
 // import { CryptoProxy } from "./core/lib.js";
 
-const debug = 1;
+const debug = 0;
 
 // simulate localStorage in nodejs
 if (typeof(window) === 'undefined') {
@@ -72,7 +73,7 @@ el.changePassword = document.getElementById("changePassword");
 el.hidesettings = document.getElementById("hidesettings");
 el.settings = document.getElementById("settings");
 el.help = document.getElementById("help");
-el.save = document.getElementById("save");
+el.storeButton = document.getElementById("storeButton");
 el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
 el.hintButton = document.getElementById("hintButton");
@@ -88,6 +89,7 @@ el.cleanCross = document.getElementById("cleanCross");
 el.version = document.getElementById("version");
 el.clickSound = document.getElementById('clickSound');
 el.fileInputModal = document.getElementById("fileInputModal");
+el.exportButton = document.getElementById("exportButton");
 el.importButton = document.getElementById("importButton");
 el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
@@ -95,7 +97,7 @@ el.navMenu = document.getElementById("nav-menu");
 el.importFileInput = document.getElementById('importFileInput');
 el.fileInputModal = document.getElementById("fileInputModal");
 
-if (debug) {
+if (debug > 8) {
   window.addEventListener("DOMContentLoaded", function() {
     alert(`window.addEventListener("DOMContentLoaded"): el.salt.value= ${el.salt.value}`);
   });
@@ -736,7 +738,6 @@ function cleanClean(v) {
 }
 
 function handleExport(event, args) {
-    // el.save.addEventListener("click", function () {
     const debug = false;
     const opts = { ...globalDefaults };
     if (debug) {
@@ -751,8 +752,7 @@ function handleExport(event, args) {
     // setOptions(opts, CRYPTO.passwd);
     storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "handleExport"});
     el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
-    if (debug) console.log("handleExport save: opts= ", opts);
-    // showPopup("settings saved!", SHORTPOPUP);
+    if (debug) console.log("handleExport: opts= ", opts);
     // if (kind === "decrypted") CRYPTO.enableDecryptedIO();
     if (CRYPTO.decryptedIOEnabled) alert("Plain text export!");
     exportLocalStorage({decrypted: args.decrypted});
@@ -866,6 +866,97 @@ function matchingKeys(x, y) {
   return v;
 }
 
+// el.storeButton.addEventListener("click", function() {
+//   storeOptions();
+// });
+
+// el.storeButton.addEventListener("click", storeOptions);
+document.getElementById("save").addEventListener("click", saveOptions);
+
+/*
+STORAGE = {options: {"salt":"0","pepper":"?","length":"15"}};
+function storageGet(args) {
+  return STORAGE[args.key];
+}
+function storageSet(args) {
+  return STORAGE[args.key] = args.value;
+}
+
+function foo(args) {
+  args = {debug: -1, ...args};
+  console.log(`args= ${JSON.stringify(args)}`);
+}
+*/
+
+function saveOptions(args) {
+  args = {debug: -1, ...args};
+  const debug = args.debug;
+  let currentOpts, hint, msg;
+  // if (debug < 0) {
+    currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  // } else {
+    // currentOpts = args.options;
+  // }
+  // if (debug < 0) {
+    hint = el.hint.value;
+  // } else {
+  //   hint = args.hint;
+  // }
+  const storedOpts = storageGet({key: "options"});
+  const diff = objDiff(currentOpts, storedOpts);
+  if (hint === '' && Object.keys(diff).length === 0) {
+    msg = `NOTE: stored settings are the same! Nothing changed.`
+    alert(msg);
+    console.log(`saveOptions: ${msg}`);
+    return;
+  }
+  // alert(`storeOptions: el.hint.value= ${el.hint.value}`);
+  if (hint === '' && Object.keys(diff).length !== 0) {
+    storageSet({key: "options", value: currentOpts, from: "saveOptions"});
+    msg = `NOTE: new generic settings saved: ${JSON.stringify(currentOpts)}`
+    alert(msg);
+    console.log(msg)
+    return;
+  }
+  // hint !== ''
+  let sites = storageGet({key: "sites"});// decrypt: true is the default!
+  if (sites === undefined) alert("ERROR: sites undefined in saveOptions!!!");
+  sites = (sites === null || sites === undefined) ? {} : sites;
+  if (debug > 0) console.log(`saveOptions: hint= ${hint}, sites= ${JSON.stringify(sites)}`);
+  const storedHintValues = sites[hint];
+  if (debug > 0) console.log(`storedHintValues= ${JSON.stringify(storedHintValues)}`);
+  let replacedOrCreated;
+  if (storedHintValues === undefined) {
+    sites[hint] = diff;
+    replacedOrCreated = 'created';
+  } else {
+    sites[hint] = objDiff({...storedHintValues, ...currentOpts}, storedOpts);
+    replacedOrCreated = 'replaced';
+  }
+  if (debug > 0) console.log(msg);
+  if (debug > 0) console.log(`before : objDiff: storedOpts= ${JSON.stringify(storedOpts)}`);
+  if (debug > 0) console.log(`before : objDiff: sites= ${JSON.stringify(sites)}`);
+  Object.keys(sites).forEach( (key) => {sites[key] = objDiff(sites[key], storedOpts)});
+  if (debug > 0) console.log(`before cleanUp: sites= ${JSON.stringify(sites)}`);
+  sites = cleanUp(sites);
+  if (debug > 0) console.log(`after cleanUp: typeof(sites)= ${typeof(sites)}, sites= `, sites);
+  if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
+  if (sites[hint] !== null) {
+    if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
+    storageSet({key: "sites", value: sites, from: "storeOptions"});
+    msg = `Hint-specific settings ${replacedOrCreated}.`;
+    msg = `${msg}\nHint= ${hint}`;
+    msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
+    msg = `${msg}\nNew settings= ${JSON.stringify(sites[hint])}`;
+    alert(msg);
+  } else {
+    delete localStorage.sites;
+    alert(`All hint-specific settings removed!`);
+  }
+}
+// STORAGE= {"options":{"salt":"0","pepper":"?","length":"15"}};
+// storeOptions({hint: '', options: {"salt":"0","pepper":"?","length":"15"}, debug: 9})
+
 // arguments:
 //    hint,
 //          {salt: opts.salt, pepper: opts.pepper, length: opts.length});
@@ -945,7 +1036,7 @@ function generateFun(event) {
   opts.pepper = el.pepper.value = (pepper === "") ? globalDefaults.pepper : pepper;
   opts.length = el.length.value = (length === "") ? globalDefaults.length : length;
   if (debug) console.log("generateFun:1: opts= ", opts);
-  setHintOpts(el.hint.value, opts);
+  // setHintOpts(el.hint.value, opts); -- NOTE: use storeOptions and save button instead!!!
   let args = { ...opts }; // deep copy
   args.burn = el.burn.value;
   args.peak = el.peak.value;
@@ -1021,19 +1112,6 @@ function handleLinkClick(event) {
   }
   event.preventDefault();
 }
-
-/*
-from stackoverflow...
-function saveAsFile(filename, data) {
-    const blob = new Blob([JSON.stringify(data)]);
-    const link = document.createElement("a");
-    link.download = filename;
-    link.href = window.URL.createObjectURL(blob);
-    link.click()
-};
-saveAsFile('posts.json', posts)
-
-*/
 
 // ChatGPT...
 
@@ -1150,7 +1228,7 @@ function importLocalStorage(event) {
 
 // Function to apply the settings to your application (example implementation)
 function applySettings(settings) {
-  // Apply the settings (e.g., update the UI, save to local storage, etc.)
+  // Apply the settings (e.g., update the UI, store to local storage, etc.)
   console.log('Settings applied:', settings);
   // Your code to apply the settings goes here
 }

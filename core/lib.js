@@ -182,6 +182,22 @@ function objDiff(x, y) {
   return diff;
 }
 
+// const obj = { a: 1, b: 2, x: {}, y: null, z: undefined };
+// console.log(cleanUp(obj)); // { a: 1, b: 2 }
+function cleanUp(obj) {
+  if (obj === null || obj === undefined) return null;
+  const cleanedObj = Object.entries(obj).reduce((acc, [key, value]) => {
+    if (value === null || value === undefined) return acc;
+    if (typeof value === 'object') {
+      value = cleanUp(value);
+      if (value === null) return acc; 
+    }
+    acc[key] = value;
+    return acc;
+  }, {});
+  return Object.keys(cleanedObj).length === 0 ? null : cleanedObj;
+}
+
 // returns setA \ setB
 function setsDiff(setA, setB) {
   const difference = new Set();
@@ -575,21 +591,21 @@ function storageSet(args) {
 
 // function storageGet(storageKey, pwd) {
 function storageGet(args) {
-  args = {key: null, pwd: null, decrypt: null, ignoreEncryption: true, ...args};
-  if (args.storageKey === null || args.decrypt === null) {
+  args = {key: null, pwd: null, decrypt: true, ignoreEncryption: true, ...args};
+  if (args.key === null || args.decrypt === null) {
     console.log("storageGet: getCallStack= ", getCallStack());
     alert(`ERROR: storageGet: null args, args= ${JSON.stringify(args)}`)
   }
-  const debug = true;
+  const debug = false;
   const encryptedItems = new Set(["options", "sites"]);
-  if (encryptedItems.has(args.key) && args.pwd === null) {
-    alert(`storageGet: args= ${JSON.stringify(args)}`);
-    console.log("storageGet: CallStack= ", getCallStack());
-  }
+  // if (encryptedItems.has(args.key) && args.pwd === null) {
+  //   alert(`storageGet: args= ${JSON.stringify(args)}`);
+  //   console.log("storageGet: CallStack= ", getCallStack());
+  // }
   let rawValue = localStorage.getItem(args.key);
   if (rawValue === null) {
-    alert(`ERROR: storageGet: null value for args.key= ${args.key}`)
-    if (debug) console.log(`storageGet:1: returning rawValue= ${rawValue}`);
+    // alert(`ERROR: storageGet: null value for args.key= ${args.key}`)
+    if (debug) console.log(`storageGet:1: returning args.key= ${args.key}, rawValue= ${rawValue}`);
     return rawValue;
   }
   let decryptedValue = rawValue;
@@ -702,7 +718,7 @@ function decryptLocalStorage(password, keys) {
   // CRYPTO.encryptedStorage = false;
 }
 
-export { storageGet, storageSet, createHash, createKey,
+export { storageGet, storageSet, createHash, createKey, cleanUp,
   kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage, getCallStack };
 // export { CryptoProxy };
 

@@ -218,10 +218,17 @@ button {
   /* border-radius: 15px; */
 }
 #share {
-  padding: 2pt 0 2pt 0;
+  /* padding: 2pt 0 2pt 0; */
   width: 4rem;
   background-color: lightgreen;
   border-radius: 0.8rem;
+}
+#save {
+  /* padding: 2pt -1pt 2pt 0; */
+  width: 6rem;
+  background-color: lightskyblue;
+  border-radius: 0.8rem;
+  margin-left: 0;
 }
 
 .grow {

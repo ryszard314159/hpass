@@ -12,7 +12,7 @@
   "theme_color": "#db4938",
   "orientation": "portrait-primary",
   "lang": "en",
-  "categories": ["games", "finance", "navigation"],
+  "categories": ["security", "productivity", "navigation"],
   "icons": [
     {
       "src": "/icons/logo.svg",
