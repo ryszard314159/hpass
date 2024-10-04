@@ -51,7 +51,7 @@ const LONGPOPUP = 1e5; // long popup time
 const globalDefaults = {};
 globalDefaults.salt = "Replace Me!";
 globalDefaults.pepper = "_";
-globalDefaults.length = 15;
+globalDefaults.length = "15";
 const URL = "https://hpass.app";
 
 // Selecting elements
@@ -748,7 +748,7 @@ function handleExport(event, args) {
     }
     opts.pepper = el.pepper.value;
     opts.salt = el.salt.value;
-    opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH);
+    opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH).toString();
     // setOptions(opts, CRYPTO.passwd);
     storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "handleExport"});
     el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
@@ -1051,6 +1051,7 @@ function generateFun(event) {
   args.no_shuffle = false;
   args.debug = false;
   args.verbose = true;
+  args.length = Number(args.length);
   const passwd = getPass(args);
   navigator.clipboard.writeText(passwd);
   showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
