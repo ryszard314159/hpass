@@ -144,13 +144,17 @@ button {
 } */
 
 #saveDiv {
+  z-index: 90;
+}
+
+/* #save?Div {
   display: block;
-  /* width: 100%;
+  width: 100%;
   justify-content: space-around;
   text-decoration: none;
   align-items: center;
-  vertical-align: middle; */
-}
+  vertical-align: middle;
+} */
 
 /* .btnContained:hover {
   font-weight: bolder;
@@ -160,6 +164,8 @@ button {
 
 .btnContainer {
   /* display: inline-flex; */
+  position: absolute;
+  top: 0;
   display: flex;
   /* height: 2rem; */
   /* justify-content: space-around; */
@@ -314,9 +320,9 @@ form {
 
 #hintContainer {
   /* position: absolute; */
-  top: 10%;
+  /* top: 10%; */
   z-index: 9;
-  margin-top: -4rem;
+  margin-top: -1rem;
   width: 100%;
   background: rgba(255, 255, 255, 1);
   display: flex;
@@ -796,18 +802,24 @@ margin-top: 9rem;
   line-height: 1.5rem; /* adjust to match the height */
 }
 
-#topIcons {
+.topIcons {
   display: inline-flex;
   width: 100%;
   justify-content: space-around;
   background-color: lightgray;
   position: absolute;
-  z-index: 99;
   top: 0;
   left: 0;
-  /* right: 2rem; */
-  /* line-height: 4rem; */
-  /* margin: 0 9rem 0 0; */
+}
+
+.topIcons2 {
+  display: inline-flex;
+  width: 100%;
+  justify-content: space-around;
+  background-color: lightgrey;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 
