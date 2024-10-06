@@ -186,24 +186,40 @@ document.querySelectorAll('.email').forEach(function(element) {
 //   el.crypt.src = isEncrypted ? "icons/eye-show.svg" : "icons/eye-hide.svg";
 // });
 
-const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    const debug = false;
-    const element = mutation.target;
-    // const o = {id: element.id, name: element.name, value: element.value, tagName: element.tagName, className: element.className
-    const o = {id: element.id, value: element.value,
-               tagName: element.tagName, className: element.className};
-    if (debug) console.log("observer: mutated object= ", o);
-  });
-});
+// const observer = new MutationObserver((mutations) => {
+//   mutations.forEach((mutation) => {
+//     const debug = false;
+//     const element = mutation.target;
+//     // const o = {id: element.id, name: element.name, value: element.value, tagName: element.tagName, className: element.className
+//     const o = {id: element.id, value: element.value,
+//                tagName: element.tagName, className: element.className};
+//     if (debug) console.log("observer: mutated object= ", o);
+//   });
+// });
 
-document.querySelectorAll(".options").forEach(function(element) {
-  observer.observe(element, {
-    attributes: true,
-    childList: true,
-    subtree: true,
-  });
-});
+// document.querySelectorAll(".options").forEach(function(element) {
+//   observer.observe(element, {
+//     attributes: true,
+//     childList: true,
+//     subtree: true,
+//   });
+// });
+
+// let observer = new MutationObserver((mutations) => {
+//   // Trigger action, e.g., generate call stack
+//   console.trace();
+// });
+// observer.observe(document.getElementById('salt'), {
+//   attributes: true,
+//   attributeFilter: ['value']
+// });
+
+// el.salt.addEventListener('input', () => {
+//   const msg = `WARNING: salt changed: value= ${el.salt.value}`;
+//   alert(msg);
+//   console.log(`${msg}: trace follows:`);
+//   console.trace();
+// });
 
 // document.querySelectorAll(".crypt").forEach(function(element) {
 //   element.addEventListener("click", function (event) {
@@ -277,7 +293,8 @@ el.masterPassword.addEventListener("keydown", (event) => {
     // event.preventDefault();
     // el.masterPassword.blur();
     setTimeout(() => {
-      let oldHash = localStorage.getItem("pwdHash");
+      // let oldHash = localStorage.getItem("pwdHash");
+      let oldHash = storageGet({key: "pwdHash", decrypt: false});
       if (oldHash === null) {
         alert("Password Hash was null,\noptions removed & Master Password set to empty string");
         // localStorage.clear();
@@ -384,7 +401,7 @@ el.newPassword.addEventListener("keydown", (event) => {
   el.passwordContainer.style.display = "none";
   el.newPassword.style.display = "none";
   // DEBUG CODE
-  const displayedOpts = {salt: el.salt, pepper: el.pepper, length: el.length};
+  const displayedOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
   const storedOpts = storageGet({key: "options", pwd: newPassword, decrypt: true});
   alert(`el.newPassword:\ndisplayed= ${JSON.stringify(displayedOpts)}\nstored= ${JSON.stringify(storedOpts)}`);
   checkOptions();
@@ -902,7 +919,7 @@ function saveOptions(args) {
   // } else {
   //   hint = args.hint;
   // }
-  const storedOpts = storageGet({key: "options"});
+  const storedOpts = storageGet({key: "options", pwd: CRYPTO.passwd});
   const diff = objDiff(currentOpts, storedOpts);
   if (hint === '' && Object.keys(diff).length === 0) {
     msg = `NOTE: stored settings are the same! Nothing changed.`
@@ -912,14 +929,14 @@ function saveOptions(args) {
   }
   // alert(`storeOptions: el.hint.value= ${el.hint.value}`);
   if (hint === '' && Object.keys(diff).length !== 0) {
-    storageSet({key: "options", value: currentOpts, from: "saveOptions"});
+    storageSet({key: "options", value: currentOpts, pwd: CRYPTO.passwd, from: "saveOptions"});
     msg = `NOTE: new generic settings saved: ${JSON.stringify(currentOpts)}`
     alert(msg);
     console.log(msg)
     return;
   }
   // hint !== ''
-  let sites = storageGet({key: "sites"});// decrypt: true is the default!
+  let sites = storageGet({key: "sites", pwd: CRYPTO.passwd});// decrypt: true is the default!
   if (sites === undefined) alert("ERROR: sites undefined in saveOptions!!!");
   sites = (sites === null || sites === undefined) ? {} : sites;
   if (debug > 0) console.log(`saveOptions: hint= ${hint}, sites= ${JSON.stringify(sites)}`);
@@ -943,7 +960,7 @@ function saveOptions(args) {
   if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
   if (sites !== null) {
     if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
-    storageSet({key: "sites", value: sites, from: "storeOptions"});
+    storageSet({key: "sites", value: sites, pwd: CRYPTO.passwd, from: "storeOptions"});
     msg = `Hint-specific settings ${replacedOrCreated}.`;
     msg = `${msg}\nHint= ${hint}`;
     msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
