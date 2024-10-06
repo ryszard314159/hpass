@@ -664,7 +664,11 @@ function storageGet(args) {
     console.log("storageGet: finalValue= ", finalValue);
   }
   if (CRYPTO.encryptedItems.includes(args.key) && args.decrypt && typeof(finalValue) === "string") {
-    alert(`ERROR: storageGet: args.key= ${JSON.stringify(args)}, should not be string!!!}`);
+    let msg = `ERROR: storageGet: args.key= ${JSON.stringify(args)}, should not be string!!!}`;
+    msg = `${msg}\nrawValue= ${rawValue}`;
+    msg = `${msg}\ndecryptedValue= ${decryptedValue}`;
+    msg = `${msg}\nfinalValue= ${finalValue}`;
+    alert(msg);
   }
   return finalValue;
 };
