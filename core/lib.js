@@ -548,7 +548,7 @@ function storageSet(args) {
   let rawValue = (typeof(args.value) !== 'string') ? JSON.stringify(args.value) : args.value;
   msg = `${msg}\nINFO: storageSet: rawValue= ${rawValue}`;
   let finalValue = rawValue;
-  if (args.encrypt && !args.ignoreEncryption) {
+  if (args.encrypt && CRYPTO.encryptedItems.includes(args.key) && !args.ignoreEncryption) {
     // validateKey(pwd);
     CRYPTO.key = createKey(args.pwd);
     const encryptedValue = CryptoJS.AES.encrypt(rawValue, CRYPTO.key).toString();
@@ -562,6 +562,7 @@ function storageSet(args) {
     finalValue = encryptedValue;
   }
   localStorage.setItem(args.key, finalValue);
+  //...
   if ((args.key === "options" || args.key === "sites") && (rawValue === '' || rawValue === null)) {
     alert(`ERROR: storageSet: args.key= ${args.key}, rawValue= ${rawValue}`);
     localStorage.setItem('DEBUG>' + args.key, rawValue);
@@ -611,7 +612,7 @@ function storageGet(args) {
     if (debug) console.log(`storageGet:1: returning args.key= ${args.key}, rawValue= ${rawValue}`);
     return rawValue;
   }
-  const isEncrypted = localStorage.getItem("encrypted");
+  const isEncrypted = JSON.parse(localStorage.getItem("encrypted"));
   if (args.decrypt && !isEncrypted) {
     console.trace();
     alert(`ERROR: storageGet: storage already decrypted!!!`);
@@ -624,6 +625,7 @@ function storageGet(args) {
     if (args.pwd === null || args.pwd === undefined) {
       console.log("storageGet: CallStack= ", getCallStack());
       alert(`ERROR: storageGet: args.pwd === null|undefined, args= ${JSON.stringify(args)}`);
+      return;
     }
     CRYPTO.key = createKey(args.pwd);
     if (debug) console.log(`storageGet:3: CRYPTO.key= ${CRYPTO.key}`);
@@ -683,10 +685,10 @@ function createHash(pwd) {
 function encryptLocalStorage(password, keys) {
   const debug = 0;
   if (debug > 1) alert(`encryptLocalStorage: start: password= ${password}`);
-  // check if keys are valid...
+  // check if keys are valid... i.e. keys == 
   const valid = keys.every((x) => CRYPTO.encryptedItems.includes(x)) &&
                 CRYPTO.encryptedItems.every((x) => keys.includes(x));
-  if (!valid) alert(`encryptLocalStorage: ERROR: invalid keys= ${JSONstringify(keys)}`);
+  if (!valid) alert(`ERROR: encryptLocalStorage: invalid keys= ${JSONstringify(keys)}`);
   const encrypted = storageGet({key: "encrypted", pwd: password, decrypt: false});
   if (debug > 1) console.log("encryptLocalStorage: password= ", password);
   if (debug > 1) console.log("encryptLocalStorage: encrypted= ", encrypted);

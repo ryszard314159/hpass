@@ -8,6 +8,7 @@ TODO:
     you may want to consider native libraries or more modern JavaScript libraries
     like Web Cryptography API (W3C) :: https://www.w3.org/TR/WebCryptoAPI/
     or Forge.
+4 - wipe pwd fields on lock!
 */
 "use strict";
 
@@ -304,7 +305,7 @@ el.masterPassword.addEventListener("keydown", (event) => {
         CRYPTO.passwd = '';
         oldHash = createHash('');
         storageSet({key: "pwdHash", value: oldHash, encrypt: false, from: "el.masterPassword"});
-        storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "el.masterPassword"});
+        // storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "el.masterPassword"});
         return;
       }
       const pwd = el.masterPassword.value;
@@ -319,6 +320,8 @@ el.masterPassword.addEventListener("keydown", (event) => {
       }
       if (pwdHash === oldHash) {
         el.passwordContainer.style.display = "none";
+        // alert("PASSWORD ENTERED!");
+        window.scrollTo(0, 0); // scroll window to the top!
       } else {
         if (debug) console.log(`masterPassword: Wrong password - try again!`);
         alert("Wrong password - try again!")
@@ -382,7 +385,7 @@ el.newPassword.addEventListener("keydown", (event) => {
   decryptLocalStorage(masterPassword, CRYPTO.encryptedItems);
   CRYPTO.passwd = newPassword;
   storageSet({key: "pwdHash", value: newHash, encrypt: false, from: "el.newPassword"});
-  storageSet({key: "pwd", value: newPassword, encrypt: false, from: "el.newPassword"});
+  // storageSet({key: "pwd", value: newPassword, encrypt: false, from: "el.newPassword"});
   encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
   msg = `Master Password changed:`;
   msg = `${msg}\nOld Password= ${masterPassword}`;
@@ -450,7 +453,7 @@ function createSplashScreen(opts) {
   const debug = false;
   const pwdHash = createHash(CRYPTO.passwd);
   storageSet({key: "pwdHash", value: pwdHash, encrypt: false, from: "createSplashScreen"});
-  storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "createSplashScreen"});
+  // storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "createSplashScreen"});
   let msg = `<h3>To start using HPASS:</h3>
   <ul>
   <li>Read the <strong>Basics</strong> below.
@@ -553,7 +556,7 @@ if ("serviceWorker" in navigator) {
       const storedHash = storageGet({key: "pwdHash", pwd: CRYPTO.passwd, decrypt: false});
       const h = createHash(CRYPTO.passwd);
       storageSet({key: "pwdHash", value: h, encrypt: false, from: "serviceWorker"});
-      storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "serviceWorker"});
+      // storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "serviceWorker"});
       if (debug) console.log("app: sw registered!", reg);
       if (debug) console.log("app: before createSplashScreen");
       if (debug) console.log("app: after createSplashScreen");
@@ -756,20 +759,20 @@ function cleanClean(v) {
 
 function handleExport(event, args) {
     const debug = false;
-    const opts = { ...globalDefaults };
-    if (debug) {
-      console.log("handleExport: args.decrypted= ", args.decrypted);
-      // console.log("handleExport: event.type= ", event.type);
-      // console.log("handleExport: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
-      // return;
-    }
-    opts.pepper = el.pepper.value;
-    opts.salt = el.salt.value;
-    opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH).toString();
-    // setOptions(opts, CRYPTO.passwd);
-    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "handleExport"});
-    el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
-    if (debug) console.log("handleExport: opts= ", opts);
+    // const opts = { ...globalDefaults };
+    // if (debug) {
+    //   console.log("handleExport: args.decrypted= ", args.decrypted);
+    //   // console.log("handleExport: event.type= ", event.type);
+    //   // console.log("handleExport: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
+    //   // return;
+    // }
+    // opts.pepper = el.pepper.value;
+    // opts.salt = el.salt.value;
+    // opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH).toString();
+    // // setOptions(opts, CRYPTO.passwd);
+    // storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "handleExport"});
+    // el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
+    // if (debug) console.log("handleExport: opts= ", opts);
     // if (kind === "decrypted") CRYPTO.enableDecryptedIO();
     if (CRYPTO.decryptedIOEnabled) alert("Plain text export!");
     exportLocalStorage({decrypted: args.decrypted});
@@ -821,6 +824,11 @@ document.querySelectorAll(".reset").forEach(function(element) {
     // alert(`.reset:1: localStorage= ${JSON.stringify(localStorage)}`);
   })
 });
+
+window.onload = function() {
+  // alert("PAGE LOADED!");
+  window.scrollTo(0, 0);
+}
 
 document.getElementById("lock").addEventListener("click", function () {
   // window.location.reload();
@@ -1135,7 +1143,7 @@ function handleLinkClick(event) {
 
 // Function to export localStorage as a JSON file
 function exportLocalStorage(args = {}) {
-  args = {fileName: "hpass-localStorage.json", decrypted: false, ...args};
+  args = {fileName: "hpass-settings.json", decrypted: false, ...args};
   const debug = false;
   if (debug) console.log(`exportLocalStorage: args.decrypted= ${args.decrypted}`)
   // Convert settings object to JSON string
@@ -1167,11 +1175,12 @@ const span = document.getElementsByClassName("close")[0];
 
 // When the user clicks the button, open the modal
 document.body.querySelectorAll(".import").forEach(function(element) {
-  const debug = false;
+  const debug = true;
   if (debug) console.log(".import: selected");
   element.addEventListener("click", function() {
     if (debug) console.log(".import: clicked");
     el.fileInputModal.style.display = "block";
+    el.fileInputModal.style.zIndex = "99";
   });
 });
 
@@ -1220,10 +1229,19 @@ function importLocalStorage(event) {
               // Parse the JSON string from the file
               if (debug) console.log("importLocalStorage: e.target.result=", e.target.result);
               const importedLocalStorage = JSON.parse(e.target.result);
+              console.log("importLocalStorage: importedLocalStorage= ", importedLocalStorage);
+              setOptionsFromStorage(JSON.parse(importedLocalStorage["options"]));
+              if (debug) alert(`INFO: importLocalStorage: e.target.result= ${e.target.result})}`)
+              if (debug) alert(`INFO: importLocalStorage: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
               localStorage.clear();
+              const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
+              const notIsEncrypted = !isEncrypted;
               for (let k in importedLocalStorage) {
-                storageSet({key: k, value: importedLocalStorage[k], encrypt: false, from: "importLocalStorage"});
+                if (debug > 1) alert(`INFO: importLocalStorage: isEncrypted= ${isEncrypted}, notIsEncrypted= ${notIsEncrypted}`)
+                storageSet({key: k, value: importedLocalStorage[k], pwd: CRYPTO.passwd, encrypt: true});
               }
+              storageSet({key: "encrypted", value: true});
+              if (debug) alert(`INFO: importLocalStorage: localStorage= ${JSON.stringify(localStorage)}`);
               // const modal = document.getElementById("fileInputModal");
               el.fileInputModal.style.display = "none"; // TODO: modal is not defined
           } catch (error) {
@@ -1237,18 +1255,18 @@ function importLocalStorage(event) {
   }
 }
 
-// function importLocalStorage(encrypted=true) {
-//   const data = JSON.parse(/*paste stringified JSON from clipboard*/);
-//   Object.keys(data).forEach(function (k) {
-//     local?Storage.setItem(k, JSON.stringify(data[k]));
-//   });
-// }
-
-// Function to apply the settings to your application (example implementation)
-function applySettings(settings) {
-  // Apply the settings (e.g., update the UI, store to local storage, etc.)
-  console.log('Settings applied:', settings);
-  // Your code to apply the settings goes here
+function setOptionsFromStorage(opts) {
+  const debug = false;
+  const beforeValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  el.salt.value = opts.salt;
+  el.pepper.value = opts.pepper;
+  el.length.value = opts.length;
+  const afterValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  let msg = `INFO: setOptionsFromStorage:`
+  msg = `${msg}\nbeforeValues= ${JSON.stringify(beforeValues)}`
+  msg = `${msg}\nnew opts= ${JSON.stringify(opts)}`;
+  msg = `${msg}\nafterValues= ${JSON.stringify(afterValues)}`;
+  if (debug) alert(msg);
 }
 
 el.importFileInput.addEventListener('change', importLocalStorage);

@@ -97,7 +97,14 @@
     <br/><br/><br/><br/>
     <!-- <div style="justify-content: center; align-items: center"> -->
     <audio id="clickSound" src="click-sound.wav" preload="auto"></audio>
-    <div id="passwordContainer" class="modal" style="display: flex;">
+    <div id="fileInputModal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Select a JSON file to import hpass settings:</p><br>
+          <input type="file" id="importFileInput" accept="application/json">
+      </div>
+    </div>
+    <div id="passwordContainer" class="modal">
       <!-- <form id="passwordForm" class=""> -->
       <!-- <div> -->
         <!-- <img id="hamburger" class="pwd" src="icons/hamburger-menu.svg" /> -->
