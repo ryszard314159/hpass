@@ -1,44 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   version="1.1"
-   width="100"
-   height="100"
-   viewBox="0 0 100 100"
-   fill="none"
-   id="svg201"
-   sodipodi:docname="lock.svg"
-   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview203"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     showgrid="false"
-     inkscape:zoom="10.27"
-     inkscape:cx="30.525803"
-     inkscape:cy="49.951315"
-     inkscape:window-width="1854"
-     inkscape:window-height="1011"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg201" />
-  <!-- <circle>  marker-end="url(#end-arrow)" -->
-  <circle
-     cx="50"
-     cy="50"
-     r="50"
-     stroke="none"
-     fill="none"
-     id="circle179" />
+<svg width="400" height="100" viewBox="80 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <text x="120" y="70" font-size="55" font-weight="bold" font-family="Arial" >Lock</text>
+  <circle cx="50" cy="50" r="50" stroke="none" fill="none" id="circle179" />
   <rect
      x="18.596792"
      y="42.635441"

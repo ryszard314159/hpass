@@ -9,17 +9,16 @@ TODO:
     like Web Cryptography API (W3C) :: https://www.w3.org/TR/WebCryptoAPI/
     or Forge.
 4 - wipe pwd fields on lock!
+5 - set encrypted: 'false' for plain text export
 */
 "use strict";
 
+import { enc } from "crypto-js";
 // import { JSONStorage } from "node-localstorage";
-import { deepEqual, get_random_string, getPass, objDiff,
-  CHARS, MAXLENGTH, MINLENGTH, 
-  cleanUp} from "./core/lib.js";
-import { storageGet, storageSet, getCallStack, createHash, createKey,
-         kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage } from "./core/lib.js";
-// import { CryptoProxy } from "./core/lib.js";
-
+import { get_random_string, getPass, objDiff, CHARS, MAXLENGTH, MINLENGTH, cleanUp} from "./core/lib.js";
+import { storageGet, storageSet, decryptString, encryptString, createKey, CRYPTO } from "./core/lib.js";
+import { sanityCheck } from "./core/lib.js";
+import { decryptText, encryptText, createHash, verifyPasssword} from "./core/crypto.js"
 const debug = 0;
 
 // simulate localStorage in nodejs
@@ -104,22 +103,6 @@ if (debug > 8) {
   });
 }
 
-// el.crypt = document.getElementById("crypt");
-
-// function openEmailClient(email, subject, body) {
-//   const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-//   window.location.href = mailtoLink;
-// }
-
-// el.email.addEventListener("click", function() {
-//   openEmailClient("info@hpass.app", "subject", "This is the email body");
-// });
-
-// function getCallStack() {
-//   const error = new Error();
-//   return error.stack;
-// }
-
 function noIdlingHere() {
   function yourFunction() {
       // alert('inactive!');
@@ -131,6 +114,9 @@ function noIdlingHere() {
         sessionStorage.removeItem(input.name);
       });
       el.passwordContainer.style.display = "block";
+      // el.salt.value = ''; TODO: wipes clean input boxes, but...
+      // el.pepper.value = '';
+      // el.length.value = '';
       // el.navMenu.classList.toggle("show");
       // your function for too long inactivity goes here
       // e.g. window.location.href = 'logout.php';
@@ -160,102 +146,10 @@ document.querySelectorAll('.email').forEach(function(element) {
 )
 });
 
-// let isEncrypted = true;
-// el.crypt.addEventListener("click", function() {
-//   // console.log("crypt: clicked!");
-//   const x = document.getElementById("crypt-text");
-//   // let isEncrypted = CryptoProxy.encryptedStorage;
-//   let isEncrypted = storageGet("encrypted", null);
-//   try {
-//     if (isEncrypted) {
-//       console.log(`el.crypt.addEventListener: el.masterPassword.value= ${el.masterPassword.value}`);
-//       if (el.masterPassword.value != CRYPTO.passwd) {
-//         alert(`Enter correct Master Password to decrypt settings!`);
-//         return;
-//       }
-//       decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
-//     } else {
-//       encryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
-//     }
-//   } catch (error) {
-//     console.error("el.crypt.addEventListener: error= ", error)
-//     alert("el.crypt.addEventListener: error=");
-//   }
-//   // CryptoProxy.encryptedStorage = !CryptoProxy.encryptedStorage;
-//   // console.log(`crypt:1: CRYPTO.encryptedStorage= ${CRYPTO.encryptedStorage}`);
-//   x.textContent = isEncrypted ? "Decrypted" : "Encrypted";
-//   el.crypt.src = isEncrypted ? "icons/eye-show.svg" : "icons/eye-hide.svg";
-// });
-
-// const observer = new MutationObserver((mutations) => {
-//   mutations.forEach((mutation) => {
-//     const debug = false;
-//     const element = mutation.target;
-//     // const o = {id: element.id, name: element.name, value: element.value, tagName: element.tagName, className: element.className
-//     const o = {id: element.id, value: element.value,
-//                tagName: element.tagName, className: element.className};
-//     if (debug) console.log("observer: mutated object= ", o);
-//   });
-// });
-
-// document.querySelectorAll(".options").forEach(function(element) {
-//   observer.observe(element, {
-//     attributes: true,
-//     childList: true,
-//     subtree: true,
-//   });
-// });
-
-// let observer = new MutationObserver((mutations) => {
-//   // Trigger action, e.g., generate call stack
-//   console.trace();
-// });
-// observer.observe(document.getElementById('salt'), {
-//   attributes: true,
-//   attributeFilter: ['value']
-// });
-
-// el.salt.addEventListener('input', () => {
-//   const msg = `WARNING: salt changed: value= ${el.salt.value}`;
-//   alert(msg);
-//   console.log(`${msg}: trace follows:`);
-//   console.trace();
-// });
-
-// document.querySelectorAll(".crypt").forEach(function(element) {
-//   element.addEventListener("click", function (event) {
-//     // alert("querySelectorAll('.crypt'): clicked!");
-//     // let isEncrypted = storageGet("encrypted", null);
-//     const hide = element.src.endsWith("icons/eye-hide.svg"); // toggle hide/show
-//     if (hide) { // check if password is correct
-//       const pwd = el.masterPassword.value;
-//       const hash = createHash(pwd);
-//       // const storedHash = storageGet("pwdHash", null);
-//       const storedHash = localStorage.getItem("pwdHash");
-//       console.log("crypt: hash= ", hash);
-//       console.log("crypt: storedHash= ", storedHash);
-//       if (hash !== storedHash) {
-//         alert("Correct Master Password needed for decrypted export!")
-//         return;
-//       }
-//     }
-//     element.src = hide ? "icons/eye-show.svg" : "icons/eye-hide.svg"; // // toggle hide/show
-//     const show = hide; // toggle hide/show
-//     if (show) CRYPTO.enableDecryptedIO();
-//     if (!show) CRYPTO.disableDecryptedIO();
-//     if (show) element.classList.add("glow");
-//     if (!show) element.classList.remove("glow");
-//   })
-// });
-
 // TODO: clear cache for password input box
 function clearInputCache(inputId) {
   const inputElement = document.getElementById(inputId);
-
-  // Clear the input value
   inputElement.value = "";
-
-  // Reset autocomplete attribute
   inputElement.setAttribute("autocomplete", "off");
 
   // Optionally, trigger a change event
@@ -294,33 +188,20 @@ el.masterPassword.addEventListener("keydown", (event) => {
     // event.preventDefault();
     // el.masterPassword.blur();
     setTimeout(() => {
-      // let oldHash = localStorage.getItem("pwdHash");
-      let oldHash = storageGet({key: "pwdHash", decrypt: false});
+      let oldHash = localStorage.getItem("pwdHash");
       if (oldHash === null) {
+        // throw new Error();
         alert("Password Hash was null,\noptions removed & Master Password set to empty string");
-        // localStorage.clear();
-        CRYPTO.encryptedItems.forEach((key => {
-          localStorage.removeItem(key);
-        }));
+        localStorage.clear();
         CRYPTO.passwd = '';
         oldHash = createHash('');
-        storageSet({key: "pwdHash", value: oldHash, encrypt: false, from: "el.masterPassword"});
-        // storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "el.masterPassword"});
+        localStorage.setItem("pwdHash", oldHash);
         return;
       }
       const pwd = el.masterPassword.value;
       const pwdHash = createHash(pwd);
-      if (debug) {
-        console.log(`masterPassword: CRYPTO.passwd= ${CRYPTO.passwd}`);
-        console.log(`masterPassword: pwd= ${pwd}`);
-        console.log(`masterPassword: pwdHash= ${pwdHash}`);
-        console.log(`masterPassword: oldHash= ${oldHash}`);
-        console.log(`masterPassword: typeof(oldHash)= ${typeof(oldHash)}`);
-        console.log(`masterPassword: typeof(pwdHash)= ${typeof(pwdHash)}`);
-      }
       if (pwdHash === oldHash) {
         el.passwordContainer.style.display = "none";
-        // alert("PASSWORD ENTERED!");
         window.scrollTo(0, 0); // scroll window to the top!
       } else {
         if (debug) console.log(`masterPassword: Wrong password - try again!`);
@@ -331,46 +212,35 @@ el.masterPassword.addEventListener("keydown", (event) => {
   }
 });
 
-function checkOptions() {
-if (el.pepper === 'undefined' || el.salt === 'undefined' || Number(el.length) < 4) {
-  alert(`ERROR: el.newPassword: salt= ${el.salt}, pepper= ${el.pepper}, length= ${el.length}`);
-  console.log(`ERROR: el.newPassword: CallStack= `, getCallStack());
-  alert(`ERROR: el.newPassword: call stack generated... values restored storage`);
-  const opts = storageGet({key: "options", pwd: newPassword});
-  alert(`ERROR: el.newPassword: from storage: opts= ${JSON.stringify(opts)}`);
-  el.salt = opts.salt;
-  el.pepper = opts.pepper;
-  el.length = opts.length;
-}
-}
 
 el.newPassword.addEventListener("keydown", (event) => {
   const debug = false;
   // event.preventDefault();
   // if (debug) console.log(`el.newPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key !== 'Enter') return;
+  function _cleanup() {
+    el.newPassword.value = '';
+    el.masterPassword.value = '';
+    el.passwordContainer.style.display = "none";
+    el.newPassword.style.display = "none";
+  }
   const masterPassword = el.masterPassword.value;
   const newPassword = el.newPassword.value;
   if (newPassword === masterPassword) {
     alert(`Master Password (=${masterPassword}) NOT changed`);
-    el.newPassword.style.display = "none";
-    el.newPassword.value = '';
-    el.masterPassword.value = '';
+    _cleanup();
     return;
   }
-  const storedHash = storageGet({key: "pwdHash", decrypt: false});
-  const masterHash = createHash(masterPassword);
-  const newHash = createHash(newPassword);
-  let msg = `before Master Password change.`;
-  msg = `${msg}\nmasterPassword: ${masterPassword}, masterHash: ${masterHash.slice(0,6)}...`;
-  msg = `${msg}\nnewPassword: ${newPassword}, newHash: ${newHash.slice(0,6)}...`;
-  msg = `${msg}\nCRYPTO.passwd: ${CRYPTO.passwd},  storedHash: ${storedHash.slice(0,6)}...`;
-  if (debug) alert(msg);
-  if (masterHash !== storedHash || masterPassword !== CRYPTO.passwd) {
+  const storedHash = localStorage.getItem("pwdHash");
+  const storedSalt = localStorage.getItem("saltHash");
+  // const masterHash = createHash(masterPassword);
+  // const newHash = createHash(newPassword);
+  // if (masterHash !== storedHash || masterPassword !== CRYPTO.passwd) {
+  if (!verifyPasssword(storedHash, storedSalt, masterPassword) || masterPassword !== CRYPTO.passwd) {
     let m = "Incorrect Master Password!"
     if (debug) {
-      m = `${m}\nstoredHash= ${storedHash.slice(0,6)}...`;
-      m = `${m}\nmasterHash= ${masterHash.slice(0,6)}...`;
+      m = `${m}\nstoredHash= ${storedHash.slice(0,9)}...`;
+      m = `${m}\nmasterHash= ${masterHash.slice(0,9)}...`;
       m = `${m}\nmasterPassword= ${masterPassword}`;
       m = `${m}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
     }
@@ -379,81 +249,72 @@ el.newPassword.addEventListener("keydown", (event) => {
     el.masterPassword.value = '';
     return;
   }
-  if (typeof(newPassword) !== 'string') {
-    alert(`el.newPassword: ERROR: non-string: typeof(el.value)= ${typeof(newPassword)}`)
-  }
-  decryptLocalStorage(masterPassword, CRYPTO.encryptedItems);
-  CRYPTO.passwd = newPassword;
-  storageSet({key: "pwdHash", value: newHash, encrypt: false, from: "el.newPassword"});
-  // storageSet({key: "pwd", value: newPassword, encrypt: false, from: "el.newPassword"});
-  encryptLocalStorage(newPassword, CRYPTO.encryptedItems);
-  msg = `Master Password changed:`;
-  msg = `${msg}\nOld Password= ${masterPassword}`;
+
+  let msg = `Confirm Master Password change:`;
+  msg = `${msg}\n\nOld Password= ${masterPassword}`;
   msg = `${msg}\nNew Password= ${newPassword}`;
   if (debug) {
-    msg = `${msg}\nstoredHash: ${storedHash.slice(0,6)}...`;
-    msg = `${msg}\nnewHash: ${newHash.slice(0,6)}...`;
+    msg = `${msg}\nstoredHash: ${storedHash.slice(0,9)}...`;
+    msg = `${msg}\nnewHash: ${newHash.slice(0,9)}...`;
     msg = `${msg}\nCRYPTO.passwd: ${CRYPTO.passwd}`;
     }
-  alert(msg);
+  if (!confirm(msg)) {
+    _cleanup();
+    return;
+  }
+
+  // const masterKey = createKey(masterPassword);
+  // const newKey = createKey(newPassword);
+  // TODO: clean-up!
+  let m = `masterPassword= ${masterPassword}, newPassword= ${newPassword}`;
+  m = `${m}\nmasterKey= ${masterKey}, newKey= ${newKey}`
+  CRYPTO.encryptedItems.forEach((key) => {
+    const fromStorage = localStorage.getItem(key);
+    if (fromStorage === null) return;
+    // const value = decryptString(fromStorage, masterKey);
+    // const encryptedValue = encryptString(value, newKey);
+    const value = decryptText(masterPassword, fromStorage);
+    const encryptedValue = encryptText(newPassword, value); // return `${saltHex}:${ivHex}:${ciphertextHex}`;
+    m = `${m}\nkey= ${key}, value= ${value}`
+    m = `${m}\nkey= ${key}, encryptedValue= ${encryptedValue}`
+    localStorage.setItem(key, encryptedValue);
+  });
+  console.error(m);
+  localStorage.setItem("pwdHash", newHash);
+  CRYPTO.passwd = newPassword;
+
+  // confirm(msg); // TODO: change alert to confirm!!!
   if (debug) {
     alert(`after Master Password changed: localStorage= ${JSON.stringify(localStorage)}`);
   }
-  el.newPassword.value = '';
-  el.masterPassword.value = '';
-  el.passwordContainer.style.display = "none";
-  el.newPassword.style.display = "none";
+  _cleanup();
   // DEBUG CODE
   const displayedOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
-  const storedOpts = storageGet({key: "options", pwd: newPassword, decrypt: true});
-  alert(`el.newPassword:\ndisplayed= ${JSON.stringify(displayedOpts)}\nstored= ${JSON.stringify(storedOpts)}`);
+  const storedOpts = storageGet({key: "options"});
+  // alert(`el.newPassword:\ndisplayed= ${JSON.stringify(displayedOpts)}\nstored= ${JSON.stringify(storedOpts)}`);
   checkOptions();
   return;
 });
 
-// if (debug) console.log(`newPassword: storedHash= ${storedHash}`);
-// if (debug) console.log(`newPassword: currentHash= ${currentHash}`);
-    // // msg =  (newPassword !== CRYPTO.passwd) ? `${msg} changed.` : `${msg} NOT changed.`
-    // if (debug) console.log(`newPassword: newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
-    // if (debug) console.log(`newPassword:1: msg= ${msg}`);
-    // if (debug) alert(`el.newPassword: newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
-    // if (debug) console.log(`newPassword: new password= ${newPassword}`);
-    // if (debug) console.log(`newPassword: new password hash= ${h}`);
-    // if (debug) console.log(`newPassword: decrypted with CRYPTO.passwd= ${CRYPTO.passwd}`);
-    // if (debug) console.log(`newPassword: decrypted with CRYPTO.key= ${CRYPTO.key}`);
-    // if (debug) alert(`el.newPassword: before decrypt: CRYPTO.passwd= ${CRYPTO.passwd}`);
-    // if (debug) console.log(`newPassword: encrypted with CRYPTO.passwd= ${CRYPTO.passwd}`);
-    // if (debug) console.log(`newPassword: encrypted with CRYPTO.key= ${CRYPTO.key}`);
-    // if (debug) console.log(`newPassword:2: msg= ${msg}`);
-    // if (debug) console.log("newPassword: CRYPTO.passwd= ", CRYPTO.passwd);
-    // if (debug) console.log("newPassword: CRYPTO.oldPassword= ", CRYPTO.oldPassword);
-    // if (debug) {
-    //   msg = `${msg}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
-    //   msg = `${msg}\npwdHash= ${storageGet({key: "pwdHash", pwd: CRYPTO.passwd, decrypt: false})}`;
-    //   msg = `${msg}\nCRYPTO.key= ${CRYPTO.key}`;
-    // }
-    // if (debug) alert(`el.newPassword: before encrypt: newPassword= ${newPassword}, CRYPTO.passwd= ${CRYPTO.passwd}`);
-
-// (async () => {
-//   try {
-//     const { scrypt } = await import('crypto');  
-//     // Example usage of scrypt
-//     const password = 'password';
-//     const salt = 'salt';
-//     scrypt(password, salt, 16, (err, derivedKey) => {
-//       if (err) throw err;
-//       console.log(derivedKey.toString('hex')); // Prints the derived key
-//     });
-//   } catch (error) {
-//     console.error('Error importing crypto module:', error);
-//   }
-// })();
+function checkOptions() {
+  if (el.pepper === 'undefined' || el.salt === 'undefined' || Number(el.length) < 4) {
+    alert(`ERROR: el.newPassword: salt= ${el.salt}, pepper= ${el.pepper}, length= ${el.length}`);
+    console.error(`ERROR: el.newPassword: CallStack= `);
+    console.trace();
+    alert(`ERROR: el.newPassword: call stack generated... values restored storage`);
+    const opts = storageGet({key: "options"});
+    alert(`ERROR: el.newPassword: from storage: opts= ${JSON.stringify(opts)}`);
+    el.salt = opts.salt;
+    el.pepper = opts.pepper;
+    el.length = opts.length;
+  }
+  }
+  
 
 function createSplashScreen(opts) {
   const debug = false;
   const pwdHash = createHash(CRYPTO.passwd);
-  storageSet({key: "pwdHash", value: pwdHash, encrypt: false, from: "createSplashScreen"});
-  // storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "createSplashScreen"});
+  localStorage.setItem("pwdHash", pwdHash);
   let msg = `<h3>To start using HPASS:</h3>
   <ul>
   <li>Read the <strong>Basics</strong> below.
@@ -516,12 +377,14 @@ function setGenericOptions() {
   if (debug) console.log("setGenericOptions: null options in localStorage!");
   let opts = {...globalDefaults};
   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
-  opts.salt = get_random_string(16, charset);
+  opts.salt = get_random_string(16, charset); //TODO: 
+  opts.salt = "0" // DEBUG:!!!
   if (debug) console.log("setGenericOptions: opts= ", opts);
   if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
   if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
-  storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "setGenericOptions"});
-  storageSet({key: "encrypted", value: true, encrypt: false, from: "setGenericOptions"});
+  storageSet({key: "options", value: opts, debug: true});
+  sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
+  localStorage.setItem("encrypted", true);
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
       You can use it as is or you can to change it
@@ -553,10 +416,9 @@ if ("serviceWorker" in navigator) {
     .register(swPath)
     .then((reg) => {
       CRYPTO.key = createKey(CRYPTO.passwd);
-      const storedHash = storageGet({key: "pwdHash", pwd: CRYPTO.passwd, decrypt: false});
+      const storedHash = localStorage.getItem("pwdHash");
       const h = createHash(CRYPTO.passwd);
-      storageSet({key: "pwdHash", value: h, encrypt: false, from: "serviceWorker"});
-      // storageSet({key: "pwd", value: CRYPTO.passwd, encrypt: false, from: "serviceWorker"});
+      localStorage.setItem("pwdHash", h);
       if (debug) console.log("app: sw registered!", reg);
       if (debug) console.log("app: before createSplashScreen");
       if (debug) console.log("app: after createSplashScreen");
@@ -570,7 +432,7 @@ if ("serviceWorker" in navigator) {
         msg = `${msg}\nCRYPTO.key= ${CRYPTO.key}`;
         alert(msg);
       }
-      let opts = storageGet({key: "options", pwd: CRYPTO.passwd, decrypt: true});
+      let opts = storageGet({key: "options"});
       if (opts === null) {
         if (debug) console.log("app: register: null options in localStorage!");
         opts = setGenericOptions();
@@ -757,31 +619,6 @@ function cleanClean(v) {
   return valid.has(v) ? v : true;
 }
 
-function handleExport(event, args) {
-    const debug = false;
-    // const opts = { ...globalDefaults };
-    // if (debug) {
-    //   console.log("handleExport: args.decrypted= ", args.decrypted);
-    //   // console.log("handleExport: event.type= ", event.type);
-    //   // console.log("handleExport: MINLENGTH=", MINLENGTH, " MAXLENGTH= ", MAXLENGTH);
-    //   // return;
-    // }
-    // opts.pepper = el.pepper.value;
-    // opts.salt = el.salt.value;
-    // opts.length = Math.max(Math.min(el.length.value, MAXLENGTH), MINLENGTH).toString();
-    // // setOptions(opts, CRYPTO.passwd);
-    // storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "handleExport"});
-    // el.length.value = Math.max(Math.min(opts.length, MAXLENGTH), MINLENGTH);
-    // if (debug) console.log("handleExport: opts= ", opts);
-    // if (kind === "decrypted") CRYPTO.enableDecryptedIO();
-    if (CRYPTO.decryptedIOEnabled) alert("Plain text export!");
-    exportLocalStorage({decrypted: args.decrypted});
-    // CRYPTO.disableDecryptedIO();
-    // document.querySelectorAll(".crypt").forEach(function(element) {
-    //   element.classList.remove("glow");
-    // });
-};
-
 document.querySelectorAll('.export').forEach(function(element) {
   const timeDiffThreshold = 300;
   let lastClickTime = 0;
@@ -793,14 +630,10 @@ document.querySelectorAll('.export').forEach(function(element) {
     clearTimeout(pendingClick);
     if (timeDiff > timeDiffThreshold) {
       pendingClick = setTimeout(function() {
-        const args = {decrypted: false}
-        console.log(".export: args= ", args); // Single click
-        handleExport(event, args);
+        handleExport({decrypted: false}); // Single click
       }, timeDiffThreshold);
     } else {
-      const args = {decrypted: true}
-      console.log(".export: args= ", args);  // Double click
-      handleExport(event, args);
+      handleExport({decrypted: true}); // Double click
     }
   });
 });
@@ -833,28 +666,10 @@ window.onload = function() {
 document.getElementById("lock").addEventListener("click", function () {
   // window.location.reload();
   el.passwordContainer.style.display = "block";
+  // el.salt.value = ''; // TODO: wipes clean input boxes, but seems to cause problems
+  // el.pepper.value = ''; // with password change!?
+  // el.length.value = '';
 });
-
-// el.reset.addEventListener("dblclick", function (event) {
-//   const debug = false;
-//   if (debug) console.log("Event listener triggered!"); // Should log when clicked
-//   event.preventDefault(); // Add this line
-//   if (debug) {
-//     console.log("app: 2: reset: el= ", el);
-//     console.log("app: 2: reset: globalDefaults= ", globalDefaults);
-//   }
-//   const opts = {};
-//   opts.salt = el.salt.value = globalDefaults.salt;
-//   opts.pepper = el.pepper.value = globalDefaults.pepper;
-//   opts.length = el.length.value = globalDefaults.length;
-//   if (debug) {
-//     console.log("app: 2: reset: el.salt.value= ", el.salt.value);
-//     console.log("app: 2: reset: el.pepper.value= ", el.pepper.value);
-//     console.log("app: 2: reset: el.length.value= ", el.length.value);
-//   }
-//   storageSet({key: "options", value: globalDefaults, pwd: CRYPTO.passwd, from: "el.reset"});
-//   showPopup("defaults restored!", SHORTPOPUP);
-// });
 
 el.hint.addEventListener("mouseout", () => {
   const debug = false;
@@ -886,32 +701,12 @@ el.hint.addEventListener("keydown", (event) => {
   }, 0);
 });
 
-function matchingKeys(x, y) {
-  const v = x.every(item => y.includes(item)) && y.every(item => x.includes(item));
-  return v;
-}
-
 // el.storeButton.addEventListener("click", function() {
 //   storeOptions();
 // });
 
 // el.storeButton.addEventListener("click", storeOptions);
 document.getElementById("save").addEventListener("click", saveOptions);
-
-/*
-STORAGE = {options: {"salt":"0","pepper":"?","length":"15"}};
-function storageGet(args) {
-  return STORAGE[args.key];
-}
-function storageSet(args) {
-  return STORAGE[args.key] = args.value;
-}
-
-function foo(args) {
-  args = {debug: -1, ...args};
-  console.log(`args= ${JSON.stringify(args)}`);
-}
-*/
 
 function saveOptions(args) {
   args = {debug: -1, ...args};
@@ -927,7 +722,7 @@ function saveOptions(args) {
   // } else {
   //   hint = args.hint;
   // }
-  const storedOpts = storageGet({key: "options", pwd: CRYPTO.passwd});
+  const storedOpts = storageGet({key: "options"});
   const diff = objDiff(currentOpts, storedOpts);
   if (hint === '' && Object.keys(diff).length === 0) {
     msg = `NOTE: stored settings are the same! Nothing changed.`
@@ -937,14 +732,14 @@ function saveOptions(args) {
   }
   // alert(`storeOptions: el.hint.value= ${el.hint.value}`);
   if (hint === '' && Object.keys(diff).length !== 0) {
-    storageSet({key: "options", value: currentOpts, pwd: CRYPTO.passwd, from: "saveOptions"});
+    storageSet({key: "options", value: currentOpts});
     msg = `NOTE: new generic settings saved: ${JSON.stringify(currentOpts)}`
     alert(msg);
     console.log(msg)
     return;
   }
   // hint !== ''
-  let sites = storageGet({key: "sites", pwd: CRYPTO.passwd});// decrypt: true is the default!
+  let sites = storageGet({key: "sites"});// decrypt: true is the default!
   if (sites === undefined) alert("ERROR: sites undefined in saveOptions!!!");
   sites = (sites === null || sites === undefined) ? {} : sites;
   if (debug > 0) console.log(`saveOptions: hint= ${hint}, sites= ${JSON.stringify(sites)}`);
@@ -968,7 +763,7 @@ function saveOptions(args) {
   if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
   if (sites !== null) {
     if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
-    storageSet({key: "sites", value: sites, pwd: CRYPTO.passwd, from: "storeOptions"});
+    storageSet({key: "sites", value: sites});
     msg = `Hint-specific settings ${replacedOrCreated}.`;
     msg = `${msg}\nHint= ${hint}`;
     msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
@@ -992,7 +787,7 @@ function setHintOpts(hint, opts) {
   if (!q) {
     alert('setHintOpts: invalid keys opts!');
   }
-  const x = storageGet({key: "options", pwd: CRYPTO.passwd, decrypt: true});
+  const x = storageGet({key: "options"});
   const generic = (x === null) ? setGenericOptions() : x;
   if (debug) {
     console.log(`setHintOpts: generic=`, generic);
@@ -1010,10 +805,10 @@ function setHintOpts(hint, opts) {
     msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
     msg = `${msg}\nLength= ${opts.length}`;
     alert(msg);
-    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "setHintOpts"});
+    storageSet({key: "options", value: opts});
     return;
   }
-  let sites = storageGet({key: "sites", pwd: CRYPTO.passwd, decrypt: true});
+  let sites = storageGet({key: "sites"});
   if (debug) console.log(`setHintOpts: hint= ${hint}`);
   if (sites === null) {
     sites = {[hint]: diff};
@@ -1022,7 +817,7 @@ function setHintOpts(hint, opts) {
     sites[hint] = diff; // store ony values different from generic
     if (debug) console.log(`setHintOpts: sites was not null, sites=`, sites);
   }
-  storageSet({key: "sites", value: sites, pwd: CRYPTO.passwd, from: "setHintOpts"});
+  storageSet({key: "sites", value: sites});
 }
 
 // ...
@@ -1030,13 +825,13 @@ function getHintOpts(hint) {
   const debug = false;
   // alert(`getHintOpts: hint= ${hint}`)
   if (debug) console.log("getHintOpts: hint= ", hint)
-  let opts = storageGet({key: "options", pwd: CRYPTO.passwd, decrypt: true});
+  let opts = storageGet({key: "options"});
   if (opts === null) {
     opts = {...globalDefaults};
-    storageSet({key: "options", value: opts, pwd: CRYPTO.passwd, from: "getHintOpts"});
+    storageSet({key: "options", value: opts});
   }
   if (debug) console.log("getHintOpts: generic opts= ", opts);
-  const sites = storageGet({key: "sites", pwd: CRYPTO.passwd, decrypt: true});
+  const sites = storageGet({key: "sites"});
   if (debug) console.log("getHintOpts: sites= ", sites);
   if (sites !== null && sites[hint] !== undefined) {
     if (debug) console.log(`getHintOpts: hint-specific: sites[${hint}]= `, sites[hint]);
@@ -1142,19 +937,20 @@ function handleLinkClick(event) {
 // ChatGPT...
 
 // Function to export localStorage as a JSON file
-function exportLocalStorage(args = {}) {
+function handleExport(args = {}) {
   args = {fileName: "hpass-settings.json", decrypted: false, ...args};
   const debug = false;
   if (debug) console.log(`exportLocalStorage: args.decrypted= ${args.decrypted}`)
-  // Convert settings object to JSON string
-  // if (CRYPTO.decryptedIOEnabled) {
+  const toExport = {encrypted: !args.decrypted};
+  Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
   if (args.decrypted) {
-    alert("Plain text export!");
-    decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
+    if (!confirm("Plain text export!")) return;
+    CRYPTO.key = createKey(CRYPTO.passwd);
+    CRYPTO.encryptedItems.forEach ((key) => {toExport[key] = decryptString(toExport[key], CRYPTO.key)});
   } else {
-    alert("Double Click for decrypted (plain text) export!");
+    if (!confirm("Encrypted export\nDouble Click for decrypted (plain text) export!")) return;
   }
-  const x = JSON.stringify(localStorage, null, 2);
+  const x = JSON.stringify(toExport, null, 2);
   const blob = new Blob([x], { type: 'application/json' });
   const link = document.createElement('a');
   link.download = args.fileName;
@@ -1162,14 +958,7 @@ function exportLocalStorage(args = {}) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  // if (CRYPTO.decryptedIOEnabled) {
-  if (args.decrypted) encryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
 }
-
-// function foo(args = {}) {
-//   args = {fileName: "hpass-localStorage.json", decrypted: false, ...args};
-//   console.log('args= ', args)
-// }
 
 const span = document.getElementsByClassName("close")[0];
 
@@ -1218,30 +1007,44 @@ window.addEventListener("click", function(event) {
 
 
 // Function to import localStorage from a JSON file
-function importLocalStorage(event) {
+function handleImport(event) {
   const debug = false;
   const file = el.importFileInput.files[0];
-  if (debug) console.log("importLocalStorage: file=", file);
+  if (debug) console.log("handleImport: file=", file);
   if (file) {
       const reader = new FileReader();
       reader.onload = function(e) {
           try {
               // Parse the JSON string from the file
-              if (debug) console.log("importLocalStorage: e.target.result=", e.target.result);
+              if (debug) console.log("handleImport: e.target.result=", e.target.result);
               const importedLocalStorage = JSON.parse(e.target.result);
-              console.log("importLocalStorage: importedLocalStorage= ", importedLocalStorage);
-              setOptionsFromStorage(JSON.parse(importedLocalStorage["options"]));
-              if (debug) alert(`INFO: importLocalStorage: e.target.result= ${e.target.result})}`)
-              if (debug) alert(`INFO: importLocalStorage: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
+              console.log("handleImport: importedLocalStorage= ", importedLocalStorage);
+              // TODO: decrypt if importined file is encrypted!!!
+              // setDisplayedOptions(JSON.parse(importedLocalStorage["options"]));
+              if (debug) alert(`INFO: handleImport: e.target.result= ${e.target.result})}`)
+              if (debug) alert(`INFO: handleImport: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
               localStorage.clear();
               const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
-              const notIsEncrypted = !isEncrypted;
+              // const cryptoKey = createKey(CRYPTO.passwd);
+              let opts;
               for (let k in importedLocalStorage) {
-                if (debug > 1) alert(`INFO: importLocalStorage: isEncrypted= ${isEncrypted}, notIsEncrypted= ${notIsEncrypted}`)
-                storageSet({key: k, value: importedLocalStorage[k], pwd: CRYPTO.passwd, encrypt: true});
+                const x = importedLocalStorage[k];
+                if (!CRYPTO.encryptedItems.includes(k)) { // for pwdHash and encrypted keys
+                  localStorage.setItem(k, x);
+                  return;
+                } // for "options" || "sites"
+                if (k === "options") {
+                  // const y = (isEncrypted) ? decryptString(x, cryptoKey) : x;
+                  const y = (isEncrypted) ? decryptText(CRYPTO.passwd, x) : x;
+                  opts = JSON.parse(y);
+                }
+                // const value = (!isEncrypted) ? encryptString(x, cryptoKey) : x;  
+                const value = (!isEncrypted) ? encryptText(CRYPTO.passwd, x) : x;
+                localStorage.setItem(k, value);
               }
-              storageSet({key: "encrypted", value: true});
-              if (debug) alert(`INFO: importLocalStorage: localStorage= ${JSON.stringify(localStorage)}`);
+              setDisplayedOptions(opts);
+              localStorage.setItem("encrypted", true);
+              if (debug) alert(`INFO: handleImport: localStorage= ${JSON.stringify(localStorage)}`);
               // const modal = document.getElementById("fileInputModal");
               el.fileInputModal.style.display = "none"; // TODO: modal is not defined
           } catch (error) {
@@ -1255,18 +1058,18 @@ function importLocalStorage(event) {
   }
 }
 
-function setOptionsFromStorage(opts) {
+function setDisplayedOptions(opts) {
   const debug = false;
   const beforeValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
   el.salt.value = opts.salt;
   el.pepper.value = opts.pepper;
   el.length.value = opts.length;
   const afterValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
-  let msg = `INFO: setOptionsFromStorage:`
+  let msg = `INFO: setDisplayedOptions:`
   msg = `${msg}\nbeforeValues= ${JSON.stringify(beforeValues)}`
   msg = `${msg}\nnew opts= ${JSON.stringify(opts)}`;
   msg = `${msg}\nafterValues= ${JSON.stringify(afterValues)}`;
   if (debug) alert(msg);
 }
 
-el.importFileInput.addEventListener('change', importLocalStorage);
+el.importFileInput.addEventListener('change', handleImport);

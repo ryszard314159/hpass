@@ -1,4 +1,10 @@
 "use strict";
+// Import Crypto-JS into your Service Worker
+// importScripts('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js');
+
+// Now you can use Crypto-JS within your Service Worker
+// console.log(CryptoJS); // Verify Crypto-JS is loaded
+
 // import { getPass } from "./core/lib.js";
 const version = "2024-09-15";
 

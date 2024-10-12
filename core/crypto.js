@@ -68,7 +68,7 @@ async function encryptText(password, plainText) {
     const ivHex = Array.from(iv).map(b => b.toString(16).padStart(2, '0')).join('');
     const ciphertextHex = Array.from(new Uint8Array(encryptedBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
     // Concatenate salt, iv, and ciphertext for storage/transfer
-    return `${saltHex}:${ivHex}:${ciphertextHex}`;
+    return `${saltHex}|${ivHex}|${ciphertextHex}`;
 }
   
 async function decryptText(password, encryptedString) {

@@ -65,7 +65,12 @@
     <link rel="icon" type="image/png" sizes="64x64" href="/icons/logo.64.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/icons/logo.32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/icons/logo.16.png" /> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script> -->
+    <script type="module">
+      import * as CryptoJS from './node_modules/crypto-js/crypto-js.js';
+      const hash = CryptoJS.MD5("Message");
+      console.log(hash.toString());
+    </script>
     <!-- <script type="importmap">
       {
         "imports": {
@@ -153,7 +158,7 @@
     </div>
     <div id="hintContainer">
     <div id="topIcons2" class="topIcons2"> <!-- btnContainer"> -->
-      <img id="share" class="btn share" src="icons/share.svg" title="Share!"/>
+      <img id="share" class="btn share" src="icons/share.svg" title="Share"/>
       <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
       <img id="save" class="btn save" src="icons/save.svg" title="Save"/>
     </div>

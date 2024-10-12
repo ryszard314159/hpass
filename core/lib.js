@@ -61,47 +61,11 @@ CRYPTO.enableDecryptedIO = () => {
   }, CRYPTO.decryptedIOspan);
 */
 
-// CRYPTO.handlers = {
-//   encryptedStorage: (property, value) => {
-//     const debug = false;
-//     console.log(`encryptedStorage: property= ${property}, value= ${value}`);
-//     let encrypted = storageGet('encrypted', null);
-//     console.log(`encryptedStorage:1: storageGet('encrypted')= ${encrypted}`);
-//     if (!encrypted) {
-//       encryptLocalStorage(CRYPTO.passwd, CRYPTO.passwd, CRYPTO.encryptedItems);
-//       storageSet("encrypted", true, null);
-//     } else {
-//       decryptLocalStorage(CRYPTO.passwd, CRYPTO.encryptedItems);
-//       storageSet("encrypted", false, null);
-//     }
-//     encrypted = storageGet('encrypted', null);
-//     console.log(`encryptedStorage:2: encrypted= ${encrypted}`);
-//     // ... do something
-//   },
-//   encryptedIO: (property, value) => {
-//     console.log(`EncryptedIO State changed: ${property} = ${value}`);
-//     // ... do something
-//   }
-// };
 
-// const CryptoProxy = new Proxy(CRYPTO, {
-//   set: function(target, property, value) {
-//     if (target[property] !== value) {
-//       target[property] = value;
-//       const handler = target.handlers[property];
-//       if (handler) {
-//         handler(property, value);
-//       } else {
-//         console.log('property is unknown');
-//       }
-//     }
-//     return true;
-//   }
-// });
 
-function getCallStack() {
-  const error = new Error();
-  return error.stack;
+function matchingKeys(x, y) {
+  const v = x.every(item => y.includes(item)) && y.every(item => x.includes(item));
+  return v;
 }
 
 function EncryptedStorageHandler(property, value) {
@@ -114,62 +78,6 @@ function EncryptedAllHandler(property, value) {
   // ... do something
 }
 
-// const IV_LENGTH = 16; //16 bytes (128 bits) for the IV is standard for AES.
-// const KEY_LENGTH = 24; // 24 bytes (192 bits) for the key is required for AES-192.
-
-// import { scrypt, randomBytes, createCipheriv, createDecipheriv } from 'crypto';
-
-// const crypto = require('crypto');
-// const { scrypt, randomBytes, createCipheriv, createDecipheriv } = crypto;
-
-// import CryptoJS from "crypto-js";
-
-// // Function to encrypt data
-// async function encrypt(text, password) {
-//   return new Promise((resolve, reject) => {
-//     scrypt(password, 'salt', KEY_LENGTH, (err, key) => {
-//       if (err) reject(err);
-//       const iv = randomBytes(IV_LENGTH); // Initialization vector
-//       const cipher = createCipheriv('aes-192-cbc', key, iv);
-//       let encrypted = cipher.update(text, 'utf8', 'hex');
-//       encrypted += cipher.final('hex');
-//       resolve(iv.toString('hex') + ':' + encrypted);
-//     });
-//   });
-// }
-
-// Function to decrypt data
-// async function decrypt(encrypted, password) {
-//   return new Promise((resolve, reject) => {
-//     scrypt(password, 'salt', KEY_LENGTH, (err, key) => {
-//       if (err) reject(err);
-//       const [ivHex, encryptedText] = encrypted.split(':');
-//       const iv = Buffer.from(ivHex, 'hex');
-//       const decipher = createDecipheriv('aes-192-cbc', key, iv);
-//       let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-//       decrypted += decipher.final('utf8');
-//       resolve(decrypted);
-//     });
-//   });
-// }
-
-// Example usage
-// (async () => {
-//   const password = 'Password used to generate key';
-//   const text = 'some clear text data';
-
-//   try {
-//     const encrypted = await encrypt(text, password);
-//     console.log('Encrypted:', encrypted);
-
-//     const decrypted = await decrypt(encrypted, password);
-//     console.log('Decrypted:', decrypted);
-//   } catch (error) {
-//     console.error('Error:', error);
-//   }
-// })();
-
-// 
 // https://stackoverflow.com/questions/13335967/export-data-in-localstorage-for-later-re-import
 
 function objDiff(x, y) {
@@ -434,37 +342,6 @@ export {
 
 // const CRYPTO_PREFIX = "prefix:"
 
-// function getCallerInfo() {
-//   try {
-//       throw new Error();
-//   } catch (e) {
-//       if (e.stack) {
-//           const stackLines = e.stack.split("\n");
-//           // The first two lines are the error and the current function, so we want the caller of the caller
-//           const callerLine = stackLines[3].trim(); // Adjust index if needed
-//           const match = callerLine.match(/at (\S+) \((.*):(\d+):(\d+)\)/);
-//           if (match) {
-//               return {
-//                   functionName: match[1],
-//                   filePath: match[2],
-//                   lineNumber: match[3],
-//                   columnNumber: match[4]
-//               };
-//           } else {
-//               const altMatch = callerLine.match(/at (.*):(\d+):(\d+)/);
-//               if (altMatch) {
-//                   return {
-//                       functionName: '<anonymous>',
-//                       filePath: altMatch[1],
-//                       lineNumber: altMatch[2],
-//                       columnNumber: altMatch[3]
-//                   };
-//               }
-//           }
-//       }
-//   }
-//   return null;
-// }
 
 // https://en.wikipedia.org/wiki/Key_derivation_function
 // function getKey(PASSWORD) {
@@ -473,203 +350,231 @@ export {
 //   // return CRYPTO_KEY.toString();
 // }
 
+// const options = { keySize: keySize, iterations: 999, hasher: CryptoJS.algo.SHA512};
+// const k = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
+// CryptoJS.PBKDF2(password, salt, { keySize: keySize, iterations: iterations, hasher: hasher });
+// console.log(`kdf: pwd= ${pwd}`);
 // function kdf(pwd, keySize) {
 function kdf(pwd) {
-  // const options = { keySize: keySize, iterations: 999, hasher: CryptoJS.algo.SHA512};
-  // const k = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
-  // CryptoJS.PBKDF2(password, salt, { keySize: keySize, iterations: iterations, hasher: hasher });
-  // console.log(`kdf: pwd= ${pwd}`);
   const k = CryptoJS.PBKDF2(pwd, "salt", CRYPTO.options).toString();
+  const password = 'your-password'; // The password to hash
+  const salt = 'salt'; // The salt, which should be random for security
+  const iterations = 100000; // The number of iterations
+  const keyLength = 64; // Desired key length in bytes
+  const digest = 'sha256'; // Hash function
+  crypto.pbkdf2(password, salt, iterations, keyLength, digest, (err, derivedKey) => {
+  if (err) throw err;
+  console.log(derivedKey.toString('hex')); // Outputs the derived key as a hex string
+  });
+
   return k;
 }
 
-// function validKey(key, keySize) {
-//   const size = CryptoJS.enc.Utf8.parse(key).words.length;
-//   return size === keySize * 2;
+// function createKey(pwd) {
+//   const debug = false;
+//   const oldKey = CRYPTO.key;
+//   const newKey = kdf(pwd);
+//   if (debug) {
+//     console.log(`createKey: pwd= ${pwd}`);
+//     console.log(`createKey: oldKey= ${oldKey}`);
+//     console.log(`createKey: newKey= ${newKey}`);
+//   }
+//   return newKey;
+//   // const size = CryptoJS.enc.Utf8.parse(CRYPTO.key).words.length;
+//   // CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
 // }
 
-// 0 - calculate size of tryKey
-// 1 - if password is undefined convert it to an empty string
-// 2 - if the size of tryKey is
-// function validateKey(pwd) {
-//   const size = CryptoJS.enc.Utf8.parse(CRYPTO.key).words.length;
-//   CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
-// }
+function createKey(password) {
+  const options = { keySize: 2, iterations: 999, hasher: CryptoJS.algo.SHA512};
+  const cryptoKey = CryptoJS.PBKDF2(password, "salt", options).toString();
+  return cryptoKey;
+}
 
-// function validateKey(pwd) {
-//   CRYPTO.key = (CRYPTO.key === null) ? createKey(pwd) : CRYPTO.key;
-// }
+async function createKey(password) {
 
-function createKey(pwd) {
-  const debug = false;
-  const oldKey = CRYPTO.key;
-  const newKey = kdf(pwd);
-  if (debug) {
-    console.log(`createKey: pwd= ${pwd}`);
-    console.log(`createKey: oldKey= ${oldKey}`);
-    console.log(`createKey: newKey= ${newKey}`);
+  const debug = true;
+
+  const ITERATIONS = (debug) ? 999 : 99999;
+  const HASH = (debug) ? 'SHA-128': 'SHA-512';
+  const KDF = 'PBKDF2'; // Key Derivation Function
+  const ALGO = 'AES-GCM'; // The encryption algorithm you want to derive the key for
+  const KEY_LENGTH = (debug) ? 128 : 256; // Length of the key in bits (can be 128, 192, or 256)
+  const SALT_LENGTH = (debug) ? 16 : 32; // in bytes
+  const SALT = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
+
+  async function deriveKey(password, salt) {
+    const encoder = new TextEncoder();
+    const passwordKey = encoder.encode(password); // Convert password and salt to ArrayBuffers
+
+    const baseKey = await crypto.subtle.importKey( // Import the password as a key
+      'raw',
+      passwordKey,
+      {name: KDF},
+      false,
+      ['deriveKey']
+    );
+
+    // Derive a key using KDF (e.g. PBKDF2)
+    const derivedKey = await crypto.subtle.deriveKey(
+      { 
+        name: KDF,
+        salt: salt, // Use the Uint8Array salt directly
+        iterations: ITERATIONS,
+        hash: HASH
+      },
+      baseKey,
+      {
+        name: ALGO,
+        length: KEY_LENGTH
+      },
+      false, 
+      ['encrypt', 'decrypt'] // Key usages
+    );
+    // Export the derived key to view it as bytes
+    const keyBuffer = await crypto.subtle.exportKey('raw', derivedKey);
+    const keyArray = new Uint8Array(keyBuffer);
+    const keyHex = Array.from(keyArray).map(b => b.toString(16).padStart(2, '0')).join('');
+    if (debug) console.log(`DEBUG: createKey: keyHex= ${keyHex}`);
+    return [derivedKey, SALT, keyHex, saltHex]; // TODO: how to generate saltHex?
   }
-  return newKey;
-  // const size = CryptoJS.enc.Utf8.parse(CRYPTO.key).words.length;
-  // CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
+  return await deriveKey(password, SALT);
 }
 
-function encryptJSON(json) {
-  const s = JSON.stringify(json);
-  return CryptoJS.AES.encrypt(s, CRYPTO.key);
+function encryptString(inp, cryptoKey, debug=false) {
+  // CryptoJS = require("crypto-js");
+  // if (debug) {
+  //   alert(`DEBUG: encryptString: inp= ${inp}`);
+  //   // return inp;
+  // }
+  const out = CryptoJS.AES.encrypt(inp, cryptoKey).toString();
+  const x = decryptString(out, cryptoKey);
+  if (out.length < 4 || inp !== x) {
+    let msg = `encryptString: out.length < 4 || inp !== x`;
+    msg = `${msg}\ninp= ${inp}\ncryptoKey= ${cryptoKey}\nout= ${out}\nx= ${x}`
+    if (!debug) throw new Error(msg);
+  }
+  if (debug) {
+    let msg = `DEBUG: encryptString:\ninp= ${inp}\nout= ${out}\ncryptoKey= ${cryptoKey}`;
+    console.trace();
+    console.error(msg);
+  }
+  return out;
 }
 
-function decryptJSON(json) {
-  const s = JSON.stringify(json);
-  return CryptoJS.AES.encrypt(s, CRYPTO.key);
+function decryptString(inp, cryptoKey, debug=false) {
+  // if (debug) {
+  //   alert(`DEBUG: decryptString: inp= ${inp}`);
+  //   // return inp;
+  // }
+  const out = CryptoJS.AES.decrypt(inp, cryptoKey).toString(CryptoJS.enc.Utf8);
+  // const x = encryptString(out, cryptoKey);
+  if (debug) {
+    let msg = `DEBUG: decryptString:\ninp= ${inp}\nout= ${out}\ncryptoKey= ${cryptoKey}`;
+    console.error(msg);
+  }
+  if (out.length < 4) {
+    let msg = `decryptString: out.length < 4`;
+    msg = `${msg}\ninp= ${inp}\ncryptoKey= ${cryptoKey}\nout= ${out}`;
+    console.error(msg);
+    throw new Error(msg);
+  }
+  return out;
+}
+
+function sanityCheck(args = {key: key, value: null, from: null}) {
+  const plain = JSON.stringify(args.value);
+  const cryptoKey = createKey(CRYPTO.passwd);
+  const fromStorage = localStorage.getItem(args.key);
+  const decrypted = decryptString(fromStorage, cryptoKey);
+  if (plain !== decrypted) {
+    let msg = `sanityCheck: from= ${args.from}`;
+    msg = `${msg}\nkey= ${args.key}`;
+    msg = `${msg}\nCRYPTO.passwd=${CRYPTO.passwd}\ncryptoKey= ${cryptoKey}`
+    msg = `${msg}\nplain= ${plain}\ndecrypted= ${decrypted}\nfromStorage= ${fromStorage}`;
+    console.error(msg);
+    throw new Error(`plain !== decrypted\n${msg}`);
+  }
 }
 
 function storageSet(args) {
   const debug = 0;
-  args = {key: null, value: null, pwd: null, encrypt: true, ignoreEncryption: false, ...args};
-  // const debugLevel = 9;
-  let err = 0;
-  const validTypes = new Set(["string", "object", "boolean"]);
-  let msg = 'storageSet: START';
-  if (!validTypes.has(typeof(args.value))) {
-    msg = `${msg}\nERROR: storageSet: invalid typeof(args.value)= ${typeof(args.value)}`;
-    err++;
+  args = {key: null, value: null, pwd: CRYPTO.passwd, encrypt: true, ...args};
+  const validKeys = new Set(["options", "sites"]);
+  if (!CRYPTO.encryptedItems.includes(args.key)) {
+    throw new Error(`storageSet: invalid args.key= ${args.key}`);
   }
-  // let msg = (args.key === null || args.value === null || args.encrypt === null) ? "null" : '';
   if (args.value === undefined || args.value === "undefined") {
-    msg = `${msg}\nERROR: storageSet: undefined args.value= ${args.value}, args.key= ${args.key}}`;
-    err++;
+    throw new Error(`storageSet: undefined args.value= ${args.value}, args.key= ${args.key}}`);
   }
-  const validKeys = new Set(["options", "sites", "pwdHash", "encrypted", "pwd"]);
-  if (!validKeys.has(args.key)) {
-    msg = `${msg}\nERROR: storageSet: invalid args.key= ${args.key}`;
-    err++;
+  if (typeof(args.value) !== "object") {
+    throw new Error(`storageSet: not an object type: args.value= ${args.value}`);
   }
-  let rawValue = (typeof(args.value) !== 'string') ? JSON.stringify(args.value) : args.value;
-  msg = `${msg}\nINFO: storageSet: rawValue= ${rawValue}`;
-  let finalValue = rawValue;
-  if (args.encrypt && CRYPTO.encryptedItems.includes(args.key) && !args.ignoreEncryption) {
-    // validateKey(pwd);
-    CRYPTO.key = createKey(args.pwd);
-    const encryptedValue = CryptoJS.AES.encrypt(rawValue, CRYPTO.key).toString();
-    if (encryptedValue === undefined || encryptedValue === 'undefined') {
-      msg = `${msg}\nINFO: storageSet: undefined encryptedValue= ${encryptedValue}`;
-      err++;
-    }
-    msg = `${msg}\nINFO: storageSet: rawValue= ${rawValue}`;
-    msg = `${msg}\nINFO: storageSet: encryptedValue= ${encryptedValue}`;
-    msg = `${msg}\nINFO: storageSet: CRYPTO.key= ${CRYPTO.key}`;
-    finalValue = encryptedValue;
+  let rawValue = JSON.stringify(args.value);
+  CRYPTO.key = createKey(args.pwd);
+  const encryptedValue = encryptString(rawValue, CRYPTO.key);
+  if (encryptedValue === undefined || encryptedValue === 'undefined') {
+    throw new Error(`storageSet: undefined encryptedValue= ${encryptedValue}`);
   }
-  localStorage.setItem(args.key, finalValue);
-  //...
-  if ((args.key === "options" || args.key === "sites") && (rawValue === '' || rawValue === null)) {
-    alert(`ERROR: storageSet: args.key= ${args.key}, rawValue= ${rawValue}`);
-    localStorage.setItem('DEBUG>' + args.key, rawValue);
-    console.trace()
+  localStorage.setItem(args.key, encryptedValue);
+  const storedValue = localStorage.getItem(args.key);
+  if (storedValue !== encryptedValue) {
+    throw new Error(`storageSet: storedValue !== encryptedValue}`);
   }
-  if (localStorage.getItem(args.key) === 'undefined') {
-    msg = `${msg}\nERROR: storageSet: stored undefined for args.key= ${args.key}, rawValue= ${rawValue}`;
-    err++;
-  }
-  if (err > 0 || debug > 1) {
-    console.log("ERROR: storageSet: CallStack= ", getCallStack());
-    alert(msg);
-  }
-  // if (args.from !== undefined) {
-  // write some log
-    // let log = localStorage.getItem("log");
-    // log = `${args.from}:${args.key}|${log}`;
-    // localStorage.setItem("log", log);
-  // }
-  // if (debug) {
-  //   // function getCallStack() {
-  //   //   const error = new Error();
-  //   //   return error.stack;
-  //   // }
-  //   console.log("storageSet: getCallStack: ", getCallStack());
-  //   console.log(msg);
-  //   alert(msg);
-  // }
+  sanityCheck({key: args.key, value: args.value, from: "storageSet"});
 }
 
-// function storageGet(storageKey, pwd) {
 function storageGet(args) {
-  args = {key: null, pwd: null, decrypt: true, ignoreEncryption: false, ...args};
-  if (args.key === null || args.decrypt === null) {
-    console.log("storageGet: getCallStack= ", getCallStack());
-    alert(`ERROR: storageGet: null args, args= ${JSON.stringify(args)}`)
-  }
+  args = {key: null, pwd: CRYPTO.passwd, decrypt: true, ...args};
   const debug = false;
-  const encryptedItems = new Set(["options", "sites"]);
-  // if (encryptedItems.has(args.key) && args.pwd === null) {
-  //   alert(`storageGet: args= ${JSON.stringify(args)}`);
-  //   console.log("storageGet: CallStack= ", getCallStack());
-  // }
-  let rawValue = localStorage.getItem(args.key);
-  if (rawValue === null) {
-    // alert(`ERROR: storageGet: null value for args.key= ${args.key}`)
-    if (debug) console.log(`storageGet:1: returning args.key= ${args.key}, rawValue= ${rawValue}`);
-    return rawValue;
-  }
-  const isEncrypted = JSON.parse(localStorage.getItem("encrypted"));
-  if (args.decrypt && !isEncrypted) {
+  const validKeys = new Set(["options", "sites"]);
+  if (!validKeys.has(args.key)) {
     console.trace();
-    alert(`ERROR: storageGet: storage already decrypted!!!`);
+    throw new Error(`key= ${args.key} not valid; valid keys= ${JSON.stringify([...validKeys])}`);
+  }
+  let rawValue = localStorage.getItem(args.key);
+  if (rawValue === null) return null;
+  let decryptedValue, finalValue;
+  if (args.pwd === null || args.pwd === undefined) {
+    const msg = `ERROR: storageGet: args.pwd === null|undefined, args= ${JSON.stringify(args)}`;
+    console.error(msg);
+    console.trace();
+    alert(msg);
     return;
   }
-  let decryptedValue = rawValue;
-  if (args.decrypt && !args.ignoreEncryption) {
-    if (debug) console.log(`storageGet:2: CRYPTO.key= ${CRYPTO.key}`);
-    // validateKey(pwd); // validate CRYPTO.key
-    if (args.pwd === null || args.pwd === undefined) {
-      console.log("storageGet: CallStack= ", getCallStack());
-      alert(`ERROR: storageGet: args.pwd === null|undefined, args= ${JSON.stringify(args)}`);
-      return;
-    }
+  try {
     CRYPTO.key = createKey(args.pwd);
-    if (debug) console.log(`storageGet:3: CRYPTO.key= ${CRYPTO.key}`);
-    try {
-      decryptedValue = CryptoJS.AES.decrypt(rawValue, CRYPTO.key).toString(CryptoJS.enc.Utf8);
-    } catch (error) {
-      let msg = `ERROR: storageGet:`;
-      msg = `\nrawValue= ${rawValue}, args= ${JSON.stringify(args)}`;
-      msg = `\nCRYPTO.passwd= ${CRYPTO.passwd}`;
-      msg = `\nCRYPTO.key= ${CRYPTO.key}`;
-      msg = `\nerror= ${error}`;
-      alert(msg);
-      console.log("storageGet: error= ", error);
-    }
+    decryptedValue = decryptString(rawValue, CRYPTO.key);
+  } catch (error) {
+    let msg = `ERROR: storageGet: while decrypting raValue:`;
+    msg = `\nrawValue= ${rawValue}, args= ${JSON.stringify(args)}`;
+    msg = `\nCRYPTO.passwd= ${CRYPTO.passwd}`;
+    msg = `\nCRYPTO.key= ${CRYPTO.key}`;
+    msg = `\nerror= ${error}`;
+    alert(msg);
+    console.error(msg);
+    console.error("storageGet: error= ", error);
   }
-  let finalValue = decryptedValue;
   try {
     finalValue = JSON.parse(decryptedValue);
   } catch (error) {
-    if (debug) {
-      console.log("storageGet:c: JSON parse error=", error);
-      console.log(`storageGet:c: key= ${args.key}, pwd= ${args.pwd}`);
-      console.log(`storageGet:c: args= ${JSON.stringify(args)}`);
-      console.log(`storageGet:c: rawValue= ${rawValue}`);
-      console.log(`storageGet:c: decryptedValue= ${decryptedValue}`);
-      console.log("storageGet:c: finalValue= ", finalValue);
-    }
-  // } finally {
-  //   console.log(`storageGet:f: storageKey= ${storageKey}, pwd= ${pwd}`);
-  //   console.log(`storageGet:f: rawValue= ${rawValue}`);
-  //   console.log(`storageGet:f: decryptedValue= ${decryptedValue}`);
-  //   console.log("storageGet:f: finalValue= ", finalValue);
+    let msg = `ERROR: storageGet: in JSON.parse(decryptedValue)`;
+    alert(msg);
+    console.error("storageGet: JSON parse error=", error);
+    msg = `${msg}\nstorageGet: key= ${args.key}, pwd= ${args.pwd}`;
+    msg = `${msg}\nstorageGet: args= ${JSON.stringify(args)}`;
+    msg = `${msg}\nstorageGet: rawValue= ${rawValue}`;
+    msg = `${msg}\nstorageGet: decryptedValue= ${decryptedValue}`;
+    msg = `${msg}\nstorageGet: finalValue= ${finalValue}`;
+    console.error(msg);
   }
-  if (debug) {
-    console.log(`storageGet: args= ${JSON.stringify(args)}`);
-    console.log(`storageGet: rawValue= ${rawValue}`);
-    console.log(`storageGet: decryptedValue= ${decryptedValue}`);
-    console.log("storageGet: finalValue= ", finalValue);
-  }
-  if (CRYPTO.encryptedItems.includes(args.key) && args.decrypt && typeof(finalValue) === "string") {
-    let msg = `ERROR: storageGet: args.key= ${JSON.stringify(args)}, should not be string!!!}`;
+  if (typeof(finalValue) === "string") {
+    // let msg = `ERROR: storageGet: args.key= ${JSON.stringify(args)}, should not be string!!!}`;
+    let msg = `ERROR: storageGet: finalValue should not be a string for args.key= ${args.key}`;
     msg = `${msg}\nrawValue= ${rawValue}`;
     msg = `${msg}\ndecryptedValue= ${decryptedValue}`;
     msg = `${msg}\nfinalValue= ${finalValue}`;
+    console.error(msg);
+    console.trace()
     alert(msg);
   }
   return finalValue;
@@ -682,69 +587,31 @@ function createHash(pwd) {
   return h;
 }
 
-function encryptLocalStorage(password, keys) {
-  const debug = 0;
-  if (debug > 1) alert(`encryptLocalStorage: start: password= ${password}`);
-  // check if keys are valid... i.e. keys == 
-  const valid = keys.every((x) => CRYPTO.encryptedItems.includes(x)) &&
-                CRYPTO.encryptedItems.every((x) => keys.includes(x));
-  if (!valid) alert(`ERROR: encryptLocalStorage: invalid keys= ${JSONstringify(keys)}`);
-  const encrypted = storageGet({key: "encrypted", pwd: password, decrypt: false});
-  if (debug > 1) console.log("encryptLocalStorage: password= ", password);
-  if (debug > 1) console.log("encryptLocalStorage: encrypted= ", encrypted);
-  if (debug > 1) console.log(`encryptLocalStorage: keys= ${keys}`);
-  if (encrypted) {
-    alert("WARNING: encryptLocalStorage: already encrypted!");
-    return;
-  }
-  keys.forEach(key => {
-    const value = storageGet({key: key, pwd: password, decrypt: false}); // storage should
-    if (value === null) return;
-    // if (debug) console.log(`encryptLocalStorage: k= ${k}`, "v= ", v);
-    // if (value === null) {
-    //   alert(`encryptLocalStorage: ERROR: value==null for key= ${key}`);
-    // } else {
-      if (!CRYPTO.encryptedItems.includes(key)) {
-        alert(`encryptLocalStorage: ERROR: invalid key= ${key}`);
-      }
-      storageSet({key: key, value: value, pwd: password, from: `encryptLocalStorage`});
-    // }
-  });
-  storageSet({key: "encrypted", value: true, pwd: password, encrypt: false, from: "encryptLocalStorage"});
-  if (debug > 0) console.log("encryptLocalStorage: localStorage= ", localStorage);
-  // CRYPTO.encryptedStorage = true;
-}
+// function encryptLocalStorage(password) {
+//   const encrypted = localStorage.getItem("encrypted");
+//   if (encrypted) throw new TypeError('encryptLocalStorage: already encrypted!');
+//   const cryptoKey = createKey(password);
+//   CRYPTO.encryptedItems.forEach(key => {
+//     const value = localStorage.getItem(key);
+//     if (value === null) return;
+//     localStorage.setItem(key, encryptString(value, cryptoKey));
+//   });
+//   localStorage.setItem("encrypted", true);
+// }
 
-function decryptLocalStorage(password, keys) {
-  const debug = 0;
-  const encrypted = storageGet({key: "encrypted", pwd: password, decrypt: false});
-  // if (encrypted !== CRYPTO.encryptedStorage) alert("decryptLocalStorage: encrypted !== CRYPTO.encryptedStorage")
-  if (debug > 1) console.log("decryptLocalStorage: password= ", password);
-  if (debug > 1) console.log("decryptLocalStorage: keys= ", keys);
-  if (debug > 1) console.log("decryptLocalStorage: encrypted= ", encrypted);
-  if (!encrypted) {
-    alert("WARNING: decryptLocalStorage: already decrypted!");
-    return;
-  }
-  console.log("decryptLocalStorage:0: localStorage= ", localStorage);
-  keys.forEach(key => {
-    const value = storageGet({key: key, pwd: password, decrypt: true});
-    if (debug > 2) console.log(`decryptLocalStorage: key= ${key}, value= ${value}`);
-    // if (o === null) alert(`decryptLocalStorage: null for key= ${key}`);
-    if (key === true) {
-      alert(`decryptLocalStorage: key===true, keys=${JSON.stringify(keys)}`);
-    }
-    if (value !== null) {
-      storageSet({key: key, value: value, pwd: password, encrypt: false, from: `decryptLocalStorage@709`});
-    }
-  });
-  storageSet({key: "encrypted", value: false, pwd: password, encrypt: false, from: "decryptLocalStorage@712"});
-  if (debug > 0) console.log("decryptLocalStorage:1: localStorage= ", localStorage);
-  // CRYPTO.encryptedStorage = false;
-}
+// function decryptLocalStorage(password) {
+//   const encrypted = localStorage.getItem("encrypted");
+//   if (!encrypted) throw new TypeError('decryptLocalStorage: already decrypted!');
+//   const cryptoKey = createKey(password);
+//   CRYPTO.encryptedItems.forEach(key => {
+//     const value = localStorage.getItem(key);
+//     if (value === null) return;
+//     localStorage.setItem(key, decryptString(value, cryptoKey));
+//   });
+//   localStorage.setItem(key, false);
+// }
 
-export { storageGet, storageSet, createHash, createKey, cleanUp,
-  kdf, CRYPTO, encryptLocalStorage, decryptLocalStorage, getCallStack };
+export { storageGet, storageSet, decryptString, encryptString, createHash, createKey, cleanUp,
+  kdf, CRYPTO, sanityCheck };
 // export { CryptoProxy };
-
 
