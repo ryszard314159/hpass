@@ -71,8 +71,9 @@ async function encryptText(password, plainText, separator = '|') {
     return `${saltHex}${separator}${ivHex}${separator}${ciphertextHex}`;
 }
   
-async function decryptText(password, encryptedString, separator = '|') {
+async function __decryptText(password, encryptedString, separator = '|') {
     // Split the stored encrypted data (salt:iv:ciphertext)
+    // debugger;
     if (typeof(encryptedString) !== "string") {
       throw new TypeError(`wrong encryptedString= ${encryptedString}`);
     }
@@ -93,6 +94,39 @@ async function decryptText(password, encryptedString, separator = '|') {
     const decoder = new TextDecoder();
     const decryptedString = decoder.decode(decryptedBuffer);
     return decryptedString;
+}
+
+async function decryptText(password, encryptedString, separator = '|') {
+  try {
+    // Split the stored encrypted data (salt:iv:ciphertext)
+    if (typeof encryptedString !== "string") {
+      throw new TypeError(`wrong encryptedString= ${encryptedString}`);
+    }
+    const [saltHex, ivHex, ciphertextHex] = encryptedString.split(separator);
+    // Convert salt and iv back to Uint8Array
+    const salt = new Uint8Array(saltHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    const iv = new Uint8Array(ivHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    const ciphertext = new Uint8Array(ciphertextHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    // Derive the key again using the password and extracted salt
+    const { derivedKey } = await createKeyFromSalt(password, salt);
+    // Decrypt the ciphertext
+    const decryptedBuffer = await crypto.subtle.decrypt(
+        { name: ALGO, iv: iv },
+        derivedKey,
+        ciphertext
+    );
+    // Convert encrypted data back to string
+    const decoder = new TextDecoder();
+    const decryptedString = decoder.decode(decryptedBuffer);
+    return decryptedString;
+  } catch (error) {
+    // If decryption fails, return null
+    if (error.name === 'OperationError' || error.message.includes('decryption')) {
+      return null;
+    }
+    // Re-throw other errors
+    throw error;
+  }
 }
   
 async function createKeyFromSalt(password, salt) {
@@ -210,14 +244,14 @@ async function test() {
 
 if (debug) await test();
 
-( async () => {
-  const encryptedString = "1743724d69fd50a2e63f40382a553647|5556f3e675d495cad613a0e4|5005d507ba43cf4e052fed02798e49ba7e44636e9de72f45971ae6b5468278be57e52c89967df600b5cecb8479220305a50a6b84af3caa964109bf3f4d2f9477fdf7339628a3"
-  try {
-    const decrypted = await decryptText("", encryptedString);
-    console.log(`decrypted= ${decrypted}`);
-  } catch(error) {
-    console.log(`decryptText failed on encryptedString= ${encryptedString}`);
-  }
-}) ();
+// ( async () => {
+//   const encryptedString = "1743724d69fd50a2e63f40382a553647|5556f3e675d495cad613a0e4|5005d507ba43cf4e052fed02798e49ba7e44636e9de72f45971ae6b5468278be57e52c89967df600b5cecb8479220305a50a6b84af3caa964109bf3f4d2f9477fdf7339628a3"
+//   try {
+//     const decrypted = await decryptText("", encryptedString);
+//     console.log(`decrypted= ${decrypted}`);
+//   } catch(error) {
+//     console.log(`decryptText failed on encryptedString= ${encryptedString}`);
+//   }
+// }) ();
 
 export { encryptText, decryptText, createHash, verifyPassword};

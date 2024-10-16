@@ -1034,17 +1034,15 @@ function handleImport(event) {
   if (debug) console.log("handleImport: file=", file);
   if (file) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
           try {
               // Parse the JSON string from the file
               if (debug) console.log("handleImport: e.target.result=", e.target.result);
               const importedLocalStorage = JSON.parse(e.target.result);
               console.log("handleImport: importedLocalStorage= ", importedLocalStorage);
-              // TODO: decrypt if importined file is encrypted!!!
-              // setDisplayedOptions(JSON.parse(importedLocalStorage["options"]));
               if (debug) alert(`INFO: handleImport: e.target.result= ${e.target.result})}`)
               if (debug) alert(`INFO: handleImport: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
-              localStorage.clear();
+              const backUp = JSON.stringify(localStorage);
               const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
               let opts;
               for (const key in importedLocalStorage) {
@@ -1055,24 +1053,35 @@ function handleImport(event) {
                 } // for "options" || "sites"
                 if (isEncrypted) {
                   localStorage.setItem(key, txt);
-                  if (key === "options") {
-                    decryptText(CRYPTO.passwd, txt).then( decrypted => {
-                      opts = JSON.parse(decrypted);
-                      setDisplayedOptions(opts);
-                    });
+                  if (CRYPTO.encryptedItems.includes(key)) {
+                      try {
+                        const decrypted = await decryptText(CRYPTO.passwd, txt);
+                        if (decrypted === null) { // Decryption failed
+                          const parsed = JSON.parse(backUp);
+                          Object.keys(parsed).forEach((key) => localStorage.setItem(key, parsed[key]));
+                          alert(`ERROR: wrong Master Password`);
+                          return; // Exit the function
+                        } else {
+                          // opts = JSON.parse(decrypted);
+                          setDisplayedOptions(decrypted);
+                        }
+                      } catch (error) {
+                        console.error('Error parsing JSON file:', error);
+                        alert('Failed to import settings. Please ensure the file is a valid JSON.');
+                      }
                   }
                 } else {
                   encryptText(CRYPTO.passwd, txt).then( encrypted => {
                     localStorage.setItem(key, encrypted);
                   });
-                  opts = JSON.parse(txt);
-                  setDisplayedOptions(opts);
+                  // opts = JSON.parse(txt);
+                  setDisplayedOptions(txt);
                 }
               }
               localStorage.setItem("encrypted", true);
               if (debug) alert(`INFO: handleImport: localStorage= ${JSON.stringify(localStorage)}`);
               // const modal = document.getElementById("fileInputModal");
-              el.fileInputModal.style.display = "none"; // TODO: modal is not defined
+              // el.fileInputModal.style.display = "none"; // TODO: modal is not defined
               alert(`Settings imported from: ${fileName}`);
           } catch (error) {
               console.error('Error parsing JSON file:', error);
@@ -1080,13 +1089,16 @@ function handleImport(event) {
           }
       };
       reader.readAsText(file);
+      el.fileInputModal.style.display = "none";
+      el.importFileInput.value = "";
   } else {
       alert('No file selected.');
   }
 }
 
-function setDisplayedOptions(opts) {
+function setDisplayedOptions(decrypted) {
   const debug = false;
+  const opts = JSON.parse(decrypted);
   const beforeValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
   el.salt.value = opts.salt;
   el.pepper.value = opts.pepper;
