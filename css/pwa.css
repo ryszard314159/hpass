@@ -223,19 +223,21 @@ button {
   border: 0px solid black;
   /* border-radius: 15px; */
 }
-#share {
+#save, #share, #lock {
   /* padding: 2pt 0 2pt 0; */
-  width: 4rem;
-  background-color: lightgreen;
+  width: 6rem;
+  /* background-color: rgb(247, 237, 162); */
+  background-color: orange;
+  background-color: rgba(255, 178, 102);
+  /* background-color: rgba(255, 178, 102) */
   border-radius: 0.8rem;
 }
-#save {
-  /* padding: 2pt -1pt 2pt 0; */
+/* #save {
   width: 6rem;
   background-color: lightskyblue;
   border-radius: 0.8rem;
   margin-left: 0;
-}
+} */
 
 .grow {
   transition: all 0.9s ease-in-out;
@@ -278,7 +280,8 @@ form {
   /* background-color: rgba(204, 206, 209, 0.9); */
   /* background-image: url("../icons/granite.png"); */
   /* background-color: rgba(204, 206, 209, 0.9); */
-  background-color: rgba(255, 178, 102, 0.95); /*white with 50% transparency
+  background-color: rgba(255, 178, 102);
+  /* background-color: orange; */
   /* background-blend-mode: overlay; */
   background-size: cover;
   /* vertical-align: middle; */

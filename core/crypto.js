@@ -52,7 +52,7 @@ async function createKey(password) {
     return { derivedKey, SALT, saltHex };
 }
 
-async function encryptText(password, plainText) {
+async function encryptText(password, plainText, separator = '|') {
     // Generate the key and salt
     const { derivedKey, SALT, saltHex } = await createKey(password);
     const encoder = new TextEncoder();
@@ -68,12 +68,15 @@ async function encryptText(password, plainText) {
     const ivHex = Array.from(iv).map(b => b.toString(16).padStart(2, '0')).join('');
     const ciphertextHex = Array.from(new Uint8Array(encryptedBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
     // Concatenate salt, iv, and ciphertext for storage/transfer
-    return `${saltHex}|${ivHex}|${ciphertextHex}`;
+    return `${saltHex}${separator}${ivHex}${separator}${ciphertextHex}`;
 }
   
-async function decryptText(password, encryptedString) {
+async function decryptText(password, encryptedString, separator = '|') {
     // Split the stored encrypted data (salt:iv:ciphertext)
-    const [saltHex, ivHex, ciphertextHex] = encryptedString.split(':');
+    if (typeof(encryptedString) !== "string") {
+      throw new TypeError("wrong encryptedString");
+    }
+    const [saltHex, ivHex, ciphertextHex] = encryptedString.split(separator);
     // Convert salt and iv back to Uint8Array
     const salt = new Uint8Array(saltHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
     const iv = new Uint8Array(ivHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
@@ -156,12 +159,20 @@ async function createHash(password, storedSaltHex = null) {
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
 
-  return { hashHex: hashHex, saltHex: saltHex };
+  // return { hashHex: hashHex, saltHex: saltHex };
+  return `${saltHex}|${hashHex}`;
 }
 
-async function verifyPassword(storedHashHex, storedSaltHex, password) {
-    const { hashHex, saltHex } = await createHash(password, storedSaltHex);  
-    return storedHashHex === hashHex;
+// async function verifyPassword(storedHashHex, storedSaltHex, password) {
+//     const { hashHex, saltHex } = await createHash(password, storedSaltHex);  
+//     return storedHashHex === hashHex;
+// }
+
+async function verifyPassword(storedPasswordHash, password) {
+  const [storedSaltHex, storedHashHex] = storedPasswordHash.split('|');
+  const x = await createHash(password, storedSaltHex);
+  const [_, hashHex] = x.split('|'); 
+  return storedHashHex === hashHex;
 }
 
 async function test() {
@@ -182,18 +193,21 @@ async function test() {
     const decryptedString = await decryptText(password, encryptedString);
     console.log(`plainString= ${plainString}`);
     console.log(`encrypted= ${encryptedString}`);
-    const result = (plainString === decryptedString) ? "PASSED" : "FAILED";
-    console.log(`encrypt/decrypt test ${result}`);
+    const cryptTest = (plainString === decryptedString) ? "PASSED" : "FAILED";
+    console.log(`encrypt/decrypt test ${cryptTest}`);
     // test hashing
-    const { hashHex, saltHex} = await createHash(password);
-    console.log(`hashHex: ${hashHex}\nsaltHex: ${saltHex}`);
-    const correct = await verifyPassword(hashHex, saltHex, password);
-    const wrong = await verifyPassword(hashHex, saltHex, `WRONG:${password}`);
+    const passwordHash = await createHash(password);
+    console.log(`passwordHash: ${passwordHash}`);
+    const correct = await verifyPassword(passwordHash, password);
+    const wrong = await verifyPassword(passwordHash, `WRONG:${password}`);
     const hashTest = (correct && !wrong) ? "PASSED" : "FAILED";
     console.log(`hash test: ${hashTest}`);
+    if ([cryptTest, hashTest].includes("FAILED")) {
+      throw new Error('crypto tests failed');
+    }
 }
 
 
-if (debug) test();
+if (debug) await test();
 
-export { encryptText, decryptText, createHash}
+export { encryptText, decryptText, createHash, verifyPassword};

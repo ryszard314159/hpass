@@ -18,6 +18,9 @@
 
 "use strict";
 
+// debugger;
+import { encryptText, decryptText } from "./crypto.js";
+
 const MINLENGTH = 4;
 const MAXLENGTH = 128;
 const MP31 = 2 ** 31 - 1; // Mersenne prime
@@ -35,10 +38,10 @@ CRYPTO.encryptedIO = false;
 CRYPTO.encryptedAll = false;
 CRYPTO.decryptedIOspan = 60000 / 4;
 CRYPTO.decryptedIOEnabled = false;
-if (typeof(window) !== 'undefined') {
-  // TODO: CRYPTO.options = { keySize: 8, iterations: 999, hasher: CryptoJS.algo.SHA512};
-  CRYPTO.options = { keySize: 2, iterations: 999, hasher: CryptoJS.algo.SHA512};
-}
+// if (typeof(window) !== 'undefined') {
+//   // TODO: CRYPTO.options = { keySize: 8, iterations: 999, hasher: CryptoJS.algo.SHA512};
+//   CRYPTO.options = { keySize: 2, iterations: 999, hasher: CryptoJS.algo.SHA512};
+// }
 // CRYPTO.enableDecryptedIO = () => {
 //   CRYPTO.decryptedIOuntil = Date.now() + CRYPTO.decryptedIOspan;
 // }
@@ -53,15 +56,6 @@ CRYPTO.enableDecryptedIO = () => {
     document.querySelector(".crypt").click();
   }, CRYPTO.decryptedIOspan); // 60 seconds (1 minute)  
 }
-
-/*
-  CRYPTO.decryptedEnabled = true;
-  setTimeout(() => {
-    CRYPTO.decryptedEnabled = false;
-  }, CRYPTO.decryptedIOspan);
-*/
-
-
 
 function matchingKeys(x, y) {
   const v = x.every(item => y.includes(item)) && y.every(item => x.includes(item));
@@ -327,179 +321,25 @@ function getPass(args = {}) {
   return passwd;
 }
 
-export {
-  CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
-};
-// export { encrypt, decrypt };
-
-// *** //
-
-
-// "use strict";
-
-// let CRYPTO_KEY = null;
-// import { PASSWORD, CRYPTO_KEY, CRYPTO_KEY_SIZE } from './globals.js';
-
-// const CRYPTO_PREFIX = "prefix:"
-
-
-// https://en.wikipedia.org/wiki/Key_derivation_function
-// function getKey(PASSWORD) {
-//   const niter = 999;
-//   CRYPTO_KE = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
-//   // return CRYPTO_KEY.toString();
-// }
-
-// const options = { keySize: keySize, iterations: 999, hasher: CryptoJS.algo.SHA512};
-// const k = CryptoJS.PBKDF2(PASSWORD, "", { keySize: 512 / 32, iterations: niter});
-// CryptoJS.PBKDF2(password, salt, { keySize: keySize, iterations: iterations, hasher: hasher });
-// console.log(`kdf: pwd= ${pwd}`);
-// function kdf(pwd, keySize) {
-function kdf(pwd) {
-  const k = CryptoJS.PBKDF2(pwd, "salt", CRYPTO.options).toString();
-  const password = 'your-password'; // The password to hash
-  const salt = 'salt'; // The salt, which should be random for security
-  const iterations = 100000; // The number of iterations
-  const keyLength = 64; // Desired key length in bytes
-  const digest = 'sha256'; // Hash function
-  crypto.pbkdf2(password, salt, iterations, keyLength, digest, (err, derivedKey) => {
-  if (err) throw err;
-  console.log(derivedKey.toString('hex')); // Outputs the derived key as a hex string
-  });
-
-  return k;
-}
-
-// function createKey(pwd) {
-//   const debug = false;
-//   const oldKey = CRYPTO.key;
-//   const newKey = kdf(pwd);
-//   if (debug) {
-//     console.log(`createKey: pwd= ${pwd}`);
-//     console.log(`createKey: oldKey= ${oldKey}`);
-//     console.log(`createKey: newKey= ${newKey}`);
-//   }
-//   return newKey;
-//   // const size = CryptoJS.enc.Utf8.parse(CRYPTO.key).words.length;
-//   // CRYPTO.key = (size != CRYPTO.options.keySize * 2) ? kdf(pwd) : CRYPTO.key;
-// }
-
-function createKey(password) {
-  const options = { keySize: 2, iterations: 999, hasher: CryptoJS.algo.SHA512};
-  const cryptoKey = CryptoJS.PBKDF2(password, "salt", options).toString();
-  return cryptoKey;
-}
-
-async function createKey(password) {
-
-  const debug = true;
-
-  const ITERATIONS = (debug) ? 999 : 99999;
-  const HASH = (debug) ? 'SHA-128': 'SHA-512';
-  const KDF = 'PBKDF2'; // Key Derivation Function
-  const ALGO = 'AES-GCM'; // The encryption algorithm you want to derive the key for
-  const KEY_LENGTH = (debug) ? 128 : 256; // Length of the key in bits (can be 128, 192, or 256)
-  const SALT_LENGTH = (debug) ? 16 : 32; // in bytes
-  const SALT = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
-
-  async function deriveKey(password, salt) {
-    const encoder = new TextEncoder();
-    const passwordKey = encoder.encode(password); // Convert password and salt to ArrayBuffers
-
-    const baseKey = await crypto.subtle.importKey( // Import the password as a key
-      'raw',
-      passwordKey,
-      {name: KDF},
-      false,
-      ['deriveKey']
-    );
-
-    // Derive a key using KDF (e.g. PBKDF2)
-    const derivedKey = await crypto.subtle.deriveKey(
-      { 
-        name: KDF,
-        salt: salt, // Use the Uint8Array salt directly
-        iterations: ITERATIONS,
-        hash: HASH
-      },
-      baseKey,
-      {
-        name: ALGO,
-        length: KEY_LENGTH
-      },
-      false, 
-      ['encrypt', 'decrypt'] // Key usages
-    );
-    // Export the derived key to view it as bytes
-    const keyBuffer = await crypto.subtle.exportKey('raw', derivedKey);
-    const keyArray = new Uint8Array(keyBuffer);
-    const keyHex = Array.from(keyArray).map(b => b.toString(16).padStart(2, '0')).join('');
-    if (debug) console.log(`DEBUG: createKey: keyHex= ${keyHex}`);
-    return [derivedKey, SALT, keyHex, saltHex]; // TODO: how to generate saltHex?
-  }
-  return await deriveKey(password, SALT);
-}
-
-function encryptString(inp, cryptoKey, debug=false) {
-  // CryptoJS = require("crypto-js");
-  // if (debug) {
-  //   alert(`DEBUG: encryptString: inp= ${inp}`);
-  //   // return inp;
-  // }
-  const out = CryptoJS.AES.encrypt(inp, cryptoKey).toString();
-  const x = decryptString(out, cryptoKey);
-  if (out.length < 4 || inp !== x) {
-    let msg = `encryptString: out.length < 4 || inp !== x`;
-    msg = `${msg}\ninp= ${inp}\ncryptoKey= ${cryptoKey}\nout= ${out}\nx= ${x}`
-    if (!debug) throw new Error(msg);
-  }
-  if (debug) {
-    let msg = `DEBUG: encryptString:\ninp= ${inp}\nout= ${out}\ncryptoKey= ${cryptoKey}`;
-    console.trace();
-    console.error(msg);
-  }
-  return out;
-}
-
-function decryptString(inp, cryptoKey, debug=false) {
-  // if (debug) {
-  //   alert(`DEBUG: decryptString: inp= ${inp}`);
-  //   // return inp;
-  // }
-  const out = CryptoJS.AES.decrypt(inp, cryptoKey).toString(CryptoJS.enc.Utf8);
-  // const x = encryptString(out, cryptoKey);
-  if (debug) {
-    let msg = `DEBUG: decryptString:\ninp= ${inp}\nout= ${out}\ncryptoKey= ${cryptoKey}`;
-    console.error(msg);
-  }
-  if (out.length < 4) {
-    let msg = `decryptString: out.length < 4`;
-    msg = `${msg}\ninp= ${inp}\ncryptoKey= ${cryptoKey}\nout= ${out}`;
-    console.error(msg);
-    throw new Error(msg);
-  }
-  return out;
-}
-
 function sanityCheck(args = {key: key, value: null, from: null}) {
   const plain = JSON.stringify(args.value);
-  const cryptoKey = createKey(CRYPTO.passwd);
+  // const cryptoKey = createKey(CRYPTO.passwd);
   const fromStorage = localStorage.getItem(args.key);
-  const decrypted = decryptString(fromStorage, cryptoKey);
-  if (plain !== decrypted) {
-    let msg = `sanityCheck: from= ${args.from}`;
-    msg = `${msg}\nkey= ${args.key}`;
-    msg = `${msg}\nCRYPTO.passwd=${CRYPTO.passwd}\ncryptoKey= ${cryptoKey}`
-    msg = `${msg}\nplain= ${plain}\ndecrypted= ${decrypted}\nfromStorage= ${fromStorage}`;
-    console.error(msg);
-    throw new Error(`plain !== decrypted\n${msg}`);
-  }
+  decryptText(CRYPTO.passwd, fromStorage).then(decrypted => {
+    if (plain !== decrypted) {
+      let msg = `sanityCheck: from= ${args.from}`;
+      msg = `${msg}\nkey= ${args.key}`;
+      msg = `${msg}\nCRYPTO.passwd=${CRYPTO.passwd}`
+      msg = `${msg}\nplain= ${plain}\ndecrypted= ${decrypted}\nfromStorage= ${fromStorage}`;
+      console.error(msg);
+      throw new Error(`plain !== decrypted\n${msg}`);
+    }
+  });
 }
 
-function storageSet(args) {
+async function storageSet(args) {
   const debug = 0;
   args = {key: null, value: null, pwd: CRYPTO.passwd, encrypt: true, ...args};
-  const validKeys = new Set(["options", "sites"]);
   if (!CRYPTO.encryptedItems.includes(args.key)) {
     throw new Error(`storageSet: invalid args.key= ${args.key}`);
   }
@@ -510,26 +350,28 @@ function storageSet(args) {
     throw new Error(`storageSet: not an object type: args.value= ${args.value}`);
   }
   let rawValue = JSON.stringify(args.value);
-  CRYPTO.key = createKey(args.pwd);
-  const encryptedValue = encryptString(rawValue, CRYPTO.key);
+  // CRYPTO.key = createKey(args.pwd);
+  // const encryptedValue = encryptString(rawValue, CRYPTO.key);
+  const encryptedValue = await encryptText(args.pwd, rawValue);
   if (encryptedValue === undefined || encryptedValue === 'undefined') {
     throw new Error(`storageSet: undefined encryptedValue= ${encryptedValue}`);
   }
   localStorage.setItem(args.key, encryptedValue);
   const storedValue = localStorage.getItem(args.key);
   if (storedValue !== encryptedValue) {
+    console.error(`storageSet: args.key= ${args.key}`);
+    console.error(`storageSet: encryptedValue= ${encryptedValue}`);
+    console.error(`storageSet: storedValue= ${storedValue}`);
     throw new Error(`storageSet: storedValue !== encryptedValue}`);
   }
   sanityCheck({key: args.key, value: args.value, from: "storageSet"});
 }
 
-function storageGet(args) {
+async function storageGet(args) {
   args = {key: null, pwd: CRYPTO.passwd, decrypt: true, ...args};
   const debug = false;
-  const validKeys = new Set(["options", "sites"]);
-  if (!validKeys.has(args.key)) {
-    console.trace();
-    throw new Error(`key= ${args.key} not valid; valid keys= ${JSON.stringify([...validKeys])}`);
+  if (!CRYPTO.encryptedItems.includes(args.key)) {
+    throw new Error(`storageGet: invalid args.key= ${args.key}`);
   }
   let rawValue = localStorage.getItem(args.key);
   if (rawValue === null) return null;
@@ -542,8 +384,7 @@ function storageGet(args) {
     return;
   }
   try {
-    CRYPTO.key = createKey(args.pwd);
-    decryptedValue = decryptString(rawValue, CRYPTO.key);
+    decryptedValue = await decryptText(args.pwd, rawValue);
   } catch (error) {
     let msg = `ERROR: storageGet: while decrypting raValue:`;
     msg = `\nrawValue= ${rawValue}, args= ${JSON.stringify(args)}`;
@@ -581,37 +422,7 @@ function storageGet(args) {
 };
 
 
-function createHash(pwd) {
-  // TODO: crypto.createHash('sha256').update(pwd).digest().toString()
-  const h = CryptoJS.SHA1(pwd).toString();
-  return h;
-}
-
-// function encryptLocalStorage(password) {
-//   const encrypted = localStorage.getItem("encrypted");
-//   if (encrypted) throw new TypeError('encryptLocalStorage: already encrypted!');
-//   const cryptoKey = createKey(password);
-//   CRYPTO.encryptedItems.forEach(key => {
-//     const value = localStorage.getItem(key);
-//     if (value === null) return;
-//     localStorage.setItem(key, encryptString(value, cryptoKey));
-//   });
-//   localStorage.setItem("encrypted", true);
-// }
-
-// function decryptLocalStorage(password) {
-//   const encrypted = localStorage.getItem("encrypted");
-//   if (!encrypted) throw new TypeError('decryptLocalStorage: already decrypted!');
-//   const cryptoKey = createKey(password);
-//   CRYPTO.encryptedItems.forEach(key => {
-//     const value = localStorage.getItem(key);
-//     if (value === null) return;
-//     localStorage.setItem(key, decryptString(value, cryptoKey));
-//   });
-//   localStorage.setItem(key, false);
-// }
-
-export { storageGet, storageSet, decryptString, encryptString, createHash, createKey, cleanUp,
-  kdf, CRYPTO, sanityCheck };
-// export { CryptoProxy };
-
+export {
+  CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
+};
+export { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck };

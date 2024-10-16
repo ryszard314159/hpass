@@ -13,12 +13,11 @@ TODO:
 */
 "use strict";
 
-import { enc } from "crypto-js";
-// import { JSONStorage } from "node-localstorage";
-import { get_random_string, getPass, objDiff, CHARS, MAXLENGTH, MINLENGTH, cleanUp} from "./core/lib.js";
-import { storageGet, storageSet, decryptString, encryptString, createKey, CRYPTO } from "./core/lib.js";
-import { sanityCheck } from "./core/lib.js";
-import { decryptText, encryptText, createHash, verifyPasssword} from "./core/crypto.js"
+import {
+  CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
+} from "./core/lib.js";
+import { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck } from "./core/lib.js";
+import { decryptText, encryptText, createHash, verifyPassword} from "./core/crypto.js"
 const debug = 0;
 
 // simulate localStorage in nodejs
@@ -190,23 +189,23 @@ el.masterPassword.addEventListener("keydown", (event) => {
     setTimeout(() => {
       let oldHash = localStorage.getItem("pwdHash");
       if (oldHash === null) {
-        // throw new Error();
         alert("Password Hash was null,\noptions removed & Master Password set to empty string");
         localStorage.clear();
         CRYPTO.passwd = '';
-        oldHash = createHash('');
-        localStorage.setItem("pwdHash", oldHash);
+        createHash('').then(hash => localStorage.setItem("pwdHash", hash));
         return;
       }
       const pwd = el.masterPassword.value;
-      const pwdHash = createHash(pwd);
-      if (pwdHash === oldHash) {
-        el.passwordContainer.style.display = "none";
-        window.scrollTo(0, 0); // scroll window to the top!
-      } else {
-        if (debug) console.log(`masterPassword: Wrong password - try again!`);
-        alert("Wrong password - try again!")
-      }
+      verifyPassword(oldHash, pwd).then(isCorrect => {
+        if (isCorrect) {
+          el.passwordContainer.style.display = "none";
+          window.scrollTo(0, 0); // scroll window to the top!
+        } else {
+          if (debug) console.log(`masterPassword: Wrong password - try again!`);
+          alert("Wrong password - try again!")
+        }
+      });
+      // verifyPassword(oldHash, pwd).then(isCorrect => {
       el.newPassword.focus();
     }, 9);
   }
@@ -232,11 +231,7 @@ el.newPassword.addEventListener("keydown", (event) => {
     return;
   }
   const storedHash = localStorage.getItem("pwdHash");
-  const storedSalt = localStorage.getItem("saltHash");
-  // const masterHash = createHash(masterPassword);
-  // const newHash = createHash(newPassword);
-  // if (masterHash !== storedHash || masterPassword !== CRYPTO.passwd) {
-  if (!verifyPasssword(storedHash, storedSalt, masterPassword) || masterPassword !== CRYPTO.passwd) {
+  if (!verifyPassword(storedHash, masterPassword) || masterPassword !== CRYPTO.passwd) {
     let m = "Incorrect Master Password!"
     if (debug) {
       m = `${m}\nstoredHash= ${storedHash.slice(0,9)}...`;
@@ -267,21 +262,28 @@ el.newPassword.addEventListener("keydown", (event) => {
   // const newKey = createKey(newPassword);
   // TODO: clean-up!
   let m = `masterPassword= ${masterPassword}, newPassword= ${newPassword}`;
-  m = `${m}\nmasterKey= ${masterKey}, newKey= ${newKey}`
   CRYPTO.encryptedItems.forEach((key) => {
     const fromStorage = localStorage.getItem(key);
     if (fromStorage === null) return;
-    // const value = decryptString(fromStorage, masterKey);
-    // const encryptedValue = encryptString(value, newKey);
-    const value = decryptText(masterPassword, fromStorage);
-    const encryptedValue = encryptText(newPassword, value); // return `${saltHex}:${ivHex}:${ciphertextHex}`;
-    m = `${m}\nkey= ${key}, value= ${value}`
-    m = `${m}\nkey= ${key}, encryptedValue= ${encryptedValue}`
-    localStorage.setItem(key, encryptedValue);
+    decryptText(masterPassword, fromStorage).then(decryptedValue => {
+        encryptText(newPassword, decryptedValue).then(encryptedValue => {
+          localStorage.setItem(key, encryptedValue)})
+    });
   });
-  console.error(m);
-  localStorage.setItem("pwdHash", newHash);
   CRYPTO.passwd = newPassword;
+  createHash(CRYPTO.passwd).then(pwdHash => localStorage.setItem("pwdHash", pwdHash));
+
+  async function recrypt() {
+    for (const key of CRYPTO.encryptedItems) {
+      const fromStorage = localStorage.getItem(key);
+      if (fromStorage === null) continue;
+      const decrypted = await decryptText(masterPassword, fromStorage);
+      const encrypted = await encryptText(newPassword, decrypted);
+      localStorage.setItem(key, encrypted);
+    };
+  }
+
+  recrypt();
 
   // confirm(msg); // TODO: change alert to confirm!!!
   if (debug) {
@@ -308,13 +310,11 @@ function checkOptions() {
     el.pepper = opts.pepper;
     el.length = opts.length;
   }
-  }
-  
+}
 
 function createSplashScreen(opts) {
   const debug = false;
-  const pwdHash = createHash(CRYPTO.passwd);
-  localStorage.setItem("pwdHash", pwdHash);
+  createHash(CRYPTO.passwd).then(pwdHash => localStorage.setItem("pwdHash", pwdHash));
   let msg = `<h3>To start using HPASS:</h3>
   <ul>
   <li>Read the <strong>Basics</strong> below.
@@ -378,12 +378,13 @@ function setGenericOptions() {
   let opts = {...globalDefaults};
   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
   opts.salt = get_random_string(16, charset); //TODO: 
-  opts.salt = "0" // DEBUG:!!!
+  // opts.salt = "DEBUG!!!"
   if (debug) console.log("setGenericOptions: opts= ", opts);
   if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
   if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
-  storageSet({key: "options", value: opts, debug: true});
-  sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
+  storageSet({key: "options", value: opts, debug: true}).then( () => {
+    sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
+  });
   localStorage.setItem("encrypted", true);
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
@@ -415,37 +416,30 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register(swPath)
     .then((reg) => {
-      CRYPTO.key = createKey(CRYPTO.passwd);
-      const storedHash = localStorage.getItem("pwdHash");
-      const h = createHash(CRYPTO.passwd);
-      localStorage.setItem("pwdHash", h);
-      if (debug) console.log("app: sw registered!", reg);
-      if (debug) console.log("app: before createSplashScreen");
-      if (debug) console.log("app: after createSplashScreen");
-      if (debug) console.log(`app: storedHash= ${storedHash}`);
-      if (debug) console.log(`app: CRYPTO.passwd= ${CRYPTO.passwd}`);
-      if (debug) console.log(`app: new hash= ${h}`);
-      if (debug) console.log(`app: CRYPTO.key= ${CRYPTO.key}`);
-      if (debug) {
-        let msg = `serviceWorker: storedHash= ${storedHash}\nnew hash= ${h}`;
-        msg = `${msg}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
-        msg = `${msg}\nCRYPTO.key= ${CRYPTO.key}`;
-        alert(msg);
-      }
-      let opts = storageGet({key: "options"});
-      if (opts === null) {
-        if (debug) console.log("app: register: null options in localStorage!");
-        opts = setGenericOptions();
-        if (debug) console.log("app: register: set to generic: opts= ", opts);
-      } else {
-        if (debug) console.log("app: register: exist already: opts= ", opts);
-      }
-      if (debug) console.log("app: register: globalDefaults= ", globalDefaults);
-      el.pepper.value = opts.pepper;
-      el.salt.value = opts.salt;
-      el.length.value = opts.length;
-      el.length.min = MINLENGTH;
-      el.length.max = MAXLENGTH;
+      // const storedHash = localStorage.getItem("pwdHash");
+      // console.log("DEBUG: ")
+      createHash(CRYPTO.passwd).then(h => {
+        console.log(`DEBUG: navigator.serviceWorker: CRYPTO.passwd= ${CRYPTO.passwd}`);
+        console.log(`DEBUG: navigator.serviceWorker: h= ${h}`)
+        localStorage.setItem("pwdHash", h)
+      });
+
+      storageGet({key: "options"}).then( opts => {
+        if (opts === null) {
+          if (debug) console.log("app: register: null options in localStorage!");
+          opts = setGenericOptions();
+          if (debug) console.log("app: register: set to generic: opts= ", opts);
+        } else {
+          if (debug) console.log("app: register: exist already: opts= ", opts);
+        }
+        if (debug) console.log("app: register: globalDefaults= ", globalDefaults);
+        el.pepper.value = opts.pepper;
+        el.salt.value = opts.salt;
+        el.length.value = opts.length;
+        el.length.min = MINLENGTH;
+        el.length.max = MAXLENGTH;
+      });
+
       if (debug) console.log("app: register: els set to opts= ", opts);
       if (navigator.serviceWorker.controller) {
         const msg = { type: "GET_VERSION" };
@@ -685,19 +679,15 @@ el.hint.addEventListener("keydown", (event) => {
   if (debug) console.log(msg);
   setTimeout(() => {
     el.hint.value = el.hint.value.toLowerCase().trim();
-    let opts = getHintOpts(el.hint.value);
-    if (debug) {
-      console.log(`hint: keypressed: value= ${el.hint.value}`);
-      console.log(msg);
-      console.log(`hint: opts=`, opts);
-    }
-    if (opts !== undefined) {
-      el.salt.value = opts.salt;
-      el.pepper.value = opts.pepper;
-      el.length.value = opts.length;
-    } else {
-      alert('hint: opts undefined?!')
-    }
+    getHintOpts(el.hint.value).then( opts => {
+      if (opts !== undefined) {
+        el.salt.value = opts.salt;
+        el.pepper.value = opts.pepper;
+        el.length.value = opts.length;
+      } else {
+        alert('hint: opts undefined?!')
+      }
+    })
   }, 0);
 });
 
@@ -780,58 +770,19 @@ function saveOptions(args) {
 // arguments:
 //    hint,
 //          {salt: opts.salt, pepper: opts.pepper, length: opts.length});
-function setHintOpts(hint, opts) {
-  const debug = false;
-  const q = matchingKeys(Object.keys(opts), Object.keys(globalDefaults));
-  console.assert(q, "setHintsOpts: invalid keys: opts= ", opts);
-  if (!q) {
-    alert('setHintOpts: invalid keys opts!');
-  }
-  const x = storageGet({key: "options"});
-  const generic = (x === null) ? setGenericOptions() : x;
-  if (debug) {
-    console.log(`setHintOpts: generic=`, generic);
-    console.log(`setHintOpts: opts=`, opts);
-  }
-  const diff = objDiff(opts, generic);
-  if (debug) console.log(`setHintOpts: diff= `, diff);
-  if (Object.keys(diff).length === 0) {
-    if (debug) console.log("setHintOpts: new opts the same as global - do nothing");
-    return;
-  }
-  if (hint === "") {
-    if (debug) console.log(`setHintOpts: hint= ${hint} :: opts=`, JSON.stringify(opts));
-    let msg = `NOTE: generic settings set to:`;
-    msg = `${msg}\n\nSecret= ${opts.salt}\nSpecial Character= ${opts.pepper}`
-    msg = `${msg}\nLength= ${opts.length}`;
-    alert(msg);
-    storageSet({key: "options", value: opts});
-    return;
-  }
-  let sites = storageGet({key: "sites"});
-  if (debug) console.log(`setHintOpts: hint= ${hint}`);
-  if (sites === null) {
-    sites = {[hint]: diff};
-    if (debug) console.log(`setHintOpts: sites was null, sites=`, sites);
-  } else {
-    sites[hint] = diff; // store ony values different from generic
-    if (debug) console.log(`setHintOpts: sites was not null, sites=`, sites);
-  }
-  storageSet({key: "sites", value: sites});
-}
 
 // ...
-function getHintOpts(hint) {
+async function getHintOpts(hint) {
   const debug = false;
   // alert(`getHintOpts: hint= ${hint}`)
   if (debug) console.log("getHintOpts: hint= ", hint)
-  let opts = storageGet({key: "options"});
+  let opts = await storageGet({key: "options"});
   if (opts === null) {
     opts = {...globalDefaults};
-    storageSet({key: "options", value: opts});
+    await storageSet({key: "options", value: opts});
   }
   if (debug) console.log("getHintOpts: generic opts= ", opts);
-  const sites = storageGet({key: "sites"});
+  const sites = await storageGet({key: "sites"});
   if (debug) console.log("getHintOpts: sites= ", sites);
   if (sites !== null && sites[hint] !== undefined) {
     if (debug) console.log(`getHintOpts: hint-specific: sites[${hint}]= `, sites[hint]);
@@ -937,16 +888,28 @@ function handleLinkClick(event) {
 // ChatGPT...
 
 // Function to export localStorage as a JSON file
-function handleExport(args = {}) {
+function deprecated_handleExport(args = {}) {
   args = {fileName: "hpass-settings.json", decrypted: false, ...args};
   const debug = false;
   if (debug) console.log(`exportLocalStorage: args.decrypted= ${args.decrypted}`)
-  const toExport = {encrypted: !args.decrypted};
+  const toExport = {}; // prepare localStorage copy for export
   Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
+  toExport.encrypted = !args.decrypted;
   if (args.decrypted) {
     if (!confirm("Plain text export!")) return;
-    CRYPTO.key = createKey(CRYPTO.passwd);
-    CRYPTO.encryptedItems.forEach ((key) => {toExport[key] = decryptString(toExport[key], CRYPTO.key)});
+    // CRYPTO.key = createKey(CRYPTO.passwd);
+    CRYPTO.encryptedItems.forEach( async function(key){
+      // toExport[key] = decryptText(CRYPTO.passwd, toExport[key])
+      // decryptText(CRYPTO.passwd, toExport[key]).then( decrypted => {toExport[key] = decrypted})
+      // toExport[key] = await decryptText(CRYPTO.passwd, toExport[key]);
+      const encrypted = toExport[key];
+      const decrypted = await decryptText(CRYPTO.passwd, encrypted);
+      toExport[key] = decrypted;
+      console.log(`DEBUG: handleExport: key= ${key}}`);
+      console.log(`DEBUG: handleExport: encrypted= ${encrypted}}`);
+      console.log(`DEBUG: handleExport: decrypted= ${decrypted}}`);
+      console.log(`DEBUG: handleExport: done with key= ${key}}`);
+    });
   } else {
     if (!confirm("Encrypted export\nDouble Click for decrypted (plain text) export!")) return;
   }
@@ -958,6 +921,45 @@ function handleExport(args = {}) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+function handleExport(args = {}) {
+  args = {fileName: "hpass-settings.json", decrypted: false, ...args};
+  const toExport = {}; // prepare localStorage copy for export
+  Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
+  toExport.encrypted = !args.decrypted;
+
+  function finish() {
+    const x = JSON.stringify(toExport, null, 2);
+    const blob = new Blob([x], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.download = args.fileName;
+    link.href = window.URL.createObjectURL(blob);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+  if (args.decrypted) {
+    if (!confirm("Plain text export!")) return;
+    
+    const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
+      toExport[key] = await decryptText(CRYPTO.passwd, toExport[key]);
+    });
+
+    // this should work synchronously!!!
+    // for (const key of CRYPTO.encryptedItems) {
+    //   const decrypted = await decryptText(CRYPTO.passwd, toExport[key]);
+    //   toExport[key] = decrypted;
+    // }
+
+    Promise.all(decryptionPromises).then(() => {
+      finish();
+    });
+  } else {
+    if (!confirm("Encrypted export\nDouble Click for decrypted (plain text) export!")) return;
+    finish();
+  }
 }
 
 const span = document.getElementsByClassName("close")[0];
@@ -1025,22 +1027,24 @@ function handleImport(event) {
               if (debug) alert(`INFO: handleImport: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
               localStorage.clear();
               const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
-              // const cryptoKey = createKey(CRYPTO.passwd);
               let opts;
               for (let k in importedLocalStorage) {
-                const x = importedLocalStorage[k];
+                const txt = importedLocalStorage[k]; // imported text
                 if (!CRYPTO.encryptedItems.includes(k)) { // for pwdHash and encrypted keys
-                  localStorage.setItem(k, x);
+                  localStorage.setItem(k, txt);
                   return;
                 } // for "options" || "sites"
-                if (k === "options") {
-                  // const y = (isEncrypted) ? decryptString(x, cryptoKey) : x;
-                  const y = (isEncrypted) ? decryptText(CRYPTO.passwd, x) : x;
-                  opts = JSON.parse(y);
+                if (isEncrypted) {
+                  decryptText(CRYPTO.passwd, txt).then( decrypted => {
+                    opts = JSON.parse(decrypted);
+                  });
+                  localStorage.setItem(k, txt);
+                } else {
+                  opts = JSON.parse(txt);
+                  encryptText(CRYPTO.passwd, txt).then( encrypted => {
+                    localStorage.setItem(k, encrypted);
+                  })
                 }
-                // const value = (!isEncrypted) ? encryptString(x, cryptoKey) : x;  
-                const value = (!isEncrypted) ? encryptText(CRYPTO.passwd, x) : x;
-                localStorage.setItem(k, value);
               }
               setDisplayedOptions(opts);
               localStorage.setItem("encrypted", true);
