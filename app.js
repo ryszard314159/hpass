@@ -261,29 +261,44 @@ el.newPassword.addEventListener("keydown", (event) => {
   // const masterKey = createKey(masterPassword);
   // const newKey = createKey(newPassword);
   // TODO: clean-up!
-  let m = `masterPassword= ${masterPassword}, newPassword= ${newPassword}`;
-  CRYPTO.encryptedItems.forEach((key) => {
-    const fromStorage = localStorage.getItem(key);
-    if (fromStorage === null) return;
-    decryptText(masterPassword, fromStorage).then(decryptedValue => {
-        encryptText(newPassword, decryptedValue).then(encryptedValue => {
-          localStorage.setItem(key, encryptedValue)})
-    });
-  });
+  // let m = `masterPassword= ${masterPassword}, newPassword= ${newPassword}`;
+  // CRYPTO.encryptedItems.forEach((key) => {
+  //   const fromStorage = localStorage.getItem(key);
+  //   if (fromStorage === null) return;
+  //   decryptText(masterPassword, fromStorage).then(decryptedValue => {
+  //       encryptText(newPassword, decryptedValue).then(encryptedValue => {
+  //         localStorage.setItem(key, encryptedValue)})
+  //   });
+  // });
   CRYPTO.passwd = newPassword;
   createHash(CRYPTO.passwd).then(pwdHash => localStorage.setItem("pwdHash", pwdHash));
 
-  async function recrypt() {
-    for (const key of CRYPTO.encryptedItems) {
-      const fromStorage = localStorage.getItem(key);
-      if (fromStorage === null) continue;
-      const decrypted = await decryptText(masterPassword, fromStorage);
-      const encrypted = await encryptText(newPassword, decrypted);
-      localStorage.setItem(key, encrypted);
-    };
-  }
-
-  recrypt();
+  (async () => {
+    try {
+      for (const key of CRYPTO.encryptedItems) {
+        const fromStorage = localStorage.getItem(key);
+        if (fromStorage === null) continue;
+        
+        const decrypted = await decryptText(masterPassword, fromStorage);
+        if (key === "options") {
+          const x = JSON.parse(decrypted);
+          el.salt.value = x["salt"];
+          el.pepper.value = x["pepper"];
+          el.length.value = x["length"];
+          let msg = `DEBUG:1: after password change:`;
+          msg = `${msg}\nel.salt.value= ${el.salt.value}`;
+          msg = `${msg}\nel.pepper.value= ${el.pepper.value}`;
+          msg = `${msg}\nel.length.value= ${el.length.value}`;
+          console.log(msg);
+        }
+        const encrypted = await encryptText(newPassword, decrypted);
+        
+        localStorage.setItem(key, encrypted);
+      }
+    } catch (error) {
+      console.error("Error updating encrypted items:", error);
+    }
+  })();
 
   // confirm(msg); // TODO: change alert to confirm!!!
   if (debug) {
@@ -291,10 +306,10 @@ el.newPassword.addEventListener("keydown", (event) => {
   }
   _cleanup();
   // DEBUG CODE
-  const displayedOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
-  const storedOpts = storageGet({key: "options"});
-  // alert(`el.newPassword:\ndisplayed= ${JSON.stringify(displayedOpts)}\nstored= ${JSON.stringify(storedOpts)}`);
-  checkOptions();
+  // const displayedOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  // const storedOpts = storageGet({key: "options"});
+  // // alert(`el.newPassword:\ndisplayed= ${JSON.stringify(displayedOpts)}\nstored= ${JSON.stringify(storedOpts)}`);
+  // checkOptions();
   return;
 });
 
@@ -897,7 +912,6 @@ function deprecated_handleExport(args = {}) {
   toExport.encrypted = !args.decrypted;
   if (args.decrypted) {
     if (!confirm("Plain text export!")) return;
-    // CRYPTO.key = createKey(CRYPTO.passwd);
     CRYPTO.encryptedItems.forEach( async function(key){
       // toExport[key] = decryptText(CRYPTO.passwd, toExport[key])
       // decryptText(CRYPTO.passwd, toExport[key]).then( decrypted => {toExport[key] = decrypted})
@@ -929,6 +943,8 @@ function handleExport(args = {}) {
   Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
   toExport.encrypted = !args.decrypted;
 
+  console.log(`DEBUG: handleExport: toExport= ${JSON.stringify(toExport)}`);
+
   function finish() {
     const x = JSON.stringify(toExport, null, 2);
     const blob = new Blob([x], { type: 'application/json' });
@@ -944,6 +960,8 @@ function handleExport(args = {}) {
     if (!confirm("Plain text export!")) return;
     
     const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
+      if (toExport[key] === undefined) return;
+      console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
       toExport[key] = await decryptText(CRYPTO.passwd, toExport[key]);
     });
 
@@ -1012,6 +1030,7 @@ window.addEventListener("click", function(event) {
 function handleImport(event) {
   const debug = false;
   const file = el.importFileInput.files[0];
+  const fileName = el.importFileInput.value;
   if (debug) console.log("handleImport: file=", file);
   if (file) {
       const reader = new FileReader();
@@ -1028,29 +1047,33 @@ function handleImport(event) {
               localStorage.clear();
               const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
               let opts;
-              for (let k in importedLocalStorage) {
-                const txt = importedLocalStorage[k]; // imported text
-                if (!CRYPTO.encryptedItems.includes(k)) { // for pwdHash and encrypted keys
-                  localStorage.setItem(k, txt);
-                  return;
+              for (const key in importedLocalStorage) {
+                const txt = importedLocalStorage[key]; // imported text
+                if (!CRYPTO.encryptedItems.includes(key)) { // for pwdHash and encrypted keys
+                  localStorage.setItem(key, txt);
+                  continue;
                 } // for "options" || "sites"
                 if (isEncrypted) {
-                  decryptText(CRYPTO.passwd, txt).then( decrypted => {
-                    opts = JSON.parse(decrypted);
-                  });
-                  localStorage.setItem(k, txt);
+                  localStorage.setItem(key, txt);
+                  if (key === "options") {
+                    decryptText(CRYPTO.passwd, txt).then( decrypted => {
+                      opts = JSON.parse(decrypted);
+                      setDisplayedOptions(opts);
+                    });
+                  }
                 } else {
-                  opts = JSON.parse(txt);
                   encryptText(CRYPTO.passwd, txt).then( encrypted => {
-                    localStorage.setItem(k, encrypted);
-                  })
+                    localStorage.setItem(key, encrypted);
+                  });
+                  opts = JSON.parse(txt);
+                  setDisplayedOptions(opts);
                 }
               }
-              setDisplayedOptions(opts);
               localStorage.setItem("encrypted", true);
               if (debug) alert(`INFO: handleImport: localStorage= ${JSON.stringify(localStorage)}`);
               // const modal = document.getElementById("fileInputModal");
               el.fileInputModal.style.display = "none"; // TODO: modal is not defined
+              alert(`Settings imported from: ${fileName}`);
           } catch (error) {
               console.error('Error parsing JSON file:', error);
               alert('Failed to import settings. Please ensure the file is a valid JSON.');

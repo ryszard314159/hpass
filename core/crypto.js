@@ -74,7 +74,7 @@ async function encryptText(password, plainText, separator = '|') {
 async function decryptText(password, encryptedString, separator = '|') {
     // Split the stored encrypted data (salt:iv:ciphertext)
     if (typeof(encryptedString) !== "string") {
-      throw new TypeError("wrong encryptedString");
+      throw new TypeError(`wrong encryptedString= ${encryptedString}`);
     }
     const [saltHex, ivHex, ciphertextHex] = encryptedString.split(separator);
     // Convert salt and iv back to Uint8Array
@@ -209,5 +209,15 @@ async function test() {
 
 
 if (debug) await test();
+
+( async () => {
+  const encryptedString = "1743724d69fd50a2e63f40382a553647|5556f3e675d495cad613a0e4|5005d507ba43cf4e052fed02798e49ba7e44636e9de72f45971ae6b5468278be57e52c89967df600b5cecb8479220305a50a6b84af3caa964109bf3f4d2f9477fdf7339628a3"
+  try {
+    const decrypted = await decryptText("", encryptedString);
+    console.log(`decrypted= ${decrypted}`);
+  } catch(error) {
+    console.log(`decryptText failed on encryptedString= ${encryptedString}`);
+  }
+}) ();
 
 export { encryptText, decryptText, createHash, verifyPassword};

@@ -30,7 +30,7 @@ CHARS.lower = "abcdefghijklmnopqrstuvwxyz";
 CHARS.upper = CHARS.lower.toUpperCase();
 CHARS.punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
-const CRYPTO = {key: null, prefix: 'prefix:', passwd: ''};
+const CRYPTO = {passwd: ''};
 CRYPTO.encryptedItems = ["options", "sites"];
 // CRYPTO.encryptedStorage = true;
 CRYPTO.decryptedIOuntil = 0;
@@ -350,8 +350,6 @@ async function storageSet(args) {
     throw new Error(`storageSet: not an object type: args.value= ${args.value}`);
   }
   let rawValue = JSON.stringify(args.value);
-  // CRYPTO.key = createKey(args.pwd);
-  // const encryptedValue = encryptString(rawValue, CRYPTO.key);
   const encryptedValue = await encryptText(args.pwd, rawValue);
   if (encryptedValue === undefined || encryptedValue === 'undefined') {
     throw new Error(`storageSet: undefined encryptedValue= ${encryptedValue}`);
@@ -387,13 +385,12 @@ async function storageGet(args) {
     decryptedValue = await decryptText(args.pwd, rawValue);
   } catch (error) {
     let msg = `ERROR: storageGet: while decrypting raValue:`;
-    msg = `\nrawValue= ${rawValue}, args= ${JSON.stringify(args)}`;
-    msg = `\nCRYPTO.passwd= ${CRYPTO.passwd}`;
-    msg = `\nCRYPTO.key= ${CRYPTO.key}`;
-    msg = `\nerror= ${error}`;
-    alert(msg);
+    msg = `${msg}\nrawValue= ${rawValue}, args= ${JSON.stringify(args)}`;
+    msg = `${msg}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
+    msg = `${msg}\nerror= ${error}`;
     console.error(msg);
-    console.error("storageGet: error= ", error);
+    console.trace();
+    throw new Error(msg);
   }
   try {
     finalValue = JSON.parse(decryptedValue);
@@ -407,6 +404,7 @@ async function storageGet(args) {
     msg = `${msg}\nstorageGet: decryptedValue= ${decryptedValue}`;
     msg = `${msg}\nstorageGet: finalValue= ${finalValue}`;
     console.error(msg);
+    throw new Error(msg);
   }
   if (typeof(finalValue) === "string") {
     // let msg = `ERROR: storageGet: args.key= ${JSON.stringify(args)}, should not be string!!!}`;
