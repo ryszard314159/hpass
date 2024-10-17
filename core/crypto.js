@@ -1,6 +1,6 @@
 "use strict";
 
-const debug = true;
+const debug = false;
 const ITERATIONS = (debug) ? 999 : 99999;
 const HASH_ALGORITHM = (debug) ? 'SHA-1': 'SHA-512';
 const KDF = 'PBKDF2'; // Key Derivation Function
@@ -197,11 +197,6 @@ async function createHash(password, storedSaltHex = null) {
   return `${saltHex}|${hashHex}`;
 }
 
-// async function verifyPassword(storedHashHex, storedSaltHex, password) {
-//     const { hashHex, saltHex } = await createHash(password, storedSaltHex);  
-//     return storedHashHex === hashHex;
-// }
-
 async function verifyPassword(storedPasswordHash, password) {
   const [storedSaltHex, storedHashHex] = storedPasswordHash.split('|');
   const x = await createHash(password, storedSaltHex);
@@ -212,24 +207,20 @@ async function verifyPassword(storedPasswordHash, password) {
 async function test() {
     const password = "PASSWORD";
     const plainString = "plain text";
-    // encryptText(password, plainString).then((encryptedString) => {
-    //         console.log(`plainString= ${plainString}`);
-    //         console.log(`encrypted= ${encryptedString}`);
-    //         decryptText(password, encryptedString).then((decryptedString) => {
-    //         console.log(`decrypted= ${decryptedString}`);  // Should output: "plain text"
-    //         const result = (plainString === decryptedString) ? "PASSED" : "FAILED";
-    //         console.log(`encrypt/decrypt test ${result}`);
-    //     });
-    // });
     console.log(`Password: ${password}`);
     console.log(`Plain String: ${plainString}`);
+    //----------------
+    // test encryption
+    //----------------
     const encryptedString = await encryptText(password, plainString);
     const decryptedString = await decryptText(password, encryptedString);
     console.log(`plainString= ${plainString}`);
     console.log(`encrypted= ${encryptedString}`);
     const cryptTest = (plainString === decryptedString) ? "PASSED" : "FAILED";
     console.log(`encrypt/decrypt test ${cryptTest}`);
+    ///////////////
     // test hashing
+    ///////////////
     const passwordHash = await createHash(password);
     console.log(`passwordHash: ${passwordHash}`);
     const correct = await verifyPassword(passwordHash, password);

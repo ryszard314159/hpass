@@ -172,8 +172,8 @@ function shuffle_string(string, gint = rig(MP31, seed)) {
 function hash_string(s) {
   console.assert(typeof s === "string", `string expected, got ${s}`);
   // Mersenne primes: 2^(2, 3, 5, 7, 13, 17, 19, 31, 67, 127, 257)
-  const p = 2 ** 5 - 1,
-    m = MP31; // 2**31 - 1
+  const p = 2 ** 5 - 1
+  const m = MP31; // 2**31 - 1
   let value = MP31; // 2**31 - 1;
   let pp = 1;
   for (let j = 0; j < s.length; j++) {

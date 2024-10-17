@@ -285,11 +285,11 @@ el.newPassword.addEventListener("keydown", (event) => {
           el.salt.value = x["salt"];
           el.pepper.value = x["pepper"];
           el.length.value = x["length"];
-          let msg = `DEBUG:1: after password change:`;
-          msg = `${msg}\nel.salt.value= ${el.salt.value}`;
-          msg = `${msg}\nel.pepper.value= ${el.pepper.value}`;
-          msg = `${msg}\nel.length.value= ${el.length.value}`;
-          console.log(msg);
+          // let msg = `DEBUG:1: after password change:`;
+          // msg = `${msg}\nel.salt.value= ${el.salt.value}`;
+          // msg = `${msg}\nel.pepper.value= ${el.pepper.value}`;
+          // msg = `${msg}\nel.length.value= ${el.length.value}`;
+          // console.log(msg);
         }
         const encrypted = await encryptText(newPassword, decrypted);
         
@@ -431,11 +431,9 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register(swPath)
     .then((reg) => {
-      // const storedHash = localStorage.getItem("pwdHash");
-      // console.log("DEBUG: ")
       createHash(CRYPTO.passwd).then(h => {
-        console.log(`DEBUG: navigator.serviceWorker: CRYPTO.passwd= ${CRYPTO.passwd}`);
-        console.log(`DEBUG: navigator.serviceWorker: h= ${h}`)
+        // console.log(`DEBUG: navigator.serviceWorker: CRYPTO.passwd= ${CRYPTO.passwd}`);
+        // console.log(`DEBUG: navigator.serviceWorker: h= ${h}`)
         localStorage.setItem("pwdHash", h)
       });
 
@@ -903,40 +901,6 @@ function handleLinkClick(event) {
 // ChatGPT...
 
 // Function to export localStorage as a JSON file
-function deprecated_handleExport(args = {}) {
-  args = {fileName: "hpass-settings.json", decrypted: false, ...args};
-  const debug = false;
-  if (debug) console.log(`exportLocalStorage: args.decrypted= ${args.decrypted}`)
-  const toExport = {}; // prepare localStorage copy for export
-  Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
-  toExport.encrypted = !args.decrypted;
-  if (args.decrypted) {
-    if (!confirm("Plain text export!")) return;
-    CRYPTO.encryptedItems.forEach( async function(key){
-      // toExport[key] = decryptText(CRYPTO.passwd, toExport[key])
-      // decryptText(CRYPTO.passwd, toExport[key]).then( decrypted => {toExport[key] = decrypted})
-      // toExport[key] = await decryptText(CRYPTO.passwd, toExport[key]);
-      const encrypted = toExport[key];
-      const decrypted = await decryptText(CRYPTO.passwd, encrypted);
-      toExport[key] = decrypted;
-      console.log(`DEBUG: handleExport: key= ${key}}`);
-      console.log(`DEBUG: handleExport: encrypted= ${encrypted}}`);
-      console.log(`DEBUG: handleExport: decrypted= ${decrypted}}`);
-      console.log(`DEBUG: handleExport: done with key= ${key}}`);
-    });
-  } else {
-    if (!confirm("Encrypted export\nDouble Click for decrypted (plain text) export!")) return;
-  }
-  const x = JSON.stringify(toExport, null, 2);
-  const blob = new Blob([x], { type: 'application/json' });
-  const link = document.createElement('a');
-  link.download = args.fileName;
-  link.href = window.URL.createObjectURL(blob);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
 function handleExport(args = {}) {
   args = {fileName: "hpass-settings.json", decrypted: false, ...args};
   const toExport = {}; // prepare localStorage copy for export
@@ -958,19 +922,11 @@ function handleExport(args = {}) {
   
   if (args.decrypted) {
     if (!confirm("Plain text export!")) return;
-    
     const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
       if (toExport[key] === undefined) return;
-      console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
+      // console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
       toExport[key] = await decryptText(CRYPTO.passwd, toExport[key]);
     });
-
-    // this should work synchronously!!!
-    // for (const key of CRYPTO.encryptedItems) {
-    //   const decrypted = await decryptText(CRYPTO.passwd, toExport[key]);
-    //   toExport[key] = decrypted;
-    // }
-
     Promise.all(decryptionPromises).then(() => {
       finish();
     });
@@ -984,7 +940,7 @@ const span = document.getElementsByClassName("close")[0];
 
 // When the user clicks the button, open the modal
 document.body.querySelectorAll(".import").forEach(function(element) {
-  const debug = true;
+  const debug = false;
   if (debug) console.log(".import: selected");
   element.addEventListener("click", function() {
     if (debug) console.log(".import: clicked");
