@@ -271,6 +271,7 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* justify-content: center;  */
   height: 100vh;
   width: 100vw;
   /* top: 2rem; */
@@ -295,8 +296,13 @@ form {
 }
 
   /* float: right; */
+#passwordInputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 #masterPassword, #newPassword, #logop {
-  margin: 4rem 0 0 0;
+  margin: 2rem 0 2rem 0;
   font-size: 2rem;
   width: 80%;
   position: relative;
@@ -308,10 +314,13 @@ form {
   align-items: center;
 }
 #logop {
+  margin: 4rem 0 0 0;
   width: 50%;
 }
 #newPassword {
   display: none;
+  margin: 0 auto;
+  /* margin: 2rem 2rem 0 0; */
   /* visibility: hidden; */
   /* opacity: 0; */
 }
