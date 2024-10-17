@@ -56,7 +56,6 @@
     <link rel="canonical" href="https://hpass.app" />
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="css/pwa.css" />
-    <!-- <link rel="stylesheet" href="tmp.css" /> -->
     <link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />
     <script defer type="module" src="core/crypto.js"></script>
     <script defer type="module" src="core/lib.js"></script> 
@@ -80,7 +79,6 @@
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <br/><br/><br/><br/>
-    <!-- <div style="justify-content: center; align-items: center"> -->
     <audio id="clickSound" src="click-sound.wav" preload="auto"></audio>
     <audio id="lockSound" src="door-close.mp3" preload="auto"></audio>
     <div id="fileInputModal" class="modal">
@@ -91,47 +89,26 @@
       </div>
     </div>
     <div id="passwordContainer" class="modal">
-      <!-- <form id="passwordForm" class=""> -->
-      <!-- <div> -->
-        <!-- <img id="hamburger" class="pwd" src="icons/hamburger-menu.svg" /> -->
-        <!-- <div class="hamburger" id="hamburger">☰</div> -->
         <div class="topIcons" id="topIcons"> 
           <div class="top-icon" id="topHelp"><span><a href="help.html"><img class="btn help" src="icons/help.svg" title="Help"></a></span></div>
           <div class="top-icon" id="topInfo"><span><a href="info.html"><img class="btn info" src="icons/info.svg" title="Info"></a></span></div>
           <div class="top-icon" id="topEmail"><span><img class="btn email" src="icons/email.svg" title="Email Support"></span></div>
           <div class="top-icon" id="topImport"><span><img class="btn import" src="icons/import.svg" title="Import Settings"></span></div>
           <div class="top-icon" id="topExport"><span><img class="btn export" src="icons/export.svg" title="Export Settings"></span></div>
-          <!-- <div class="top-icon" id="topCrypt"><span><img class="btn crypt" src="icons/eye-hide.svg" title="Plain Text IO"></span></div> -->
           <div class="top-icon" id="topChange"><span><img class="btn change" src="icons/change.svg" title="Change Password"></span></div>
           <div class="top-icon" id="topReset"><span><img class="btn reset" src="icons/reset.svg" title="Reset"></span></div>
           <div class="top-icon" id="hamburger"><span class="btn">☰</span></div>
         </div>
-          <!-- <div class="" id="hamburger"><span class="btn">☰</span></div> -->
-          <!-- <div class="hamburger" id="hamburger">☰</div> -->
         <img id="logop" class="pwd" src="icons/logo.svg" />
         <input id="masterPassword" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Master Password"/>
-        <!-- <div class="hamburger" id="hamburger"><span>☰</span></div>  -->
-      <!-- </div> -->
-      <!-- </form> -->
-      <!-- <form id="newPasswordForm" class=""> -->
-      <!-- <div> -->
         <input id="newPassword" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="New Password"/>
-      <!-- </div> -->
-      <!-- </form> -->
       <nav class="nav-menu" id="nav-menu">
-        <!-- <p><h1>Legend</h1></p> -->
-        <!-- <div class="hamburger" id="hamburger"><span>✕</span></div> -->
         <ul>
           <li><a href="help.html"> <img class="btn help" src="icons/help.svg">Help</a></li>
           <li><a href="info.html"> <img class="btn info" src="icons/info.svg">Info</a></li>
           <li><a id="email"> <img class="btn email" src="icons/email.svg">Support</a></li>
           <li><a id="importButton"> <img class="btn import" src="icons/import.svg">Import Settings</a></li>
           <li><a id="exportButton"> <img class="btn export" src="icons/export.svg">Export Settings</a></li>
-          <!-- <li><a> <img id="crypt" class="btn crypt" src="icons/eye-hide.svg">
-            <span id="crypt-text">Encrypted Export</span></a>
-          </li> -->
-          <!-- <li><a> <img id="crypt" class="btn crypt" src="icons/eye-show.svg">
-            <span id="crypt-text">Decrypted Export</span></a></li> -->
           <li><a id="changePassword" href="#home"><img class="btn change" src="icons/change.svg" title="Change Password">Change Password</a></li>
           <li><a id="reset"> <img class="btn reset" src="icons/reset.svg">Reset</a></li>
         </ul>
@@ -155,9 +132,7 @@
         <iframe id="life" src="life.html" seamless frameBorder="0"></iframe>
       </div>
       <div id="settings">
-          <!-- <legend id="back">Settings &nbsp; &nbsp; &nbsp;⨉ <br /><br /></legend> -->
           <br/><br/>
-          <!-- <legend id="back">Settings<br/><br/></legend> -->
           <div id="saltContainer" class="input-container" style="background-color: transparent;">
             <button id="saltBtn" class="leading-icon">🤫</button>
             <input id="salt" class="options" placeholder="Secret" />
@@ -167,7 +142,6 @@
           <div id="pepperContainer" class="input-container" style="background-color:transparent;">
             <button id="pepperBtn" class="leading-icon"><span style="color: red">&#x1F336</span></button>
             <input id="pepper" class="options" placeholder="Special Character" />
-            <!-- <label for="pepper">Special Character</label> -->
             <button id="pepperCross" class="trailing-icon">⨉</button>
             <br />
             <div class="helper-text">one or more of _.-!@*$?&% etc.</div>
@@ -193,35 +167,6 @@
       </div>
     </div>
     <hr>
-        <!-- <div class="tooltip">
-      <a id="help" style="display: block;" href="help.html" onclick="return handleLinkClick(event)">
-          <img class="btn" src="icons/help.svg">
-      </a>
-      <span class="tooltiptext">Basic help and usage guide</span>
-    </div> -->
-    <!-- <div class="tooltip">
-      <img id="save" class="btn export" src="icons/export.svg" />
-      <span class="tooltiptext">Export settings</span>
-    </div> -->
-    <!-- <span class="tooltiptext">Share HPASS!</span> -->
-    <!-- <div id="saveDiv" class="btn?Container">
-        <img id="share" class="btn share" src="icons/share.svg" title="Share!"/>
-        <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
-        <img id="save" class="btn save" src="icons/save.svg" title="Save"/>
-    </div> -->
-      <!-- <div class="tooltip">
-        <img id="importButton" class="btn import" src="icons/import.svg" />
-        <span class="tooltiptext">Import settings</span>
-      </div> -->
-
-      <!-- <div class="tooltip">
-        <a id="info" style="display: block;"
-            href="info.html"
-            onclick="return handleLinkClick(event)">
-            <img class="btn" src="icons/info.svg"/>
-        </a>
-        <span class="tooltiptext">More on usage, security, etc.</span>
-      </div> -->
     <hr />
     <div id="versionContainer">
       <div class="flex-item">
@@ -241,7 +186,6 @@
       </div>
     </div>
     <hr />
-    <!-- <blurb style="text-align: left; margin: 2% 0% 33% 0%;"> -->
     <blurb>
       <h2 style="text-align: center">
         Why strong passwords are important?
@@ -254,7 +198,6 @@
         generate them (like HPASS), and eliminates a need to remember
         or store passwords, offer several advantages:
       </p>
-      <!-- <ul style="list-style: none"> -->
       <ul> 
         <li>
           <b>Security:</b> Strong password include a mix of letters,
