@@ -209,18 +209,18 @@ async function test() {
     const plainString = "plain text";
     console.log(`Password: ${password}`);
     console.log(`Plain String: ${plainString}`);
-    //----------------
+    //---
     // test encryption
-    //----------------
+    //---
     const encryptedString = await encryptText(password, plainString);
     const decryptedString = await decryptText(password, encryptedString);
     console.log(`plainString= ${plainString}`);
     console.log(`encrypted= ${encryptedString}`);
     const cryptTest = (plainString === decryptedString) ? "PASSED" : "FAILED";
     console.log(`encrypt/decrypt test ${cryptTest}`);
-    ///////////////
+    //---
     // test hashing
-    ///////////////
+    //---
     const passwordHash = await createHash(password);
     console.log(`passwordHash: ${passwordHash}`);
     const correct = await verifyPassword(passwordHash, password);
@@ -232,8 +232,7 @@ async function test() {
     }
 }
 
-
-if (debug) await test();
+if (debug) test();
 
 // ( async () => {
 //   const encryptedString = "1743724d69fd50a2e63f40382a553647|5556f3e675d495cad613a0e4|5005d507ba43cf4e052fed02798e49ba7e44636e9de72f45971ae6b5468278be57e52c89967df600b5cecb8479220305a50a6b84af3caa964109bf3f4d2f9477fdf7339628a3"

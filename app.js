@@ -673,6 +673,9 @@ window.onload = function() {
 document.getElementById("lock").addEventListener("click", function () {
   // window.location.reload();
   el.passwordContainer.style.display = "block";
+  const lck = document.getElementById("lockSound");
+  lck.currentTime = 0; // Reset audio to start
+  lck.play();
   // el.salt.value = ''; // TODO: wipes clean input boxes, but seems to cause problems
   // el.pepper.value = ''; // with password change!?
   // el.length.value = '';
