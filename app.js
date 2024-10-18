@@ -749,7 +749,11 @@ function saveOptions(args) {
   // alert(`storeOptions: el.hint.value= ${el.hint.value}`);
   if (hint === '' && Object.keys(diff).length !== 0) {
     storageSet({key: "options", value: currentOpts});
-    msg = `NOTE: new generic settings saved: ${JSON.stringify(currentOpts)}`
+    // msg = `NOTE: new generic settings saved: ${JSON.stringify(currentOpts)}`;
+    msg = `New generic settings saved:\n`;
+    msg = `${msg}\nSecret= ${currentOpts.salt}`;
+    msg = `${msg}\nSpecial Character= ${currentOpts.pepper}`;
+    msg = `${msg}\nLength= ${currentOpts.length}`;
     alert(msg);
     console.log(msg)
     return;
@@ -780,10 +784,14 @@ function saveOptions(args) {
   if (sites !== null) {
     if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
     storageSet({key: "sites", value: sites});
-    msg = `Hint-specific settings ${replacedOrCreated}.`;
-    msg = `${msg}\nHint= ${hint}`;
-    msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
-    msg = `${msg}\nNew settings= ${JSON.stringify(sites[hint])}`;
+    msg = `Hint-specific settings ${replacedOrCreated}:\n`;
+    msg = `${msg}\nHint= ${hint}\n`;
+    // msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
+    // msg = `${msg}\nNew settings= ${JSON.stringify(sites[hint])}`;
+    const hs = sites[hint];
+    msg = `${msg}\nSecret= ${hs.salt}`;
+    msg = `${msg}\nSpecial Character= ${hs.pepper}`;
+    msg = `${msg}\nLength= ${hs.length}`;
     alert(msg);
   } else {
     delete localStorage.sites;
