@@ -344,8 +344,10 @@ function createSplashScreen(opts) {
   <li>Read the <strong>Basics</strong> below.
   <li>Close this menu.
   <li>Enter Master Password (<strong>default='${CRYPTO.passwd}'</strong>).
-  <li>Change Master Password to a strong one.
-      See Help (under ? icon) for guidance.
+  <li>Change (<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;">)
+      Master Password (<strong>initial value='${CRYPTO.passwd}'</strong>)
+      to a strong one.
+      See Help (under ? icon) for guidance how to select good master password.
       Write it down and store it in safe location.
   </ul>
   <h3>Basics:</h3>
