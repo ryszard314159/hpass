@@ -211,7 +211,6 @@ button {
   /* border-radius: 50%; */
 }
 
-
 #help,
 #reset,
 #demo,
@@ -324,7 +323,7 @@ form {
   /* visibility: hidden; */
   /* opacity: 0; */
 }
-#newPassword.show {
+#newPassword.secret.show {
   display: block;
   /* visibility: visible; */
   /* opacity: 1; */

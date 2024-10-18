@@ -160,22 +160,30 @@ el.hamburger.addEventListener("click", function() {
     el.navMenu.classList.toggle("show");
   }, 1);
   el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
-  el.newPassword.style.display = "none";
+  // el.newPassword.style.display = "none";
+  el.newPassword.classList.toggle("show");
 });
 
 el.changePassword.addEventListener("click", function() {
   el.navMenu.classList.toggle("show");
   el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
-  el.newPassword.style.display = "block";
+  // el.newPassword.style.display = "block";
+  el.newPassword.classList.toggle("show");
 });
 
 document.querySelectorAll(".change").forEach(function(element) {
   element.addEventListener("click", function (event) {
     // el.navMenu.classList.toggle("show");
     // el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
-    el.newPassword.style.display = "block";
+    // el.newPassword.style.display = "block";
+    el.newPassword.classList.toggle("show");
   }
 )});
+
+// document.querySelectorAll('img.btn.change').forEach (() => {
+//   console.log("img.btn.change")
+//   el.newPassword.classList.toggle("show");
+// })
 
 el.navMenu.classList.remove("show");
 
@@ -221,7 +229,8 @@ el.newPassword.addEventListener("keydown", (event) => {
     el.newPassword.value = '';
     el.masterPassword.value = '';
     el.passwordContainer.style.display = "none";
-    el.newPassword.style.display = "none";
+    // el.newPassword.style.display = "none";
+    el.newPassword.classList.toggle("show");
   }
   const masterPassword = el.masterPassword.value;
   const newPassword = el.newPassword.value;
@@ -673,9 +682,10 @@ window.onload = function() {
 document.getElementById("lock").addEventListener("click", function () {
   // window.location.reload();
   el.passwordContainer.style.display = "block";
-  const lck = document.getElementById("lockSound");
-  lck.currentTime = 0; // Reset audio to start
-  lck.play();
+  const lock = document.getElementById("lockSound");
+  lock.currentTime = 0; // Reset audio to start
+  lock.volume = 0.1;
+  lock.play();
   // el.salt.value = ''; // TODO: wipes clean input boxes, but seems to cause problems
   // el.pepper.value = ''; // with password change!?
   // el.length.value = '';
