@@ -167,7 +167,6 @@ el.hamburger.addEventListener("click", function() {
 el.changePassword.addEventListener("click", function() {
   el.navMenu.classList.toggle("show");
   el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
-  // el.newPassword.style.display = "block";
   el.newPassword.classList.toggle("show");
 });
 
@@ -177,6 +176,7 @@ document.querySelectorAll(".change").forEach(function(element) {
     // el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
     // el.newPassword.style.display = "block";
     el.newPassword.classList.toggle("show");
+    // el.masterPassword.value = "";
   }
 )});
 
@@ -683,6 +683,7 @@ window.onload = function() {
 
 document.getElementById("lock").addEventListener("click", function () {
   // window.location.reload();
+  el.masterPassword.value = "";
   el.passwordContainer.style.display = "block";
   const lock = document.getElementById("lockSound");
   lock.currentTime = 0; // Reset audio to start
