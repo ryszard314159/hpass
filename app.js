@@ -663,17 +663,15 @@ el.share.addEventListener("click", function () {
 
 // el.reset.addEventListener("click", function (event) {
 document.querySelectorAll(".reset").forEach(function(element) {
-  // alert("reset clicked!");
   element.addEventListener("click", function (event) {
-    // alrte("reset clicked!");
     const debug = false;
     if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
-    event.preventDefault();
-    // alert(`.reset:0: localStorage= ${JSON.stringify(localStorage)}`);
-    localStorage.clear();
-    window.location.reload();
-    // alert(`.reset:1: localStorage= ${JSON.stringify(localStorage)}`);
-  })
+    if (confirm("Confirm reset")) {
+      event.preventDefault();
+      localStorage.clear();
+      window.location.reload();
+    }
+  });
 });
 
 window.onload = function() {
