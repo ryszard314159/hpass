@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <meta name="description" content="Hinted easy to use password generator" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#db4938" />
+    <title>Edit Settings</title>
+    <link rel="canonical" href="https://hpass.app" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="css/pwa.css" />
+    <script defer type="module" src="core/lib.js"></script>
+    <script defer type="module" src="edit.js"></script>
+    <!-- <script defer type="module" src="edit.js"></script> -->
+  </head>
+  <body>
+    <header class="topIcons2">
+      <img class="btn import" src="icons/import.svg" title="Import">
+      <img class="btn export" src="icons/export.svg" title="Export">
+      <img class="btn edit" src="icons/edit.svg" title="Edit">
+      <img class="btn reset" src="icons/reset.svg" title="Reset">
+      <!-- <img id="" class="btn share" src="icons/share.svg" title="Share"/> -->
+      <a href="index.html"> 
+      <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
+      </a>
+      <img id="save" class="btn save" src="icons/save.svg" title="Save"/>
+    </header>
+
+    <br/>
+
+    <br>
+    <hr style="height: 4px; background-color: gray;">
+    <br>
+
+    <form style="text-align: center">
+      <input id="editHint" class="" placeholder="Hint">
+      <fieldset>
+          <legend>Settings</legend>
+        <div id="saltContainer" class="settingsContainer">
+          <button id="saltBtn" class="leading-icon">🤫</button>
+          <input id="editSalt" class="edit" placeholder="Secret">
+        </div>
+        <div id="pepperContainer" class="settingsContainer">
+          <button id="pepperBtn" class="leading-icon"><span style="color: red">&#x1F336</span></button>
+          <input id="editPepper" class="edit" placeholder="Special Character">
+        </div>
+        <div id="lengthContainer" class="settingsContainer">
+          <button id="lengthBtn" class="leading-icon">📏</button>
+          <input id="editLength" class="edit" placeholder="Length">
+        </div>
+      </fieldset>
+    </form>
+
+    <a href="index.html"> <img class="btn" src="icons/back.svg"/>Back</a>
+
+    <p>
+      <h3>Edit Settings</h3>
+      <ul>
+        <li><strong>Hint</strong>: leave it empty to change <em>generic settings</em>;
+             Sometimes you may need to create hint/site specific settings, for example,
+             if some site does not allow for special character in your
+             <em>generic settings</em>, or demands longer/shorter password etc.
+             In such a case, enter a hint, modify special character and/or length field
+
+        </li>
+        <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique</li>
+        <li><strong>Special Character
+             (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
+             one or more _.-!@$?% etc.</li>
+        <li><strong>Length (📏):</strong> longer is better,
+                    note however that a lot of sites have unreasonably short upper limit
+                    - 15 seems to be a reasonable balance.</li>
+      </ul>
+    </p>
+
+    <div id="fileInputModal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Select a JSON file to import hpass settings:</p><br>
+          <input type="file" id="importFileInput" accept="application/json">
+      </div>
+    </div>
+<footer>
+  <!-- <hr> -->
+  <!-- <p>go back</p> -->
+  <hr>
+</footer>
+  </body>
+</html>
