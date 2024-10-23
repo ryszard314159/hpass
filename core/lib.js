@@ -337,6 +337,15 @@ function sanityCheck(args = {key: key, value: null, from: null}) {
   });
 }
 
+function updateLocalStorage(key, value) {
+  localStorage.setItem(key, value);
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: key,
+    newValue: value,
+    oldValue: localStorage.getItem(key),
+  }));
+}
+
 async function storageSet(args) {
   const debug = 0;
   args = {key: null, value: null, pwd: CRYPTO.passwd, encrypt: true, ...args};
@@ -354,7 +363,8 @@ async function storageSet(args) {
   if (encryptedValue === undefined || encryptedValue === 'undefined') {
     throw new Error(`storageSet: undefined encryptedValue= ${encryptedValue}`);
   }
-  localStorage.setItem(args.key, encryptedValue);
+  // localStorage.setItem(args.key, encryptedValue);
+  updateLocalStorage(args.key, encryptedValue);
   const storedValue = localStorage.getItem(args.key);
   if (storedValue !== encryptedValue) {
     console.error(`storageSet: args.key= ${args.key}`);

@@ -87,14 +87,13 @@ el.peakCross = document.getElementById("peakCross");
 el.cleanCross = document.getElementById("cleanCross");
 el.version = document.getElementById("version");
 el.clickSound = document.getElementById('clickSound');
-el.fileInputModal = document.getElementById("fileInputModal");
 el.exportButton = document.getElementById("exportButton");
 el.importButton = document.getElementById("importButton");
 el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
 // el.email = document.getElementById("email");
-el.importFileInput = document.getElementById('importFileInput');
-el.fileInputModal = document.getElementById("fileInputModal");
+
+
 
 if (debug > 8) {
   window.addEventListener("DOMContentLoaded", function() {
@@ -103,6 +102,7 @@ if (debug > 8) {
 }
 
 function noIdlingHere() {
+  const debug = true;
   function yourFunction() {
       // alert('inactive!');
       const secretInputs = document.querySelectorAll('.secret');
@@ -121,7 +121,8 @@ function noIdlingHere() {
       // e.g. window.location.href = 'logout.php';
   }
   let t; // must be declared here
-  const idleTime = 60000; // 60 secs
+  const idleTime = debug ? 1e9 : 60000; // 60 secs
+  // const idleTime = 60000; // 60 secs
   function resetTimer() {
       clearTimeout(t); // global function
       t = setTimeout(yourFunction, idleTime);  // time is in milliseconds (1 min)
@@ -588,38 +589,38 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   setTimeout(() => p.remove(), timeOut);
 }
 
-el.gear.addEventListener("click", () => {
-  const debug = false;
-  if (debug) console.log("app: gear click:0: el.gear.src= ", el.gear.src);
-  const x = el.gear.src.split("/").slice(-1)[0];
-  el.gear.src = (x == "gear.svg") ? "icons/cross.svg" : "icons/gear.svg";
-  el.gear.style.backgroundColor = (x == "gear.svg") ? "red" : "lightgreen";
-  // el.gear.backgroundColor = "pink";
-  if (debug) {
-    console.log("app: gear click:1: el.gear.src= ", el.gear.src);
-    console.log(
-      "app: gear click:1: el.gear.style.backgrounColor= ",
-      el.gear.style.backgroundColor
-    );
-    console.log("app: gear click:1: x= ", x);
-    console.log(
-      "apps:1: settings zIndex= ", el.settings.style.zIndex,
-      "apps:1: hidesettings zIndex= ", el.hidesettings.style.zIndex
-    );
-    console.log(
-      "apps:3: settings display= ", getComputedStyle(el.settings).display,
-      "apps:3: hidesettings display= ", getComputedStyle(el.hidesettings).display
-    );
-  }
-  el.hidesettings.style.display = getComputedStyle(el.hidesettings).display === "none" ? "block" : "none";
-  el.settings.style.display = getComputedStyle(el.settings).display === "none" ? "block" : "none";
-  if (debug){
-    console.log(
-      "apps:4: settings display= ", getComputedStyle(el.settings).display,
-      "apps:4: hidesettings display= ", getComputedStyle(el.hidesettings).display
-    );
-  }
-});
+// el.gear.addEventListener("click", () => {
+//   const debug = false;
+//   if (debug) console.log("app: gear click:0: el.gear.src= ", el.gear.src);
+//   const x = el.gear.src.split("/").slice(-1)[0];
+//   el.gear.src = (x == "gear.svg") ? "icons/cross.svg" : "icons/gear.svg";
+//   el.gear.style.backgroundColor = (x == "gear.svg") ? "red" : "lightgreen";
+//   // el.gear.backgroundColor = "pink";
+//   if (debug) {
+//     console.log("app: gear click:1: el.gear.src= ", el.gear.src);
+//     console.log(
+//       "app: gear click:1: el.gear.style.backgrounColor= ",
+//       el.gear.style.backgroundColor
+//     );
+//     console.log("app: gear click:1: x= ", x);
+//     console.log(
+//       "apps:1: settings zIndex= ", el.settings.style.zIndex,
+//       "apps:1: hidesettings zIndex= ", el.hidesettings.style.zIndex
+//     );
+//     console.log(
+//       "apps:3: settings display= ", getComputedStyle(el.settings).display,
+//       "apps:3: hidesettings display= ", getComputedStyle(el.hidesettings).display
+//     );
+//   }
+//   el.hidesettings.style.display = getComputedStyle(el.hidesettings).display === "none" ? "block" : "none";
+//   el.settings.style.display = getComputedStyle(el.settings).display === "none" ? "block" : "none";
+//   if (debug){
+//     console.log(
+//       "apps:4: settings display= ", getComputedStyle(el.settings).display,
+//       "apps:4: hidesettings display= ", getComputedStyle(el.hidesettings).display
+//     );
+//   }
+// });
 
 const ops = ["pepper", "salt", "length", "burn", "peak"];
 ops.forEach((x) => {
@@ -637,24 +638,24 @@ function cleanClean(v) {
   return valid.has(v) ? v : true;
 }
 
-document.querySelectorAll('.export').forEach(function(element) {
-  const timeDiffThreshold = 300;
-  let lastClickTime = 0;
-  let pendingClick = null;
-  element.addEventListener('click', function (event) {
-    const currentTime = Date.now();
-    const timeDiff = currentTime - lastClickTime;
-    lastClickTime = currentTime;
-    clearTimeout(pendingClick);
-    if (timeDiff > timeDiffThreshold) {
-      pendingClick = setTimeout(function() {
-        handleExport({decrypted: false}); // Single click
-      }, timeDiffThreshold);
-    } else {
-      handleExport({decrypted: true}); // Double click
-    }
-  });
-});
+// document.querySelectorAll('.export').forEach(function(element) {
+//   const timeDiffThreshold = 300;
+//   let lastClickTime = 0;
+//   let pendingClick = null;
+//   element.addEventListener('click', function (event) {
+//     const currentTime = Date.now();
+//     const timeDiff = currentTime - lastClickTime;
+//     lastClickTime = currentTime;
+//     clearTimeout(pendingClick);
+//     if (timeDiff > timeDiffThreshold) {
+//       pendingClick = setTimeout(function() {
+//         handleExport({decrypted: false}); // Single click
+//       }, timeDiffThreshold);
+//     } else {
+//       handleExport({decrypted: true}); // Double click
+//     }
+//   });
+// });
 
 el.share.addEventListener("click", function () {
   copyToClipboard(URL);
@@ -662,35 +663,49 @@ el.share.addEventListener("click", function () {
 });
 
 // el.reset.addEventListener("click", function (event) {
-document.querySelectorAll(".reset").forEach(function(element) {
-  element.addEventListener("click", function (event) {
-    const debug = false;
-    if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
-    if (confirm("Confirm reset")) {
-      event.preventDefault();
-      localStorage.clear();
-      window.location.reload();
-    }
-  });
-});
+// document.querySelectorAll(".reset").forEach(function(element) {
+//   element.addEventListener("click", function (event) {
+//     const debug = false;
+//     if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
+//     if (confirm("Confirm reset: all existing settings will be removed!")) {
+//       event.preventDefault();
+//       localStorage.clear();
+//       window.location.reload();
+//     }
+//   });
+// });
 
 window.onload = function() {
   // alert("PAGE LOADED!");
   window.scrollTo(0, 0);
 }
 
-document.getElementById("lock").addEventListener("click", function () {
-  // window.location.reload();
-  el.masterPassword.value = "";
-  el.passwordContainer.style.display = "block";
-  const lock = document.getElementById("lockSound");
-  lock.currentTime = 0; // Reset audio to start
-  lock.volume = 0.1;
-  lock.play();
-  // el.salt.value = ''; // TODO: wipes clean input boxes, but seems to cause problems
-  // el.pepper.value = ''; // with password change!?
-  // el.length.value = '';
+document.querySelectorAll(".lock").forEach(function(element) {
+  element.addEventListener("click", function (event) {
+    const masterPassword = document.getElementById("masterPassword");
+    const passwordContainer = document.getElementById("passwordContainer");
+    const lock = document.getElementById("lockSound");
+    if (masterPassword && passwordContainer && lockSound) {
+      el.masterPassword.value = "";
+      el.passwordContainer.style.display = "block";
+      lock.currentTime = 0; // Reset audio to start
+      lock.volume = 0.1;
+      lock.play();
+    } else {
+      console.error("Missing required elements.");
+    }
+  })
 });
+
+// document.getElementById("lock").addEventListener("click", function () {
+//   // window.location.reload();
+//   el.masterPassword.value = "";
+//   el.passwordContainer.style.display = "block";
+//   const lock = document.getElementById("lockSound");
+//   lock.currentTime = 0; // Reset audio to start
+//   lock.volume = 0.1;
+//   lock.play();
+// });
 
 el.hint.addEventListener("mouseout", () => {
   const debug = false;
@@ -723,82 +738,93 @@ el.hint.addEventListener("keydown", (event) => {
 // });
 
 // el.storeButton.addEventListener("click", storeOptions);
-document.getElementById("save").addEventListener("click", saveOptions);
 
-function saveOptions(args) {
-  args = {debug: -1, ...args};
-  const debug = args.debug;
-  let currentOpts, hint, msg;
-  // if (debug < 0) {
-    currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
-  // } else {
-    // currentOpts = args.options;
-  // }
-  // if (debug < 0) {
-    hint = el.hint.value;
-  // } else {
-  //   hint = args.hint;
-  // }
-  const storedOpts = storageGet({key: "options"});
-  const diff = objDiff(currentOpts, storedOpts);
-  if (hint === '' && Object.keys(diff).length === 0) {
-    msg = `NOTE: stored settings are the same! Nothing changed.`
-    alert(msg);
-    console.log(`saveOptions: ${msg}`);
-    return;
+//
+window.addEventListener('storage', function(event) {
+  // Compare the old and new values
+  // console.log(`storage change event= `, event)
+  if (event.key && event.key !== "__storage_test__") {
+    console.log(`storage: Key >> ${event.key} << changed from ${event.oldValue} to ${event.newValue}`);
   }
-  // alert(`storeOptions: el.hint.value= ${el.hint.value}`);
-  if (hint === '' && Object.keys(diff).length !== 0) {
-    storageSet({key: "options", value: currentOpts});
-    // msg = `NOTE: new generic settings saved: ${JSON.stringify(currentOpts)}`;
-    msg = `New generic settings saved:\n`;
-    msg = `${msg}\nSecret= ${currentOpts.salt}`;
-    msg = `${msg}\nSpecial Character= ${currentOpts.pepper}`;
-    msg = `${msg}\nLength= ${currentOpts.length}`;
-    alert(msg);
-    console.log(msg)
-    return;
-  }
-  // hint !== ''
-  let sites = storageGet({key: "sites"});// decrypt: true is the default!
-  if (sites === undefined) alert("ERROR: sites undefined in saveOptions!!!");
-  sites = (sites === null || sites === undefined) ? {} : sites;
-  if (debug > 0) console.log(`saveOptions: hint= ${hint}, sites= ${JSON.stringify(sites)}`);
-  const storedHintValues = sites[hint];
-  if (debug > 0) console.log(`storedHintValues= ${JSON.stringify(storedHintValues)}`);
-  let replacedOrCreated;
-  if (storedHintValues === undefined) {
-    sites[hint] = diff;
-    replacedOrCreated = 'created';
-  } else {
-    sites[hint] = objDiff({...storedHintValues, ...currentOpts}, storedOpts);
-    replacedOrCreated = 'replaced';
-  }
-  if (debug > 0) console.log(msg);
-  if (debug > 0) console.log(`before : objDiff: storedOpts= ${JSON.stringify(storedOpts)}`);
-  if (debug > 0) console.log(`before : objDiff: sites= ${JSON.stringify(sites)}`);
-  Object.keys(sites).forEach( (key) => {sites[key] = objDiff(sites[key], storedOpts)});
-  if (debug > 0) console.log(`before cleanUp: sites= ${JSON.stringify(sites)}`);
-  sites = cleanUp(sites);
-  if (debug > 0) console.log(`after cleanUp: typeof(sites)= ${typeof(sites)}, sites= `, sites);
-  if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
-  if (sites !== null) {
-    if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
-    storageSet({key: "sites", value: sites});
-    msg = `Hint-specific settings ${replacedOrCreated}:\n`;
-    msg = `${msg}\nHint= ${hint}\n`;
-    // msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
-    // msg = `${msg}\nNew settings= ${JSON.stringify(sites[hint])}`;
-    const hs = sites[hint];
-    msg = `${msg}\nSecret= ${hs.salt}`;
-    msg = `${msg}\nSpecial Character= ${hs.pepper}`;
-    msg = `${msg}\nLength= ${hs.length}`;
-    alert(msg);
-  } else {
-    delete localStorage.sites;
-    alert(`All hint-specific settings removed!`);
-  }
-}
+});
+//
+
+// document.getElementById("save").addEventListener("click", saveOptions);
+
+// function saveOptions(args) {
+//   args = {debug: -1, ...args};
+//   const debug = args.debug;
+//   let currentOpts, hint, msg;
+//   // if (debug < 0) {
+//     currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+//   // } else {
+//     // currentOpts = args.options;
+//   // }
+//   // if (debug < 0) {
+//     hint = el.hint.value;
+//   // } else {
+//   //   hint = args.hint;
+//   // }
+//   const storedOpts = storageGet({key: "options"});
+//   const diff = objDiff(currentOpts, storedOpts);
+//   if (hint === '' && Object.keys(diff).length === 0) {
+//     msg = `NOTE: stored settings are the same! Nothing changed.`
+//     alert(msg);
+//     console.log(`saveOptions: ${msg}`);
+//     return;
+//   }
+//   // alert(`storeOptions: el.hint.value= ${el.hint.value}`);
+//   if (hint === '' && Object.keys(diff).length !== 0) {
+//     storageSet({key: "options", value: currentOpts});
+//     // msg = `NOTE: new generic settings saved: ${JSON.stringify(currentOpts)}`;
+//     msg = `New generic settings saved:\n`;
+//     msg = `${msg}\nSecret= ${currentOpts.salt}`;
+//     msg = `${msg}\nSpecial Character= ${currentOpts.pepper}`;
+//     msg = `${msg}\nLength= ${currentOpts.length}`;
+//     alert(msg);
+//     console.log(msg)
+//     return;
+//   }
+//   // hint !== ''
+//   let sites = storageGet({key: "sites"});// decrypt: true is the default!
+//   if (sites === undefined) alert("ERROR: sites undefined in saveOptions!!!");
+//   sites = (sites === null || sites === undefined) ? {} : sites;
+//   if (debug > 0) console.log(`saveOptions: hint= ${hint}, sites= ${JSON.stringify(sites)}`);
+//   const storedHintValues = sites[hint];
+//   if (debug > 0) console.log(`storedHintValues= ${JSON.stringify(storedHintValues)}`);
+//   let replacedOrCreated;
+//   if (storedHintValues === undefined) {
+//     sites[hint] = diff;
+//     replacedOrCreated = 'created';
+//   } else {
+//     sites[hint] = objDiff({...storedHintValues, ...currentOpts}, storedOpts);
+//     replacedOrCreated = 'replaced';
+//   }
+//   if (debug > 0) console.log(msg);
+//   if (debug > 0) console.log(`before : objDiff: storedOpts= ${JSON.stringify(storedOpts)}`);
+//   if (debug > 0) console.log(`before : objDiff: sites= ${JSON.stringify(sites)}`);
+//   Object.keys(sites).forEach( (key) => {sites[key] = objDiff(sites[key], storedOpts)});
+//   if (debug > 0) console.log(`before cleanUp: sites= ${JSON.stringify(sites)}`);
+//   sites = cleanUp(sites);
+//   if (debug > 0) console.log(`after cleanUp: typeof(sites)= ${typeof(sites)}, sites= `, sites);
+//   if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
+//   if (sites !== null) {
+//     if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
+//     storageSet({key: "sites", value: sites});
+//     msg = `Hint-specific settings ${replacedOrCreated}:\n`;
+//     msg = `${msg}\nHint= ${hint}\n`;
+//     // msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
+//     // msg = `${msg}\nNew settings= ${JSON.stringify(sites[hint])}`;
+//     const hs = sites[hint];
+//     msg = `${msg}\nSecret= ${hs.salt}`;
+//     msg = `${msg}\nSpecial Character= ${hs.pepper}`;
+//     msg = `${msg}\nLength= ${hs.length}`;
+//     alert(msg);
+//   } else {
+//     delete localStorage.sites;
+//     alert(`All hint-specific settings removed!`);
+//   }
+// } 
 // STORAGE= {"options":{"salt":"0","pepper":"?","length":"15"}};
 // storeOptions({hint: '', options: {"salt":"0","pepper":"?","length":"15"}, debug: 9})
 
@@ -923,53 +949,53 @@ function handleLinkClick(event) {
 // ChatGPT...
 
 // Function to export localStorage as a JSON file
-function handleExport(args = {}) {
-  args = {fileName: "hpass-settings.json", decrypted: false, ...args};
-  const toExport = {}; // prepare localStorage copy for export
-  Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
-  toExport.encrypted = !args.decrypted;
+// function handleExport(args = {}) {
+//   args = {fileName: "hpass-settings.json", decrypted: false, ...args};
+//   const toExport = {}; // prepare localStorage copy for export
+//   Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
+//   toExport.encrypted = !args.decrypted;
 
-  console.log(`DEBUG: handleExport: toExport= ${JSON.stringify(toExport)}`);
+//   console.log(`DEBUG: handleExport: toExport= ${JSON.stringify(toExport)}`);
 
-  function finish() {
-    const x = JSON.stringify(toExport, null, 2);
-    const blob = new Blob([x], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.download = args.fileName;
-    link.href = window.URL.createObjectURL(blob);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
+//   function finish() {
+//     const x = JSON.stringify(toExport, null, 2);
+//     const blob = new Blob([x], { type: 'application/json' });
+//     const link = document.createElement('a');
+//     link.download = args.fileName;
+//     link.href = window.URL.createObjectURL(blob);
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+//   }
   
-  if (args.decrypted) {
-    if (!confirm("Plain text export!")) return;
-    const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
-      if (toExport[key] === undefined) return;
-      // console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
-      toExport[key] = await decryptText(CRYPTO.passwd, toExport[key]);
-    });
-    Promise.all(decryptionPromises).then(() => {
-      finish();
-    });
-  } else {
-    if (!confirm("Encrypted export\nDouble Click for decrypted (plain text) export!")) return;
-    finish();
-  }
-}
+//   if (args.decrypted) {
+//     if (!confirm("Plain text export!")) return;
+//     const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
+//       if (toExport[key] === undefined) return;
+//       // console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
+//       toExport[key] = await decryptText(CRYPTO.passwd, toExport[key]);
+//     });
+//     Promise.all(decryptionPromises).then(() => {
+//       finish();
+//     });
+//   } else {
+//     if (!confirm("Encrypted export\nDouble Click for decrypted (plain text) export!")) return;
+//     finish();
+//   }
+// }
 
 const span = document.getElementsByClassName("close")[0];
 
 // When the user clicks the button, open the modal
-document.body.querySelectorAll(".import").forEach(function(element) {
-  const debug = false;
-  if (debug) console.log(".import: selected");
-  element.addEventListener("click", function() {
-    if (debug) console.log(".import: clicked");
-    el.fileInputModal.style.display = "block";
-    el.fileInputModal.style.zIndex = "99";
-  });
-});
+// document.body.querySelectorAll(".import").forEach(function(element) {
+//   const debug = false;
+//   if (debug) console.log(".import: selected");
+//   element.addEventListener("click", function() {
+//     if (debug) console.log(".import: clicked");
+//     el.fileInputModal.style.display = "block";
+//     el.fileInputModal.style.zIndex = "99";
+//   });
+// });
 
 document.body.querySelectorAll(".close").forEach(function(element) {
   const debug = false;
@@ -1005,88 +1031,88 @@ window.addEventListener("click", function(event) {
 
 
 // Function to import localStorage from a JSON file
-function handleImport(event) {
-  const debug = false;
-  const file = el.importFileInput.files[0];
-  const fileName = el.importFileInput.value;
-  if (debug) console.log("handleImport: file=", file);
-  if (file) {
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-          try {
-              // Parse the JSON string from the file
-              if (debug) console.log("handleImport: e.target.result=", e.target.result);
-              const importedLocalStorage = JSON.parse(e.target.result);
-              console.log("handleImport: importedLocalStorage= ", importedLocalStorage);
-              if (debug) alert(`INFO: handleImport: e.target.result= ${e.target.result})}`)
-              if (debug) alert(`INFO: handleImport: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
-              const backUp = JSON.stringify(localStorage);
-              const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
-              let opts;
-              for (const key in importedLocalStorage) {
-                const txt = importedLocalStorage[key]; // imported text
-                if (!CRYPTO.encryptedItems.includes(key)) { // for pwdHash and encrypted keys
-                  localStorage.setItem(key, txt);
-                  continue;
-                } // for "options" || "sites"
-                if (isEncrypted) {
-                  localStorage.setItem(key, txt);
-                  if (CRYPTO.encryptedItems.includes(key)) {
-                      try {
-                        const decrypted = await decryptText(CRYPTO.passwd, txt);
-                        if (decrypted === null) { // Decryption failed
-                          const parsed = JSON.parse(backUp);
-                          Object.keys(parsed).forEach((key) => localStorage.setItem(key, parsed[key]));
-                          alert(`ERROR: wrong Master Password`);
-                          return; // Exit the function
-                        } else {
-                          // opts = JSON.parse(decrypted);
-                          setDisplayedOptions(decrypted);
-                        }
-                      } catch (error) {
-                        console.error('Error parsing JSON file:', error);
-                        alert('Failed to import settings. Please ensure the file is a valid JSON.');
-                      }
-                  }
-                } else {
-                  encryptText(CRYPTO.passwd, txt).then( encrypted => {
-                    localStorage.setItem(key, encrypted);
-                  });
-                  // opts = JSON.parse(txt);
-                  setDisplayedOptions(txt);
-                }
-              }
-              localStorage.setItem("encrypted", true);
-              if (debug) alert(`INFO: handleImport: localStorage= ${JSON.stringify(localStorage)}`);
-              // const modal = document.getElementById("fileInputModal");
-              // el.fileInputModal.style.display = "none"; // TODO: modal is not defined
-              alert(`Settings imported from: ${fileName}`);
-          } catch (error) {
-              console.error('Error parsing JSON file:', error);
-              alert('Failed to import settings. Please ensure the file is a valid JSON.');
-          }
-      };
-      reader.readAsText(file);
-      el.fileInputModal.style.display = "none";
-      el.importFileInput.value = "";
-  } else {
-      alert('No file selected.');
-  }
-}
+// function handleImport(event) {
+//   const debug = false;
+//   const file = el.importFileInput.files[0];
+//   const fileName = el.importFileInput.value;
+//   if (debug) console.log("handleImport: file=", file);
+//   if (file) {
+//       const reader = new FileReader();
+//       reader.onload = async function(e) {
+//           try {
+//               // Parse the JSON string from the file
+//               if (debug) console.log("handleImport: e.target.result=", e.target.result);
+//               const importedLocalStorage = JSON.parse(e.target.result);
+//               console.log("handleImport: importedLocalStorage= ", importedLocalStorage);
+//               if (debug) alert(`INFO: handleImport: e.target.result= ${e.target.result})}`)
+//               if (debug) alert(`INFO: handleImport: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
+//               const backUp = JSON.stringify(localStorage);
+//               const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
+//               let opts;
+//               for (const key in importedLocalStorage) {
+//                 const txt = importedLocalStorage[key]; // imported text
+//                 if (!CRYPTO.encryptedItems.includes(key)) { // for pwdHash and encrypted keys
+//                   localStorage.setItem(key, txt);
+//                   continue;
+//                 } // for "options" || "sites"
+//                 if (isEncrypted) {
+//                   localStorage.setItem(key, txt);
+//                   if (CRYPTO.encryptedItems.includes(key)) {
+//                       try {
+//                         const decrypted = await decryptText(CRYPTO.passwd, txt);
+//                         if (decrypted === null) { // Decryption failed
+//                           const parsed = JSON.parse(backUp);
+//                           Object.keys(parsed).forEach((key) => localStorage.setItem(key, parsed[key]));
+//                           alert(`ERROR: wrong Master Password`);
+//                           return; // Exit the function
+//                         } else {
+//                           // opts = JSON.parse(decrypted);
+//                           setDisplayedOptions(decrypted);
+//                         }
+//                       } catch (error) {
+//                         console.error('Error parsing JSON file:', error);
+//                         alert('Failed to import settings. Please ensure the file is a valid JSON.');
+//                       }
+//                   }
+//                 } else {
+//                   encryptText(CRYPTO.passwd, txt).then( encrypted => {
+//                     localStorage.setItem(key, encrypted);
+//                   });
+//                   // opts = JSON.parse(txt);
+//                   setDisplayedOptions(txt);
+//                 }
+//               }
+//               localStorage.setItem("encrypted", true);
+//               if (debug) alert(`INFO: handleImport: localStorage= ${JSON.stringify(localStorage)}`);
+//               // const modal = document.getElementById("fileInputModal");
+//               // el.fileInputModal.style.display = "none"; // TODO: modal is not defined
+//               alert(`Settings imported from: ${fileName}`);
+//           } catch (error) {
+//               console.error('Error parsing JSON file:', error);
+//               alert('Failed to import settings. Please ensure the file is a valid JSON.');
+//           }
+//       };
+//       reader.readAsText(file);
+//       el.fileInputModal.style.display = "none";
+//       el.importFileInput.value = "";
+//   } else {
+//       alert('No file selected.');
+//   }
+// }
 
-function setDisplayedOptions(decrypted) {
-  const debug = false;
-  const opts = JSON.parse(decrypted);
-  const beforeValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
-  el.salt.value = opts.salt;
-  el.pepper.value = opts.pepper;
-  el.length.value = opts.length;
-  const afterValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
-  let msg = `INFO: setDisplayedOptions:`
-  msg = `${msg}\nbeforeValues= ${JSON.stringify(beforeValues)}`
-  msg = `${msg}\nnew opts= ${JSON.stringify(opts)}`;
-  msg = `${msg}\nafterValues= ${JSON.stringify(afterValues)}`;
-  if (debug) alert(msg);
-}
+// function setDisplayedOptions(decrypted) {
+//   const debug = false;
+//   const opts = JSON.parse(decrypted);
+//   const beforeValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+//   el.salt.value = opts.salt;
+//   el.pepper.value = opts.pepper;
+//   el.length.value = opts.length;
+//   const afterValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+//   let msg = `INFO: setDisplayedOptions:`
+//   msg = `${msg}\nbeforeValues= ${JSON.stringify(beforeValues)}`
+//   msg = `${msg}\nnew opts= ${JSON.stringify(opts)}`;
+//   msg = `${msg}\nafterValues= ${JSON.stringify(afterValues)}`;
+//   if (debug) alert(msg);
+// }
 
-el.importFileInput.addEventListener('change', handleImport);
+// el.importFileInput.addEventListener('change', handleImport);
