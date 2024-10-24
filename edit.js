@@ -1,7 +1,10 @@
 "use strict";
 
-import { storageGet, storageSet, CRYPTO, objDiff, cleanUp } from "./core/lib.js";
+import { CHARS, get_random_string, storageGet, storageSet, CRYPTO, objDiff,
+         cleanUp } from "./core/lib.js";
 import { decryptText } from "./core/crypto.js"
+
+const globalDefaults = {salt: "Replace Me!", pepper: "_", length: 15};
 
 const el = {};
 el.hint = document.getElementById('editHint');
@@ -11,7 +14,38 @@ el.length = document.getElementById('editLength');
 el.save = document.getElementById('save');
 el.fileInputModal = document.getElementById("fileInputModal");
 el.importFileInput = document.getElementById('importFileInput');
+
+function setGenericOptions() {
+  const debug = false;
+  if (debug) console.log("setGenericOptions: null options in localStorage!");
+  let opts = {...globalDefaults};
+  const charset = CHARS.digits + CHARS.lower + CHARS.upper;
+  opts.salt = get_random_string(16, charset); //TODO: 
+  // opts.salt = "DEBUG!!!"
+  if (debug) console.log("setGenericOptions: opts= ", opts);
+  if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
+  if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
+  storageSet({key: "options", value: opts, debug: true}).then( () => {
+    sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
+  });
+  localStorage.setItem("encrypted", true);
+  let msg = `<br>Randomly generated secret is
+      <br><br><strong>${opts.salt}</strong><br><br>
+      You can use it as is or you can to change it
+      to some personalized value easy for you to remember.
+      <br><br>NOTE: to generate the same passwords on multiple
+      devices this secret and other options must be the same
+      on all devices.`;
+  if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
+  createSplashScreen(opts);
+  if (debug) console.log("setGenericOptions: returning opts= ", opts);
+  return opts;
+}
+
+//*** executable code ***/
+
 const opts = await storageGet({key: "options"});
+if (opts === null) setGenericOptions();
 console.log("edit:0: opts=", opts);
 
 // ( async () => {
@@ -48,20 +82,20 @@ document.querySelectorAll(".reset").forEach(function(element) {
 
 document.querySelector(".btn.edit").addEventListener("click", async function () {
   const opts = await storageGet({key: "options"});
-  el.salt.value = opts.salt;
-  el.pepper.value = opts.pepper;
-  el.length.value = opts.length;
+  let hopt = {};
   if (el.hint.value !== '') {
     const storedSites = await storageGet({key: "sites"});
-    if (storedSites === "undefined") return;
-    const hopt = storedSites[el.hint.value];
-    if (hopt === "undefined") return;
-    const diff = objDiff(hopt, opts);
-    Object.keys(diff).forEach( (key) => opts[key] = diff[key])
-    el.salt.value = opts.salt;
-    el.pepper.value = opts.pepper;
-    el.length.value = opts.length;
+    if (storedSites !== "undefined") {
+      const h = storedSites[el.hint.value];
+      if (h !== "undefined") {
+         hopt = h;
+      }
+    }
   }
+  const x = {...opts, ...hopt};
+  el.salt.value = x.salt;
+  el.pepper.value = x.pepper;
+  el.length.value = x.length;
 });
 
 el.save.addEventListener("click", saveOptions);
@@ -121,7 +155,7 @@ async function saveOptions(args) {
     msg = `${msg}\nHint= ${hint}`;
     // msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
     // msg = `${msg}\nNew settings= ${JSON.stringify(sites[hint])}`;
-    const hs = sites[hint];
+    const hs = {...currentOpts, ...sites[hint]};
     msg = `${msg}\nSecret= ${hs.salt}`;
     msg = `${msg}\nSpecial Character= ${hs.pepper}`;
     msg = `${msg}\nLength= ${hs.length}`;

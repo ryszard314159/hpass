@@ -19,9 +19,8 @@
       <img class="btn export" src="icons/export.svg" title="Export">
       <img class="btn edit" src="icons/edit.svg" title="Edit">
       <img class="btn reset" src="icons/reset.svg" title="Reset">
-      <!-- <img id="" class="btn share" src="icons/share.svg" title="Share"/> -->
       <a href="index.html"> 
-      <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
+        <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
       </a>
       <img id="save" class="btn save" src="icons/save.svg" title="Save"/>
     </header>
@@ -32,7 +31,7 @@
     <hr style="height: 4px; background-color: gray;">
     <br>
 
-    <form style="text-align: center">
+    <form style="text-align: center; position: relative;">
       <input id="editHint" class="" placeholder="Hint">
       <fieldset>
           <legend>Settings</legend>
@@ -51,27 +50,34 @@
       </fieldset>
     </form>
 
+    <div style="position: relative; width: 100%; height: 5%; background-color: lightgrey;
+     left: 0; right:0; margin: 0 0 0 0; vertical-align: center;
+     align-items: center; display: inline-flex">
     <a href="index.html"> <img class="btn" src="icons/back.svg"/>Back</a>
+    </div>
 
-    <p>
-      <h3>Edit Settings</h3>
-      <ul>
-        <li><strong>Hint</strong>: leave it empty to change <em>generic settings</em>;
-             Sometimes you may need to create hint/site specific settings, for example,
-             if some site does not allow for special character in your
-             <em>generic settings</em>, or demands longer/shorter password etc.
-             In such a case, enter a hint, modify special character and/or length field
+    <div style="width: 90%; justify-content: center; text-align: center;
+                margin: 1rem 1rem 0 1rem;">
+      <p style="justify-content: center; text-align: left;">
+        <ul>
+          <li><strong>Hint</strong>: leave it empty to change <em>generic settings</em>.
+              You may need to create hint/site <em>specific settings</em>
+              if a site does not allow <strong>Special Character</strong> in your
+              <em>generic settings</em>, or demands longer/shorter password etc.
+              In such a case, enter a <strong>Hint</strong>,
+              modify <strong>Special Character</strong> and/or <strong>Length</strong>.
 
-        </li>
-        <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique</li>
-        <li><strong>Special Character
-             (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
-             one or more _.-!@$?% etc.</li>
-        <li><strong>Length (📏):</strong> longer is better,
-                    note however that a lot of sites have unreasonably short upper limit
-                    - 15 seems to be a reasonable balance.</li>
-      </ul>
-    </p>
+          </li>
+          <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique</li>
+          <li><strong>Special Character
+              (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
+              one or more _.-!@$?% etc.</li>
+          <li><strong>Length (📏):</strong> longer is better,
+                      note however that a lot of sites have unreasonably short upper limit
+                      - 15 seems to be a reasonable balance.</li>
+        </ul>
+      </p>
+    </div>
 
     <div id="fileInputModal" class="modal">
       <div class="modal-content">
@@ -83,7 +89,7 @@
 <footer>
   <!-- <hr> -->
   <!-- <p>go back</p> -->
-  <hr>
+  <br><hr>
 </footer>
   </body>
 </html>

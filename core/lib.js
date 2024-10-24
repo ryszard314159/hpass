@@ -84,6 +84,33 @@ function objDiff(x, y) {
   return diff;
 }
 
+function setGenericOptions() {
+  const debug = false;
+  if (debug) console.log("setGenericOptions: null options in localStorage!");
+  let opts = {...globalDefaults};
+  const charset = CHARS.digits + CHARS.lower + CHARS.upper;
+  opts.salt = get_random_string(16, charset); //TODO: 
+  // opts.salt = "DEBUG!!!"
+  if (debug) console.log("setGenericOptions: opts= ", opts);
+  if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
+  if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
+  storageSet({key: "options", value: opts, debug: true}).then( () => {
+    sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
+  });
+  localStorage.setItem("encrypted", true);
+  let msg = `<br>Randomly generated secret is
+      <br><br><strong>${opts.salt}</strong><br><br>
+      You can use it as is or you can to change it
+      to some personalized value easy for you to remember.
+      <br><br>NOTE: to generate the same passwords on multiple
+      devices this secret and other options must be the same
+      on all devices.`;
+  if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
+  createSplashScreen(opts);
+  if (debug) console.log("setGenericOptions: returning opts= ", opts);
+  return opts;
+}
+
 // const obj = { a: 1, b: 2, x: {}, y: null, z: undefined };
 // console.log(cleanUp(obj)); // { a: 1, b: 2 }
 function cleanUp(obj) {
@@ -434,3 +461,4 @@ export {
   CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
 };
 export { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck };
+export { setGenericOptions }

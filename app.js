@@ -16,7 +16,8 @@ TODO:
 import {
   CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
 } from "./core/lib.js";
-import { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck } from "./core/lib.js";
+import { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck,
+         setGenericOptions } from "./core/lib.js";
 import { decryptText, encryptText, createHash, verifyPassword} from "./core/crypto.js"
 const debug = 0;
 
@@ -47,18 +48,18 @@ localStorage.clear = function() {
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
 
-const globalDefaults = {};
-globalDefaults.salt = "Replace Me!";
-globalDefaults.pepper = "_";
-globalDefaults.length = "15";
+// const globalDefaults = {};
+// globalDefaults.salt = "Replace Me!";
+// globalDefaults.pepper = "_";
+// globalDefaults.length = "15";
 const URL = "https://hpass.app";
 
 // Selecting elements
 const el = {};
 el.hint = document.getElementById("hint");
-el.salt = document.getElementById("salt");
-el.pepper = document.getElementById("pepper");
-el.length = document.getElementById("length");
+// el.salt = document.getElementById("salt");
+// el.pepper = document.getElementById("pepper");
+// el.length = document.getElementById("length");
 el.burn = document.getElementById("burn");
 el.peak = document.getElementById("peak"); // instead of top
 el.range = document.getElementById("range");
@@ -156,18 +157,19 @@ function clearInputCache(inputId) {
   inputElement.dispatchEvent(new Event('change'));
 }
 
-el.hamburger.addEventListener("click", function() {
-  setTimeout(function() {
-    el.navMenu.classList.toggle("show");
-  }, 1);
-  el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
-  // el.newPassword.style.display = "none";
-  el.newPassword.classList.toggle("show");
-});
+// el.hamburger.addEventListener("click", function() {
+//   setTimeout(function() {
+//     el.navMenu.classList.toggle("show");
+//   }, 1);
+//   el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
+//   // el.newPassword.style.display = "none";
+//   el.newPassword.classList.toggle("show");
+// });
 
-el.changePassword.addEventListener("click", function() {
+document.querySelector(".btn.change").addEventListener("click", function() {
+// el.changePassword.addEventListener("click", function() {
   el.navMenu.classList.toggle("show");
-  el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
+  // el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
   el.newPassword.classList.toggle("show");
 });
 
@@ -177,7 +179,6 @@ document.querySelectorAll(".change").forEach(function(element) {
     // el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
     // el.newPassword.style.display = "block";
     el.newPassword.classList.toggle("show");
-    // el.masterPassword.value = "";
   }
 )});
 
@@ -186,10 +187,10 @@ document.querySelectorAll(".change").forEach(function(element) {
 //   el.newPassword.classList.toggle("show");
 // })
 
-el.navMenu.classList.remove("show");
+// el.navMenu.classList.remove("show");
 
 el.masterPassword.addEventListener("keydown", (event) => {
-  const debug = false;
+  const debug = true;
   if (debug) console.log(`el.masterPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key === 'Enter') {
     if (debug) console.log('masterPassword: Enter key pressed!');
@@ -399,32 +400,32 @@ function createSplashScreen(opts) {
   if (debug) console.log("createSplashScreen: at the end");
 }
 
-function setGenericOptions() {
-  const debug = false;
-  if (debug) console.log("setGenericOptions: null options in localStorage!");
-  let opts = {...globalDefaults};
-  const charset = CHARS.digits + CHARS.lower + CHARS.upper;
-  opts.salt = get_random_string(16, charset); //TODO: 
-  // opts.salt = "DEBUG!!!"
-  if (debug) console.log("setGenericOptions: opts= ", opts);
-  if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
-  if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
-  storageSet({key: "options", value: opts, debug: true}).then( () => {
-    sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
-  });
-  localStorage.setItem("encrypted", true);
-  let msg = `<br>Randomly generated secret is
-      <br><br><strong>${opts.salt}</strong><br><br>
-      You can use it as is or you can to change it
-      to some personalized value easy for you to remember.
-      <br><br>NOTE: to generate the same passwords on multiple
-      devices this secret and other options must be the same
-      on all devices.`;
-  if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
-  createSplashScreen(opts);
-  if (debug) console.log("setGenericOptions: returning opts= ", opts);
-  return opts;
-}
+// function setGenericOptions() {
+//   const debug = false;
+//   if (debug) console.log("setGenericOptions: null options in localStorage!");
+//   let opts = {...globalDefaults};
+//   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
+//   opts.salt = get_random_string(16, charset); //TODO: 
+//   // opts.salt = "DEBUG!!!"
+//   if (debug) console.log("setGenericOptions: opts= ", opts);
+//   if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
+//   if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
+//   storageSet({key: "options", value: opts, debug: true}).then( () => {
+//     sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
+//   });
+//   localStorage.setItem("encrypted", true);
+//   let msg = `<br>Randomly generated secret is
+//       <br><br><strong>${opts.salt}</strong><br><br>
+//       You can use it as is or you can to change it
+//       to some personalized value easy for you to remember.
+//       <br><br>NOTE: to generate the same passwords on multiple
+//       devices this secret and other options must be the same
+//       on all devices.`;
+//   if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
+//   createSplashScreen(opts);
+//   if (debug) console.log("setGenericOptions: returning opts= ", opts);
+//   return opts;
+// }
 
 //
 // NOTE: if you are working with DevTools
@@ -442,28 +443,42 @@ if ("serviceWorker" in navigator) {
   if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
     .register(swPath)
-    .then((reg) => {
+    .then( async (reg) => {
       createHash(CRYPTO.passwd).then(h => {
         // console.log(`DEBUG: navigator.serviceWorker: CRYPTO.passwd= ${CRYPTO.passwd}`);
         // console.log(`DEBUG: navigator.serviceWorker: h= ${h}`)
         localStorage.setItem("pwdHash", h)
       });
 
-      storageGet({key: "options"}).then( opts => {
-        if (opts === null) {
-          if (debug) console.log("app: register: null options in localStorage!");
-          opts = setGenericOptions();
-          if (debug) console.log("app: register: set to generic: opts= ", opts);
-        } else {
-          if (debug) console.log("app: register: exist already: opts= ", opts);
-        }
-        if (debug) console.log("app: register: globalDefaults= ", globalDefaults);
-        el.pepper.value = opts.pepper;
-        el.salt.value = opts.salt;
-        el.length.value = opts.length;
-        el.length.min = MINLENGTH;
-        el.length.max = MAXLENGTH;
-      });
+      // storageGet({key: "options"}).then( opts => {
+      //   if (opts === null) {
+      //     if (debug) console.log("app: register: null options in localStorage!");
+      //     opts = setGenericOptions();
+      //     if (debug) console.log("app: register: set to generic: opts= ", opts);
+      //   } else {
+      //     if (debug) console.log("app: register: exist already: opts= ", opts);
+      //   }
+      //   if (debug) console.log("app: register: globalDefaults= ", globalDefaults);
+      //   el.pepper.value = opts.pepper;
+      //   el.salt.value = opts.salt;
+      //   el.length.value = opts.length;
+      //   el.length.min = MINLENGTH;
+      //   el.length.max = MAXLENGTH;
+      // });
+      let opts = await storageGet({key: "options"});
+      if (opts === null) {
+        if (debug) console.log("app: register: null options in localStorage!");
+        opts = setGenericOptions();
+        if (debug) console.log("app: register: set to generic: opts= ", opts);
+      } else {
+        if (debug) console.log("app: register: exist already: opts= ", opts);
+      }
+      if (debug) console.log("app: register: globalDefaults= ", globalDefaults);
+      // el.pepper.value = opts.pepper;
+      // el.salt.value = opts.salt;
+      // el.length.value = opts.length;
+      // el.length.min = MINLENGTH;
+      // el.length.max = MAXLENGTH;
 
       if (debug) console.log("app: register: els set to opts= ", opts);
       if (navigator.serviceWorker.controller) {
@@ -564,7 +579,7 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   p.style.backgroundColor = bkg;
   p.style.border = "0.1px solid black";
   p.style.zIndex = 9;
-  p.style.top = "50%";
+  p.style.top = "20%";
   p.style.left = "50%";
   p.style.transform = "translate(-50%, -100%)"
   p.style.width = "80%";
@@ -622,16 +637,16 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
 //   }
 // });
 
-const ops = ["pepper", "salt", "length", "burn", "peak"];
-ops.forEach((x) => {
-  const debug = false;
-  let cross = `${x}Cross`;
-  if (debug) console.log("app:0: ops.forEach: x= ", x, " cross= ", cross);
-  el[cross].addEventListener("click", () => {
-    if (debug) console.log("app:1: ops.forEach: x= ", x, " cross= ", cross);
-    el[x].value = null;
-  });
-});
+// const ops = ["pepper", "salt", "length", "burn", "peak"];
+// ops.forEach((x) => {
+//   const debug = false;
+//   let cross = `${x}Cross`;
+//   if (debug) console.log("app:0: ops.forEach: x= ", x, " cross= ", cross);
+//   el[cross].addEventListener("click", () => {
+//     if (debug) console.log("app:1: ops.forEach: x= ", x, " cross= ", cross);
+//     el[x].value = null;
+//   });
+// });
 
 function cleanClean(v) {
   const valid = new Set(["true", "false", true, false, 0, 1, "0", "1"]);
@@ -657,7 +672,12 @@ function cleanClean(v) {
 //   });
 // });
 
-el.share.addEventListener("click", function () {
+// el.share.addEventListener("click", function () {
+//   copyToClipboard(URL);
+//   showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
+// });
+
+document.getElementById("logop").addEventListener("click", function () {
   copyToClipboard(URL);
   showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
 });
@@ -707,31 +727,31 @@ document.querySelectorAll(".lock").forEach(function(element) {
 //   lock.play();
 // });
 
-el.hint.addEventListener("mouseout", () => {
-  const debug = false;
-  if (debug) console.log("app:0: museout:: el.hint.value= ", el.hint.value);
-  el.hint.value = cleanHint(el.hint.value); // cleaned);
-  if (debug) console.log("app:2: mouseout: el.hint.value= ", el.hint.value);
-});
+// el.hint.addEventListener("mouseout", () => {
+//   const debug = false;
+//   if (debug) console.log("app:0: museout:: el.hint.value= ", el.hint.value);
+//   el.hint.value = cleanHint(el.hint.value); // cleaned);
+//   if (debug) console.log("app:2: mouseout: el.hint.value= ", el.hint.value);
+// });
 
-el.hint.addEventListener("keydown", (event) => {
-  const debug = false;
-  const msg = `el.hint.addEventListener: event key: ${event.key}, code: ${event.code}`;
-  if (debug) alert(msg);
-  if (debug) console.log(msg);
-  setTimeout(() => {
-    el.hint.value = el.hint.value.toLowerCase().trim();
-    getHintOpts(el.hint.value).then( opts => {
-      if (opts !== undefined) {
-        el.salt.value = opts.salt;
-        el.pepper.value = opts.pepper;
-        el.length.value = opts.length;
-      } else {
-        alert('hint: opts undefined?!')
-      }
-    })
-  }, 0);
-});
+// el.hint.addEventListener("keydown", (event) => {
+//   const debug = false;
+//   const msg = `el.hint.addEventListener: event key: ${event.key}, code: ${event.code}`;
+//   if (debug) alert(msg);
+//   if (debug) console.log(msg);
+//   setTimeout(() => {
+//     el.hint.value = el.hint.value.toLowerCase().trim();
+//     getHintOpts(el.hint.value).then( opts => {
+//       if (opts !== undefined) {
+//         el.salt.value = opts.salt;
+//         el.pepper.value = opts.pepper;
+//         el.length.value = opts.length;
+//       } else {
+//         alert('hint: opts undefined?!')
+//       }
+//     })
+//   }, 0);
+// });
 
 // el.storeButton.addEventListener("click", function() {
 //   storeOptions();
@@ -853,20 +873,29 @@ async function getHintOpts(hint) {
   return opts;
 }
 
-function generateFun(event) {
+async function generateFun(event) {
   const debug = false;
   event.preventDefault();
   if (debug) console.log("generateFun: event.preventDefault() added");
-  const opts = {};
-  const salt = opts.salt = el.salt.value;
-  const pepper = opts.pepper = el.pepper.value;
-  let length = opts.length = el.length.value;
+  let opts = await storageGet({key: "options"});
+  const hint = el.hint.value;
+  if (hint !== "undefined") {
+    const sites = await storageGet({key: "sites"});
+    if (sites !== "undefined") {
+      if (sites[hint] !== "undefined") {
+        opts = {...opts, ...sites[hint]};
+      }
+    }
+  }
+  const salt = opts.salt // = el.salt.value;
+  const pepper = opts.pepper // = el.pepper.value;
+  let length = opts.length // = el.length.value;
   length = (length === "") ? globalDefaults.length : Math.max(Math.min(length, MAXLENGTH), MINLENGTH);
   if (debug) console.log("generateFun:0: opts= ", opts);
-  el.length.value = opts.length;
-  opts.salt = el.salt.value = (salt === "") ? globalDefaults.salt : salt;
-  opts.pepper = el.pepper.value = (pepper === "") ? globalDefaults.pepper : pepper;
-  opts.length = el.length.value = (length === "") ? globalDefaults.length : length;
+  // el.length.value = opts.length;
+  // opts.salt = el.salt.value = (salt === "") ? globalDefaults.salt : salt;
+  // opts.pepper = el.pepper.value = (pepper === "") ? globalDefaults.pepper : pepper;
+  // opts.length = el.length.value = (length === "") ? globalDefaults.length : length;
   if (debug) console.log("generateFun:1: opts= ", opts);
   // setHintOpts(el.hint.value, opts); -- NOTE: use storeOptions and save button instead!!!
   let args = { ...opts }; // deep copy
@@ -1017,17 +1046,17 @@ document.body.querySelectorAll(".close").forEach(function(element) {
 // })
 
 // When the user clicks anywhere outside of the modal, close it
-window.addEventListener("click", function(event) {
-  if (event.target == el.fileInputModal) {
-    el.fileInputModal.style.display = "none";
-  }
-  if (el.navMenu.classList.contains("show") && 
-      !el.navMenu.contains(event.target) && event.target != el.hamburger) {
-    el.navMenu.classList.remove("show");
-    el.hamburger.textContent = '☰';
-    el.newPassword.style.display = "none";
-  }
-});
+// window.addEventListener("click", function(event) {
+//   if (event.target == el.fileInputModal) {
+//     el.fileInputModal.style.display = "none";
+//   }
+//   if (el.navMenu.classList.contains("show") && 
+//       !el.navMenu.contains(event.target) && event.target != el.hamburger) {
+//     el.navMenu.classList.remove("show");
+//     el.hamburger.textContent = '☰';
+//     el.newPassword.style.display = "none";
+//   }
+// });
 
 
 // Function to import localStorage from a JSON file
