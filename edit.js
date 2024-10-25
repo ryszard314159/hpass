@@ -7,10 +7,10 @@ import { decryptText } from "./core/crypto.js"
 const globalDefaults = {salt: "Replace Me!", pepper: "_", length: 15};
 
 const el = {};
-el.hint = document.getElementById('editHint');
-el.salt = document.getElementById('editSalt');
-el.pepper = document.getElementById('editPepper');
-el.length = document.getElementById('editLength');
+el.hint = document.getElementById('hint');
+el.salt = document.getElementById('salt');
+el.pepper = document.getElementById('pepper');
+el.length = document.getElementById('length');
 el.save = document.getElementById('save');
 el.fileInputModal = document.getElementById("fileInputModal");
 el.importFileInput = document.getElementById('importFileInput');

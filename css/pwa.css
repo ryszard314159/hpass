@@ -31,6 +31,7 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
+  padding-top: 12%;
 }
 
 h2, h3 {
@@ -156,9 +157,12 @@ button {
   flex-grow: 1;
 }
 .btn {
+  object-fit: cover;
   height: 100%;
-  padding: 0.2rem;
-  margin: 0.5rem;
+  /* width: 100%; */
+  height: 100%;
+  padding: 0.3rem;
+  margin: 0rem;
   border-radius: 10%;
   vertical-align: middle;
 }
@@ -333,7 +337,7 @@ hr {
 #hintContainer {
   /* position: absolute; */
   /* top: 10%; */
-  z-index: 9;
+  /* z-index: 9; */
   margin-top: -1rem;
   width: 100%;
   background: rgba(255, 255, 255, 1);
@@ -343,7 +347,7 @@ hr {
   
 }
 
-#hintForm {
+#hintContainer {
   width: 90%;
   /* height: 100%; */
   border-radius: 1rem;
@@ -354,7 +358,7 @@ hr {
   margin: 0 0 0 0;
 }
 
-#hintForm img {
+#hintContainer img {
   flex-grow: 1;
   height: 100%;
   object-fit: contain;
@@ -370,22 +374,21 @@ background: transparent;
 */
 /* input { */
 #editHint, #editSalt, #editPepper, #editLength,
-#hint, #salt, #pepper, #length, #burnn, #peak {
-  /* position: absolute; */
+#hint, #salt, #pepper, #length {
   width: 100%;
   text-align: center;
   font-size: 1.5rem;
   border-radius: 1rem;
 }
 
-#burnAndPeak {
+.inputsContainer {
   display: grid;
   grid-template-columns: 1fr; /* or repeat(3, 1fr) for three equal columns */
   align-items: center;
   justify-items: center; /* instead of justify-content */
 }
 .container {
-  background-color: pink;
+  /* background-color: pink; */
   position: relative;
   width: 90%;
   height: 100%;
@@ -409,10 +412,11 @@ background: transparent;
 .input {
   font-size: 1.0rem;
   background-color: transparent;
-  border-width: 0;
+  border-width: 2px;
   text-align: center;
   height: 100%;
   width: 100%;
+  border-radius: 1rem;
 }
 
 /* .burn {
@@ -761,7 +765,7 @@ margin-top: 9rem;
 
 .modal {
   display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
+  position: fixed; 
   z-index: 9; /* Sit on top */
   left: 0;
   top: 0;
@@ -834,24 +838,25 @@ margin-top: 9rem;
 }
 
 .topIcons {
+  position: fixed;
   display: inline-flex;
   width: 100%;
   height: 6%;
   justify-content: space-around;
   background-color: lightgray;
-  position: relative;
   top: 0;
   left: 0;
 }
 
 .topIcons2 {
+  position: fixed;
   display: inline-flex;
   width: 100%;
-  height: 5%;
+  height: 6%;
   justify-content: space-around;
   background-color: lightgrey;
-  /* position: absolute; */
   top: 0;
+  bottom: 0rem;
   left: 0;
 }
 

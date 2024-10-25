@@ -65,7 +65,7 @@ el.peak = document.getElementById("peak"); // instead of top
 el.range = document.getElementById("range");
 el.gear = document.getElementById("gear");
 el.generate = document.getElementById("generate");
-el.hintForm = document.getElementById("hintForm");
+el.hintContainer = document.getElementById("hintContainer");
 el.passwordContainer = document.getElementById("passwordContainer");
 el.masterPassword = document.getElementById("masterPassword");
 el.newPassword = document.getElementById("newPassword");
@@ -707,7 +707,8 @@ document.querySelectorAll(".lock").forEach(function(element) {
     const lock = document.getElementById("lockSound");
     if (masterPassword && passwordContainer && lockSound) {
       el.masterPassword.value = "";
-      el.passwordContainer.style.display = "block";
+      // el.passwordContainer.style.display = "block";
+      el.passwordContainer.style.display = "none"; // TODO: change back to block
       lock.currentTime = 0; // Reset audio to start
       lock.volume = 0.1;
       lock.play();
@@ -918,7 +919,7 @@ async function generateFun(event) {
   showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
 }
 
-el.hintForm.addEventListener('submit', function (event) {
+el.hintContainer.addEventListener('submit', function (event) {
   event.preventDefault();
   // Add your form submission handling logic here
 });
