@@ -178,8 +178,7 @@ el.masterPassword.addEventListener("keydown", function(event) {
       if (storedHash === null) {
         alert("Password Hash was null,\noptions removed & Master Password set to empty string");
         localStorage.clear();
-        CRYPTO.passwd = '';
-        createHash('').then(hash => hpassStorage.setItem("pwdHash", hash, `el.masterPassword: CRYPTO.passwd = ''`));
+        createHash('').then(hash => hpassStorage.setItem("pwdHash", hash, `el.masterPassword: pwd=''`));
         return;
       }
       const pwd = el.masterPassword.value;
@@ -629,9 +628,9 @@ document.querySelectorAll(".reset").forEach(function(element) {
       // window.location.reload();
       const opts = setGenericOptions();
       // storageSet({key: "options"}, opts); // done in setGenericOptions
-      el.salt.value = opts.salt;
-      el.pepper.value = opts.pepper;
-      el.length.value = opts.length;
+      // el.salt.value = opts.salt;
+      // el.pepper.value = opts.pepper;
+      // el.length.value = opts.length;
     }
   });
 });

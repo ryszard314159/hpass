@@ -210,7 +210,7 @@ document.body.querySelectorAll(".import").forEach(function(element) {
 });
 
 function handleImport(event) {
-  const debug = true;
+  const debug = false;
   const file = el.importFileInput.files[0];
   const fileName = el.importFileInput.value;
   if (debug) console.log("handleImport: file=", file);
