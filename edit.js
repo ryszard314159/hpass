@@ -1,10 +1,9 @@
 "use strict";
 
 import { CHARS, get_random_string, storageGet, storageSet, CRYPTO, objDiff,
-         cleanUp } from "./core/lib.js";
-import { decryptText } from "./core/crypto.js"
-
-const globalDefaults = {salt: "Replace Me!", pepper: "_", length: 15};
+         cleanUp, sanityCheck } from "./core/lib.js";
+import { globalDefaults, hpassStorage } from "./core/lib.js";
+import { createHash, decryptText } from "./core/crypto.js"
 
 const el = {};
 el.hint = document.getElementById('hint');
@@ -15,73 +14,42 @@ el.save = document.getElementById('save');
 el.fileInputModal = document.getElementById("fileInputModal");
 el.importFileInput = document.getElementById('importFileInput');
 
-function setGenericOptions() {
-  const debug = false;
-  if (debug) console.log("setGenericOptions: null options in localStorage!");
-  let opts = {...globalDefaults};
-  const charset = CHARS.digits + CHARS.lower + CHARS.upper;
-  opts.salt = get_random_string(16, charset); //TODO: 
-  // opts.salt = "DEBUG!!!"
-  if (debug) console.log("setGenericOptions: opts= ", opts);
-  if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
-  if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
-  storageSet({key: "options", value: opts, debug: true}).then( () => {
-    sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
-  });
-  localStorage.setItem("encrypted", true);
-  let msg = `<br>Randomly generated secret is
-      <br><br><strong>${opts.salt}</strong><br><br>
-      You can use it as is or you can to change it
-      to some personalized value easy for you to remember.
-      <br><br>NOTE: to generate the same passwords on multiple
-      devices this secret and other options must be the same
-      on all devices.`;
-  if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
-  createSplashScreen(opts);
-  if (debug) console.log("setGenericOptions: returning opts= ", opts);
-  return opts;
-}
-
 //*** executable code ***/
 
-const opts = await storageGet({key: "options"});
-if (opts === null) setGenericOptions();
-console.log("edit:0: opts=", opts);
+window.onload = async function() {
+  let opts = await storageGet({key: "options"});
+  if (opts === null) {
+    console.log(`edit: onload: opts == null`);
+    console.log(`edit: localStorage.getItem("options")= ${localStorage.getItem("options")}`);
+    console.log(`edit: onload: CRYPTO.passwd= ${CRYPTO.passwd}`);
+    console.log(`edit: onload: sessionPassword= ${sessionStorage.getItem("password")}`);
+    opts = {};
+  }
+  el.salt.value = opts.salt;
+  el.pepper.value = opts.pepper;
+  el.length.value = opts.length;
+  window.scrollTo(0, 0);
+}
 
-// ( async () => {
 
-  Object.keys(opts).forEach ( function(k) {
-    el[k].addEventListener('click', function(event) {
-      opts[k] = el[k].value;
-      console.log("edit:1: opts=", opts);
-    });
-  });
 
-  // el.save.addEventListener('click', function() {
-  //   console.log("edit: save: hint=", el.hint.value)
-  //   opts.salt = el.salt.value;
-  //   opts.pepper = el.pepper.value;
-  //   opts.length = el.length.value;
-  //   storageSet({key: "options", value: opts});
-  //   console.log("edit: save: opts=", opts)
-  // });
+// document.querySelectorAll('.input').forEach(function(element) {
+//   const opts = await storageGet({key: "options"})
+//   element.addEventListener("click", function() {
 
-// }) ();
-
-document.querySelectorAll(".reset").forEach(function(element) {
-  element.addEventListener("click", function (event) {
-    const debug = false;
-    if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
-    if (confirm("Confirm reset: all existing settings will be removed!")) {
-      event.preventDefault();
-      localStorage.clear();
-      window.location.reload();
-    }
-  });
-});
+//   })
+// });
 
 document.querySelector(".btn.edit").addEventListener("click", async function () {
-  const opts = await storageGet({key: "options"});
+  let opts = localStorage.getItem("options");
+  if (opts === null) {
+    window.location.href = 'index.html';
+  }
+  opts = await storageGet({key: "options"});
+  if (opts === null) {
+    opts = setGenericOptions();
+    storageSet({key: "options"});
+  }
   let hopt = {};
   if (el.hint.value !== '') {
     const storedSites = await storageGet({key: "sites"});

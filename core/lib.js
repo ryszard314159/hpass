@@ -21,6 +21,7 @@
 // debugger;
 import { encryptText, decryptText } from "./crypto.js";
 
+const globalDefaults = {salt: "Replace Me!", pepper: "_", length: 15};
 const MINLENGTH = 4;
 const MAXLENGTH = 128;
 const MP31 = 2 ** 31 - 1; // Mersenne prime
@@ -57,6 +58,16 @@ CRYPTO.enableDecryptedIO = () => {
   }, CRYPTO.decryptedIOspan); // 60 seconds (1 minute)  
 }
 
+const hpassStorage = {};
+hpassStorage.setItem = function(key, value, tag='') {
+  if (key === "pwdHash") {
+    console.log(`hpassStorage: key=${key}, value= ${value}, tag= ${tag}`);
+    console.trace();
+  }
+  localStorage.setItem(key,value);
+  updateLocalStorage(key, value);
+};
+
 function matchingKeys(x, y) {
   const v = x.every(item => y.includes(item)) && y.every(item => x.includes(item));
   return v;
@@ -75,6 +86,7 @@ function EncryptedAllHandler(property, value) {
 // https://stackoverflow.com/questions/13335967/export-data-in-localstorage-for-later-re-import
 
 function objDiff(x, y) {
+  if (y === null) return x;
   const diff = {};
   for (let key in x) {
       if (x[key] !== y[key]) {
@@ -84,32 +96,7 @@ function objDiff(x, y) {
   return diff;
 }
 
-function setGenericOptions() {
-  const debug = false;
-  if (debug) console.log("setGenericOptions: null options in localStorage!");
-  let opts = {...globalDefaults};
-  const charset = CHARS.digits + CHARS.lower + CHARS.upper;
-  opts.salt = get_random_string(16, charset); //TODO: 
-  // opts.salt = "DEBUG!!!"
-  if (debug) console.log("setGenericOptions: opts= ", opts);
-  if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
-  if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
-  storageSet({key: "options", value: opts, debug: true}).then( () => {
-    sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
-  });
-  localStorage.setItem("encrypted", true);
-  let msg = `<br>Randomly generated secret is
-      <br><br><strong>${opts.salt}</strong><br><br>
-      You can use it as is or you can to change it
-      to some personalized value easy for you to remember.
-      <br><br>NOTE: to generate the same passwords on multiple
-      devices this secret and other options must be the same
-      on all devices.`;
-  if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
-  createSplashScreen(opts);
-  if (debug) console.log("setGenericOptions: returning opts= ", opts);
-  return opts;
-}
+
 
 // const obj = { a: 1, b: 2, x: {}, y: null, z: undefined };
 // console.log(cleanUp(obj)); // { a: 1, b: 2 }
@@ -404,6 +391,15 @@ async function storageSet(args) {
 
 async function storageGet(args) {
   args = {key: null, pwd: CRYPTO.passwd, decrypt: true, ...args};
+  let p = sessionStorage.getItem("password");
+  args.pwd = (p === null) ? '' : p
+  if (args.pwd === null || args.pwd === undefined) {
+    const msg = `ERROR: storageGet: args.pwd === null|undefined, args= ${JSON.stringify(args)}`;
+    console.error(msg);
+    console.trace();
+    alert(msg);
+    return null;
+  }
   const debug = false;
   if (!CRYPTO.encryptedItems.includes(args.key)) {
     throw new Error(`storageGet: invalid args.key= ${args.key}`);
@@ -411,13 +407,6 @@ async function storageGet(args) {
   let rawValue = localStorage.getItem(args.key);
   if (rawValue === null) return null;
   let decryptedValue, finalValue;
-  if (args.pwd === null || args.pwd === undefined) {
-    const msg = `ERROR: storageGet: args.pwd === null|undefined, args= ${JSON.stringify(args)}`;
-    console.error(msg);
-    console.trace();
-    alert(msg);
-    return;
-  }
   try {
     decryptedValue = await decryptText(args.pwd, rawValue);
   } catch (error) {
@@ -440,15 +429,20 @@ async function storageGet(args) {
     msg = `${msg}\nstorageGet: rawValue= ${rawValue}`;
     msg = `${msg}\nstorageGet: decryptedValue= ${decryptedValue}`;
     msg = `${msg}\nstorageGet: finalValue= ${finalValue}`;
+    // try:
+    // (async () => {v = await decryptText('', encrypted); console.log(v)})()
     console.error(msg);
     throw new Error(msg);
   }
-  if (typeof(finalValue) === "string") {
+  if (finalValue === null || typeof(finalValue) !== "object") {
     // let msg = `ERROR: storageGet: args.key= ${JSON.stringify(args)}, should not be string!!!}`;
-    let msg = `ERROR: storageGet: finalValue should not be a string for args.key= ${args.key}`;
+    let msg = `ERROR: storageGet: bad finalValue for args.key= ${args.key}`;
     msg = `${msg}\nrawValue= ${rawValue}`;
     msg = `${msg}\ndecryptedValue= ${decryptedValue}`;
     msg = `${msg}\nfinalValue= ${finalValue}`;
+    msg = `${msg}\nargs.pwd= ${args.pwd}`;
+    const sessionPassword = sessionStorage.getItem("password");
+    msg = `${msg}\nsessionPassword= ${sessionPassword}`;
     console.error(msg);
     console.trace()
     alert(msg);
@@ -461,4 +455,5 @@ export {
   CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
 };
 export { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck };
-export { setGenericOptions }
+export { globalDefaults, updateLocalStorage, hpassStorage }
+// export { setGenericOptions, createSplashScreen }

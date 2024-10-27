@@ -1,6 +1,6 @@
 "use strict";
 
-const debug = false;
+const debug = true;
 const ITERATIONS = (debug) ? 999 : 99999;
 const HASH_ALGORITHM = (debug) ? 'SHA-1': 'SHA-512';
 const KDF = 'PBKDF2'; // Key Derivation Function
@@ -167,6 +167,8 @@ async function createHash(password, storedSaltHex = null) {
         ? crypto.getRandomValues(new Uint8Array(SALT_LENGTH))
         : new Uint8Array(storedSaltHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
 
+  // const salt = "DEBUG";
+
   // Import the password as a key
   const baseKey = await crypto.subtle.importKey(
     'raw',
@@ -232,7 +234,7 @@ async function test() {
     }
 }
 
-if (debug) test();
+// if (debug) test();
 
 // ( async () => {
 //   const encryptedString = "1743724d69fd50a2e63f40382a553647|5556f3e675d495cad613a0e4|5005d507ba43cf4e052fed02798e49ba7e44636e9de72f45971ae6b5468278be57e52c89967df600b5cecb8479220305a50a6b84af3caa964109bf3f4d2f9477fdf7339628a3"
