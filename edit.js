@@ -3,7 +3,7 @@
 import { CHARS, get_random_string, storageGet, storageSet, CRYPTO, objDiff,
          cleanUp, sanityCheck } from "./core/lib.js";
 import { globalDefaults, hpassStorage } from "./core/lib.js";
-import { createHash, decryptText } from "./core/crypto.js"
+import { createHash, decryptText, encryptText } from "./core/crypto.js"
 
 const el = {};
 el.hint = document.getElementById('hint');
@@ -184,10 +184,11 @@ function handleExport(args = {}) {
   
   if (args.decrypted) {
     if (!confirm("Plain text export!")) return;
+    const password = sessionStorage.getItem("password");
     const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
       if (toExport[key] === undefined) return;
       // console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
-      toExport[key] = await decryptText(CRYPTO.passwd, toExport[key]);
+      toExport[key] = await decryptText(password, toExport[key]);
     });
     Promise.all(decryptionPromises).then(() => {
       finish();
@@ -226,6 +227,7 @@ function handleImport(event) {
               const backUp = JSON.stringify(localStorage);
               const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
               let opts;
+              const password = sessionStorage.getItem("password");
               for (const key in importedLocalStorage) {
                 const txt = importedLocalStorage[key]; // imported text
                 if (!CRYPTO.encryptedItems.includes(key)) { // for pwdHash and encrypted keys
@@ -236,7 +238,7 @@ function handleImport(event) {
                   localStorage.setItem(key, txt);
                   if (CRYPTO.encryptedItems.includes(key)) {
                       try {
-                        const decrypted = await decryptText(CRYPTO.passwd, txt);
+                        const decrypted = await decryptText(password, txt);
                         if (decrypted === null) { // Decryption failed
                           const parsed = JSON.parse(backUp);
                           Object.keys(parsed).forEach((key) => localStorage.setItem(key, parsed[key]));
@@ -252,7 +254,7 @@ function handleImport(event) {
                       }
                   }
                 } else {
-                  encryptText(CRYPTO.passwd, txt).then( encrypted => {
+                  encryptText(password, txt).then( encrypted => {
                     localStorage.setItem(key, encrypted);
                   });
                   // opts = JSON.parse(txt);

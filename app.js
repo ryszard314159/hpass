@@ -255,16 +255,9 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const tag = `el.newPassword: CRYPTO.passwd= ${CRYPTO.passwd}`;
   hpassStorage.setItem("pwdHash", pwdHash, tag);
   const ph = localStorage.getItem("pwdHash")
-  if (pwdHash !== ph) {
-    throw Error("Hashes do not match!");
-  }
   verified = await verifyPassword(ph, newPassword);
   console.log(`newPassword= ${newPassword}, verified= ${verified}, stored pwdHash= ${pwdHash}`);
   sessionStorage.setItem("password", newPassword);
-  // z, stored hash= 'ba51eb69c05b3aafd2916e2a89831c4a|913e1b17f7978635e8d3591564303f49'
-
-  // masterPassw= z1, verified= true, stoHash= 70d4f6b5020820077b8749bab8ad7dec|106363bb0519ecef83944ea6e7bcfe80
-  // newPassword= z2, verified= true, pwdHash= b282b6453a80f989bbcd91a512521005|e8c3e0ef7d7b7a911d190d6198c1ae3a
 
   try {
     for (const key of CRYPTO.encryptedItems) {

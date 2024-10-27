@@ -391,14 +391,9 @@ async function storageSet(args) {
 
 async function storageGet(args) {
   args = {key: null, pwd: CRYPTO.passwd, decrypt: true, ...args};
-  let p = sessionStorage.getItem("password");
-  args.pwd = (p === null) ? '' : p
-  if (args.pwd === null || args.pwd === undefined) {
-    const msg = `ERROR: storageGet: args.pwd === null|undefined, args= ${JSON.stringify(args)}`;
-    console.error(msg);
-    console.trace();
-    alert(msg);
-    return null;
+  args.pwd = sessionStorage.getItem("password");
+  if (args.pwd === null) {
+    throw new Error("no password!?");
   }
   const debug = false;
   if (!CRYPTO.encryptedItems.includes(args.key)) {
