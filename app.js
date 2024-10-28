@@ -310,6 +310,7 @@ function setGenericOptions() {
       devices this secret and other options must be the same
       on all devices.`;
   if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
+  
   createSplashScreen(opts);
   if (debug) console.log("setGenericOptions: returning opts= ", opts);
   return opts;
@@ -330,35 +331,35 @@ function createSplashScreen(opts) {
       to a strong one.
       See Help (under ? icon) for guidance how to select good master password.
       Write it down and store it in safe location.
-  </ul>
-  <h3>Basics:</h3>
-  <ol>
-  <li>Enter a site password hint in Enter Hint box.
-      This can be a full name, or your favorite nick name,
-      of the site you need the password for e.g. facebook or fb etc.
-  <li>Click on <strong style="font-size: 1.2rem;">></strong>
-      in top-right corner to generate password.
-      It will be copied to the clipboard.
-  <li>Paste password from the clipboard where you need it.
-  </ol>
-  <br>
-  Generated password is uniquely determined by site Hint
-  together with:
-   <hr/>
-  <p>
-  <ul>
-  <li>Secret (= ${opts.salt} )
-  <li>Special Character (= ${opts.pepper} )
-  <li>Length (= ${opts.length} )
-  <ul>
-  </p>
-  <br>
-  To display and change these settings click on the gear icon
-  in the top-left corner.
-  Note - that to generate the same password -
-  site Hint, Secret, Special Character and Length have to be exactly the same.
-  See Help page under ? icon for more details.
-  <br>`;
+  </ul>`;
+  // <h3>Basics:</h3>
+  // <ol>
+  // <li>Enter a site password hint in Enter Hint box.
+  //     This can be a full name, or your favorite nick name,
+  //     of the site you need the password for e.g. facebook or fb etc.
+  // <li>Click on <strong style="font-size: 1.2rem;">></strong>
+  //     in top-right corner to generate password.
+  //     It will be copied to the clipboard.
+  // <li>Paste password from the clipboard where you need it.
+  // </ol>
+  // <br>
+  // Generated password is uniquely determined by site Hint
+  // together with:
+  //  <hr/>
+  // <p>
+  // <ul>
+  // <li>Secret (= ${opts.salt} )
+  // <li>Special Character (= ${opts.pepper} )
+  // <li>Length (= ${opts.length} )
+  // <ul>
+  // </p>
+  // <br>
+  // To display and change these settings click on the gear icon
+  // in the top-left corner.
+  // Note - that to generate the same password -
+  // site Hint, Secret, Special Character and Length have to be exactly the same.
+  // See Help page under ? icon for more details.
+  // <br>`;
   const container = document.createElement("div"); // container
   container.id = "splash-screen-container";
   container.className = "modal";
@@ -371,6 +372,7 @@ function createSplashScreen(opts) {
   closeButton.innerHTML = '&times;';
   closeButton.addEventListener('click', function() {
     container.style.display = "none";
+    window.location.href = 'help.html';
   });
   content.appendChild(closeButton);
   container.appendChild(content);

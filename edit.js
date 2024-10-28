@@ -73,6 +73,11 @@ async function saveOptions(args) {
   let currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
   let hint = el.hint.value;
   const storedOpts = await storageGet({key: "options"});
+  if (storedOpts === null) {
+    const msg = `saveOptions: ERROR: problem decrypting stored options`;
+    alert(msg);
+    throw new Error(msg);
+  }
   const diff = objDiff(currentOpts, storedOpts);
   if (hint === '' && Object.keys(diff).length === 0) {
     msg = `NOTE: stored settings are the same! Nothing changed.`
@@ -80,9 +85,7 @@ async function saveOptions(args) {
     console.log(`saveOptions: ${msg}`);
     return;
   }
-  // alert(`storeOptions: el.hint.value= ${el.hint.value}`);
   if (hint === '' && Object.keys(diff).length !== 0) {
-    // msg = `NOTE: new generic settings saved: ${JSON.stringify(currentOpts)}`;
     msg = `New generic settings:\n`;
     msg = `${msg}\nSecret= ${currentOpts.salt}`;
     msg = `${msg}\nSpecial Character= ${currentOpts.pepper}`;
@@ -94,12 +97,21 @@ async function saveOptions(args) {
     return;
   }
   // hint !== ''
-  let sites = await storageGet({key: "sites"});// decrypt: true is the default!
-  if (sites === undefined) alert("ERROR: sites undefined in saveOptions!!!");
-  sites = (sites === null || sites === undefined) ? {} : sites;
-  if (debug > 0) console.log(`saveOptions: hint= ${hint}, sites= ${JSON.stringify(sites)}`);
+  if (Object.keys(diff).length === 0) {
+    alert(`Nothing site-specific to save for ${hint}`)
+    return;
+  }
+  let sites = localStorage.getItem("sites");
+  if (sites !== null) {
+    sites = await storageGet({key: "sites"});// decrypt: true is the default!
+    if (sites === null) {
+      alert(`saveOptions: ERROR: cannot decrypt sites!`);
+      throw new Error(`saveOptions: ERROR: cannot decrypt sites!`);
+    }
+  } else {
+    sites = {};
+  }
   const storedHintValues = sites[hint];
-  if (debug > 0) console.log(`storedHintValues= ${JSON.stringify(storedHintValues)}`);
   let replacedOrCreated;
   if (storedHintValues === undefined) {
     sites[hint] = diff;
@@ -132,7 +144,7 @@ async function saveOptions(args) {
       alert("Saved!")
     }
   } else {
-    delete localStorage.sites;
+    localStorage.removeItem("sites");
     alert(`All hint-specific settings removed!`);
   }
 }
