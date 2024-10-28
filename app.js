@@ -184,6 +184,7 @@ el.masterPassword.addEventListener("keydown", function(event) {
       const pwd = el.masterPassword.value;
       verifyPassword(storedHash, pwd).then( isCorrect => {
         if (isCorrect) {
+          sessionStorage.setItem("password", pwd);
           el.passwordContainer.style.display = "none";
           window.sessionStorage.setItem("passwordContainerHidden", true);
           window.scrollTo(0, 0); // scroll window to the top!

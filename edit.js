@@ -21,9 +21,8 @@ window.onload = async function() {
   if (opts === null) {
     console.log(`edit: onload: opts == null`);
     console.log(`edit: localStorage.getItem("options")= ${localStorage.getItem("options")}`);
-    console.log(`edit: onload: CRYPTO.passwd= ${CRYPTO.passwd}`);
     console.log(`edit: onload: sessionPassword= ${sessionStorage.getItem("password")}`);
-    opts = {};
+    alert("edit: opts === null");
   }
   el.salt.value = opts.salt;
   el.pepper.value = opts.pepper;
