@@ -393,6 +393,7 @@ async function storageGet(args) {
   args = {key: null, pwd: CRYPTO.passwd, decrypt: true, ...args};
   args.pwd = sessionStorage.getItem("password");
   if (args.pwd === null) {
+    alert("storageGet: no password!");
     throw new Error("no password!?");
   }
   const debug = false;
