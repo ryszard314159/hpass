@@ -40,19 +40,22 @@ window.onload = async function() {
 // });
 
 document.querySelector(".btn.edit").addEventListener("click", async function () {
-  let opts = localStorage.getItem("options");
+  // let opts = localStorage.getItem("options");
+  // if (opts === null) {
+  //   window.location.href = 'index.html';
+  // }
+  const opts = await storageGet({key: "options"});
   if (opts === null) {
-    window.location.href = 'index.html';
-  }
-  opts = await storageGet({key: "options"});
-  if (opts === null) {
-    opts = setGenericOptions();
-    storageSet({key: "options"});
+    const msg = `edit: ERROR: opts === null\nReset HPASS.`
+    alert(msg);
+    throw new Error(msg);
+    // opts = setGenericOptions();
+    // storageSet({key: "options"});
   }
   let hopt = {};
   if (el.hint.value !== '') {
     const storedSites = await storageGet({key: "sites"});
-    if (storedSites !== "undefined") {
+    if (storedSites !== null) {
       const h = storedSites[el.hint.value];
       if (h !== "undefined") {
          hopt = h;

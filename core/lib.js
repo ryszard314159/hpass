@@ -390,25 +390,32 @@ async function storageSet(args) {
 }
 
 async function storageGet(args) {
+  let rawValue = localStorage.getItem(args.key);
+  if (rawValue === null) return null;
   args = {key: null, pwd: CRYPTO.passwd, decrypt: true, ...args};
   args.pwd = sessionStorage.getItem("password");
   if (args.pwd === null) {
-    alert("storageGet: no password!");
+    alert("storageGet: no password!?");
     throw new Error("no password!?");
   }
   const debug = false;
   if (!CRYPTO.encryptedItems.includes(args.key)) {
     throw new Error(`storageGet: invalid args.key= ${args.key}`);
   }
-  let rawValue = localStorage.getItem(args.key);
-  if (rawValue === null) return null;
   let decryptedValue, finalValue;
   try {
     decryptedValue = await decryptText(args.pwd, rawValue);
+    if (decryptedValue === null) {
+      let msg = `ERROR: storageGet: while decrypting raValue:`;
+      msg = `${msg}\nrawValue= ${rawValue}, args= ${JSON.stringify(args)}`;
+      msg = `${msg}\nerror= ${error}`;
+      console.error(msg);
+      console.trace();
+      throw new Error(msg);
+    }
   } catch (error) {
-    let msg = `ERROR: storageGet: while decrypting raValue:`;
+    let msg = `ERROR: storageGet: catch: while decrypting raValue:`;
     msg = `${msg}\nrawValue= ${rawValue}, args= ${JSON.stringify(args)}`;
-    msg = `${msg}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
     msg = `${msg}\nerror= ${error}`;
     console.error(msg);
     console.trace();
