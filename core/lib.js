@@ -21,7 +21,8 @@
 // debugger;
 import { encryptText, decryptText } from "./crypto.js";
 
-const globalDefaults = {salt: "Replace Me!", pepper: "_", length: 15};
+// length set to '15' to avoid '15' (string) vs 15 (int) confusion
+const globalDefaults = {salt: "Replace Me!", pepper: "_", length: '15'};
 const MINLENGTH = 4;
 const MAXLENGTH = 128;
 const MP31 = 2 ** 31 - 1; // Mersenne prime
@@ -61,8 +62,10 @@ CRYPTO.enableDecryptedIO = () => {
 const hpassStorage = {};
 hpassStorage.setItem = function(key, value, tag='') {
   if (key === "pwdHash") {
-    console.log(`hpassStorage: key=${key}, value= ${value}, tag= ${tag}`);
-    console.trace();
+    if (0) {
+      console.log(`hpassStorage: key=${key}, value= ${value}, tag= ${tag}`);
+      console.trace();
+    }
   }
   localStorage.setItem(key,value);
   updateLocalStorage(key, value);
@@ -339,7 +342,7 @@ function sanityCheck(args = {key: key, value: null, from: null}) {
   const plain = JSON.stringify(args.value);
   // const cryptoKey = createKey(CRYPTO.passwd);
   const fromStorage = localStorage.getItem(args.key);
-  decryptText(CRYPTO.passwd, fromStorage).then(decrypted => {
+  decryptText(args.pwd, fromStorage).then(decrypted => {
     if (plain !== decrypted) {
       let msg = `sanityCheck: from= ${args.from}`;
       msg = `${msg}\nkey= ${args.key}`;
@@ -363,6 +366,7 @@ function updateLocalStorage(key, value) {
 async function storageSet(args) {
   const debug = 0;
   args = {key: null, value: null, pwd: CRYPTO.passwd, encrypt: true, ...args};
+  args.pwd = sessionStorage.getItem("password");
   if (!CRYPTO.encryptedItems.includes(args.key)) {
     throw new Error(`storageSet: invalid args.key= ${args.key}`);
   }
@@ -386,9 +390,13 @@ async function storageSet(args) {
     console.error(`storageSet: storedValue= ${storedValue}`);
     throw new Error(`storageSet: storedValue !== encryptedValue}`);
   }
-  sanityCheck({key: args.key, value: args.value, from: "storageSet"});
+  sanityCheck({key: args.key, value: args.value, pwd: args.pwd, from: "storageSet"});
 }
 
+/*
+(async () => {v = await encryptText(password, decrypted); console.log(v)})()
+(async () => {v = await decryptText(password, encrypted); console.log(v)})()
+*/
 async function storageGet(args) {
   let rawValue = localStorage.getItem(args.key);
   if (rawValue === null) return null;

@@ -225,7 +225,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
 
   const storedHash = localStorage.getItem("pwdHash");
   let verified = await verifyPassword(storedHash, masterPassword);
-  console.log(`masterPassword= ${masterPassword}, verified= ${verified}, storedHash= ${storedHash}`)
+  if (0) console.log(`masterPassword= ${masterPassword}, verified= ${verified}, storedHash= ${storedHash}`)
   let sessionPassword = sessionStorage.getItem("password");
   sessionPassword = (sessionPassword === null) ? '' : sessionPassword;
   if (!verified || masterPassword !== sessionPassword) {
@@ -251,12 +251,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
   }
 
   const pwdHash = await createHash(newPassword);
-  CRYPTO.passwd = newPassword;
-  const tag = `el.newPassword: CRYPTO.passwd= ${CRYPTO.passwd}`;
-  hpassStorage.setItem("pwdHash", pwdHash, tag);
-  const ph = localStorage.getItem("pwdHash")
-  verified = await verifyPassword(ph, newPassword);
-  console.log(`newPassword= ${newPassword}, verified= ${verified}, stored pwdHash= ${pwdHash}`);
+  hpassStorage.setItem("pwdHash", pwdHash, `el.newPassword:`);
   sessionStorage.setItem("password", newPassword);
 
   try {
@@ -266,6 +261,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
       const decrypted = await decryptText(masterPassword, fromStorage);
       const encrypted = await encryptText(newPassword, decrypted);
       hpassStorage.setItem(key, encrypted);
+      console.log(`newPassword: ${newPassword}, masterPassword= ${masterPassword}`)
     }
   } catch (error) {
     console.error("Error updating encrypted items:", error);
@@ -317,21 +313,26 @@ function setGenericOptions() {
 }
 
 function createSplashScreen(opts) {
-  const debug = true;
+  const debug = false;
   if (debug) console.log("createSplashScreen: at the START");
   if (debug) console.trace();
   createHash(CRYPTO.passwd).then(pwdHash => localStorage.setItem("pwdHash", pwdHash));
+  const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
+  const helpImg = `<img src="icons/help.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
+  const infoImg = `<img src="icons/info.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
   let msg = `<h3>To start using HPASS:</h3>
   <ul>
-  <li>Read the <strong>Basics</strong> below.
   <li>Close this menu.
-  <li>Enter Master Password (<strong>default='${CRYPTO.passwd}'</strong>).
-  <li>Change (<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;">)
-      Master Password (<strong>initial value='${CRYPTO.passwd}'</strong>)
-      to a strong one.
-      See Help (under ? icon) for guidance how to select good master password.
-      Write it down and store it in safe location.
-  </ul>`;
+  <li>Change (${changeImg}) Master Password - see
+      Help (${helpImg}) and Info (${infoImg})
+      for guidance and resources about selecting secure password.
+  </ul>
+  <hr style="color: black;">
+  <div>
+  <br>
+  <p style="background-color: yellow;">Store Master Password in a safe location.</p>
+  </div>
+  `;
   // <h3>Basics:</h3>
   // <ol>
   // <li>Enter a site password hint in Enter Hint box.

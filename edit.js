@@ -44,6 +44,8 @@ document.querySelector(".btn.edit").addEventListener("click", async function () 
   // if (opts === null) {
   //   window.location.href = 'index.html';
   // }
+  const sessionPassword = sessionStorage.getItem("password");
+  console.log(`edit: sessionPassword= ${sessionPassword}`);
   const opts = await storageGet({key: "options"});
   if (opts === null) {
     const msg = `edit: ERROR: opts === null\nReset HPASS.`
@@ -126,12 +128,18 @@ async function saveOptions(args) {
   if (debug > 0) console.log(msg);
   if (debug > 0) console.log(`before : objDiff: storedOpts= ${JSON.stringify(storedOpts)}`);
   if (debug > 0) console.log(`before : objDiff: sites= ${JSON.stringify(sites)}`);
-  Object.keys(sites).forEach( (key) => {sites[key] = objDiff(sites[key], storedOpts)});
+  // Object.keys(sites).forEach( (key) => {sites[key] = objDiff(sites[key], storedOpts)});
+  // sites[hint] = objDiff(sites[hint], storedOpts)
+  const hintDiff = objDiff(sites[hint], storedHintValues);
+  if (Object.keys(hintDiff).length === 0) {
+    alert(`Nothing new for ${hint}`);
+    return;
+  }
   if (debug > 0) console.log(`before cleanUp: sites= ${JSON.stringify(sites)}`);
-  sites = cleanUp(sites);
+  // sites = cleanUp(sites);
   if (debug > 0) console.log(`after cleanUp: typeof(sites)= ${typeof(sites)}, sites= `, sites);
   if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
-  if (sites !== null) {
+  // if (sites !== null) {
     if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
     msg = `Hint-specific settings ${replacedOrCreated}:\n`;
     msg = `${msg}\nHint= ${hint}`;
@@ -146,10 +154,10 @@ async function saveOptions(args) {
       await storageSet({key: "sites", value: sites});
       alert("Saved!")
     }
-  } else {
-    localStorage.removeItem("sites");
-    alert(`All hint-specific settings removed!`);
-  }
+  // } else {
+  //   localStorage.removeItem("sites");
+  //   alert(`All hint-specific settings removed!`);
+  // }
 }
 
 function toggleOptsReadOnly() {

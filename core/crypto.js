@@ -41,7 +41,7 @@ async function deriveKey(password, salt) {
     ['encrypt', 'decrypt'] // Key usages
   );
 
-  if (debug) console.log("DEBUG: deriveKey: Key derived successfully");
+  if (0) console.log("DEBUG: deriveKey: Key derived successfully");
   return { derivedKey };
 }
 
@@ -54,6 +54,7 @@ async function createKey(password) {
 
 async function encryptText(password, plainText, separator = '|') {
     // Generate the key and salt
+    if (1) console.log(`encryptText:1: password= ${password}, plainText= ${plainText}`);
     const { derivedKey, SALT, saltHex } = await createKey(password);
     const encoder = new TextEncoder();
     const data = encoder.encode(plainText); // Convert plaintext to ArrayBuffer
@@ -68,7 +69,9 @@ async function encryptText(password, plainText, separator = '|') {
     const ivHex = Array.from(iv).map(b => b.toString(16).padStart(2, '0')).join('');
     const ciphertextHex = Array.from(new Uint8Array(encryptedBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
     // Concatenate salt, iv, and ciphertext for storage/transfer
-    return `${saltHex}${separator}${ivHex}${separator}${ciphertextHex}`;
+    const encrypted = `${saltHex}${separator}${ivHex}${separator}${ciphertextHex}`;
+    if (1) console.log(`encryptText:2: password= ${password}, encrypted= ${encrypted}`);
+    return encrypted;
 }
   
 async function __decryptText(password, encryptedString, separator = '|') {
@@ -97,6 +100,7 @@ async function __decryptText(password, encryptedString, separator = '|') {
 }
 
 async function decryptText(password, encryptedString, separator = '|') {
+  if (1) console.log(`decryptText:1: password= ${password}, encrypted= ${encryptedString}`);
   try {
     // Split the stored encrypted data (salt:iv:ciphertext)
     if (typeof encryptedString !== "string") {
@@ -118,13 +122,17 @@ async function decryptText(password, encryptedString, separator = '|') {
     // Convert encrypted data back to string
     const decoder = new TextDecoder();
     const decryptedString = decoder.decode(decryptedBuffer);
+    if (1) console.log(`decryptText:2: password= ${password}, decrypted= ${decryptedString}`);
     return decryptedString;
   } catch (error) {
     // If decryption fails, return null
+    if (1) console.log(`decryptText:3: password= ${password}, encrypted= ${encryptedString}`);
+    if (1) console.trace();
     if (error.name === 'OperationError' || error.message.includes('decryption')) {
       return null;
     }
     // Re-throw other errors
+    if (1) console.log(`decryptText:4: password= ${password}, encrypted= ${encryptedString}`);
     throw error;
   }
 }
