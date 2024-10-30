@@ -14,6 +14,8 @@ el.save = document.getElementById('save');
 el.fileInputModal = document.getElementById("fileInputModal");
 el.importFileInput = document.getElementById('importFileInput');
 
+let storedSites;
+
 //*** executable code ***/
 
 window.onload = async function() {
@@ -39,38 +41,59 @@ window.onload = async function() {
 //   })
 // });
 
-document.querySelector(".btn.edit").addEventListener("click", async function () {
-  // let opts = localStorage.getItem("options");
-  // if (opts === null) {
-  //   window.location.href = 'index.html';
-  // }
-  const sessionPassword = sessionStorage.getItem("password");
-  console.log(`edit: sessionPassword= ${sessionPassword}`);
-  const opts = await storageGet({key: "options"});
-  if (opts === null) {
-    const msg = `edit: ERROR: opts === null\nReset HPASS.`
-    alert(msg);
-    throw new Error(msg);
-    // opts = setGenericOptions();
-    // storageSet({key: "options"});
-  }
-  let hopt = {};
-  if (el.hint.value !== '') {
+// document.querySelector(".btn.edit").addEventListener("click", async function () {
+//   // let opts = localStorage.getItem("options");
+//   // if (opts === null) {
+//   //   window.location.href = 'index.html';
+//   // }
+//   const sessionPassword = sessionStorage.getItem("password");
+//   console.log(`edit: sessionPassword= ${sessionPassword}`);
+//   const opts = await storageGet({key: "options"});
+//   if (opts === null) {
+//     const msg = `edit: ERROR: opts === null\nReset HPASS.`
+//     alert(msg);
+//     throw new Error(msg);
+//     // opts = setGenericOptions();
+//     // storageSet({key: "options"});
+//   }
+//   let hopt = {};
+//   if (el.hint.value !== '') {
+    
+//     if (storedSites !== null) {
+//       const h = storedSites[el.hint.value];
+//       if (h !== "undefined") {
+//          hopt = h;
+//       }
+//     }
+//   }
+
+//   const storedSites = await storageGet({key: "sites"});
+// });
+
+// el.hint.addEventListener('click', async function() {
+//   const storedSites = await storageGet({key: "sites"});
+//   if (storedSites === null) return;
+//   const opts = await storageGet({key: "options"});
+// (async () => {
+  
+//   storedSites = await storageGet({key: "sites"});
+  el.hint.addEventListener('input', async function(event) {
     const storedSites = await storageGet({key: "sites"});
-    if (storedSites !== null) {
-      const h = storedSites[el.hint.value];
-      if (h !== "undefined") {
-         hopt = h;
-      }
-    }
-  }
-  const x = {...opts, ...hopt};
-  el.salt.value = x.salt;
-  el.pepper.value = x.pepper;
-  el.length.value = x.length;
-});
+    if (storedSites === null) return;
+    let hopt = storedSites[el.hint.value];
+    const opts = await storageGet({key: "options"});
+    const x = (hopt === undefined) ? opts : {...opts, ...hopt};
+    el.salt.value = x.salt;
+    el.pepper.value = x.pepper;
+    el.length.value = x.length;
+  });
+
+// })();
+
+// })
 
 el.save.addEventListener("click", saveOptions);
+
 async function saveOptions(args) {
   args = {debug: -1, ...args};
   const debug = args.debug;
@@ -130,7 +153,7 @@ async function saveOptions(args) {
   if (debug > 0) console.log(`before : objDiff: sites= ${JSON.stringify(sites)}`);
   // Object.keys(sites).forEach( (key) => {sites[key] = objDiff(sites[key], storedOpts)});
   // sites[hint] = objDiff(sites[hint], storedOpts)
-  const hintDiff = objDiff(sites[hint], storedHintValues);
+  const hintDiff = (storedHintValues !== undefined) ? objDiff(sites[hint], storedHintValues) : sites[hint];
   if (Object.keys(hintDiff).length === 0) {
     alert(`Nothing new for ${hint}`);
     return;
