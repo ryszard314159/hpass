@@ -66,7 +66,7 @@ el.peak = document.getElementById("peak"); // instead of top
 el.range = document.getElementById("range");
 el.gear = document.getElementById("gear");
 el.generate = document.getElementById("generate");
-el.hintContainer = document.getElementById("hintContainer");
+// el.hintContainer = document.getElementById("hintContainer"); KEEP IT for now
 el.passwordContainer = document.getElementById("passwordContainer");
 el.masterPassword = document.getElementById("masterPassword");
 el.newPassword = document.getElementById("newPassword");
@@ -229,6 +229,11 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const isCorrect = await verifyPassword(storedHash, masterPassword);
   if (0) console.log(`masterPassword= ${masterPassword}, verified= ${verified}, storedHash= ${storedHash}`)
   const sessionPassword = sessionStorage.getItem("password");
+  if (sessionPassword === null) {
+    alert(`ERROR: null sessionPassword - reset!`);
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
   // sessionPassword = (sessionPassword === null) ? '' : sessionPassword;
   let msg = (isCorrect) ? '' : `Hash of entered Master Password does not match`;
   msg = (masterPassword === sessionPassword)
@@ -317,11 +322,13 @@ function setGenericOptions() {
   return opts;
 }
 
-function createSplashScreen(opts) {
+async function createSplashScreen(opts) {
   const debug = false;
   if (debug) console.log("createSplashScreen: at the START");
   if (debug) console.trace();
-  createHash(CRYPTO.passwd).then(pwdHash => localStorage.setItem("pwdHash", pwdHash));
+  const sessionPassword = sessionStorage.getItem("password");
+  const pwdHash = await createHash(sessionPassword);
+  localStorage.setItem("pwdHash", pwdHash);
   const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
   const helpImg = `<img src="icons/help.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
   const infoImg = `<img src="icons/info.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
@@ -397,31 +404,15 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
   .register(swPath)
   .then((reg) => {
-    // (async () => {
-    //   let pwd = sessionStorage.getItem("password");
-    //   pwd = (pwd === null) ? '' : pwd;
-    //   CRYPTO.passwd = pwd;
-    //   const storedHash = localStorage.getItem("pwdHash");
-    //   if (!verifyPassword(storedHash, pwd)) {
-    //     const pwdHash = await createHash(CRYPTO.passwd);
-    //     hpassStorage.setItem("pwdHash", pwdHash, `serviceWorker: CRYPTO.passwd= ${CRYPTO.passwd}`);
-    //   }      
-    // try {
-    //   opts = await storageGet({key: "options"});
-    // } catch (error) {
-    //   alert(`Opts fetch failed: set to generic: CRYPTO.passwd= ${CRYPTO.passwd}`)
-    // }
-      let opts = localStorage.getItem("options");
-      if (opts === null) {
-        if (debug) console.log("app: register: null options in localStorage!");
-        opts = setGenericOptions();
-        if (debug) console.log("app: register: set to generic: opts= ", opts);
-      } else {
-        if (debug) console.log("app: register: exist already: opts= ", opts);
-      }
-      if (debug) console.log("app: register: globalDefaults= ", globalDefaults);
-    // }) ();
-
+    let opts = localStorage.getItem("options");
+    if (opts === null) {
+      if (debug) console.log("app: register: null options in localStorage!");
+      opts = setGenericOptions();
+      if (debug) console.log("app: register: set to generic: opts= ", opts);
+    } else {
+      if (debug) console.log("app: register: exist already: opts= ", opts);
+    }
+    if (debug) console.log("app: register: globalDefaults= ", globalDefaults);
     if (debug) console.log("app: register: els set to opts= ", opts);
     if (navigator.serviceWorker.controller) {
       const msg = { type: "GET_VERSION" };
@@ -620,26 +611,21 @@ function cleanClean(v) {
 // });
 
 document.querySelectorAll(".reset").forEach(function(element) {
-  element.addEventListener("click", function (event) {
+  element.addEventListener("click", async function (event) {
     const debug = false;
     if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
     if (confirm(`All existing settings will be removed!\nPassword=''\nClick OK to proceed.`)) {
       event.preventDefault();
       localStorage.removeItem("options");
       localStorage.removeItem("sites");
-      ( async () => {
+      // ( async () => {
         const pwd = '';
         sessionStorage.setItem("password", pwd);
-        CRYPTO.passwd = pwd;
         const pwdHash = await createHash(pwd);
-        hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: CRYPTO.passwd= ${pwd}, pwdHash= ${pwdHash}`)
-      }) ();
+        hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
+      // }) ();
       // window.location.reload();
       const opts = setGenericOptions();
-      // storageSet({key: "options"}, opts); // done in setGenericOptions
-      // el.salt.value = opts.salt;
-      // el.pepper.value = opts.pepper;
-      // el.length.value = opts.length;
     }
   });
 });
@@ -648,19 +634,6 @@ document.getElementById("logop").addEventListener("click", function () {
   copyToClipboard(URL);
   showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
 });
-
-// el.reset.addEventListener("click", function (event) {
-// document.querySelectorAll(".reset").forEach(function(element) {
-//   element.addEventListener("click", function (event) {
-//     const debug = false;
-//     if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
-//     if (confirm("Confirm reset: all existing settings will be removed!")) {
-//       event.preventDefault();
-//       localStorage.clear();
-//       window.location.reload();
-//     }
-//   });
-// });
 
 window.onload = function() {
   // alert("PAGE LOADED!");
@@ -701,9 +674,6 @@ window.addEventListener("storage", function(event) {
     }
   }
 });
-//
-
-
 
 async function generateFun(event) {
   const debug = false;
@@ -721,13 +691,9 @@ async function generateFun(event) {
   }
   const salt = opts.salt // = el.salt.value;
   const pepper = opts.pepper // = el.pepper.value;
-  let length = opts.length // = el.length.value;
-  length = (length === "") ? globalDefaults.length : Math.max(Math.min(length, MAXLENGTH), MINLENGTH);
+  const length = opts.length // = el.length.value;
+  // length = (length === "") ? globalDefaults.length : Math.max(Math.min(length, MAXLENGTH), MINLENGTH);
   if (debug) console.log("generateFun:0: opts= ", opts);
-  // el.length.value = opts.length;
-  // opts.salt = el.salt.value = (salt === "") ? globalDefaults.salt : salt;
-  // opts.pepper = el.pepper.value = (pepper === "") ? globalDefaults.pepper : pepper;
-  // opts.length = el.length.value = (length === "") ? globalDefaults.length : length;
   if (debug) console.log("generateFun:1: opts= ", opts);
   // setHintOpts(el.hint.value, opts); -- NOTE: use storeOptions and save button instead!!!
   let args = { ...opts }; // deep copy
@@ -750,10 +716,11 @@ async function generateFun(event) {
   showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
 }
 
-el.hintContainer.addEventListener('submit', function (event) {
-  event.preventDefault();
-  // Add your form submission handling logic here
-});
+// KEEP IT for now
+// el.hintContainer.addEventListener('submit', function (event) {
+//   event.preventDefault();
+//   // Add your form submission handling logic here
+// });
 
 function handleFeedback() {
   const debug = false;
