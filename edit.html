@@ -17,11 +17,11 @@
     <header class="topIcons">
       <img class="btn import" src="icons/import.svg" title="Import">
       <img class="btn export" src="icons/export.svg" title="Export">
-      <img class="btn edit" src="icons/edit.svg" title="Edit">
+      <img id="save" class="btn save" src="icons/save.svg" title="Save"/>
+      <!-- <img class="btn edit" src="icons/edit.svg" title="Edit"> -->
       <a href="index.html"> 
         <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
       </a>
-      <img id="save" class="btn save" src="icons/save.svg" title="Save"/>
     </header>
 
     <br/>
@@ -66,13 +66,14 @@
               modify <strong>Special Character</strong> and/or <strong>Length</strong>.
 
           </li>
-          <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique</li>
+          <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
           <li><strong>Special Character
               (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
               one or more _.-!@$?% etc.</li>
           <li><strong>Length (📏):</strong> longer is better,
                       note however that a lot of sites have unreasonably short upper limit
-                      - 15 seems to be a reasonable balance.</li>
+                      - 15 seems to be a reasonable balance between security and a need to create
+                      many <em>site-specific settings</em>.</li>
         </ul>
       </p>
     </div>

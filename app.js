@@ -9,7 +9,8 @@ TODO:
     like Web Cryptography API (W3C) :: https://www.w3.org/TR/WebCryptoAPI/
     or Forge.
 4 - wipe pwd fields on lock!
-5 - set encrypted: 'false' for plain text export
+5 - Another use case for env() variables is for desktop Progressive web apps (PWAs);
+    try it: https://developer.mozilla.org/en-US/docs/Web/CSS/env
 */
 "use strict";
 
@@ -173,29 +174,30 @@ el.masterPassword.addEventListener("keydown", function(event) {
     if (debug) console.log('masterPassword: Enter key pressed!');
     // event.preventDefault();
     // el.masterPassword.blur();
-    setTimeout( () => {
+    setTimeout( async () => {
       const storedHash = localStorage.getItem("pwdHash");
       if (storedHash === null) {
-        alert("Password Hash was null,\noptions removed & Master Password set to empty string");
+        alert("Password Hash was null.\nAll settings removed & Master Password set to empty string");
         localStorage.clear();
-        createHash('').then(hash => hpassStorage.setItem("pwdHash", hash, `el.masterPassword: pwd=''`));
+        const hash = await createHash('');
+        hpassStorage.setItem("pwdHash", hash, `el.masterPassword: pwd=''`);
+        sessionStorage.setItem("password", '');
         return;
       }
       const pwd = el.masterPassword.value;
-      verifyPassword(storedHash, pwd).then( isCorrect => {
-        if (isCorrect) {
-          sessionStorage.setItem("password", pwd);
-          el.passwordContainer.style.display = "none";
-          window.sessionStorage.setItem("passwordContainerHidden", true);
-          window.scrollTo(0, 0); // scroll window to the top!
-        } else {
-          const sessionPassword = sessionStorage.getItem("password");
-          if (debug) console.log(`masterPassword: Wrong password - try again!`);
-          if (debug) console.log(`masterPassword: storedHash= ${storedHash}, pwd= ${pwd}`);
-          if (debug) console.log(`masterPassword: sessionPassword= ${sessionPassword}, CRYPTO.pwd= ${CRYPTO.pwd}`);
-          alert("Wrong password - try again!")
-        }
-      });
+      const isCorrect = await verifyPassword(storedHash, pwd);
+      if (isCorrect) {
+        sessionStorage.setItem("password", pwd);
+        el.passwordContainer.style.display = "none";
+        window.sessionStorage.setItem("passwordContainerHidden", true);
+        window.scrollTo(0, 0); // scroll window to the top!
+      } else {
+        const sessionPassword = sessionStorage.getItem("password");
+        if (debug) console.log(`masterPassword: >>${pwd}<< Wrong password - try again!`);
+        if (debug) console.log(`masterPassword: storedHash= ${storedHash}`);
+        if (debug) console.log(`masterPassword: sessionPassword= ${sessionPassword}`);
+        alert(`>>${pwd}<< Wrong password - try again!`)
+      }
       // verifyPassword(oldHash, pwd).then(isCorrect => {
       el.newPassword.focus();
     }, 30);
@@ -224,25 +226,28 @@ el.newPassword.addEventListener("keydown", async (event) => {
   }
 
   const storedHash = localStorage.getItem("pwdHash");
-  let verified = await verifyPassword(storedHash, masterPassword);
+  const isCorrect = await verifyPassword(storedHash, masterPassword);
   if (0) console.log(`masterPassword= ${masterPassword}, verified= ${verified}, storedHash= ${storedHash}`)
-  let sessionPassword = sessionStorage.getItem("password");
-  sessionPassword = (sessionPassword === null) ? '' : sessionPassword;
-  if (!verified || masterPassword !== sessionPassword) {
+  const sessionPassword = sessionStorage.getItem("password");
+  // sessionPassword = (sessionPassword === null) ? '' : sessionPassword;
+  let msg = (isCorrect) ? '' : `Hash of entered Master Password does not match`;
+  msg = (masterPassword === sessionPassword)
+        ? msg
+        : `${msg} | Master Password does not match Session Password`;
+  if (!isCorrect || masterPassword !== sessionPassword) {
     let m = "Incorrect Master Password!"
-    if (debug) {
-      m = `${m}\nstoredHash= ${storedHash.slice(0,9)}...`;
-      m = `${m}\nmasterPassword= ${masterPassword}`;
-      m = `${m}\nstoredPassword= ${sessionPassword}`;
-      m = `${m}\nCRYPTO.passwd= ${CRYPTO.passwd}`;
+    if (1) {
+      msg = `${msg}\nstoredHash= ${storedHash.slice(0,9)}...`;
+      msg = `${msg}\nmasterPassword= ${masterPassword}`;
+      msg = `${msg}\nstoredPassword= ${sessionPassword}`;
     }
-    alert(m);
+    alert(msg);
     el.newPassword.value = '';
     el.masterPassword.value = '';
     return;
   }
 
-  let msg = `Confirm Master Password change:`;
+  msg = `Confirm Master Password change:`;
   msg = `${msg}\n\nOld Password= ${masterPassword}`;
   msg = `${msg}\nNew Password= ${newPassword}`;
   if (!confirm(msg)) {

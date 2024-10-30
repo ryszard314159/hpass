@@ -108,7 +108,7 @@ async function saveOptions(args) {
   }
   const diff = objDiff(currentOpts, storedOpts);
   if (hint === '' && Object.keys(diff).length === 0) {
-    msg = `NOTE: stored settings are the same! Nothing changed.`
+    msg = `Stored generic settings are the same.\nNothing to save.`
     alert(msg);
     console.log(`saveOptions: ${msg}`);
     return;
