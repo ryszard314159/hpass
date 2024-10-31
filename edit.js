@@ -19,6 +19,21 @@ let storedSites;
 //*** executable code ***/
 
 window.onload = async function() {
+
+  let PASSWORD;
+  // Get password
+  navigator.serviceWorker.getRegistration().then((reg) => {
+    // Listen for message before sending request
+    window.addEventListener('message', (event) => {
+      console.log(`edit: event.data= `, event.data);
+      if (event.data.type === 'getPasswordResponse') {
+        PASSWORD = event.data.password;
+        alert(`edit: got PASSWORD= ${PASSWORD} from app.js`);
+      }
+    });
+    reg.active.postMessage({ type: 'getPassword' });
+  });
+
   let opts = await storageGet({key: "options"});
   if (opts === null) {
     console.log(`edit: onload: opts == null`);

@@ -137,3 +137,25 @@ self.addEventListener("message", (event) => {
       });
   }
 });
+
+let PASSWORD;
+self.addEventListener('message', (event) => {
+  console.log(`sw: set/get PASSWORD= ${PASSWORD}`);
+  if (event.data.type === 'setPassword') {
+    PASSWORD = event.data.password;
+    console.log(`sw: set PASSWORD= ${PASSWORD}`);
+  } else if (event.data.type === 'getPassword') {
+    console.log(`sw: get PASSWORD= ${PASSWORD}`);
+    self.clients.matchAll().then((clients) => {
+      clients.forEach((client) => {
+        client.postMessage({ type: 'getPasswordResponse', password: PASSWORD });
+      });
+    });
+  } else if (event.data.type === 'passwordSetConfirm') {
+    self.clients.matchAll().then((clients) => {
+      clients.forEach((client) => {
+        client.postMessage({ type: 'passwordSetConfirmResponse' });
+      });
+    });
+  }
+});

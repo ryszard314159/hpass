@@ -44,7 +44,7 @@ localStorage.clear = function() {
 };
 }
 
-// let PASSWORD = '';
+let PASSWORD = '';
 
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
@@ -95,7 +95,26 @@ el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
 // el.email = document.getElementById("email");
 
+el.gear.addEventListener('click', async function () {
+  // Set password
+  // alert(`app: postMessage: PASSWORD= ${PASSWORD}`);
+  const reg = await navigator.serviceWorker.getRegistration();
+  reg.active.postMessage({ type: 'setPassword', password: PASSWORD});
 
+  // Wait for confirmation
+  navigator.serviceWorker.getRegistration().then((reg) => {
+    reg.active.postMessage({ type: 'passwordSetConfirm' });
+  });
+
+  // Redirect after confirmation TODO: does nott work yet!!!
+  window.addEventListener('message', (event) => {
+    if (event.data.type === 'passwordSetConfirmResponse') {
+      alert(`app: event.data.type= `, event.data.type);
+      window.location.href = "edit.html";
+    }
+  });
+  window.location.href = "edit.html";
+});
 
 if (debug > 8) {
   window.addEventListener("DOMContentLoaded", function() {
@@ -302,7 +321,7 @@ function setGenericOptions() {
   if (debug) console.log("setGenericOptions: opts= ", opts);
   if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
   if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
-  CRYPTO.pwd = '';
+  PASSWORD = '';
   sessionStorage.setItem("password", '');
   storageSet({key: "options", value: opts, debug: true}).then( () => {
     sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
@@ -441,6 +460,11 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   }
 });
 
+// // Set password
+// navigator.serviceWorker.getRegistration().then((reg) => {
+//   reg.active.postMessage({ type: 'setPassword', password: PASSWORD });
+// });
+
 /**
  * Copy a string to clipboard
  * @param  {String} string         The string to be copied to clipboard
@@ -512,7 +536,7 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   p.style.backgroundColor = bkg;
   p.style.border = "0.1px solid black";
   p.style.zIndex = 9;
-  p.style.top = "20%";
+  p.style.top = "25%";
   p.style.left = "50%";
   p.style.transform = "translate(-50%, -100%)"
   p.style.width = "80%";
