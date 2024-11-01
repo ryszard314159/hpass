@@ -18,33 +18,73 @@ let storedSites;
 
 //*** executable code ***/
 
-window.onload = async function() {
+// window.onload = async function() {
+//   // Listen for messages from the service worker
+//   console.log(`edit: onload`);
+//   navigator.serviceWorker.addEventListener('message', async (event) => {
+//       console.log('edit: Received message from service worker:', event.data);
+//       if (event.data.action === 'setPassword') {
+//         const PASSWORD = event.data.password;
+//         // PASSWORD is used in storageGet()
+//         let opts = await storageGet({key: "options"});
+//         if (opts === null) {
+//           console.log(`edit: onload: opts == null`);
+//           console.log(`edit: localStorage.getItem("options")= ${localStorage.getItem("options")}`);
+//           console.log(`edit: onload: sessionPassword= ${sessionStorage.getItem("password")}`);
+//           alert("edit: opts === null");
+//         }
+//         el.salt.value = opts.salt;
+//         el.pepper.value = opts.pepper;
+//         el.length.value = opts.length;
+//         window.scrollTo(0, 0);
+//     }
+//   });
+// }
 
-  let PASSWORD;
-  // Get password
-  navigator.serviceWorker.getRegistration().then((reg) => {
-    // Listen for message before sending request
-    window.addEventListener('message', (event) => {
-      console.log(`edit: event.data= `, event.data);
-      if (event.data.type === 'getPasswordResponse') {
-        PASSWORD = event.data.password;
-        alert(`edit: got PASSWORD= ${PASSWORD} from app.js`);
+
+window.onload = async function() {
+  // Listen for messages from the service worker
+  console.log(`edit: onload`);
+  if (navigator.serviceWorker.controller) {
+    console.log(`edit: navigator.serviceWorker.controller posting message`);
+    navigator.serviceWorker.controller.postMessage({ type: "retrieve-password" });
+    navigator.serviceWorker.addEventListener("message", async (event) => {
+      if (event.data.type === "password") {
+          let PASSWORD = event.data.password;
+          console.log(`edit: got PASSWORD= ${PASSWORD}`);
+          // Use the password securely here
+          let opts = await storageGet({key: "options"});
+          if (opts === null) {
+            console.log(`edit: onload: opts == null`);
+            console.log(`edit: localStorage.getItem("options")= ${localStorage.getItem("options")}`);
+            console.log(`edit: onload: sessionPassword= ${sessionStorage.getItem("password")}`);
+            alert("edit: opts === null");
+          }
+          el.salt.value = opts.salt;
+          el.pepper.value = opts.pepper;
+          el.length.value = opts.length;
+          window.scrollTo(0, 0);
       }
     });
-    reg.active.postMessage({ type: 'getPassword' });
-  });
-
-  let opts = await storageGet({key: "options"});
-  if (opts === null) {
-    console.log(`edit: onload: opts == null`);
-    console.log(`edit: localStorage.getItem("options")= ${localStorage.getItem("options")}`);
-    console.log(`edit: onload: sessionPassword= ${sessionStorage.getItem("password")}`);
-    alert("edit: opts === null");
   }
-  el.salt.value = opts.salt;
-  el.pepper.value = opts.pepper;
-  el.length.value = opts.length;
-  window.scrollTo(0, 0);
+  // navigator.serviceWorker.addEventListener('message', async (event) => {
+  //     console.log('edit: Received message from service worker:', event.data);
+  //     if (event.data.action === 'setPassword') {
+  //       const PASSWORD = event.data.password;
+  //       // PASSWORD is used in storageGet()
+  //       let opts = await storageGet({key: "options"});
+  //       if (opts === null) {
+  //         console.log(`edit: onload: opts == null`);
+  //         console.log(`edit: localStorage.getItem("options")= ${localStorage.getItem("options")}`);
+  //         console.log(`edit: onload: sessionPassword= ${sessionStorage.getItem("password")}`);
+  //         alert("edit: opts === null");
+  //       }
+  //       el.salt.value = opts.salt;
+  //       el.pepper.value = opts.pepper;
+  //       el.length.value = opts.length;
+  //       window.scrollTo(0, 0);
+  //   }
+  // });
 }
 
 

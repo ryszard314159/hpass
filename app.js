@@ -96,24 +96,34 @@ el.navMenu = document.getElementById("nav-menu");
 // el.email = document.getElementById("email");
 
 el.gear.addEventListener('click', async function () {
-  // Set password
-  // alert(`app: postMessage: PASSWORD= ${PASSWORD}`);
-  const reg = await navigator.serviceWorker.getRegistration();
-  reg.active.postMessage({ type: 'setPassword', password: PASSWORD});
+  // Send a message to the service worker
+  // navigator.serviceWorker.controller.postMessage({ type: "getPassword", password: PASSWORD });
+  // the controller is null?!?!
+  // navigator.serviceWorker.getRegistration().then((registration) => {
+  //   registration.active.postMessage({ type: "getPassword", password: PASSWORD });
+  // });
+  // setTimeout ( () => {
+  //   window.location.href = "edit.html";
+  // }, 10000 * 1);
 
-  // Wait for confirmation
-  navigator.serviceWorker.getRegistration().then((reg) => {
-    reg.active.postMessage({ type: 'passwordSetConfirm' });
-  });
-
-  // Redirect after confirmation TODO: does nott work yet!!!
-  window.addEventListener('message', (event) => {
-    if (event.data.type === 'passwordSetConfirmResponse') {
-      alert(`app: event.data.type= `, event.data.type);
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+        type: "store-password",
+        password: PASSWORD,
+    });
+    console.log(`app: postMessage: PASSWORD= ${PASSWORD}`);
+    setTimeout ( () => {
       window.location.href = "edit.html";
-    }
-  });
-  window.location.href = "edit.html";
+    }, 1000 * 1);
+  }
+
+  // navigator.serviceWorker.ready.then(() => {
+  //   navigator.serviceWorker.getRegistration().then((registration) => {
+  //     registration.active.postMessage({ type: "getPassword", password: PASSWORD });
+  //     window.location.href = "edit.html";
+  //   });
+  // });
+
 });
 
 if (debug > 8) {
@@ -206,6 +216,7 @@ el.masterPassword.addEventListener("keydown", function(event) {
       const pwd = el.masterPassword.value;
       const isCorrect = await verifyPassword(storedHash, pwd);
       if (isCorrect) {
+        PASSWORD = pwd;
         sessionStorage.setItem("password", pwd);
         el.passwordContainer.style.display = "none";
         window.sessionStorage.setItem("passwordContainerHidden", true);
@@ -282,6 +293,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const pwdHash = await createHash(newPassword);
   hpassStorage.setItem("pwdHash", pwdHash, `el.newPassword:`);
   sessionStorage.setItem("password", newPassword);
+  PASSWORD = newPassword;
 
   try {
     for (const key of CRYPTO.encryptedItems) {
@@ -421,7 +433,7 @@ if ("serviceWorker" in navigator) {
   const swPath = "sw.js";
   if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
-  .register(swPath)
+  .register(swPath, { scope: '/' })
   .then((reg) => {
     let opts = localStorage.getItem("options");
     if (opts === null) {
