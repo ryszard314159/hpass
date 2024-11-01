@@ -138,43 +138,27 @@ self.addEventListener("message", (event) => {
   }
 });
 
-let storedPassword = null;
+let storedPassword = "sw";
+if (1) console.log(`sw: initialized storedPassword= ${storedPassword}, now= ${Date.now()}`);
 
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "store-assword") {
-      PASSWORD = event.data.password;
+  if (1) console.log(`sw: message: event= `, event);
+  if (event.data && event.data.type === "store-password") {
+      storedPassword = event.data.password;
+      const tag = event.data.password;
+      if (1) console.log(`sw: message: store: storedPassword= ${storedPassword}, tag= ${tag}`);
   } else if (event.data && event.data.type === "retrieve-password") {
-      event.source.postMessage({
-          type: "password",
-          password: storedPassword,
-      });
-      storedPassword = null; // Clear after sending
+      event.source.postMessage({type: "password", password: storedPassword});
+      if (1) console.log(`sw: message: retrieve: storedPassword= ${storedPassword}`);
+      // storedPassword = null; // Clear after sending
   }
 });
 
-// // Get message with PASSWORD from app.js and send it to edit.html
-// self.addEventListener('message', (event) => {
-//   console.log(`sw: message: event=`, event);
-//   if (event.data && event.data.type === 'getPassword') { // from app.js
-//     PASSWORD = event.data.password;
-//     console.log(`sw: got PASSWORD= ${PASSWORD}`);
-//     self.clients.matchAll().then((clients) => {
-//       console.log('sw: clients=', clients);
-//       const editPage = clients.find(client => client.url.includes('edit.html'));
-//       console.log(`sw: editPage= `, editPage);
-//       if (editPage) {
-//         const msg = { action: 'setPassword', password: PASSWORD};
-//         console.log(`sw: editPage posting message= `, msg);
-//         editPage.postMessage(msg);
-//       }
-//     });
-//   }
-// });
 
-self.addEventListener('clientschange', () => {
-  self.clients.matchAll().then((clients) => {
-    clients.forEach((client) => {
-      console.log('Client URL:', client.url);
-    });
-  });
-});
+// self.addEventListener('clientschange', () => {
+//   self.clients.matchAll().then((clients) => {
+//     clients.forEach((client) => {
+//       console.log('Client URL:', client.url);
+//     });
+//   });
+// });

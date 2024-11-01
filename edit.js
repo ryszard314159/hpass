@@ -15,32 +15,9 @@ el.fileInputModal = document.getElementById("fileInputModal");
 el.importFileInput = document.getElementById('importFileInput');
 
 let storedSites;
+let PASSWORD = null;
 
 //*** executable code ***/
-
-// window.onload = async function() {
-//   // Listen for messages from the service worker
-//   console.log(`edit: onload`);
-//   navigator.serviceWorker.addEventListener('message', async (event) => {
-//       console.log('edit: Received message from service worker:', event.data);
-//       if (event.data.action === 'setPassword') {
-//         const PASSWORD = event.data.password;
-//         // PASSWORD is used in storageGet()
-//         let opts = await storageGet({key: "options"});
-//         if (opts === null) {
-//           console.log(`edit: onload: opts == null`);
-//           console.log(`edit: localStorage.getItem("options")= ${localStorage.getItem("options")}`);
-//           console.log(`edit: onload: sessionPassword= ${sessionStorage.getItem("password")}`);
-//           alert("edit: opts === null");
-//         }
-//         el.salt.value = opts.salt;
-//         el.pepper.value = opts.pepper;
-//         el.length.value = opts.length;
-//         window.scrollTo(0, 0);
-//     }
-//   });
-// }
-
 
 window.onload = async function() {
   // Listen for messages from the service worker
@@ -50,14 +27,19 @@ window.onload = async function() {
     navigator.serviceWorker.controller.postMessage({ type: "retrieve-password" });
     navigator.serviceWorker.addEventListener("message", async (event) => {
       if (event.data.type === "password") {
-          let PASSWORD = event.data.password;
+          PASSWORD = event.data.password;
           console.log(`edit: got PASSWORD= ${PASSWORD}`);
-          // Use the password securely here
-          let opts = await storageGet({key: "options"});
+          let sessionPassword = sessionStorage.getItem("password");
+          if (PASSWORD !== sessionPassword) {
+            alert(`ERROR: edit: onload: PASSWORD !== sessionPassword`);
+            PASSWORD = sessionPassword;
+          }
+          let opts = await storageGet({key: "options", pwd: PASSWORD});
           if (opts === null) {
             console.log(`edit: onload: opts == null`);
             console.log(`edit: localStorage.getItem("options")= ${localStorage.getItem("options")}`);
             console.log(`edit: onload: sessionPassword= ${sessionStorage.getItem("password")}`);
+            console.log(`edit: onload: PASSWORD= ${PASSWORD}`);
             alert("edit: opts === null");
           }
           el.salt.value = opts.salt;
@@ -67,27 +49,7 @@ window.onload = async function() {
       }
     });
   }
-  // navigator.serviceWorker.addEventListener('message', async (event) => {
-  //     console.log('edit: Received message from service worker:', event.data);
-  //     if (event.data.action === 'setPassword') {
-  //       const PASSWORD = event.data.password;
-  //       // PASSWORD is used in storageGet()
-  //       let opts = await storageGet({key: "options"});
-  //       if (opts === null) {
-  //         console.log(`edit: onload: opts == null`);
-  //         console.log(`edit: localStorage.getItem("options")= ${localStorage.getItem("options")}`);
-  //         console.log(`edit: onload: sessionPassword= ${sessionStorage.getItem("password")}`);
-  //         alert("edit: opts === null");
-  //       }
-  //       el.salt.value = opts.salt;
-  //       el.pepper.value = opts.pepper;
-  //       el.length.value = opts.length;
-  //       window.scrollTo(0, 0);
-  //   }
-  // });
 }
-
-
 
 // document.querySelectorAll('.input').forEach(function(element) {
 //   const opts = await storageGet({key: "options"})
@@ -133,10 +95,10 @@ window.onload = async function() {
   
 //   storedSites = await storageGet({key: "sites"});
   el.hint.addEventListener('input', async function(event) {
-    const storedSites = await storageGet({key: "sites"});
+    const storedSites = await storageGet({key: "sites", pwd: PASSWORD});
     if (storedSites === null) return;
     let hopt = storedSites[el.hint.value];
-    const opts = await storageGet({key: "options"});
+    const opts = await storageGet({key: "options", pwd: PASSWORD});
     const x = (hopt === undefined) ? opts : {...opts, ...hopt};
     el.salt.value = x.salt;
     el.pepper.value = x.pepper;
@@ -155,7 +117,7 @@ async function saveOptions(args) {
   let msg;
   let currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
   let hint = el.hint.value;
-  const storedOpts = await storageGet({key: "options"});
+  const storedOpts = await storageGet({key: "options", pwd: PASSWORD});
   if (storedOpts === null) {
     const msg = `saveOptions: ERROR: problem decrypting stored options`;
     alert(msg);
@@ -174,7 +136,7 @@ async function saveOptions(args) {
     msg = `${msg}\nSpecial Character= ${currentOpts.pepper}`;
     msg = `${msg}\nLength= ${currentOpts.length}`;
     if (confirm(msg)) {
-      await storageSet({key: "options", value: currentOpts});
+      await storageSet({key: "options", value: currentOpts, pwd: PASSWORD});
       alert("Saved!");
     }
     return;
@@ -186,7 +148,7 @@ async function saveOptions(args) {
   }
   let sites = localStorage.getItem("sites");
   if (sites !== null) {
-    sites = await storageGet({key: "sites"});// decrypt: true is the default!
+    sites = await storageGet({key: "sites", pwd: PASSWORD});// decrypt: true is the default!
     if (sites === null) {
       alert(`saveOptions: ERROR: cannot decrypt sites!`);
       throw new Error(`saveOptions: ERROR: cannot decrypt sites!`);
@@ -229,7 +191,7 @@ async function saveOptions(args) {
     msg = `${msg}\nLength= ${hs.length}`;
     msg = `${msg}\nDo you want to save them?`;
     if (confirm(msg)) {
-      await storageSet({key: "sites", value: sites});
+      await storageSet({key: "sites", value: sites, pwd: PASSWORD});
       alert("Saved!")
     }
   // } else {
@@ -284,11 +246,15 @@ function handleExport(args = {}) {
   
   if (args.decrypted) {
     if (!confirm("Plain text export!")) return;
-    const password = sessionStorage.getItem("password");
+    const sessionPassword = sessionStorage.getItem("password");
+    if (PASSWORD !== sessionPassword) {
+      alert(`ERROR: edit: handleExport: PASSWORD !== sessionPassword`);
+      PASSWORD = sessionPassword;
+    }
     const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
       if (toExport[key] === undefined) return;
       // console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
-      toExport[key] = await decryptText(password, toExport[key]);
+      toExport[key] = await decryptText(PASSWORD, toExport[key]);
     });
     Promise.all(decryptionPromises).then(() => {
       finish();
@@ -327,7 +293,11 @@ function handleImport(event) {
               const backUp = JSON.stringify(localStorage);
               const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
               let opts;
-              const password = sessionStorage.getItem("password");
+              const sessionPassword = sessionStorage.getItem("password");
+              if (PASSWORD !== sessionPassword) {
+                alert(`ERROR: edit: handleImport: PASSWORD !== sessionPassword`);
+                PASSWORD = sessionPassword;
+              }
               for (const key in importedLocalStorage) {
                 const txt = importedLocalStorage[key]; // imported text
                 if (!CRYPTO.encryptedItems.includes(key)) { // for pwdHash and encrypted keys
@@ -338,7 +308,7 @@ function handleImport(event) {
                   localStorage.setItem(key, txt);
                   if (CRYPTO.encryptedItems.includes(key)) {
                       try {
-                        const decrypted = await decryptText(password, txt);
+                        const decrypted = await decryptText(PASSWORD, txt);
                         if (decrypted === null) { // Decryption failed
                           const parsed = JSON.parse(backUp);
                           Object.keys(parsed).forEach((key) => localStorage.setItem(key, parsed[key]));

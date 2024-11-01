@@ -365,8 +365,12 @@ function updateLocalStorage(key, value) {
 
 async function storageSet(args) {
   const debug = 0;
-  args = {key: null, value: null, pwd: CRYPTO.passwd, encrypt: true, ...args};
-  args.pwd = sessionStorage.getItem("password");
+  args = {key: null, value: null, pwd: null, encrypt: true, ...args};
+  // args.pwd = sessionStorage.getItem("password");
+  if (args.pwd === null) {
+    alert(`ERROR: storageSet: null password`);
+    throw new Error(`storageSet: null password`);
+  }
   if (!CRYPTO.encryptedItems.includes(args.key)) {
     throw new Error(`storageSet: invalid args.key= ${args.key}`);
   }
@@ -400,8 +404,8 @@ async function storageSet(args) {
 async function storageGet(args) {
   let rawValue = localStorage.getItem(args.key);
   if (rawValue === null) return null;
-  args = {key: null, pwd: CRYPTO.passwd, decrypt: true, ...args};
-  args.pwd = sessionStorage.getItem("password");
+  args = {key: null, pwd: null, decrypt: true, ...args};
+  // args.pwd = sessionStorage.getItem("password");
   if (args.pwd === null) {
     alert("storageGet: no password!?");
     throw new Error("no password!?");
@@ -452,8 +456,9 @@ async function storageGet(args) {
     msg = `${msg}\ndecryptedValue= ${decryptedValue}`;
     msg = `${msg}\nfinalValue= ${finalValue}`;
     msg = `${msg}\nargs.pwd= ${args.pwd}`;
-    const sessionPassword = sessionStorage.getItem("password");
-    msg = `${msg}\nsessionPassword= ${sessionPassword}`;
+    // const sessionPassword = sessionStorage.getItem("password");
+    // msg = `${msg}\nsessionPassword= ${sessionPassword}`;
+    msg = `${msg}\nPASSWORD= ${PASSWORD}`;
     console.error(msg);
     console.trace()
     alert(msg);

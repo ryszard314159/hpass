@@ -44,7 +44,7 @@ localStorage.clear = function() {
 };
 }
 
-let PASSWORD = '';
+let PASSWORD = null;
 
 const SHORTPOPUP = 1e3; // short popup time
 const LONGPOPUP = 1e5; // long popup time
@@ -95,35 +95,45 @@ el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
 // el.email = document.getElementById("email");
 
-el.gear.addEventListener('click', async function () {
-  // Send a message to the service worker
-  // navigator.serviceWorker.controller.postMessage({ type: "getPassword", password: PASSWORD });
-  // the controller is null?!?!
-  // navigator.serviceWorker.getRegistration().then((registration) => {
-  //   registration.active.postMessage({ type: "getPassword", password: PASSWORD });
-  // });
-  // setTimeout ( () => {
-  //   window.location.href = "edit.html";
-  // }, 10000 * 1);
+window.onload = function() {
+  // alert("PAGE LOADED!");
+  // TODO: revisit it later
+  // if (sessionStorage.getItem("passwordContainerHidden")) {
+  //   el.passwordContainer.style.display = "none";
+  //   sessionStorage.removeItem("passwordContainerHidden");
+  // }
 
   if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({
-        type: "store-password",
-        password: PASSWORD,
+    if (1) console.log(`app: navigator.serviceWorker.controller posting message`);
+    navigator.serviceWorker.controller.postMessage({ type: "retrieve-password" });
+    navigator.serviceWorker.addEventListener("message", async (event) => {
+      if (event.data.type === "password") {
+          PASSWORD = event.data.password;
+          console.log(`app: onload got PASSWORD= ${PASSWORD}`);
+          let sessionPassword = sessionStorage.getItem("password");
+          if (PASSWORD !== sessionPassword) {
+            let msg = `ERROR: app: onload: PASSWORD !== sessionPassword`;
+            msg = `${msg}\nPASSWORD= ${PASSWORD}\nsessionPassword= ${sessionPassword}`;
+            alert(msg);
+            PASSWORD = sessionPassword;
+          }
+      }
     });
-    console.log(`app: postMessage: PASSWORD= ${PASSWORD}`);
+  }
+  window.scrollTo(0, 0);
+}
+
+el.gear.addEventListener('click', async function () {
+  // Send a message to the service worker to store password in memory
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: "store-password", password: PASSWORD});
+    if (0) console.log(`app: postMessage: PASSWORD= ${PASSWORD}`);
+    if (0) alert(`app: postMessage: PASSWORD= ${PASSWORD}`);
+    window.location.href = "edit.html";
     setTimeout ( () => {
       window.location.href = "edit.html";
     }, 1000 * 1);
   }
-
-  // navigator.serviceWorker.ready.then(() => {
-  //   navigator.serviceWorker.getRegistration().then((registration) => {
-  //     registration.active.postMessage({ type: "getPassword", password: PASSWORD });
-  //     window.location.href = "edit.html";
-  //   });
-  // });
-
 });
 
 if (debug > 8) {
@@ -141,7 +151,7 @@ function noIdlingHere() {
         input.value = '';
         // Remove associated storage (if applicable)
         localStorage.removeItem(input.name);
-        sessionStorage.removeItem(input.name);
+        // sessionStorage.removeItem(input.name);
       });
       el.passwordContainer.style.display = "block";
       // el.salt.value = ''; TODO: wipes clean input boxes, but...
@@ -199,7 +209,7 @@ document.querySelector(".btn.change").addEventListener("click", function() {
 el.masterPassword.addEventListener("keydown", function(event) {
   const debug = false;
   if (debug) console.log(`el.masterPassword: event key: ${event.key}, code: ${event.code}`);
-  if (event.key === 'Enter') {
+  if (event.key === "Enter") {
     if (debug) console.log('masterPassword: Enter key pressed!');
     // event.preventDefault();
     // el.masterPassword.blur();
@@ -208,9 +218,10 @@ el.masterPassword.addEventListener("keydown", function(event) {
       if (storedHash === null) {
         alert("Password Hash was null.\nAll settings removed & Master Password set to empty string");
         localStorage.clear();
-        const hash = await createHash('');
+        PASSWORD = '';
+        const hash = await createHash(PASSWORD);
         hpassStorage.setItem("pwdHash", hash, `el.masterPassword: pwd=''`);
-        sessionStorage.setItem("password", '');
+        sessionStorage.setItem("password", PASSWORD);
         return;
       }
       const pwd = el.masterPassword.value;
@@ -218,22 +229,23 @@ el.masterPassword.addEventListener("keydown", function(event) {
       if (isCorrect) {
         PASSWORD = pwd;
         sessionStorage.setItem("password", pwd);
+        if (navigator.serviceWorker.controller)
+        alert(`INFO: app: isCorrect: PASSWORD= ${PASSWORD}`);
         el.passwordContainer.style.display = "none";
         window.sessionStorage.setItem("passwordContainerHidden", true);
         window.scrollTo(0, 0); // scroll window to the top!
       } else {
-        const sessionPassword = sessionStorage.getItem("password");
+        // const sessionPassword = sessionStorage.getItem("password");
         if (debug) console.log(`masterPassword: >>${pwd}<< Wrong password - try again!`);
         if (debug) console.log(`masterPassword: storedHash= ${storedHash}`);
-        if (debug) console.log(`masterPassword: sessionPassword= ${sessionPassword}`);
+        // if (debug) console.log(`masterPassword: sessionPassword= ${sessionPassword}`);
         alert(`>>${pwd}<< Wrong password - try again!`)
       }
       // verifyPassword(oldHash, pwd).then(isCorrect => {
-      el.newPassword.focus();
-    }, 30);
+      // el.newPassword.focus();
+    }, 0);
   }
 });
-
 
 el.newPassword.addEventListener("keydown", async (event) => {
   const debug = true;
@@ -258,23 +270,31 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const storedHash = localStorage.getItem("pwdHash");
   const isCorrect = await verifyPassword(storedHash, masterPassword);
   if (0) console.log(`masterPassword= ${masterPassword}, verified= ${verified}, storedHash= ${storedHash}`)
-  const sessionPassword = sessionStorage.getItem("password");
-  if (sessionPassword === null) {
-    alert(`ERROR: null sessionPassword - reset!`);
-    localStorage.clear();
-    window.location.href = "index.html";
-  }
+  // const sessionPassword = sessionStorage.getItem("password");
+  // PASSWORD = sessionPassword;
+  // if (sessionPassword === null) {
+  //   alert(`ERROR: null sessionPassword - reset!`);
+  //   localStorage.clear();
+  //   window.location.href = "index.html";
+  // }
   // sessionPassword = (sessionPassword === null) ? '' : sessionPassword;
+  const sessionPassword = sessionStorage.getItem("password");
+  if (PASSWORD !== sessionPassword) {
+    const msg = `ERROR: app: PASSWORD= ${PASSWORD}, sessionPassword= ${sessionPassword}`;
+    alert(msg);
+    // throw new Error(msg);
+    PASSWORD = sessionPassword;
+  }
   let msg = (isCorrect) ? '' : `Hash of entered Master Password does not match`;
-  msg = (masterPassword === sessionPassword)
+  msg = (masterPassword === PASSWORD)
         ? msg
-        : `${msg} | Master Password does not match Session Password`;
-  if (!isCorrect || masterPassword !== sessionPassword) {
+        : `${msg} | Master Password field does not match PASSWORD`;
+  if (!isCorrect || masterPassword !== PASSWORD) {
     let m = "Incorrect Master Password!"
     if (1) {
       msg = `${msg}\nstoredHash= ${storedHash.slice(0,9)}...`;
       msg = `${msg}\nmasterPassword= ${masterPassword}`;
-      msg = `${msg}\nstoredPassword= ${sessionPassword}`;
+      msg = `${msg}\nPASSWORD= ${PASSWORD}`;
     }
     alert(msg);
     el.newPassword.value = '';
@@ -335,9 +355,12 @@ function setGenericOptions() {
   if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
   PASSWORD = '';
   sessionStorage.setItem("password", '');
-  storageSet({key: "options", value: opts, debug: true}).then( () => {
+  storageSet({key: "options", value: opts, pwd: PASSWORD, debug: true}).then( () => {
     sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
   });
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD});
+  }
   localStorage.setItem("encrypted", true);
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
@@ -357,8 +380,19 @@ async function createSplashScreen(opts) {
   const debug = false;
   if (debug) console.log("createSplashScreen: at the START");
   if (debug) console.trace();
-  const sessionPassword = sessionStorage.getItem("password");
-  const pwdHash = await createHash(sessionPassword);
+  // const sessionPassword = sessionStorage.getItem("password");
+  // if (PASSWORD !== sessionPassword) {
+  //   alert(`ERROR: PASSWORD !== sessionPassword`);
+  //   PASSWORD = sessionPassword;
+  // }
+  PASSWORD = '';
+  sessionStorage.setItem("password", PASSWORD);
+  if (navigator.serviceWorker.controller) {
+    const msg = {type: "store-password", password: PASSWORD, tag: "createSplashScreen"};
+    navigator.serviceWorker.controller.postMessage(msg);
+  }
+  // const pwdHash = await createHash(sessionPassword);
+  const pwdHash = await createHash(PASSWORD);
   localStorage.setItem("pwdHash", pwdHash);
   const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
   const helpImg = `<img src="icons/help.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
@@ -435,6 +469,7 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
   .register(swPath, { scope: '/' })
   .then((reg) => {
+    alert(`app: register!!!`);
     let opts = localStorage.getItem("options");
     if (opts === null) {
       if (debug) console.log("app: register: null options in localStorage!");
@@ -655,10 +690,16 @@ document.querySelectorAll(".reset").forEach(function(element) {
       localStorage.removeItem("options");
       localStorage.removeItem("sites");
       // ( async () => {
-        const pwd = '';
-        sessionStorage.setItem("password", pwd);
-        const pwdHash = await createHash(pwd);
+        // const pwd = '';
+        // sessionStorage.setItem("password", pwd);
+        // const pwdHash = await createHash(pwd);
+        PASSWORD = '';
+        sessionStorage.setItem("password", PASSWORD);
+        const pwdHash = await createHash(PASSWORD);
         hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
+        if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD});
+        }
       // }) ();
       // window.location.reload();
       const opts = setGenericOptions();
@@ -671,22 +712,12 @@ document.getElementById("logop").addEventListener("click", function () {
   showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
 });
 
-window.onload = function() {
-  // alert("PAGE LOADED!");
-  // TODO: revisit it later
-  // if (sessionStorage.getItem("passwordContainerHidden")) {
-  //   el.passwordContainer.style.display = "none";
-  //   sessionStorage.removeItem("passwordContainerHidden");
-  // }
-  window.scrollTo(0, 0);
-}
-
 document.querySelectorAll(".lock").forEach(function(element) {
   element.addEventListener("click", function (event) {
-    const masterPassword = document.getElementById("masterPassword");
-    const passwordContainer = document.getElementById("passwordContainer");
+    // const masterPassword = document.getElementById("masterPassword");
+    // const passwordContainer = document.getElementById("passwordContainer");
     const lock = document.getElementById("lockSound");
-    if (masterPassword && passwordContainer && lockSound) {
+    if (el.masterPassword && el.passwordContainer && lockSound) {
       el.masterPassword.value = "";
       // el.passwordContainer.style.display = "block";
       el.passwordContainer.style.display = "none"; // TODO: change back to block
@@ -715,10 +746,10 @@ async function generateFun(event) {
   const debug = false;
   event.preventDefault();
   if (debug) console.log("generateFun: event.preventDefault() added");
-  let opts = await storageGet({key: "options"});
+  let opts = await storageGet({key: "options", pwd: PASSWORD});
   const hint = el.hint.value;
   if (hint !== "undefined") {
-    const sites = await storageGet({key: "sites"});
+    const sites = await storageGet({key: "sites", pwd: PASSWORD});
     if (sites !== null) {
       if (sites[hint] !== "undefined") {
         opts = {...opts, ...sites[hint]};
