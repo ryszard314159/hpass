@@ -138,27 +138,19 @@ self.addEventListener("message", (event) => {
   }
 });
 
-let storedPassword = "sw";
+let storedPassword = null;
 if (1) console.log(`sw: initialized storedPassword= ${storedPassword}, now= ${Date.now()}`);
-
 self.addEventListener("message", (event) => {
-  if (1) console.log(`sw: message: event= `, event);
-  if (event.data && event.data.type === "store-password") {
-      storedPassword = event.data.password;
-      const tag = event.data.password;
-      if (1) console.log(`sw: message: store: storedPassword= ${storedPassword}, tag= ${tag}`);
-  } else if (event.data && event.data.type === "retrieve-password") {
-      event.source.postMessage({type: "password", password: storedPassword});
-      if (1) console.log(`sw: message: retrieve: storedPassword= ${storedPassword}`);
-      // storedPassword = null; // Clear after sending
-  }
+  event.waitUntil((async () => {
+    if (1) console.log(`sw: message: event= `, event);
+    if (event.data && event.data.type === "store-password") {
+        storedPassword = event.data.password;
+        const tag = event.data.password;
+        if (1) console.log(`sw: message: store: storedPassword= ${storedPassword}, tag= ${tag}`);
+    } else if (event.data && event.data.type === "retrieve-password") {
+        event.source.postMessage({type: "password", password: storedPassword});
+        if (1) console.log(`sw: message: retrieve: storedPassword= ${storedPassword}`);
+        // storedPassword = null; // Clear after sending
+    }
+  })());
 });
-
-
-// self.addEventListener('clientschange', () => {
-//   self.clients.matchAll().then((clients) => {
-//     clients.forEach((client) => {
-//       console.log('Client URL:', client.url);
-//     });
-//   });
-// });

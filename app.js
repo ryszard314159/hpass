@@ -126,7 +126,7 @@ window.onload = function() {
 el.gear.addEventListener('click', async function () {
   // Send a message to the service worker to store password in memory
   if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({ type: "store-password", password: PASSWORD});
+    navigator.serviceWorker.controller.postMessage({ type: "store-password", password: PASSWORD, tag: "app: gear"});
     if (0) console.log(`app: postMessage: PASSWORD= ${PASSWORD}`);
     if (0) alert(`app: postMessage: PASSWORD= ${PASSWORD}`);
     window.location.href = "edit.html";
@@ -359,7 +359,7 @@ function setGenericOptions() {
     sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
   });
   if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD});
+    navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD, tag: "app: setGenericOptions"});
   }
   localStorage.setItem("encrypted", true);
   let msg = `<br>Randomly generated secret is
@@ -464,10 +464,10 @@ async function createSplashScreen(opts) {
 
 if ("serviceWorker" in navigator) {
   const debug = false;
-  const swPath = "sw.js";
+  // const swPath = "sw.js";
   if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
-  .register(swPath, { scope: '/' })
+  .register("/sw.js", { scope: '/' })
   .then((reg) => {
     alert(`app: register!!!`);
     let opts = localStorage.getItem("options");
@@ -698,7 +698,7 @@ document.querySelectorAll(".reset").forEach(function(element) {
         const pwdHash = await createHash(PASSWORD);
         hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
         if (navigator.serviceWorker.controller) {
-          navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD});
+          navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD, teg: "app: reset"});
         }
       // }) ();
       // window.location.reload();
