@@ -158,6 +158,73 @@
         <a href="help.html#Contact">info@hpass.app</a>
       </div>
     </div>
+    <div id="editContainer" style="display: none">
+      <div id="editIcons" class="topIcons">
+        <img class="btn import" src="icons/import.svg" title="Import">
+        <img class="btn export" src="icons/export.svg" title="Export">
+        <img id="save" class="btn save" src="icons/save.svg" title="Save"/>
+        <!-- <img class="btn edit" src="icons/edit.svg" title="Edit"> -->
+        <a href="index.html"> 
+          <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
+        </a>
+      </div>
+      <div id= "inputsContainer" class="inputsContainer">
+        <div id="hintContainer" class="container">
+          <input id="hint" class="input" placeholder="Hint">
+        </div>
+        <div id="saltContainer" class="container">
+          <button id="saltButton" class="leading-icon">🤫</button>
+          <input id="salt" class="input" placeholder="Secret">
+        </div>
+        <div id="pepperContainer" class="container">
+          <button id="pepperButton" class="leading-icon"><span style="color: red">&#x1F336</span></button>
+          <input id="pepper" class="input" placeholder="Special Character">
+        </div>
+        <div id="lengthContainer" class="container">
+          <button id="lengthButton" class="leading-icon">📏</button>
+          <input id="length" class="input" placeholder="Length">
+        </div>
+      </div>
+
+      <div style="position: relative; width: 100%; height: 5%; background-color: lightgrey;
+      left: 0; right:0; margin: 0 0 0 0; vertical-align: center;
+      align-items: center; display: inline-flex">
+      <!-- <a href="index.html"> <img class="btn" src="icons/back.svg"/>Back</a> -->
+      <span id="back"> <img class="btn" src="icons/back.svg"/>Back</span>
+      </div>
+
+      <div style="width: 90%; justify-content: center; text-align: center;
+                  margin: 1rem 1rem 0 1rem;">
+        <p style="justify-content: center; text-align: left;">
+          <ul>
+            <li><strong>Hint</strong>: leave it empty to change <em>generic settings</em>.
+                You may need to create hint/site <em>specific settings</em>
+                if a site does not allow <strong>Special Character</strong> in your
+                <em>generic settings</em>, or demands longer/shorter password etc.
+                In such a case, enter a <strong>Hint</strong>,
+                modify <strong>Special Character</strong> and/or <strong>Length</strong>.
+
+            </li>
+            <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
+            <li><strong>Special Character
+                (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
+                one or more _.-!@$?% etc.</li>
+            <li><strong>Length (📏):</strong> longer is better,
+                        note however that a lot of sites have unreasonably short upper limit
+                        - 15 seems to be a reasonable balance between security and a need to create
+                        many <em>site-specific settings</em>.</li>
+          </ul>
+        </p>
+      </div>
+
+      <div id="fileInputModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Select a JSON file to import hpass settings:</p><br>
+            <input type="file" id="importFileInput" accept="application/json">
+        </div>
+      </div>
+    </div>
     <hr />
     <footer style="width: 90%; text-align: left; margin: 5% 5% 5% 5%;">
       <h2 style="text-align: center">

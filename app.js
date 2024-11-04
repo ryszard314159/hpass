@@ -61,7 +61,9 @@ el.hint = document.getElementById("hint");
 // el.salt = document.getElementById("salt");
 // el.pepper = document.getElementById("pepper");
 // el.length = document.getElementById("length");
+el.back = document.getElementById("back");
 el.burn = document.getElementById("burn");
+el.editContainer = document.getElementById("editContainer");
 el.peak = document.getElementById("peak"); // instead of top
 el.range = document.getElementById("range");
 el.gear = document.getElementById("gear");
@@ -123,17 +125,24 @@ window.onload = function() {
   window.scrollTo(0, 0);
 }
 
-el.gear.addEventListener('click', async function () {
-  // Send a message to the service worker to store password in memory
-  if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({ type: "store-password", password: PASSWORD, tag: "app: gear"});
-    if (0) console.log(`app: postMessage: PASSWORD= ${PASSWORD}`);
-    if (0) alert(`app: postMessage: PASSWORD= ${PASSWORD}`);
-    window.location.href = "edit.html";
-    setTimeout ( () => {
-      window.location.href = "edit.html";
-    }, 1000 * 1);
-  }
+// el.gear.addEventListener('click', async function () {
+//   // Send a message to the service worker to store password in memory
+//   if (navigator.serviceWorker.controller) {
+//     navigator.serviceWorker.controller.postMessage({ type: "store-password", password: PASSWORD, tag: "app: gear"});
+//     if (0) console.log(`app: postMessage: PASSWORD= ${PASSWORD}`);
+//     if (0) alert(`app: postMessage: PASSWORD= ${PASSWORD}`);
+//     window.location.href = "edit.html";
+//     setTimeout ( () => {
+//       window.location.href = "edit.html";
+//     }, 1000 * 1);
+//   }
+// });
+
+el.gear.addEventListener('click', function () {
+   el.editContainer.style.display = "block";
+});
+el.back.addEventListener('click', function () {
+  el.editContainer.style.display = "none";
 });
 
 if (debug > 8) {
@@ -230,7 +239,7 @@ el.masterPassword.addEventListener("keydown", function(event) {
         PASSWORD = pwd;
         sessionStorage.setItem("password", pwd);
         if (navigator.serviceWorker.controller)
-        alert(`INFO: app: isCorrect: PASSWORD= ${PASSWORD}`);
+        // alert(`INFO: app: isCorrect: PASSWORD= ${PASSWORD}`);
         el.passwordContainer.style.display = "none";
         window.sessionStorage.setItem("passwordContainerHidden", true);
         window.scrollTo(0, 0); // scroll window to the top!
@@ -905,5 +914,7 @@ document.body.querySelectorAll(".close").forEach(function(element) {
     epp.style.display = "none";
   });
 });
+
+// document.getElementById("editContainer")
 
 
