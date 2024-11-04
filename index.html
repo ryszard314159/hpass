@@ -109,26 +109,28 @@
     </div>
 
     <div id="burnAndPeak" class="inputsContainer">
-        <div id="hintContainer" class="container">
-          <!-- <a href="edit.html"><img id="gear" class="" src="icons/gear.svg"></a> -->
-          <img id="gear" class="" src="icons/gear.svg">
-          <input id="hint" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Enter Hint"/>
-          <img id="generate" class="" src="icons/generate.svg">
-        </div>
-        <div id="burnContainer" class="container" >
-          <button id="burnButton" class="leading-icon">🔥</button>
-          <input id="burn" class="input"
-            placeholder="Warm-up rounds (0-999999)"/>
-        </div>
-        <div id="peakContainer" class="container">
-          <button id="peakButton" class="leading-icon">🤐</button>
-          <input id="peak" class="input" placeholder="Top Secret" />
-        </div>
-    </div>
+      <!-- <div id="topIcons2" class="topIcons">
+        <a href="index.html"> 
+          <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
+        </a>
+      </div> -->
+      <div id="pgHintContainer" class="container">
+        <img id="gear" class="" src="icons/gear.svg">
+        <input id="pgHint" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Enter Hint"/>
+        <img id="generate" class="" src="icons/generate.svg">
+      </div>
 
-    <hr>
-
-    <div id="topSecurity" style="width: 90%; text-align: left;
+      <div id="burnContainer" class="container" >
+        <button id="burnButton" class="leading-icon">🔥</button>
+        <input id="burn" class="input"
+          placeholder="Warm-up rounds (0-999999)"/>
+      </div>
+      <div id="peakContainer" class="container">
+        <button id="peakButton" class="leading-icon">🤐</button>
+        <input id="peak" class="input" placeholder="Top Secret" />
+      </div>
+      <hr>
+      <div id="topSecurity" style="width: 90%; text-align: left;
           margin: 5% 5% 5% 5%;">
         <strong>Warm-up ( 🔥 )</strong> and
         <strong>Top Secret ( 🤐 )</strong> are never saved.
@@ -137,6 +139,7 @@
         stored (and encrypted) HPASS data hacked,
         passwords generated with non-empty one (or both) of these fields,
         still will be safe.  
+      </div>
     </div>
 
     <hr>
@@ -158,6 +161,7 @@
         <a href="help.html#Contact">info@hpass.app</a>
       </div>
     </div>
+
     <div id="editContainer" style="display: none">
       <div id="editIcons" class="topIcons">
         <img class="btn import" src="icons/import.svg" title="Import">
@@ -168,9 +172,10 @@
           <img id="lock" class="btn lock" src="icons/lock.svg" title="Lock"/>
         </a>
       </div>
+
       <div id= "inputsContainer" class="inputsContainer">
-        <div id="hintContainer" class="container">
-          <input id="hint" class="input" placeholder="Hint">
+        <div id="edHintContainer" class="container">
+          <input id="edHint" class="input" placeholder="Hint">
         </div>
         <div id="saltContainer" class="container">
           <button id="saltButton" class="leading-icon">🤫</button>
@@ -186,14 +191,14 @@
         </div>
       </div>
 
-      <div style="position: relative; width: 100%; height: 5%; background-color: lightgrey;
+      <div id="backBanner" style="position: relative; width: 100%; height: 5%; background-color: lightgrey;
       left: 0; right:0; margin: 0 0 0 0; vertical-align: center;
       align-items: center; display: inline-flex">
       <!-- <a href="index.html"> <img class="btn" src="icons/back.svg"/>Back</a> -->
       <span id="back"> <img class="btn" src="icons/back.svg"/>Back</span>
       </div>
 
-      <div style="width: 90%; justify-content: center; text-align: center;
+      <div id="editLegend" style="width: 90%; justify-content: center; text-align: center;
                   margin: 1rem 1rem 0 1rem;">
         <p style="justify-content: center; text-align: left;">
           <ul>
@@ -225,6 +230,7 @@
         </div>
       </div>
     </div>
+
     <hr />
     <footer style="width: 90%; text-align: left; margin: 5% 5% 5% 5%;">
       <h2 style="text-align: center">

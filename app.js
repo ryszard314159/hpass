@@ -57,10 +57,11 @@ const URL = "https://hpass.app";
 
 // Selecting elements
 const el = {};
-el.hint = document.getElementById("hint");
-// el.salt = document.getElementById("salt");
-// el.pepper = document.getElementById("pepper");
-// el.length = document.getElementById("length");
+el.pgHint = document.getElementById("pgHint"); // to generate password
+el.edHint = document.getElementById("edHint"); // to edit options and sites
+el.salt = document.getElementById("salt");
+el.pepper = document.getElementById("pepper");
+el.length = document.getElementById("length");
 el.back = document.getElementById("back");
 el.burn = document.getElementById("burn");
 el.editContainer = document.getElementById("editContainer");
@@ -79,7 +80,7 @@ el.help = document.getElementById("help");
 el.storeButton = document.getElementById("storeButton");
 el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
-el.hintButton = document.getElementById("hintButton");
+// el.hintButton = document.getElementById("hintButton"); // TODO: remove
 el.adunit = document.getElementById("adunit");
 el.more = document.getElementById("more");
 el.notify = document.getElementById("notify");
@@ -95,7 +96,9 @@ el.exportButton = document.getElementById("exportButton");
 el.importButton = document.getElementById("importButton");
 el.hamburger = document.getElementById("hamburger");
 el.navMenu = document.getElementById("nav-menu");
-// el.email = document.getElementById("email");
+el.save = document.getElementById("save");
+el.fileInputModal = document.getElementById("fileInputModal");
+el.importFileInput = document.getElementById('importFileInput');
 
 window.onload = function() {
   // alert("PAGE LOADED!");
@@ -105,23 +108,24 @@ window.onload = function() {
   //   sessionStorage.removeItem("passwordContainerHidden");
   // }
 
-  if (navigator.serviceWorker.controller) {
-    if (1) console.log(`app: navigator.serviceWorker.controller posting message`);
-    navigator.serviceWorker.controller.postMessage({ type: "retrieve-password" });
-    navigator.serviceWorker.addEventListener("message", async (event) => {
-      if (event.data.type === "password") {
-          PASSWORD = event.data.password;
-          console.log(`app: onload got PASSWORD= ${PASSWORD}`);
-          let sessionPassword = sessionStorage.getItem("password");
-          if (PASSWORD !== sessionPassword) {
-            let msg = `ERROR: app: onload: PASSWORD !== sessionPassword`;
-            msg = `${msg}\nPASSWORD= ${PASSWORD}\nsessionPassword= ${sessionPassword}`;
-            alert(msg);
-            PASSWORD = sessionPassword;
-          }
-      }
-    });
-  }
+  // TODO: need tp figure out how to store PASSWORD in-memory in sw
+  // if (navigator.serviceWorker.controller) {
+  //   if (1) console.log(`app: navigator.serviceWorker.controller posting message`);
+  //   navigator.serviceWorker.controller.postMessage({ type: "retrieve-password" });
+  //   navigator.serviceWorker.addEventListener("message", async (event) => {
+  //     if (event.data.type === "password") {
+  //         PASSWORD = event.data.password;
+  //         console.log(`app: onload got PASSWORD= ${PASSWORD}`);
+  //         let sessionPassword = sessionStorage.getItem("password");
+  //         if (PASSWORD !== sessionPassword) {
+  //           let msg = `ERROR: app: onload: PASSWORD !== sessionPassword`;
+  //           msg = `${msg}\nPASSWORD= ${PASSWORD}\nsessionPassword= ${sessionPassword}`;
+  //           alert(msg);
+  //           PASSWORD = sessionPassword;
+  //         }
+  //     }
+  //   });
+  // }
   window.scrollTo(0, 0);
 }
 
@@ -138,8 +142,12 @@ window.onload = function() {
 //   }
 // });
 
-el.gear.addEventListener('click', function () {
-   el.editContainer.style.display = "block";
+el.gear.addEventListener('click', async function () {
+  const opts = await storageGet({key: "options", pwd: PASSWORD});
+  el.salt.value = opts.salt;
+  el.pepper.value = opts.pepper;
+  el.length.value = opts.length;
+  el.editContainer.style.display = "block";
 });
 el.back.addEventListener('click', function () {
   el.editContainer.style.display = "none";
@@ -238,7 +246,8 @@ el.masterPassword.addEventListener("keydown", function(event) {
       if (isCorrect) {
         PASSWORD = pwd;
         sessionStorage.setItem("password", pwd);
-        if (navigator.serviceWorker.controller)
+        // TODO: need tp figure out how to store PASSWORD in-memory in sw
+        // if (navigator.serviceWorker.controller)
         // alert(`INFO: app: isCorrect: PASSWORD= ${PASSWORD}`);
         el.passwordContainer.style.display = "none";
         window.sessionStorage.setItem("passwordContainerHidden", true);
@@ -290,7 +299,8 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const sessionPassword = sessionStorage.getItem("password");
   if (PASSWORD !== sessionPassword) {
     const msg = `ERROR: app: PASSWORD= ${PASSWORD}, sessionPassword= ${sessionPassword}`;
-    alert(msg);
+    // alert(msg);
+    console.log(msg);
     // throw new Error(msg);
     PASSWORD = sessionPassword;
   }
@@ -367,9 +377,10 @@ function setGenericOptions() {
   storageSet({key: "options", value: opts, pwd: PASSWORD, debug: true}).then( () => {
     sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
   });
-  if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD, tag: "app: setGenericOptions"});
-  }
+  // TODO: keep this code for now - need to figure out how to store PASSWORD in-memory in sw
+  // if (navigator.serviceWorker.controller) {
+  //   navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD, tag: "app: setGenericOptions"});
+  // }
   localStorage.setItem("encrypted", true);
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
@@ -396,10 +407,11 @@ async function createSplashScreen(opts) {
   // }
   PASSWORD = '';
   sessionStorage.setItem("password", PASSWORD);
-  if (navigator.serviceWorker.controller) {
-    const msg = {type: "store-password", password: PASSWORD, tag: "createSplashScreen"};
-    navigator.serviceWorker.controller.postMessage(msg);
-  }
+  // TODO: need tp figure out how to store PASSWORD in-memory in sw
+  // if (navigator.serviceWorker.controller) {
+  //   const msg = {type: "store-password", password: PASSWORD, tag: "createSplashScreen"};
+  //   navigator.serviceWorker.controller.postMessage(msg);
+  // }
   // const pwdHash = await createHash(sessionPassword);
   const pwdHash = await createHash(PASSWORD);
   localStorage.setItem("pwdHash", pwdHash);
@@ -706,9 +718,10 @@ document.querySelectorAll(".reset").forEach(function(element) {
         sessionStorage.setItem("password", PASSWORD);
         const pwdHash = await createHash(PASSWORD);
         hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
-        if (navigator.serviceWorker.controller) {
-          navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD, teg: "app: reset"});
-        }
+        // TODO: need tp figure out how to store PASSWORD in-memory in sw
+        // if (navigator.serviceWorker.controller) {
+        //   navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD, teg: "app: reset"});
+        // }
       // }) ();
       // window.location.reload();
       const opts = setGenericOptions();
@@ -756,12 +769,12 @@ async function generateFun(event) {
   event.preventDefault();
   if (debug) console.log("generateFun: event.preventDefault() added");
   let opts = await storageGet({key: "options", pwd: PASSWORD});
-  const hint = el.hint.value;
-  if (hint !== "undefined") {
+  const pgHint = el.pgHint.value;
+  if (pgHint !== "undefined") {
     const sites = await storageGet({key: "sites", pwd: PASSWORD});
     if (sites !== null) {
-      if (sites[hint] !== "undefined") {
-        opts = {...opts, ...sites[hint]};
+      if (sites[pgHint] !== "undefined") {
+        opts = {...opts, ...sites[pgHint]};
       }
     }
   }
@@ -775,7 +788,7 @@ async function generateFun(event) {
   let args = { ...opts }; // deep copy
   args.burn = el.burn.value;
   args.peak = el.peak.value;
-  args.hint = el.hint.value;
+  args.hint = el.pgHint.value;
   if (debug) console.log("generate:1: opts=", opts);
   args.digits = false;
   args.unicode = false;
@@ -825,7 +838,7 @@ function handleFeedback() {
 el.generate.addEventListener("click", handleFeedback)
 el.generate.addEventListener("click", generateFun);
 
-el.hint.addEventListener("keydown", (event) => {
+el.pgHint.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     generateFun(event);
   }
@@ -852,54 +865,7 @@ function handleLinkClick(event) {
 
 // ChatGPT...
 
-// Function to export localStorage as a JSON file
-// function handleExport(args = {}) {
-//   args = {fileName: "hpass-settings.json", decrypted: false, ...args};
-//   const toExport = {}; // prepare localStorage copy for export
-//   Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
-//   toExport.encrypted = !args.decrypted;
-
-//   console.log(`DEBUG: handleExport: toExport= ${JSON.stringify(toExport)}`);
-
-//   function finish() {
-//     const x = JSON.stringify(toExport, null, 2);
-//     const blob = new Blob([x], { type: 'application/json' });
-//     const link = document.createElement('a');
-//     link.download = args.fileName;
-//     link.href = window.URL.createObjectURL(blob);
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-//   }
-  
-//   if (args.decrypted) {
-//     if (!confirm("Plain text export!")) return;
-//     const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
-//       if (toExport[key] === undefined) return;
-//       // console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
-//       toExport[key] = await decryptText(CRYPTO.passwd, toExport[key]);
-//     });
-//     Promise.all(decryptionPromises).then(() => {
-//       finish();
-//     });
-//   } else {
-//     if (!confirm("Encrypted export\nDouble Click for decrypted (plain text) export!")) return;
-//     finish();
-//   }
-// }
-
-const span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal
-// document.body.querySelectorAll(".import").forEach(function(element) {
-//   const debug = false;
-//   if (debug) console.log(".import: selected");
-//   element.addEventListener("click", function() {
-//     if (debug) console.log(".import: clicked");
-//     el.fileInputModal.style.display = "block";
-//     el.fileInputModal.style.zIndex = "99";
-//   });
-// });
+// const span = document.getElementsByClassName("close")[0];
 
 document.body.querySelectorAll(".close").forEach(function(element) {
   const debug = false;
@@ -918,3 +884,262 @@ document.body.querySelectorAll(".close").forEach(function(element) {
 // document.getElementById("editContainer")
 
 
+el.save.addEventListener("click", saveOptions);
+async function saveOptions(args) {
+  args = {debug: -1, ...args};
+  const debug = args.debug;
+  let msg;
+  let currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  let hint = el.edHint.value;
+  const storedOpts = await storageGet({key: "options", pwd: PASSWORD});
+  if (storedOpts === null) {
+    const msg = `saveOptions: ERROR: problem decrypting stored options`;
+    alert(msg);
+    throw new Error(msg);
+  }
+  const diff = objDiff(currentOpts, storedOpts);
+  if (hint === '' && Object.keys(diff).length === 0) {
+    msg = `Stored generic settings are the same.\nNothing to save.`
+    alert(msg);
+    console.log(`saveOptions: ${msg}`);
+    return;
+  }
+  if (hint === '' && Object.keys(diff).length !== 0) {
+    msg = `New generic settings:\n`;
+    msg = `${msg}\nSecret= ${currentOpts.salt}`;
+    msg = `${msg}\nSpecial Character= ${currentOpts.pepper}`;
+    msg = `${msg}\nLength= ${currentOpts.length}`;
+    if (confirm(msg)) {
+      await storageSet({key: "options", value: currentOpts, pwd: PASSWORD});
+      alert("Saved!");
+    }
+    return;
+  }
+  // hint !== ''
+  if (Object.keys(diff).length === 0) {
+    alert(`Nothing site-specific to save for ${hint}`)
+    return;
+  }
+  let sites = localStorage.getItem("sites");
+  if (sites !== null) {
+    sites = await storageGet({key: "sites", pwd: PASSWORD});// decrypt: true is the default!
+    if (sites === null) {
+      alert(`saveOptions: ERROR: cannot decrypt sites!`);
+      throw new Error(`saveOptions: ERROR: cannot decrypt sites!`);
+    }
+  } else {
+    sites = {};
+  }
+  const storedHintValues = sites[hint];
+  let replacedOrCreated;
+  if (storedHintValues === undefined) {
+    sites[hint] = diff;
+    replacedOrCreated = 'created';
+  } else {
+    sites[hint] = objDiff({...storedHintValues, ...currentOpts}, storedOpts);
+    replacedOrCreated = 'replaced';
+  }
+  if (debug > 0) console.log(msg);
+  if (debug > 0) console.log(`before : objDiff: storedOpts= ${JSON.stringify(storedOpts)}`);
+  if (debug > 0) console.log(`before : objDiff: sites= ${JSON.stringify(sites)}`);
+  // Object.keys(sites).forEach( (key) => {sites[key] = objDiff(sites[key], storedOpts)});
+  // sites[hint] = objDiff(sites[hint], storedOpts)
+  const hintDiff = (storedHintValues !== undefined) ? objDiff(sites[hint], storedHintValues) : sites[hint];
+  if (Object.keys(hintDiff).length === 0) {
+    alert(`Nothing new for ${hint}`);
+    return;
+  }
+  if (debug > 0) console.log(`before cleanUp: sites= ${JSON.stringify(sites)}`);
+  // sites = cleanUp(sites);
+  if (debug > 0) console.log(`after cleanUp: typeof(sites)= ${typeof(sites)}, sites= `, sites);
+  if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
+  // if (sites !== null) {
+    if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
+    msg = `Hint-specific settings ${replacedOrCreated}:\n`;
+    msg = `${msg}\nHint= ${hint}`;
+    // msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
+    // msg = `${msg}\nNew settings= ${JSON.stringify(sites[hint])}`;
+    const hs = {...currentOpts, ...sites[hint]};
+    msg = `${msg}\nSecret= ${hs.salt}`;
+    msg = `${msg}\nSpecial Character= ${hs.pepper}`;
+    msg = `${msg}\nLength= ${hs.length}`;
+    msg = `${msg}\nDo you want to save them?`;
+    if (confirm(msg)) {
+      await storageSet({key: "sites", value: sites, pwd: PASSWORD});
+      alert("Saved!")
+    }
+  // } else {
+  //   localStorage.removeItem("sites");
+  //   alert(`All hint-specific settings removed!`);
+  // }
+}
+
+el.edHint.addEventListener('input', async function(event) {
+  const storedSites = await storageGet({key: "sites", pwd: PASSWORD});
+  if (storedSites === null) return;
+  let hopt = storedSites[el.edHint.value];
+  const opts = await storageGet({key: "options", pwd: PASSWORD});
+  const x = (hopt === undefined) ? opts : {...opts, ...hopt};
+  el.salt.value = x.salt;
+  el.pepper.value = x.pepper;
+  el.length.value = x.length;
+});
+
+/*******************/
+
+document.querySelectorAll('.export').forEach(function(element) {
+  const timeDiffThreshold = 300;
+  let lastClickTime = 0;
+  let pendingClick = null;
+  element.addEventListener('click', function (event) {
+    const currentTime = Date.now();
+    const timeDiff = currentTime - lastClickTime;
+    lastClickTime = currentTime;
+    clearTimeout(pendingClick);
+    if (timeDiff > timeDiffThreshold) {
+      pendingClick = setTimeout(function() {
+        handleExport({decrypted: false}); // Single click
+      }, timeDiffThreshold);
+    } else {
+      handleExport({decrypted: true}); // Double click
+    }
+  });
+});
+
+function handleExport(args = {}) {
+  args = {fileName: "hpass-settings", decrypted: false, ...args};
+  const toExport = {}; // prepare localStorage copy for export
+  Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
+  toExport.encrypted = !args.decrypted;
+
+  console.log(`DEBUG: handleExport: toExport= ${JSON.stringify(toExport)}`);
+
+  function finish() {
+    const x = JSON.stringify(toExport, null, 2);
+    const blob = new Blob([x], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.download = args.fileName;
+    link.href = window.URL.createObjectURL(blob);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+  if (args.decrypted) {
+    if (!confirm("Plain text export!")) return;
+    const sessionPassword = sessionStorage.getItem("password");
+    if (PASSWORD !== sessionPassword) {
+      alert(`ERROR: edit: handleExport: PASSWORD !== sessionPassword`);
+      PASSWORD = sessionPassword;
+    }
+    const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
+      if (toExport[key] === undefined) return;
+      // console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
+      toExport[key] = await decryptText(PASSWORD, toExport[key]);
+    });
+    Promise.all(decryptionPromises).then(() => {
+      finish();
+    });
+  } else {
+    if (!confirm("Encrypted export\nDouble Click for decrypted (plain text) export!")) return;
+    finish();
+  }
+}
+
+document.body.querySelectorAll(".import").forEach(function(element) {
+  const debug = false;
+  if (debug) console.log(".import: selected");
+  element.addEventListener("click", function() {
+    if (debug) console.log(".import: clicked");
+    el.fileInputModal.style.display = "block";
+    el.fileInputModal.style.zIndex = "99";
+  });
+});
+
+el.importFileInput.addEventListener('change', handleImport);
+function handleImport(event) {
+  const debug = false;
+  const file = el.importFileInput.files[0];
+  const fileName = el.importFileInput.value;
+  if (debug) console.log("handleImport: file=", file);
+  if (file) {
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+          try {
+              // Parse the JSON string from the file
+              if (debug) console.log("handleImport: e.target.result=", e.target.result);
+              const importedLocalStorage = JSON.parse(e.target.result);
+              console.log("handleImport: importedLocalStorage= ", importedLocalStorage);
+              if (debug) alert(`INFO: handleImport: e.target.result= ${e.target.result})}`)
+              if (debug) alert(`INFO: handleImport: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
+              const backUp = JSON.stringify(localStorage);
+              const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
+              let opts;
+              const sessionPassword = sessionStorage.getItem("password");
+              if (PASSWORD !== sessionPassword) {
+                alert(`ERROR: edit: handleImport: PASSWORD !== sessionPassword`);
+                PASSWORD = sessionPassword;
+              }
+              for (const key in importedLocalStorage) {
+                const txt = importedLocalStorage[key]; // imported text
+                if (!CRYPTO.encryptedItems.includes(key)) { // for pwdHash and encrypted keys
+                  localStorage.setItem(key, txt);
+                  continue;
+                } // for "options" || "sites"
+                if (isEncrypted) {
+                  localStorage.setItem(key, txt);
+                  if (CRYPTO.encryptedItems.includes(key)) {
+                      try {
+                        const decrypted = await decryptText(PASSWORD, txt);
+                        if (decrypted === null) { // Decryption failed
+                          const parsed = JSON.parse(backUp);
+                          Object.keys(parsed).forEach((key) => localStorage.setItem(key, parsed[key]));
+                          alert(`ERROR: wrong Master Password`);
+                          return; // Exit the function
+                        } else {
+                          // opts = JSON.parse(decrypted);
+                          setDisplayedOptions(decrypted);
+                        }
+                      } catch (error) {
+                        console.error('Error parsing JSON file:', error);
+                        alert('Failed to import settings. Please ensure the file is a valid JSON.');
+                      }
+                  }
+                } else {
+                  encryptText(PASSWORD, txt).then( encrypted => {
+                    localStorage.setItem(key, encrypted);
+                  });
+                  // opts = JSON.parse(txt);
+                  setDisplayedOptions(txt);
+                }
+              }
+              localStorage.setItem("encrypted", true);
+              if (debug) alert(`INFO: handleImport: localStorage= ${JSON.stringify(localStorage)}`);
+              alert(`Settings imported from: ${fileName}`);
+          } catch (error) {
+              console.error('Error parsing JSON file:', error);
+              alert('Failed to import settings. Please ensure the file is a valid JSON.');
+          }
+      };
+      reader.readAsText(file);
+      el.fileInputModal.style.display = "none";
+      el.importFileInput.value = "";
+  } else {
+      alert('No file selected.');
+  }
+}
+
+function setDisplayedOptions(decrypted) {
+  const debug = false;
+  const opts = JSON.parse(decrypted);
+  const beforeValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  el.salt.value = opts.salt;
+  el.pepper.value = opts.pepper;
+  el.length.value = opts.length;
+  const afterValues = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  let msg = `INFO: setDisplayedOptions:`
+  msg = `${msg}\nbeforeValues= ${JSON.stringify(beforeValues)}`
+  msg = `${msg}\nnew opts= ${JSON.stringify(opts)}`;
+  msg = `${msg}\nafterValues= ${JSON.stringify(afterValues)}`;
+  if (debug) alert(msg);
+}
