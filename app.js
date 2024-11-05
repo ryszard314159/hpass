@@ -148,22 +148,24 @@ el.gear.addEventListener('click', async function () {
   el.pepper.value = opts.pepper;
   el.length.value = opts.length;
   el.editContainer.style.display = "block";
-  //
-  const nonWhitespaceHeight = Array.from(el.editContainer.children).reduce((acc, child) => {
-    const rect = child.getBoundingClientRect();
-    const height = rect.bottom - rect.top;
-    return acc + height;
-  }, 0);
-  const viewportHeight = window.innerHeight;
-  const occupancyPercentageNonWhitespace = (nonWhitespaceHeight / viewportHeight) * 100;
-  console.log(`Non-whitespace content occupies ${occupancyPercentageNonWhitespace}% of the viewport height.`);
-  //
-  el.adunit.style.top = `${occupancyPercentageNonWhitespace + 2}%`;
+  // //
+  // const nonWhitespaceHeight = Array.from(el.editContainer.children).reduce((acc, child) => {
+  //   const rect = child.getBoundingClientRect();
+  //   const height = rect.bottom - rect.top;
+  //   return acc + height;
+  // }, 0);
+  // const viewportHeight = window.innerHeight;
+  // const occupancyPercentageNonWhitespace = (nonWhitespaceHeight / viewportHeight) * 100;
+  // console.log(`Non-whitespace content occupies ${occupancyPercentageNonWhitespace}% of the viewport height.`);
+  // //
+  // el.adunit.style.top = `${occupancyPercentageNonWhitespace + 2}%`;
+  el.adunit.style.display = "none";
 });
 
 el.back.addEventListener('click', function () {
   el.editContainer.style.display = "none";
   el.adunit.style.top = "50%";
+  el.adunit.style.display = "block";
 });
 
 if (debug > 8) {
