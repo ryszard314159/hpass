@@ -47,12 +47,7 @@ localStorage.clear = function() {
 let PASSWORD = null;
 
 const SHORTPOPUP = 1e3; // short popup time
-const LONGPOPUP = 1e5; // long popup time
 
-// const globalDefaults = {};
-// globalDefaults.salt = "Replace Me!";
-// globalDefaults.pepper = "_";
-// globalDefaults.length = "15";
 const URL = "https://hpass.app";
 
 // Selecting elements
@@ -70,7 +65,7 @@ el.range = document.getElementById("range");
 el.gear = document.getElementById("gear");
 el.generate = document.getElementById("generate");
 // el.hintContainer = document.getElementById("hintContainer"); KEEP IT for now
-el.passwordContainer = document.getElementById("passwordContainer");
+el.entryContainer = document.getElementById("entryContainer");
 el.masterPassword = document.getElementById("masterPassword");
 el.newPassword = document.getElementById("newPassword");
 el.changePassword = document.getElementById("changePassword");
@@ -103,9 +98,9 @@ el.importFileInput = document.getElementById('importFileInput');
 window.onload = function() {
   // alert("PAGE LOADED!");
   // TODO: revisit it later
-  // if (sessionStorage.getItem("passwordContainerHidden")) {
-  //   el.passwordContainer.style.display = "none";
-  //   sessionStorage.removeItem("passwordContainerHidden");
+  // if (sessionStorage.getItem("entryContainerHidden")) {
+  //   el.entryContainer.style.display = "none";
+  //   sessionStorage.removeItem("entryContainerHidden");
   // }
 
   // TODO: need tp figure out how to store PASSWORD in-memory in sw
@@ -129,18 +124,23 @@ window.onload = function() {
   window.scrollTo(0, 0);
 }
 
-// el.gear.addEventListener('click', async function () {
-//   // Send a message to the service worker to store password in memory
-//   if (navigator.serviceWorker.controller) {
-//     navigator.serviceWorker.controller.postMessage({ type: "store-password", password: PASSWORD, tag: "app: gear"});
-//     if (0) console.log(`app: postMessage: PASSWORD= ${PASSWORD}`);
-//     if (0) alert(`app: postMessage: PASSWORD= ${PASSWORD}`);
-//     window.location.href = "edit.html";
-//     setTimeout ( () => {
-//       window.location.href = "edit.html";
-//     }, 1000 * 1);
-//   }
-// });
+document.getElementById("masterEye").addEventListener("click", togglePassword);
+
+function togglePassword() {
+  const passwordInput = document.getElementById('masterPassword');
+  const eyeSpan = document.querySelector('.eye-span');
+  console.log(`eyeSpan.innerHTML= `, eyeSpan.innerHTML);
+  const passwordContainer = document.querySelector('.password-container');
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    passwordContainer.classList.add('show-password');
+    eyeSpan.innerHTML = '<img class="eye-img" src="icons/eye-show.svg">';
+  } else {
+    passwordInput.type = 'password';
+    passwordContainer.classList.remove('show-password');
+    eyeSpan.innerHTML = '<img class="eye-img" src="icons/eye-hide.svg">';
+  }
+}
 
 el.gear.addEventListener('click', async function () {
   const opts = await storageGet({key: "options", pwd: PASSWORD});
@@ -148,9 +148,22 @@ el.gear.addEventListener('click', async function () {
   el.pepper.value = opts.pepper;
   el.length.value = opts.length;
   el.editContainer.style.display = "block";
+  //
+  const nonWhitespaceHeight = Array.from(el.editContainer.children).reduce((acc, child) => {
+    const rect = child.getBoundingClientRect();
+    const height = rect.bottom - rect.top;
+    return acc + height;
+  }, 0);
+  const viewportHeight = window.innerHeight;
+  const occupancyPercentageNonWhitespace = (nonWhitespaceHeight / viewportHeight) * 100;
+  console.log(`Non-whitespace content occupies ${occupancyPercentageNonWhitespace}% of the viewport height.`);
+  //
+  el.adunit.style.top = `${occupancyPercentageNonWhitespace + 2}%`;
 });
+
 el.back.addEventListener('click', function () {
   el.editContainer.style.display = "none";
+  el.adunit.style.top = "50%";
 });
 
 if (debug > 8) {
@@ -170,7 +183,7 @@ function noIdlingHere() {
         localStorage.removeItem(input.name);
         // sessionStorage.removeItem(input.name);
       });
-      el.passwordContainer.style.display = "block";
+      el.entryContainer.style.display = "block";
       // el.salt.value = ''; TODO: wipes clean input boxes, but...
       // el.pepper.value = '';
       // el.length.value = '';
@@ -214,13 +227,19 @@ function clearInputCache(inputId) {
   inputElement.dispatchEvent(new Event('change'));
 }
 
+// show/hide newPassword field by clicking on change button
 document.querySelector(".btn.change").addEventListener("click", function() {
-// el.changePassword.addEventListener("click", function() {
-  // el.navMenu.classList.toggle("show");
-  // el.hamburger.textContent = el.hamburger.textContent === "☰" ? "✕": "☰";
-  // alert(`before: ${JSON.stringify(el.newPassword.classList)}`)
   el.newPassword.classList.toggle("show");
-  // alert(`after: ${JSON.stringify(el.newPassword.classList)}`)
+});
+
+// Hide newPassword on click outside
+document.addEventListener("click", (event) => {
+  if (!event.target.closest("#newPassword") &&
+      !event.target.closest(".btn.change") &&
+      !event.target.closest("#masterPassword")
+    ) {
+    el.newPassword.classList.remove("show");
+  }
 });
 
 el.masterPassword.addEventListener("keydown", function(event) {
@@ -249,8 +268,8 @@ el.masterPassword.addEventListener("keydown", function(event) {
         // TODO: need tp figure out how to store PASSWORD in-memory in sw
         // if (navigator.serviceWorker.controller)
         // alert(`INFO: app: isCorrect: PASSWORD= ${PASSWORD}`);
-        el.passwordContainer.style.display = "none";
-        window.sessionStorage.setItem("passwordContainerHidden", true);
+        el.entryContainer.style.display = "none";
+        window.sessionStorage.setItem("entryContainerHidden", true);
         window.scrollTo(0, 0); // scroll window to the top!
       } else {
         // const sessionPassword = sessionStorage.getItem("password");
@@ -273,7 +292,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
   function _cleanup() {
     el.newPassword.value = '';
     el.masterPassword.value = '';
-    el.passwordContainer.style.display = "none";
+    el.entryContainer.style.display = "none";
     // el.newPassword.style.display = "none";
     el.newPassword.classList.toggle("show");
   }
@@ -490,7 +509,7 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
   .register("/sw.js", { scope: '/' })
   .then((reg) => {
-    alert(`app: register!!!`);
+    // alert(`app: register: PASSWORD= ${PASSWORD}`);
     let opts = localStorage.getItem("options");
     if (opts === null) {
       if (debug) console.log("app: register: null options in localStorage!");
@@ -629,78 +648,10 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   setTimeout(() => p.remove(), timeOut);
 }
 
-// el.gear.addEventListener("click", () => {
-//   const debug = false;
-//   if (debug) console.log("app: gear click:0: el.gear.src= ", el.gear.src);
-//   const x = el.gear.src.split("/").slice(-1)[0];
-//   el.gear.src = (x == "gear.svg") ? "icons/cross.svg" : "icons/gear.svg";
-//   el.gear.style.backgroundColor = (x == "gear.svg") ? "red" : "lightgreen";
-//   // el.gear.backgroundColor = "pink";
-//   if (debug) {
-//     console.log("app: gear click:1: el.gear.src= ", el.gear.src);
-//     console.log(
-//       "app: gear click:1: el.gear.style.backgrounColor= ",
-//       el.gear.style.backgroundColor
-//     );
-//     console.log("app: gear click:1: x= ", x);
-//     console.log(
-//       "apps:1: settings zIndex= ", el.settings.style.zIndex,
-//       "apps:1: hidesettings zIndex= ", el.hidesettings.style.zIndex
-//     );
-//     console.log(
-//       "apps:3: settings display= ", getComputedStyle(el.settings).display,
-//       "apps:3: hidesettings display= ", getComputedStyle(el.hidesettings).display
-//     );
-//   }
-//   el.hidesettings.style.display = getComputedStyle(el.hidesettings).display === "none" ? "block" : "none";
-//   el.settings.style.display = getComputedStyle(el.settings).display === "none" ? "block" : "none";
-//   if (debug){
-//     console.log(
-//       "apps:4: settings display= ", getComputedStyle(el.settings).display,
-//       "apps:4: hidesettings display= ", getComputedStyle(el.hidesettings).display
-//     );
-//   }
-// });
-
-// const ops = ["pepper", "salt", "length", "burn", "peak"];
-// ops.forEach((x) => {
-//   const debug = false;
-//   let cross = `${x}Cross`;
-//   if (debug) console.log("app:0: ops.forEach: x= ", x, " cross= ", cross);
-//   el[cross].addEventListener("click", () => {
-//     if (debug) console.log("app:1: ops.forEach: x= ", x, " cross= ", cross);
-//     el[x].value = null;
-//   });
-// });
-
 function cleanClean(v) {
   const valid = new Set(["true", "false", true, false, 0, 1, "0", "1"]);
   return valid.has(v) ? v : true;
 }
-
-// document.querySelectorAll('.export').forEach(function(element) {
-//   const timeDiffThreshold = 300;
-//   let lastClickTime = 0;
-//   let pendingClick = null;
-//   element.addEventListener('click', function (event) {
-//     const currentTime = Date.now();
-//     const timeDiff = currentTime - lastClickTime;
-//     lastClickTime = currentTime;
-//     clearTimeout(pendingClick);
-//     if (timeDiff > timeDiffThreshold) {
-//       pendingClick = setTimeout(function() {
-//         handleExport({decrypted: false}); // Single click
-//       }, timeDiffThreshold);
-//     } else {
-//       handleExport({decrypted: true}); // Double click
-//     }
-//   });
-// });
-
-// el.share.addEventListener("click", function () {
-//   copyToClipboard(URL);
-//   showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
-// });
 
 document.querySelectorAll(".reset").forEach(function(element) {
   element.addEventListener("click", async function (event) {
@@ -736,13 +687,10 @@ document.getElementById("logop").addEventListener("click", function () {
 
 document.querySelectorAll(".lock").forEach(function(element) {
   element.addEventListener("click", function (event) {
-    // const masterPassword = document.getElementById("masterPassword");
-    // const passwordContainer = document.getElementById("passwordContainer");
     const lock = document.getElementById("lockSound");
-    if (el.masterPassword && el.passwordContainer && lockSound) {
+    if (el.masterPassword && el.entryContainer && lockSound) {
       el.masterPassword.value = "";
-      // el.passwordContainer.style.display = "block";
-      el.passwordContainer.style.display = "none"; // TODO: change back to block
+      el.entryContainer.style.display = "block";
       lock.currentTime = 0; // Reset audio to start
       lock.volume = 0.1;
       lock.play();

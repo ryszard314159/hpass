@@ -89,7 +89,7 @@
       </div>
     </div> -->
     
-    <div id="passwordContainer" class="modal">
+    <div id="entryContainer" class="modal">
         <div id="topIcons1" class="topIcons"> 
           <a href="help.html"><img class="btn help" src="icons/help.svg" title="Help"></a>
           <a href="info.html"><img class="btn info" src="icons/info.svg" title="Info"></a>
@@ -98,7 +98,14 @@
           <img class="btn reset" src="icons/reset.svg" title="Reset">
         </div>
         <img id="logop" class="pwd" src="icons/logo.svg" />
-        <input id="masterPassword" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Master Password"/>
+        <div class="password-container">
+          <input id="masterPassword" type="password" class="secret" autocomplete="off"
+                 enterkeyhint="Enter" placeholder="Master Password"/>
+          <!-- <span class="eye-icon" onclick="togglePassword()"></span> -->
+          <span id="masterEye" class="eye-span">
+            <img class="eye-img" src="icons/eye-hide.svg">
+          </span>
+        </div>
         <input id="newPassword" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="New Password"/>
     </div>
 
