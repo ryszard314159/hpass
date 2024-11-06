@@ -96,7 +96,7 @@ el.fileInputModal = document.getElementById("fileInputModal");
 el.importFileInput = document.getElementById('importFileInput');
 
 window.onload = function() {
-  // alert("PAGE LOADED!");
+  alert(`PAGE LOADED! PASSWORD= ${PASSWORD}`);
   // TODO: revisit it later
   // if (sessionStorage.getItem("entryContainerHidden")) {
   //   el.entryContainer.style.display = "none";
@@ -239,8 +239,6 @@ document.addEventListener("click", (event) => {
       !event.target.closest("#masterPassword")
     ) {
       document.getElementById("newPasswordDiv").classList.remove("show");
-    // const d = document.getElementById("newPasswordDiv");
-    // d.style.display = "none";
   }
 });
 
@@ -693,6 +691,7 @@ document.querySelectorAll(".lock").forEach(function(element) {
     if (el.masterPassword && el.entryContainer && lockSound) {
       el.masterPassword.value = "";
       el.entryContainer.style.display = "block";
+      el.editContainer.style.display = "none";
       lock.currentTime = 0; // Reset audio to start
       lock.volume = 0.1;
       lock.play();
