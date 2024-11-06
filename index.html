@@ -98,15 +98,17 @@
           <img class="btn reset" src="icons/reset.svg" title="Reset">
         </div>
         <img id="logop" class="pwd" src="icons/logo.svg" />
-        <div class="password-container">
-          <input id="masterPassword" type="password" class="secret" autocomplete="off"
+        <div id="masterPasswordDiv" class="password-container">
+          <input id="masterPassword" type="password" autocomplete="off"
                  enterkeyhint="Enter" placeholder="Master Password"/>
-          <!-- <span class="eye-icon" onclick="togglePassword()"></span> -->
-          <span id="masterEye" class="eye-span">
-            <img class="eye-img" src="icons/eye-hide.svg">
+          <span class="eye-span"><img id="eye-master" class="eye-img" src="icons/eye-hide.svg"></span>
+        </div>
+        <div id="newPasswordDiv" class="password-container">
+          <input id="newPassword" type="password" autocomplete="off"
+                 enterkeyhint="Enter" placeholder="New Password"/>
+          <span class="eye-span"><img id="eye-new" class="eye-img" src="icons/eye-hide.svg"></span>
           </span>
         </div>
-        <input id="newPassword" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="New Password"/>
     </div>
 
     <div id="topIcons2" class="topIcons">

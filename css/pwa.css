@@ -304,11 +304,19 @@ hr {
   margin: 4rem 0 0 0;
   width: 50%;
 }
-#newPassword {
+/* #newPassword {
   display: none;
   margin: 0 auto;
 }
-#newPassword.secret.show {
+#newPassword.show {
+  display: block;
+} */
+
+#newPasswordDiv {
+  display: none;
+  margin: 0 auto;
+}
+#newPasswordDiv.show {
   display: block;
 }
 
@@ -805,12 +813,4 @@ margin-top: 9rem;
 .eye-img {
   width: 1.5rem;
   height: 1.5rem;
-}
-
-.eye-icon:before {
-  /* general styles for eye icon */
-}
-
-.password-container.show-password .eye-icon:before {
-  /* styles for eye-slash icon, if needed */
 }

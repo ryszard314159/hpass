@@ -124,21 +124,18 @@ window.onload = function() {
   window.scrollTo(0, 0);
 }
 
-document.getElementById("masterEye").addEventListener("click", togglePassword);
+document.querySelectorAll(".eye-span").forEach( function(element) {
+  element.addEventListener('click', () => togglePassword(element));
+});
 
-function togglePassword() {
-  const passwordInput = document.getElementById('masterPassword');
-  const eyeSpan = document.querySelector('.eye-span');
-  console.log(`eyeSpan.innerHTML= `, eyeSpan.innerHTML);
-  const passwordContainer = document.querySelector('.password-container');
-  if (passwordInput.type === 'password') {
-    passwordInput.type = 'text';
-    passwordContainer.classList.add('show-password');
-    eyeSpan.innerHTML = '<img class="eye-img" src="icons/eye-show.svg">';
+function togglePassword(element) {
+  const input = element.parentElement.querySelector('input');
+  if (input.type === 'password') {
+    input.type = 'text';
+    element.innerHTML = '<img class="eye-img" src="icons/eye-show.svg">';
   } else {
-    passwordInput.type = 'password';
-    passwordContainer.classList.remove('show-password');
-    eyeSpan.innerHTML = '<img class="eye-img" src="icons/eye-hide.svg">';
+    input.type = 'password';
+    element.innerHTML = '<img class="eye-img" src="icons/eye-hide.svg">';
   }
 }
 
@@ -231,16 +228,19 @@ function clearInputCache(inputId) {
 
 // show/hide newPassword field by clicking on change button
 document.querySelector(".btn.change").addEventListener("click", function() {
-  el.newPassword.classList.toggle("show");
+  document.getElementById("newPasswordDiv").classList.toggle("show");
 });
 
 // Hide newPassword on click outside
 document.addEventListener("click", (event) => {
   if (!event.target.closest("#newPassword") &&
       !event.target.closest(".btn.change") &&
+      !event.target.closest(".eye-img") &&
       !event.target.closest("#masterPassword")
     ) {
-    el.newPassword.classList.remove("show");
+      document.getElementById("newPasswordDiv").classList.remove("show");
+    // const d = document.getElementById("newPasswordDiv");
+    // d.style.display = "none";
   }
 });
 
