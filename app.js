@@ -72,6 +72,7 @@ el.changePassword = document.getElementById("changePassword");
 el.hidesettings = document.getElementById("hidesettings");
 el.settings = document.getElementById("settings");
 el.help = document.getElementById("help");
+el.info = document.getElementById("info");
 el.storeButton = document.getElementById("storeButton");
 el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
@@ -96,7 +97,7 @@ el.fileInputModal = document.getElementById("fileInputModal");
 el.importFileInput = document.getElementById('importFileInput');
 
 window.onload = function() {
-  alert(`PAGE LOADED! PASSWORD= ${PASSWORD}`);
+  // alert(`PAGE LOADED! PASSWORD= ${PASSWORD}`);
   // TODO: revisit it later
   // if (sessionStorage.getItem("entryContainerHidden")) {
   //   el.entryContainer.style.display = "none";
@@ -124,7 +125,7 @@ window.onload = function() {
   window.scrollTo(0, 0);
 }
 
-document.querySelectorAll(".eye-span").forEach( function(element) {
+document.querySelectorAll(".password-container span").forEach( function(element) {
   element.addEventListener('click', () => togglePassword(element));
 });
 
@@ -145,6 +146,7 @@ el.gear.addEventListener('click', async function () {
   el.pepper.value = opts.pepper;
   el.length.value = opts.length;
   el.editContainer.style.display = "block";
+  el.editContainer.style.zIndex = 99;
   // //
   // const nonWhitespaceHeight = Array.from(el.editContainer.children).reduce((acc, child) => {
   //   const rect = child.getBoundingClientRect();
@@ -156,7 +158,7 @@ el.gear.addEventListener('click', async function () {
   // console.log(`Non-whitespace content occupies ${occupancyPercentageNonWhitespace}% of the viewport height.`);
   // //
   // el.adunit.style.top = `${occupancyPercentageNonWhitespace + 2}%`;
-  el.adunit.style.display = "none";
+  // el.adunit.style.display = "none";
 });
 
 el.back.addEventListener('click', function () {
@@ -255,9 +257,9 @@ el.masterPassword.addEventListener("keydown", function(event) {
         alert("Password Hash was null.\nAll settings removed & Master Password set to empty string");
         localStorage.clear();
         PASSWORD = '';
+        sessionStorage.setItem("password", PASSWORD);
         const hash = await createHash(PASSWORD);
         hpassStorage.setItem("pwdHash", hash, `el.masterPassword: pwd=''`);
-        sessionStorage.setItem("password", PASSWORD);
         return;
       }
       const pwd = el.masterPassword.value;
@@ -299,7 +301,8 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const masterPassword = el.masterPassword.value;
   const newPassword = el.newPassword.value;
   if (newPassword === masterPassword) {
-    alert(`Master Password (=${masterPassword}) NOT changed`);
+    // alert(`Master (=${masterPassword}) and New Password (=${newPassword}) are the same.`);
+    alert(`Master and New Password fields are the same.`)
     _cleanup();
     return;
   }
@@ -318,17 +321,17 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const sessionPassword = sessionStorage.getItem("password");
   if (PASSWORD !== sessionPassword) {
     const msg = `ERROR: app: PASSWORD= ${PASSWORD}, sessionPassword= ${sessionPassword}`;
-    // alert(msg);
+    alert(msg);
     console.log(msg);
-    // throw new Error(msg);
+    throw new Error(msg);
     PASSWORD = sessionPassword;
   }
-  let msg = (isCorrect) ? '' : `Hash of entered Master Password does not match`;
-  msg = (masterPassword === PASSWORD)
-        ? msg
-        : `${msg} | Master Password field does not match PASSWORD`;
+  // let msg = (isCorrect) ? '' : `Hash of entered Master Password does not match`;
+  // msg = (masterPassword === PASSWORD)
+  //       ? msg
+  //       : `${msg} | Master Password field does not match PASSWORD`;
   if (!isCorrect || masterPassword !== PASSWORD) {
-    let m = "Incorrect Master Password!"
+    let msg = "Incorrect Master Password - try again."
     if (1) {
       msg = `${msg}\nstoredHash= ${storedHash.slice(0,9)}...`;
       msg = `${msg}\nmasterPassword= ${masterPassword}`;
@@ -340,7 +343,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
     return;
   }
 
-  msg = `Confirm Master Password change:`;
+  let msg = `Confirm Master Password change:`;
   msg = `${msg}\n\nOld Password= ${masterPassword}`;
   msg = `${msg}\nNew Password= ${newPassword}`;
   if (!confirm(msg)) {
@@ -350,8 +353,8 @@ el.newPassword.addEventListener("keydown", async (event) => {
 
   const pwdHash = await createHash(newPassword);
   hpassStorage.setItem("pwdHash", pwdHash, `el.newPassword:`);
-  sessionStorage.setItem("password", newPassword);
   PASSWORD = newPassword;
+  sessionStorage.setItem("password", newPassword);
 
   try {
     for (const key of CRYPTO.encryptedItems) {
@@ -692,6 +695,8 @@ document.querySelectorAll(".lock").forEach(function(element) {
       el.masterPassword.value = "";
       el.entryContainer.style.display = "block";
       el.editContainer.style.display = "none";
+      // el.entryContainer.style.visibility = "visible";
+      // el.editContainer.style.visibility = "hidden";
       lock.currentTime = 0; // Reset audio to start
       lock.volume = 0.1;
       lock.play();

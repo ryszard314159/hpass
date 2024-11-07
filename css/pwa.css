@@ -267,19 +267,41 @@ hr {
   background-color: gray;
 }
 
-#passwordForm, #newPasswordForm {
-  flex-direction: column;
-}
-
-#entryContainer {
-  display: flex;
+#entryContainer, #editContainer {
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   height: 100vh;
   width: 100vw;
-  background-color: rgba(255, 178, 102);
-  background-size: cover;
+  /* background-size: cover; */
+  position: absolute;
+  top: 0;
+  overflow: auto;
+  z-index: 9;
 }
+#entryContainer {
+  display: block;
+  /* visibility: visible; */
+  background-color: rgba(255, 178, 102);
+}
+#editContainer {
+  display: none;
+  /* visibility: hidden; */
+  background-color: white;
+}
+/*
+#editContainer {
+  position: fixed;
+  top: 0;
+  display: flex;
+  display: block;
+  visibility: hidden;
+  flex-direction: column;
+  background-color: white;
+  overflow: scroll;
+  margin: 0 0 10% 0;
+}
+*/
 
   /* float: right; */
 #passwordInputContainer {
@@ -288,8 +310,8 @@ hr {
     align-items: center;
 }
 
-#masterPassword, #newPassword, #logop {
-  margin: 2rem 0 2rem 0;
+#logop {
+  margin: 6rem 0 1rem 0;
   font-size: 1.5rem;
   width: 80%;
   position: relative;
@@ -299,25 +321,7 @@ hr {
   text-align: center;
   justify-content: center;
   align-items: center;
-}
-#logop {
-  margin: 4rem 0 0 0;
   width: 50%;
-}
-/* #newPassword {
-  display: none;
-  margin: 0 auto;
-}
-#newPassword.show {
-  display: block;
-} */
-
-#newPasswordDiv {
-  display: none;
-  margin: 0 auto;
-}
-#newPasswordDiv.show {
-  display: block;
 }
 
 #pgHintContainer {
@@ -341,18 +345,7 @@ hr {
   object-fit: contain;
 }
 
-#editContainer {
-  position: fixed;
-  top: 0;
-  display: flex; /* Add this */
-  flex-direction: column; /* Add this */
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  overflow: scroll;
-  /* height: 100vh; */
-  margin: 0 0 10% 0;
-}
+
 
 #editHint, #editSalt, #editPepper, #editLength,
 #pgHint, #salt, #pepper, #length {
@@ -798,19 +791,47 @@ margin-top: 9rem;
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
-.password-container {
-  position: relative;
-}
-
-.eye-span {
-  position: absolute;
-  top: 50%;
-  right: 2.5rem;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
 
 .eye-img {
   width: 1.5rem;
   height: 1.5rem;
+}
+
+/* *** */
+
+.password-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: start;
+  /* outline: 6px solid red; */
+  position: relative;
+}
+
+.password-container input {
+  /* grid-column: 1 / -1; */
+  margin: 1rem 0;
+  border-radius: 16px;
+  border-width: 1px;
+  font-size: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+.password-container span {
+  position: absolute; /* Absolute positioning */
+  right: 0.5rem; /* Adjust right margin */
+  top: 50%; /* Vertical centering */
+  transform: translateY(-50%); /* Fine-tune vertical centering */
+}
+
+#masterPasswordDiv, #newPasswordDiv {
+  margin: 0 auto;
+  width: 80%;
+}
+
+#newPasswordDiv {
+  display: none;
+}
+#newPasswordDiv.show {
+  display: block;
 }

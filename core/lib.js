@@ -405,7 +405,7 @@ async function storageGet(args) {
   let rawValue = localStorage.getItem(args.key);
   if (rawValue === null) return null;
   args = {key: null, pwd: null, decrypt: true, ...args};
-  args.pwd = sessionStorage.getItem("password");
+  // args.pwd = sessionStorage.getItem("password");
   if (args.pwd === null) {
     alert("storageGet: no password!?");
     throw new Error("no password!?");

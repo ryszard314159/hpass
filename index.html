@@ -81,15 +81,8 @@
     <br>
     <audio id="clickSound" src="click-sound.wav" preload="auto"></audio>
     <audio id="lockSound" src="door-close.mp3" preload="auto"></audio>
-    <!-- <div id="fileInputModal" class="modal">
-      <div class="modal-content">
-          <span class="close">&times;</span>
-          <p>Select a JSON file to import hpass settings:</p><br>
-          <input type="file" id="importFileInput" accept="application/json">
-      </div>
-    </div> -->
     
-    <div id="entryContainer" class="modal">
+    <div id="entryContainer">
         <div id="topIcons1" class="topIcons"> 
           <a href="help.html" target="_blank"><img id="help" class="btn" src="icons/help.svg" title="Help"></a>
           <a href="info.html" target="_blank"><img id="info" class="btn" src="icons/info.svg" title="Info"></a>
@@ -101,20 +94,17 @@
         <div id="masterPasswordDiv" class="password-container">
           <input id="masterPassword" type="password" autocomplete="off"
                  enterkeyhint="Enter" placeholder="Master Password"/>
-          <span class="eye-span"><img id="eye-master" class="eye-img" src="icons/eye-hide.svg"></span>
+          <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg"></span>
         </div>
         <div id="newPasswordDiv" class="password-container">
           <input id="newPassword" type="password" autocomplete="off"
                  enterkeyhint="Enter" placeholder="New Password"/>
-          <span class="eye-span"><img id="eye-new" class="eye-img" src="icons/eye-hide.svg"></span>
-          </span>
+          <span><img id="eye-new" class="eye-img" src="icons/eye-hide.svg"></span>
         </div>
     </div>
 
     <div id="topIcons2" class="topIcons">
-      <!-- <a href="index.html">  -->
         <img id="lockEntry" class="btn lock" src="icons/lock.svg" title="Lock"/>
-      <!-- </a> -->
     </div>
 
     <div id="burnAndPeak" class="inputsContainer">
@@ -166,7 +156,7 @@
       </div>
     </div>
 
-    <div id="editContainer" style="display: none">
+    <div id="editContainer">
       <div id="editIcons" class="topIcons">
         <img class="btn import" src="icons/import.svg" title="Import">
         <img class="btn export" src="icons/export.svg" title="Export">
