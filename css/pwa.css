@@ -835,3 +835,18 @@ margin-top: 9rem;
 #newPasswordDiv.show {
   display: block;
 }
+
+.svg-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.svg-bullets li {
+  margin-bottom: 10px;
+}
+
+.svg-bullets li svg {
+  margin-right: 10px;
+  vertical-align: middle;
+}

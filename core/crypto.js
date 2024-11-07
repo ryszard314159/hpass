@@ -1,6 +1,6 @@
 "use strict";
 
-const debug = true;
+const debug = false;
 const ITERATIONS = (debug) ? 999 : 99999;
 const HASH_ALGORITHM = (debug) ? 'SHA-1': 'SHA-512';
 const KDF = 'PBKDF2'; // Key Derivation Function

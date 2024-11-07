@@ -11,43 +11,34 @@ TODO:
 4 - wipe pwd fields on lock!
 5 - Another use case for env() variables is for desktop Progressive web apps (PWAs);
     try it: https://developer.mozilla.org/en-US/docs/Web/CSS/env
+6 - how to store PASSWORD in-memory in serviceWorker
+    if (navigator.serviceWorker.controller) {
+      const msg = {type: "store-password", password: PASSWORD, tag: "app: setGenericOptions"};
+      navigator.serviceWorker.controller.postMessage(msg);
+    }
 */
+
+//
+// NOTE: if you are working with DevTools
+//       make sure that the Bypass for Network checkbox
+//       is unchecked. If it is checked .controller will
+//       be null
+// See:
+// (1) https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/controller
+//      "...This property returns null if the request is a force refresh..."
+// (2) https://www.youtube.com/watch?v=1d3KgacJv1I (Debugging Serviceworker Controller null)
+//
+
 "use strict";
 
-import {
-  CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
-} from "./core/lib.js";
-import { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck,
-         globalDefaults, updateLocalStorage, hpassStorage } from "./core/lib.js";
+import { CHARS, getPass, get_random_string, objDiff } from "./core/lib.js";
+import { storageGet, storageSet, CRYPTO, sanityCheck,
+         globalDefaults, hpassStorage } from "./core/lib.js";
 import { decryptText, encryptText, createHash, verifyPassword} from "./core/crypto.js"
-const debug = 0;
 
-// simulate localStorage in nodejs
-if (typeof(window) === 'undefined') {
-const localStorage = {};
-localStorage.setItem = function(key, value) {
-  this[key] = value;
-};
-localStorage.getItem = function(key) {
-  const v = typeof(this[key]) !== 'undefined'? this[key] : null
-  return v;
-};
-localStorage.removeItem = function(key) {
-  delete this[key];
-};
-localStorage.clear = function() {
-  const keep = [ 'setItem', 'getItem', 'removeItem', 'clear' ];
-  Object.keys(localStorage).forEach(function(k) {
-    if (keep.includes(k)) return;
-    localStorage.removeItem(k);
-  })
-};
-}
-
+// const debug = 0;
 let PASSWORD = null;
-
 const SHORTPOPUP = 1e3; // short popup time
-
 const URL = "https://hpass.app";
 
 // Selecting elements
@@ -64,7 +55,6 @@ el.peak = document.getElementById("peak"); // instead of top
 el.range = document.getElementById("range");
 el.gear = document.getElementById("gear");
 el.generate = document.getElementById("generate");
-// el.hintContainer = document.getElementById("hintContainer"); KEEP IT for now
 el.entryContainer = document.getElementById("entryContainer");
 el.masterPassword = document.getElementById("masterPassword");
 el.newPassword = document.getElementById("newPassword");
@@ -76,7 +66,6 @@ el.info = document.getElementById("info");
 el.storeButton = document.getElementById("storeButton");
 el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
-// el.hintButton = document.getElementById("hintButton"); // TODO: remove
 el.adunit = document.getElementById("adunit");
 el.more = document.getElementById("more");
 el.notify = document.getElementById("notify");
@@ -98,30 +87,6 @@ el.importFileInput = document.getElementById('importFileInput');
 
 window.onload = function() {
   // alert(`PAGE LOADED! PASSWORD= ${PASSWORD}`);
-  // TODO: revisit it later
-  // if (sessionStorage.getItem("entryContainerHidden")) {
-  //   el.entryContainer.style.display = "none";
-  //   sessionStorage.removeItem("entryContainerHidden");
-  // }
-
-  // TODO: need tp figure out how to store PASSWORD in-memory in sw
-  // if (navigator.serviceWorker.controller) {
-  //   if (1) console.log(`app: navigator.serviceWorker.controller posting message`);
-  //   navigator.serviceWorker.controller.postMessage({ type: "retrieve-password" });
-  //   navigator.serviceWorker.addEventListener("message", async (event) => {
-  //     if (event.data.type === "password") {
-  //         PASSWORD = event.data.password;
-  //         console.log(`app: onload got PASSWORD= ${PASSWORD}`);
-  //         let sessionPassword = sessionStorage.getItem("password");
-  //         if (PASSWORD !== sessionPassword) {
-  //           let msg = `ERROR: app: onload: PASSWORD !== sessionPassword`;
-  //           msg = `${msg}\nPASSWORD= ${PASSWORD}\nsessionPassword= ${sessionPassword}`;
-  //           alert(msg);
-  //           PASSWORD = sessionPassword;
-  //         }
-  //     }
-  //   });
-  // }
   window.scrollTo(0, 0);
 }
 
@@ -167,13 +132,7 @@ el.back.addEventListener('click', function () {
   el.adunit.style.display = "block";
 });
 
-if (debug > 8) {
-  window.addEventListener("DOMContentLoaded", function() {
-    alert(`window.addEventListener("DOMContentLoaded"): el.salt.value= ${el.salt.value}`);
-  });
-}
-
-function noIdlingHere() {
+function noIdlingHere() { // TODO: should this be activated?
   const debug = true;
   function yourFunction() {
       // alert('inactive!');
@@ -218,16 +177,6 @@ document.querySelectorAll('.email').forEach(function(element) {
 )
 });
 
-// TODO: clear cache for password input box
-function clearInputCache(inputId) {
-  const inputElement = document.getElementById(inputId);
-  inputElement.value = "";
-  inputElement.setAttribute("autocomplete", "off");
-
-  // Optionally, trigger a change event
-  inputElement.dispatchEvent(new Event('change'));
-}
-
 // show/hide newPassword field by clicking on change button
 document.querySelector(".btn.change").addEventListener("click", function() {
   document.getElementById("newPasswordDiv").classList.toggle("show");
@@ -249,8 +198,6 @@ el.masterPassword.addEventListener("keydown", function(event) {
   if (debug) console.log(`el.masterPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key === "Enter") {
     if (debug) console.log('masterPassword: Enter key pressed!');
-    // event.preventDefault();
-    // el.masterPassword.blur();
     setTimeout( async () => {
       const storedHash = localStorage.getItem("pwdHash");
       if (storedHash === null) {
@@ -267,41 +214,30 @@ el.masterPassword.addEventListener("keydown", function(event) {
       if (isCorrect) {
         PASSWORD = pwd;
         sessionStorage.setItem("password", pwd);
-        // TODO: need tp figure out how to store PASSWORD in-memory in sw
-        // if (navigator.serviceWorker.controller)
-        // alert(`INFO: app: isCorrect: PASSWORD= ${PASSWORD}`);
         el.entryContainer.style.display = "none";
         window.sessionStorage.setItem("entryContainerHidden", true);
         window.scrollTo(0, 0); // scroll window to the top!
       } else {
-        // const sessionPassword = sessionStorage.getItem("password");
         if (debug) console.log(`masterPassword: >>${pwd}<< Wrong password - try again!`);
         if (debug) console.log(`masterPassword: storedHash= ${storedHash}`);
-        // if (debug) console.log(`masterPassword: sessionPassword= ${sessionPassword}`);
         alert(`>>${pwd}<< Wrong password - try again!`)
       }
-      // verifyPassword(oldHash, pwd).then(isCorrect => {
-      // el.newPassword.focus();
     }, 0);
   }
 });
 
 el.newPassword.addEventListener("keydown", async (event) => {
   const debug = true;
-  // event.preventDefault();
-  // if (debug) console.log(`el.newPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key !== 'Enter') return;
   function _cleanup() {
     el.newPassword.value = '';
     el.masterPassword.value = '';
     el.entryContainer.style.display = "none";
-    // el.newPassword.style.display = "none";
     el.newPassword.classList.toggle("show");
   }
   const masterPassword = el.masterPassword.value;
   const newPassword = el.newPassword.value;
   if (newPassword === masterPassword) {
-    // alert(`Master (=${masterPassword}) and New Password (=${newPassword}) are the same.`);
     alert(`Master and New Password fields are the same.`)
     _cleanup();
     return;
@@ -311,26 +247,15 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const isCorrect = await verifyPassword(storedHash, masterPassword);
   if (0) console.log(`masterPassword= ${masterPassword}, verified= ${verified}, storedHash= ${storedHash}`)
   // const sessionPassword = sessionStorage.getItem("password");
-  // PASSWORD = sessionPassword;
-  // if (sessionPassword === null) {
-  //   alert(`ERROR: null sessionPassword - reset!`);
-  //   localStorage.clear();
-  //   window.location.href = "index.html";
+  // if (PASSWORD !== sessionPassword) {
+  //   const msg = `ERROR: app: PASSWORD= ${PASSWORD}, sessionPassword= ${sessionPassword}`;
+  //   alert(msg);
+  //   console.log(msg);
+  //   throw new Error(msg);
+  //   PASSWORD = sessionPassword;
   // }
-  // sessionPassword = (sessionPassword === null) ? '' : sessionPassword;
-  const sessionPassword = sessionStorage.getItem("password");
-  if (PASSWORD !== sessionPassword) {
-    const msg = `ERROR: app: PASSWORD= ${PASSWORD}, sessionPassword= ${sessionPassword}`;
-    alert(msg);
-    console.log(msg);
-    throw new Error(msg);
-    PASSWORD = sessionPassword;
-  }
-  // let msg = (isCorrect) ? '' : `Hash of entered Master Password does not match`;
-  // msg = (masterPassword === PASSWORD)
-  //       ? msg
-  //       : `${msg} | Master Password field does not match PASSWORD`;
-  if (!isCorrect || masterPassword !== PASSWORD) {
+  // if (!isCorrect || masterPassword !== PASSWORD) {
+  if (!isCorrect) {
     let msg = "Incorrect Master Password - try again."
     if (1) {
       msg = `${msg}\nstoredHash= ${storedHash.slice(0,9)}...`;
@@ -356,6 +281,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
   PASSWORD = newPassword;
   sessionStorage.setItem("password", newPassword);
 
+  // change encryption from old to new password
   try {
     for (const key of CRYPTO.encryptedItems) {
       const fromStorage = localStorage.getItem(key);
@@ -373,17 +299,6 @@ el.newPassword.addEventListener("keydown", async (event) => {
   return;
 });
 
-//
-// NOTE: if you are working with DevTools
-//       make sure that the Bypass for Network checkbox
-//       is unchecked. If it is checked .controller will
-//       be null
-// See:
-// (1) https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/controller
-//      "...This property returns null if the request is a force refresh..."
-// (2) https://www.youtube.com/watch?v=1d3KgacJv1I (Debugging Serviceworker Controller null)
-//
-
 function setGenericOptions() {
   const debug = false;
   if (debug) console.log("setGenericOptions: null options in localStorage!");
@@ -399,10 +314,6 @@ function setGenericOptions() {
   storageSet({key: "options", value: opts, pwd: PASSWORD, debug: true}).then( () => {
     sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
   });
-  // TODO: keep this code for now - need to figure out how to store PASSWORD in-memory in sw
-  // if (navigator.serviceWorker.controller) {
-  //   navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD, tag: "app: setGenericOptions"});
-  // }
   localStorage.setItem("encrypted", true);
   let msg = `<br>Randomly generated secret is
       <br><br><strong>${opts.salt}</strong><br><br>
@@ -422,19 +333,8 @@ async function createSplashScreen(opts) {
   const debug = false;
   if (debug) console.log("createSplashScreen: at the START");
   if (debug) console.trace();
-  // const sessionPassword = sessionStorage.getItem("password");
-  // if (PASSWORD !== sessionPassword) {
-  //   alert(`ERROR: PASSWORD !== sessionPassword`);
-  //   PASSWORD = sessionPassword;
-  // }
   PASSWORD = '';
   sessionStorage.setItem("password", PASSWORD);
-  // TODO: need tp figure out how to store PASSWORD in-memory in sw
-  // if (navigator.serviceWorker.controller) {
-  //   const msg = {type: "store-password", password: PASSWORD, tag: "createSplashScreen"};
-  //   navigator.serviceWorker.controller.postMessage(msg);
-  // }
-  // const pwdHash = await createHash(sessionPassword);
   const pwdHash = await createHash(PASSWORD);
   localStorage.setItem("pwdHash", pwdHash);
   const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
@@ -453,34 +353,6 @@ async function createSplashScreen(opts) {
   <p style="background-color: yellow;">Store Master Password in a safe location.</p>
   </div>
   `;
-  // <h3>Basics:</h3>
-  // <ol>
-  // <li>Enter a site password hint in Enter Hint box.
-  //     This can be a full name, or your favorite nick name,
-  //     of the site you need the password for e.g. facebook or fb etc.
-  // <li>Click on <strong style="font-size: 1.2rem;">></strong>
-  //     in top-right corner to generate password.
-  //     It will be copied to the clipboard.
-  // <li>Paste password from the clipboard where you need it.
-  // </ol>
-  // <br>
-  // Generated password is uniquely determined by site Hint
-  // together with:
-  //  <hr/>
-  // <p>
-  // <ul>
-  // <li>Secret (= ${opts.salt} )
-  // <li>Special Character (= ${opts.pepper} )
-  // <li>Length (= ${opts.length} )
-  // <ul>
-  // </p>
-  // <br>
-  // To display and change these settings click on the gear icon
-  // in the top-left corner.
-  // Note - that to generate the same password -
-  // site Hint, Secret, Special Character and Length have to be exactly the same.
-  // See Help page under ? icon for more details.
-  // <br>`;
   const container = document.createElement("div"); // container
   container.id = "splash-screen-container";
   container.className = "modal";
@@ -502,12 +374,9 @@ async function createSplashScreen(opts) {
   if (debug) console.log("createSplashScreen: at the end");
   if (debug) console.trace();
 }
-//
-//
 
 if ("serviceWorker" in navigator) {
   const debug = false;
-  // const swPath = "sw.js";
   if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
   .register("/sw.js", { scope: '/' })
@@ -550,48 +419,66 @@ navigator.serviceWorker.addEventListener("message", (event) => {
   }
 });
 
-// // Set password
-// navigator.serviceWorker.getRegistration().then((reg) => {
-//   reg.active.postMessage({ type: 'setPassword', password: PASSWORD });
-// });
-
 /**
  * Copy a string to clipboard
  * @param  {String} string         The string to be copied to clipboard
  * @return {Boolean}               returns a boolean correspondent to the success of the copy operation.
  * @see https://stackoverflow.com/a/53951634/938822
  */
-function copyToClipboard(string) {
-  let textarea;
-  let result;
+// function deprecated_copyToClipboard(string) {
+//   let textarea;
+//   let result;
 
+//   try {
+//     textarea = document.createElement("textarea");
+//     textarea.setAttribute("readonly", true);
+//     textarea.setAttribute("contenteditable", true);
+//     textarea.style.position = "fixed"; // prevent scroll from jumping to the bottom when focus is set.
+//     textarea.value = string;
+//     document.body.appendChild(textarea);
+//     textarea.focus();
+//     textarea.select();
+//     const range = document.createRange();
+//     range.selectNodeContents(textarea);
+//     const sel = window.getSelection();
+//     sel.removeAllRanges();
+//     sel.addRange(range);
+//     textarea.setSelectionRange(0, textarea.value.length);
+//     result = document.execCommand("copy");
+//   } catch (err) {
+//     console.error(err);
+//     result = null;
+//   } finally {
+//     document.body.removeChild(textarea);
+//   }
+//   // manual copy fallback using prompt
+//   if (!result) {
+//     // const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+//     const isMac = await navigator.userAgentData.platform.includes("mac");
+//     const copyHotkey = isMac ? "⌘C" : "CTRL+C";
+//     result = prompt(`Press ${copyHotkey}`, string); // eslint-disable-line no-alert
+//     if (!result) {
+//       return false;
+//     }
+//   }
+//   return true;
+// }
+
+/**
+ * Copy a string to clipboard
+ * @param  {String} string     The string to be copied to clipboard
+ * @return {Boolean}           returns a boolean correspondent to the success of the copy operation.
+ */
+async function copyToClipboard(string) {
   try {
-    textarea = document.createElement("textarea");
-    textarea.setAttribute("readonly", true);
-    textarea.setAttribute("contenteditable", true);
-    textarea.style.position = "fixed"; // prevent scroll from jumping to the bottom when focus is set.
-    textarea.value = string;
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    const range = document.createRange();
-    range.selectNodeContents(textarea);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    textarea.setSelectionRange(0, textarea.value.length);
-    result = document.execCommand("copy");
+    await navigator.clipboard.writeText(string);
+    return true;
   } catch (err) {
     console.error(err);
-    result = null;
-  } finally {
-    document.body.removeChild(textarea);
-  }
-  // manual copy fallback using prompt
-  if (!result) {
-    const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+    // manual copy fallback using prompt
+    const isMac = navigator.userAgent.toUpperCase().includes("MAC");
     const copyHotkey = isMac ? "⌘C" : "CTRL+C";
-    result = prompt(`Press ${copyHotkey}`, string); // eslint-disable-line no-alert
+    const result = prompt(`Press ${copyHotkey} to copy:`, string);
     if (!result) {
       return false;
     }
@@ -619,28 +506,28 @@ function cleanHint(prompt) {
 
 function showPopup(msg, timeOut, bkg = "lightgreen") {
   const p = document.createElement("div");
-  p.innerHTML = msg;
+  p.innerHTML = `<br>${msg}`;
   p.style.display = "block";
   p.style.position = "fixed";
-  p.style.fontSize = "1.5rem";
+  p.style.fontSize = "1.1rem";
   p.style.backgroundColor = bkg;
   p.style.border = "0.1px solid black";
   p.style.zIndex = 9;
-  p.style.top = "25%";
+  p.style.top = "40%";
   p.style.left = "50%";
   p.style.transform = "translate(-50%, -100%)"
-  p.style.width = "80%";
+  p.style.width = "90%";
   p.style.textAlign = "center";
   p.style.borderRadius = "15px";
   p.style.padding = "1rem 0 1rem 0";
   p.style.overflow = "auto";
   p.style.boxShadow = "4pt 4pt 4pt grey";
   const x = document.createElement("button");
-  x.innerHTML = "⨉" // "X";
-  x.style.fontSize = "2rem";
+  x.innerHTML = "⨉";
+  x.style.fontSize = "1rem";
   x.style.position = "absolute";
   x.style.top = "0.2rem";
-  x.style.right = "1rem";
+  x.style.right = "0.8rem";
   x.style.backgroundColor = "transparent";
   x.style.border = "0px solid black";
   p.appendChild(x);
@@ -651,33 +538,21 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   setTimeout(() => p.remove(), timeOut);
 }
 
-function cleanClean(v) {
-  const valid = new Set(["true", "false", true, false, 0, 1, "0", "1"]);
-  return valid.has(v) ? v : true;
-}
-
 document.querySelectorAll(".reset").forEach(function(element) {
   element.addEventListener("click", async function (event) {
     const debug = false;
     if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
-    if (confirm(`All existing settings will be removed!\nPassword=''\nClick OK to proceed.`)) {
+    let msg = `WARNING: all existing settings will be removed!`;
+    msg = `${msg}\nPassword will be reset to default (empty string) value.`;
+    msg = `${msg}\n\nClick OK to proceed.`
+    if (confirm(msg)) {
       event.preventDefault();
       localStorage.removeItem("options");
       localStorage.removeItem("sites");
-      // ( async () => {
-        // const pwd = '';
-        // sessionStorage.setItem("password", pwd);
-        // const pwdHash = await createHash(pwd);
-        PASSWORD = '';
-        sessionStorage.setItem("password", PASSWORD);
-        const pwdHash = await createHash(PASSWORD);
-        hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
-        // TODO: need tp figure out how to store PASSWORD in-memory in sw
-        // if (navigator.serviceWorker.controller) {
-        //   navigator.serviceWorker.controller.postMessage({type: "store-password", password: PASSWORD, teg: "app: reset"});
-        // }
-      // }) ();
-      // window.location.reload();
+      PASSWORD = '';
+      sessionStorage.setItem("password", PASSWORD);
+      const pwdHash = await createHash(PASSWORD);
+      hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
       const opts = setGenericOptions();
     }
   });
@@ -732,14 +607,8 @@ async function generateFun(event) {
       }
     }
   }
-  const salt = opts.salt // = el.salt.value;
-  const pepper = opts.pepper // = el.pepper.value;
-  const length = opts.length // = el.length.value;
-  // length = (length === "") ? globalDefaults.length : Math.max(Math.min(length, MAXLENGTH), MINLENGTH);
   if (debug) console.log("generateFun:0: opts= ", opts);
-  if (debug) console.log("generateFun:1: opts= ", opts);
-  // setHintOpts(el.hint.value, opts); -- NOTE: use storeOptions and save button instead!!!
-  let args = { ...opts }; // deep copy
+  let args = { ...opts };
   args.burn = el.burn.value;
   args.peak = el.peak.value;
   args.hint = el.pgHint.value;
@@ -759,19 +628,12 @@ async function generateFun(event) {
   showPopup(`${passwd}<br><br>copied to clipboard`, SHORTPOPUP);
 }
 
-// KEEP IT for now
-// el.hintContainer.addEventListener('submit', function (event) {
-//   event.preventDefault();
-//   // Add your form submission handling logic here
-// });
-
 function handleFeedback() {
   const debug = false;
-  if (navigator.vibrate) { // haptic
+  if (navigator.vibrate) {   // haptic
       navigator.vibrate(50); // vibrate for 100ms
   }
-  if (el.clickSound) { // audio
-      // Ensure the audio is ready to play
+  if (el.clickSound) { // Ensure the audio is ready to play
       el.clickSound.currentTime = 0; // Reset audio to start
       el.clickSound.play();
       if (debug) console.log("handleFeedback: sound played");
@@ -798,29 +660,6 @@ el.pgHint.addEventListener("keydown", (event) => {
   }
 });
 
-function toggleSize() {
-  el.generate.classList.add("active");
-  setTimeout(function () {
-    el.generate.classList.remove("active");
-  }, 100);
-}
-
-function handleLinkClick(event) {
-  const link = event.currentTarget;
-  if (!link.clickCount) {
-    link.clickCount = 0;
-  }
-  link.clickCount++;
-  if (link.clickCount === 2) {
-    window.location.href = link.href;
-  }
-  event.preventDefault();
-}
-
-// ChatGPT...
-
-// const span = document.getElementsByClassName("close")[0];
-
 document.body.querySelectorAll(".close").forEach(function(element) {
   const debug = false;
   if (debug) console.log(".close: selected");
@@ -834,9 +673,6 @@ document.body.querySelectorAll(".close").forEach(function(element) {
     epp.style.display = "none";
   });
 });
-
-// document.getElementById("editContainer")
-
 
 el.save.addEventListener("click", saveOptions);
 async function saveOptions(args) {
@@ -896,36 +732,26 @@ async function saveOptions(args) {
   if (debug > 0) console.log(msg);
   if (debug > 0) console.log(`before : objDiff: storedOpts= ${JSON.stringify(storedOpts)}`);
   if (debug > 0) console.log(`before : objDiff: sites= ${JSON.stringify(sites)}`);
-  // Object.keys(sites).forEach( (key) => {sites[key] = objDiff(sites[key], storedOpts)});
-  // sites[hint] = objDiff(sites[hint], storedOpts)
   const hintDiff = (storedHintValues !== undefined) ? objDiff(sites[hint], storedHintValues) : sites[hint];
   if (Object.keys(hintDiff).length === 0) {
     alert(`Nothing new for ${hint}`);
     return;
   }
   if (debug > 0) console.log(`before cleanUp: sites= ${JSON.stringify(sites)}`);
-  // sites = cleanUp(sites);
   if (debug > 0) console.log(`after cleanUp: typeof(sites)= ${typeof(sites)}, sites= `, sites);
   if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
-  // if (sites !== null) {
-    if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
-    msg = `Hint-specific settings ${replacedOrCreated}:\n`;
-    msg = `${msg}\nHint= ${hint}`;
-    // msg = `${msg}\nOld settings= ${JSON.stringify(storedHintValues)}`;
-    // msg = `${msg}\nNew settings= ${JSON.stringify(sites[hint])}`;
-    const hs = {...currentOpts, ...sites[hint]};
-    msg = `${msg}\nSecret= ${hs.salt}`;
-    msg = `${msg}\nSpecial Character= ${hs.pepper}`;
-    msg = `${msg}\nLength= ${hs.length}`;
-    msg = `${msg}\nDo you want to save them?`;
-    if (confirm(msg)) {
-      await storageSet({key: "sites", value: sites, pwd: PASSWORD});
-      alert("Saved!")
-    }
-  // } else {
-  //   localStorage.removeItem("sites");
-  //   alert(`All hint-specific settings removed!`);
-  // }
+  if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
+  msg = `Hint-specific settings ${replacedOrCreated}:\n`;
+  msg = `${msg}\nHint= ${hint}`;
+  const hs = {...currentOpts, ...sites[hint]};
+  msg = `${msg}\nSecret= ${hs.salt}`;
+  msg = `${msg}\nSpecial Character= ${hs.pepper}`;
+  msg = `${msg}\nLength= ${hs.length}`;
+  msg = `${msg}\nDo you want to save them?`;
+  if (confirm(msg)) {
+    await storageSet({key: "sites", value: sites, pwd: PASSWORD});
+    alert("Saved!")
+  }
 }
 
 el.edHint.addEventListener('input', async function(event) {
@@ -938,8 +764,6 @@ el.edHint.addEventListener('input', async function(event) {
   el.pepper.value = x.pepper;
   el.length.value = x.length;
 });
-
-/*******************/
 
 document.querySelectorAll('.export').forEach(function(element) {
   const timeDiffThreshold = 300;
@@ -988,7 +812,6 @@ function handleExport(args = {}) {
     }
     const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
       if (toExport[key] === undefined) return;
-      // console.log(`DEBUG: handleExport: toExport[${key}]= ${toExport[key]}`);
       toExport[key] = await decryptText(PASSWORD, toExport[key]);
     });
     Promise.all(decryptionPromises).then(() => {
@@ -1049,9 +872,8 @@ function handleImport(event) {
                           const parsed = JSON.parse(backUp);
                           Object.keys(parsed).forEach((key) => localStorage.setItem(key, parsed[key]));
                           alert(`ERROR: wrong Master Password`);
-                          return; // Exit the function
+                          return;
                         } else {
-                          // opts = JSON.parse(decrypted);
                           setDisplayedOptions(decrypted);
                         }
                       } catch (error) {
