@@ -1,79 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="100" height="150" viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
-  <text x="0" y="150" font-size="44" font-weight="bold" font-family="Arial" >Lock</text>
-  <circle cx="50" cy="50" r="50" stroke="none" fill="none" id="circle179" />
-  <rect
-     x="18.596792"
-     y="42.635441"
-     width="64.193947"
-     height="39.899174"
-     fill="none"
-     stroke="#000000"
-     stroke-width="7.60393"
-     rx="3.2096975"
-     ry="2.6599448"
-     id="rect185" />
-  <line
-     x1="34.645279"
-     y1="42.635441"
-     x2="34.645279"
-     y2="29.335716"
-     stroke="#000000"
-     stroke-width="7.60393"
-     id="line187" />
-  <line
-     x1="66.742256"
-     y1="42.635441"
-     x2="66.742256"
-     y2="29.335716"
-     stroke="#000000"
-     stroke-width="7.60393"
-     id="line189" />
-  <!-- Semi-circle -->
-  <path
-     d="m 34.64528,29.335716 a 16.048489,13.299723 0 1 1 32.096975,0"
-     stroke="#000000"
-     stroke-width="7.60393"
-     fill="none"
-     id="path191" />
-  <defs
-     id="defs199">
-    <marker
-       id="start-circle"
-       viewBox="0 0 10 10"
-       refX="5"
-       refY="5"
-       markerWidth="5"
-       markerHeight="5"
-       orient="auto">
-      <circle
-         cx="5"
-         cy="5"
-         r="5"
-         fill="blue"
-         id="circle193" />
-    </marker>
-    <marker
-       id="end-arrow"
-       viewBox="0 0 10 10"
-       refX="3.5"
-       refY="4.5"
-       markerWidth="5"
-       markerHeight="5"
-       orient="auto">
-      <path
-         d="M 0 2 L 10 5 L 0 8 Z"
-         fill="black"
-         id="path196" />
-    </marker>
-  </defs>
-  <rect
-     style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-dasharray:none"
-     id="rect355"
-     width="8.6219358"
-     height="17.769863"
-     x="46.563278"
-     y="53.031982"
-     rx="3.2374189"
-     ry="2.9335308" />
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+ width="100" height="100" viewBox="0 0 100 100">
+
+<defs>
+   <style>
+   .swt {
+      stroke-width: 8;
+   }
+   </style>
+</defs>
+
+<rect class="swt" x="10" y="45" width="80" height="50" fill="none"
+      stroke="black" rx="2" ry="2"/>
+<!-- lock: attachments for semi-circle -->
+<line x1="30" y1="45" x2="30" y2="35" stroke="black" class="swt" />
+<line x1="70" y1="45" x2="70" y2="35" stroke="black" class="swt" />
+<!-- lock: Semi-circle -->
+<path d="M 30 35 A 20 20 0 1 1 70 35" stroke="black" fill="none" class="swt" />
+<text x="32" y="85" font-size="32" font-weight="bold" font-family="Arial">***</text>
 </svg>

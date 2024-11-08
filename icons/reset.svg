@@ -2,10 +2,36 @@
   <!-- This is a partial circle with an arrow tip at the 11 AM position -->
   <!-- Partial Circle -->
   <!-- <path d="M50,50 m0,50 a50,50 0 1,1 50,50" -->
-  <path d="M 50 10 A 40 40 0 1 1 10 50"
+  <!-- <path d="M 50 10 A 40 40 0 1 1 10 50"
     stroke="black" stroke-width="8" fill="none"/>
-  <polygon points="20,10 50,0 50,20" fill="black"/>
+  <polygon points="20,10 50,0 50,20" fill="black"/> -->
   <!-- Arrow Tip at 11 AM position -->
   <!-- <polygon points="45,5 55,5 50,0" fill="black"/> -->
   <!-- <text x="0" y="120" font-size="32" font-weight="bold" font-family="Arial">Reset</text> -->
+
+<style>
+  .rounded {
+    fill:none;stroke:black;stroke-width:4;
+             stroke-linejoin:round;
+             stroke-linecap:round;
+             stroke-miterlimit:4;
+  .arrow {
+    marker-width: 10;
+    marker-height: 10;
+    orient: auto;
+  }
+</style>
+
+<defs>
+  <marker id="arrowhead" class="arrow" refX="5" refY="10" viewBox="0 0 10 10">
+    <path d="M 0 5 L 10 0 L 10 10 Z" fill="black"/>
+  </marker>
+</defs>
+
+  <path class="rounded" d="M 80 60 A 10 10 0 1 1 20 60"
+    marker-end="url(#arrowhead)"/>
+  <!-- <path d="M 10 50 A 40 40 0 1 1 10 50"
+    stroke="red" stroke-width="8" fill="none"/> -->
 </svg>
+
+<!-- A rx ry rotation large-arc-flag sweep-flag x y -->
