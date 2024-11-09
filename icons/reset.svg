@@ -17,21 +17,34 @@
              stroke-miterlimit:4;
   .arrow {
     marker-width: 10;
-    marker-height: 10;
+    marker-height: 8;
     orient: auto;
   }
 </style>
 
 <defs>
-  <marker id="arrowhead" class="arrow" refX="5" refY="10" viewBox="0 0 10 10">
-    <path d="M 0 5 L 10 0 L 10 10 Z" fill="black"/>
+  <marker id="arrowhead" class="arrow" refX="4" refY="8" viewBox="0 0 10 10" orient="150">
+    <path d="M 4 0 L 8 10 L 0 10 Z" fill="black"/>
   </marker>
 </defs>
 
-  <path class="rounded" d="M 80 60 A 10 10 0 1 1 20 60"
-    marker-end="url(#arrowhead)"/>
-  <!-- <path d="M 10 50 A 40 40 0 1 1 10 50"
-    stroke="red" stroke-width="8" fill="none"/> -->
+<path class="rounded" d="M 10 40 A 50 50 0 0 1 90 40" marker-end="url(#arrowhead)"/>
+<path class="rounded" d="M 90 60 A 50 50 0 0 1 10 60" marker-end="url(#arrowhead)"/>
+
 </svg>
 
-<!-- A rx ry rotation large-arc-flag sweep-flag x y -->
+<!-- A rx ry rotation large-arc-flag sweep-flag x y 
+
+rx: Horizontal radius of the ellipse.
+ry: Vertical radius of the ellipse.
+rotation: Rotation angle of the ellipse (in degrees).
+large-arc-flag: 0: Draw smaller arc. 1: Draw larger arc.
+sweep-flag: 0: Draw clockwise. 1: Draw counter-clockwise.
+x: End point x-coordinate.
+y: End point y-coordinate.
+
+-->
+
+
+  <!-- <path d="M 10 50 A 40 40 0 1 1 10 50"
+    stroke="red" stroke-width="8" fill="none"/> -->
