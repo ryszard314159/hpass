@@ -9,7 +9,7 @@
    </style>
 </defs>
 
-<rect class="swt" x="10" y="45" width="80" height="50" fill="none"
+<rect class="swt" x="20" y="45" width="60" height="50" fill="none"
       stroke="black" rx="2" ry="2"/>
 <!-- lock: attachments for semi-circle -->
 <line x1="30" y1="45" x2="30" y2="35" stroke="black" class="swt" />

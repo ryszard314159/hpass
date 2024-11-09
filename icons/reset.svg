@@ -11,7 +11,7 @@
 
 <style>
   .rounded {
-    fill:none;stroke:black;stroke-width:4;
+    fill:none;stroke:black;stroke-width:8;
              stroke-linejoin:round;
              stroke-linecap:round;
              stroke-miterlimit:4;
@@ -23,13 +23,14 @@
 </style>
 
 <defs>
-  <marker id="arrowhead" class="arrow" refX="4" refY="8" viewBox="0 0 10 10" orient="150">
-    <path d="M 4 0 L 8 10 L 0 10 Z" fill="black"/>
+  <marker id="arrowhead" class="arrow" refX="4" refY="4" viewBox="0 0 10 10" orient="auto">
+    <!-- <path d="M 4 0 L 8 10 L 0 10 Z" fill="black"/> -->
+    <path d="M 0 0 L 10 4 L 0 8 Z" fill="black"/>
   </marker>
 </defs>
 
-<path class="rounded" d="M 10 40 A 50 50 0 0 1 90 40" marker-end="url(#arrowhead)"/>
-<path class="rounded" d="M 90 60 A 50 50 0 0 1 10 60" marker-end="url(#arrowhead)"/>
+<path class="rounded" d="M 20 35 A 31 31 0 0 1 80 35" marker-end="url(#arrowhead)"/>
+<path class="rounded" d="M 80 65 A 31 31 0 0 1 20 65" marker-end="url(#arrowhead)"/>
 
 </svg>
 

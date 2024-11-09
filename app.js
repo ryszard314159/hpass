@@ -64,7 +64,7 @@ el.settings = document.getElementById("settings");
 el.help = document.getElementById("help");
 el.info = document.getElementById("info");
 el.storeButton = document.getElementById("storeButton");
-el.share = document.getElementById("share");
+// el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
 el.adunit = document.getElementById("adunit");
 el.more = document.getElementById("more");
@@ -558,9 +558,18 @@ document.querySelectorAll(".reset").forEach(function(element) {
   });
 });
 
-document.getElementById("logop").addEventListener("click", function () {
-  copyToClipboard(URL);
-  showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
+// document.getElementById("logop").addEventListener("click", function () {
+//   copyToClipboard(URL);
+//   showPopup(`${URL}<br>copied to clipoard - share it! `, 9 * SHORTPOPUP);
+// });
+
+document.querySelectorAll(".share").forEach(function(element) {
+  console.log("INFO: .share selected");
+  element.addEventListener("click", function (event) {
+    console.log("INFO: .share clicked");
+    copyToClipboard(URL);
+    showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
+  });
 });
 
 document.querySelectorAll(".lock").forEach(function(element) {
