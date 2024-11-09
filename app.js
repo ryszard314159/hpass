@@ -16,6 +16,7 @@ TODO:
       const msg = {type: "store-password", password: PASSWORD, tag: "app: setGenericOptions"};
       navigator.serviceWorker.controller.postMessage(msg);
     }
+7 - <img id="editShare"...> does not show showPopup element.
 */
 
 //
@@ -505,37 +506,53 @@ function cleanHint(prompt) {
 }
 
 function showPopup(msg, timeOut, bkg = "lightgreen") {
-  const p = document.createElement("div");
-  p.innerHTML = `<br>${msg}`;
-  p.style.display = "block";
-  p.style.position = "fixed";
-  p.style.fontSize = "1.1rem";
-  p.style.backgroundColor = bkg;
-  p.style.border = "0.1px solid black";
-  p.style.zIndex = 9;
-  p.style.top = "40%";
-  p.style.left = "50%";
-  p.style.transform = "translate(-50%, -100%)"
-  p.style.width = "90%";
-  p.style.textAlign = "center";
-  p.style.borderRadius = "15px";
-  p.style.padding = "1rem 0 1rem 0";
-  p.style.overflow = "auto";
-  p.style.boxShadow = "4pt 4pt 4pt grey";
-  const x = document.createElement("button");
-  x.innerHTML = "⨉";
-  x.style.fontSize = "1rem";
-  x.style.position = "absolute";
-  x.style.top = "0.2rem";
-  x.style.right = "0.8rem";
-  x.style.backgroundColor = "transparent";
-  x.style.border = "0px solid black";
-  p.appendChild(x);
-  document.documentElement.appendChild(p);
-  x.addEventListener("click", () => {
-    p.remove();
+  const popupStyles = {
+    display: 'block',
+    position: 'fixed',
+    fontSize: '1.1rem',
+    backgroundColor: bkg,
+    border: '0.1px solid black',
+    zIndex: 9,
+    top: '40%',
+    left: '50%',
+    transform: 'translate(-50%, -100%)',
+    width: '90%',
+    textAlign: 'center',
+    borderRadius: '15px',
+    padding: '1rem 0 1rem 0',
+    overflow: 'auto',
+    boxShadow: '4pt 4pt 4pt grey'
+  };
+  const buttonStyles = {
+    fontSize: '1rem',
+    position: 'absolute',
+    top: '0.2rem',
+    right: '0.8rem',
+    backgroundColor: 'transparent',
+    border: '0px solid black'
+  };
+  const popup = document.createElement("div");
+  popup.id = "showPopup";
+  const closeButton = document.createElement("button");
+  // popup.style = popupStyles;
+  // closeButton.style = buttonStyles;
+  Object.assign(popup.style, popupStyles);
+  Object.assign(closeButton.style, buttonStyles);
+  popup.setAttribute('role', 'alert');
+  popup.setAttribute('aria-live', 'assertive');
+  closeButton.setAttribute('aria-label', 'Close popup');
+  popup.innerHTML = `<br>${msg}`;
+  closeButton.innerHTML = "⨉";
+  popup.appendChild(closeButton);
+  document.documentElement.appendChild(popup);
+  popup.addEventListener('click', (e) => {
+    if (e.target === closeButton) {
+      popup.remove();
+    }
   });
-  setTimeout(() => p.remove(), timeOut);
+  console.log("showPopup: before setTimeout");
+  timeOut = 1000; // for debugging only!
+  // setTimeout(() => popup.remove(), timeOut);
 }
 
 document.querySelectorAll(".reset").forEach(function(element) {
@@ -568,6 +585,7 @@ document.querySelectorAll(".share").forEach(function(element) {
   element.addEventListener("click", function (event) {
     console.log("INFO: .share clicked");
     copyToClipboard(URL);
+    // alert("Copied!!!");
     showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
   });
 });
