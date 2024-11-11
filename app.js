@@ -17,6 +17,7 @@ TODO:
       navigator.serviceWorker.controller.postMessage(msg);
     }
 7 - <img id="editShare"...> does not show showPopup element.
+8 - reset from 15 to 32 and back does not work
 */
 
 //
@@ -32,7 +33,7 @@ TODO:
 
 "use strict";
 
-import { CHARS, getPass, get_random_string, objDiff } from "./core/lib.js";
+import { CHARS, getPass, get_random_string, objDiff, isEmpty } from "./core/lib.js";
 import { storageGet, storageSet, CRYPTO, sanityCheck,
          globalDefaults, hpassStorage } from "./core/lib.js";
 import { decryptText, encryptText, createHash, verifyPassword} from "./core/crypto.js"
@@ -733,10 +734,10 @@ async function saveOptions(args) {
     return;
   }
   // hint !== ''
-  if (Object.keys(diff).length === 0) {
-    alert(`Nothing site-specific to save for ${hint}`)
-    return;
-  }
+  // if (Object.keys(diff).length === 0) {
+  //   alert(`Nothing site-specific to save for ${hint}`)
+  //   return;
+  // }
   let sites = localStorage.getItem("sites");
   if (sites !== null) {
     sites = await storageGet({key: "sites", pwd: PASSWORD});// decrypt: true is the default!
@@ -760,14 +761,17 @@ async function saveOptions(args) {
   if (debug > 0) console.log(`before : objDiff: storedOpts= ${JSON.stringify(storedOpts)}`);
   if (debug > 0) console.log(`before : objDiff: sites= ${JSON.stringify(sites)}`);
   const hintDiff = (storedHintValues !== undefined) ? objDiff(sites[hint], storedHintValues) : sites[hint];
-  if (Object.keys(hintDiff).length === 0) {
+  // if (Object.keys(hintDiff).length === 0) {
+  //   alert(`Nothing new for ${hint}`);
+  //   return;
+  // }
+  if (isEmpty(hintDiff) && storedHintValues === undefined) {
     alert(`Nothing new for ${hint}`);
     return;
   }
-  if (debug > 0) console.log(`before cleanUp: sites= ${JSON.stringify(sites)}`);
-  if (debug > 0) console.log(`after cleanUp: typeof(sites)= ${typeof(sites)}, sites= `, sites);
-  if (debug > 0) console.log(`after cleanUp: JSON.stringify(sites)= ${JSON.stringify(sites)}`);
-  if (debug > 0) console.log(`before storageSet: sites IS NOT null`);
+  if (isEmpty(hintDiff) && storedHintValues !== undefined) {
+    replacedOrCreated = "restored to default values"
+  }
   msg = `Hint-specific settings ${replacedOrCreated}:\n`;
   msg = `${msg}\nHint= ${hint}`;
   const hs = {...currentOpts, ...sites[hint]};
@@ -776,8 +780,14 @@ async function saveOptions(args) {
   msg = `${msg}\nLength= ${hs.length}`;
   msg = `${msg}\nDo you want to save them?`;
   if (confirm(msg)) {
-    await storageSet({key: "sites", value: sites, pwd: PASSWORD});
-    alert("Saved!")
+    if (isEmpty(sites[hint])) { delete sites[hint]};
+    if (isEmpty(sites)) {
+      localStorage.removeItem('sites');
+      alert("Hint-specific settings removed!");
+    } else {
+      await storageSet({key: "sites", value: sites, pwd: PASSWORD});
+      alert("Saved!");
+    }
   }
 }
 

@@ -99,7 +99,54 @@ function objDiff(x, y) {
   return diff;
 }
 
+const isEmpty = (obj) => Object.keys(obj).length === 0;
 
+function isDeepEmpty(obj) {
+  // Base case: null or undefined
+  if (obj === null || obj === undefined) return true;
+
+  // Base case: not an object
+  if (typeof obj !== 'object') return false;
+
+  // Iterate over object keys
+  for (let key in obj) {
+    // Check if property is own (not inherited)
+    if (obj.hasOwnProperty(key)) {
+      // Recursive call for nested objects
+      if (!isDeepEmpty(obj[key])) return false;
+    }
+  }
+
+  // If no non-empty properties found, return true
+  return true;
+}
+
+
+function removeEmptyKey(obj) {
+  // Iterate over object keys
+  for (let key in obj) {
+    // Check if property is own (not inherited)
+    if (obj.hasOwnProperty(key)) {
+      // Check if value is empty, null, or undefined
+      if (
+        obj[key] === null ||
+        obj[key] === undefined ||
+        (typeof obj[key] === 'object' && Object.keys(obj[key]).length === 0)
+      ) {
+        // Delete key
+        delete obj[key];
+      } else if (typeof obj[key] === 'object') {
+        // Recursively call for nested objects
+        removeEmptyKey(obj[key]);
+        // If nested object becomes empty after recursive call, delete key
+        if (Object.keys(obj[key]).length === 0) {
+          delete obj[key];
+        }
+      }
+    }
+  }
+  return obj;
+}
 
 // const obj = { a: 1, b: 2, x: {}, y: null, z: undefined };
 // console.log(cleanUp(obj)); // { a: 1, b: 2 }
@@ -470,6 +517,6 @@ async function storageGet(args) {
 export {
   CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
 };
-export { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck };
+export { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck, isEmpty, isDeepEmpty };
 export { globalDefaults, updateLocalStorage, hpassStorage }
 // export { setGenericOptions, createSplashScreen }
