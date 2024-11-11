@@ -16,5 +16,5 @@
 <line x1="70" y1="45" x2="70" y2="35" stroke="black" class="swt" />
 <!-- lock: Semi-circle -->
 <path d="M 30 35 A 20 20 0 1 1 70 35" stroke="black" fill="none" class="swt" />
-<text x="32" y="85" font-size="32" font-weight="bold" font-family="Arial">***</text>
+<text x="25" y="85" font-size="32" font-weight="bold" font-family="Arial">****</text>
 </svg>
