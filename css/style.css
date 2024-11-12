@@ -75,6 +75,12 @@ body .help {
   height: 1.5rem;
 }
 
+.icon {
+  margin: 0 auto;
+  width: 1rem;
+  height: 1rem;
+}
+
 .header {
   position: fixed;
   top: 0;
@@ -100,4 +106,18 @@ body .help {
 .flex-container.column {
   display: flex;
   flex-direction: column;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 1px;
+}
+
+.cell {
+  /* background-color: #eee; */
+  background-color: rgb(196, 212, 103);
+  padding: 1rem 0 1rem 1rem;
+  text-align: left;
 }
