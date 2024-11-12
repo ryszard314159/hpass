@@ -271,7 +271,8 @@ hr {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  /* height: 100vh; */
+  height: calc(100vh - 8%); /* Subtract #versionContainer's height */
   width: 100vw;
   /* background-size: cover; */
   position: absolute;
@@ -281,7 +282,6 @@ hr {
 }
 #entryContainer {
   display: block;
-  /* visibility: visible; */
   background-color: rgba(255, 178, 102);
 }
 #editContainer {
@@ -547,19 +547,27 @@ input[type="number"] {
   box-shadow: 2px 2px 2px red;
 }
 
-#versionContainer {
-  display: inline-flex;
-  justify-content: space-between;
-  text-decoration: none;
-  vertical-align: middle;
-  font-size: small;
-  align-items: center;
-}
-
 #logo {
   display: flex;
   margin: 0 auto;
   width: 1.5rem; height: 1.5rem
+}
+
+#versionContainer {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  text-decoration: none;
+  vertical-align: middle;
+  align-items: center;
+  background-color: lightgray;
+  height: 4%;
+  width: 100%;
+  font-size: 1rem;
+  /* display: grid; */
+  /* grid-template-columns: repeat(5, 1fr); Adjust columns */
+  /* gap: 2rem; Adjust gap */
 }
 
 .flex-item {
@@ -568,10 +576,8 @@ input[type="number"] {
 
 .flex-item:not(:first-child):before {
   content: "•";
-  /* content: "|"; */
-  margin: 0 0.25rem;
+  margin-right: 1rem;
 }
-
 
 #version {
   display: flex;

@@ -9,34 +9,34 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946044372357745"
      crossorigin="anonymous"></script>
     <script>
-      window.onload = function() {
-         window.scrollTo(0, 0);
-         const history = localStorage.getItem("history");
-         console.log(`help: history= ${history}`)
-         const topBanner = document.getElementById("topBanner");
-         const title = document.getElementById("title");
-        //  const topBannerHeight = topBanner.offsetHeight;
-         if (history !== null) {
-           topBanner.style.display = "none";
-           title.style.marginTop = "0";
-         } else {
-           localStorage.setItem("history", "loaded");
-           topBanner.style.display = "block";
-          //  title.style.marginTop = `${topBanner.offsetHeight}`;
-           title.style.marginTop = `4rem`;
-         }
-      }
+      // window.onload = function() {
+      //    window.scrollTo(0, 0);
+      //    const history = localStorage.getItem("history");
+      //    console.log(`help: history= ${history}`)
+      //    const topBanner = document.getElementById("topBanner");
+      //    const title = document.getElementById("title");
+      //   //  const topBannerHeight = topBanner.offsetHeight;
+      //    if (history !== null) {
+      //      topBanner.style.display = "none";
+      //      title.style.marginTop = "0";
+      //    } else {
+      //      localStorage.setItem("history", "loaded");
+      //      topBanner.style.display = "block";
+      //     //  title.style.marginTop = `${topBanner.offsetHeight}`;
+      //      title.style.marginTop = `4rem`;
+      //    }
+      // }
     </script>
   </head>
     <body style="background-color: rgb(175, 231, 191);">
 
     <!-- <div id="all" class="flex-container column"> -->
 
-      <div id="topBanner" class="banner">
+      <!-- <div id="topBanner" class="banner">
         <a href="index.html" class="flex-container">
-          <img class="btn" style="margin: 0 0 0 1rem", src="icons/back.svg"/>
+          <img class="btn" style="margin: 0 0 0 1rem" src="icons/back.svg"/>
         </a>
-      </div>
+      </div> -->
 
     <div id="title">
     <h1>Start using HPASS:</h1>
