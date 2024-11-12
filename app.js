@@ -552,8 +552,8 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
     }
   });
   console.log("showPopup: before setTimeout");
-  timeOut = 1000; // for debugging only!
-  // setTimeout(() => popup.remove(), timeOut);
+  // timeOut = 1000; // for debugging only!
+  setTimeout(() => popup.remove(), timeOut);
 }
 
 document.querySelectorAll(".reset").forEach(function(element) {
