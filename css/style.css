@@ -112,12 +112,24 @@ body .help {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 1px;
+  gap: 0px;
+  border: 1px solid grey;
 }
 
 .cell {
-  /* background-color: #eee; */
-  background-color: rgb(196, 212, 103);
-  padding: 1rem 0 1rem 1rem;
+  background-color: rgb(197, 203, 160);
+  background-color: transparent;
+  padding: 0.5rem 0 0.5rem 0.5rem;
+  /* border: 1px solid grey; */
+  border-right: 1px solid grey; /* Vertical grid lines */
+  border-bottom: 1px solid grey; /* Horizontal grid lines */
   text-align: left;
+}
+
+.cell:nth-child(3n) {
+  border-right: none;
+}
+
+.cell:nth-child(n + 10) {
+  border-bottom: none;
 }

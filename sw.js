@@ -6,7 +6,7 @@
 // console.log(CryptoJS); // Verify Crypto-JS is loaded
 
 // import { getPass } from "./core/lib.js";
-const version = "2024-09-15";
+const version = "2024-11-15";
 
 const appAssets = [
   "index.html",
