@@ -565,8 +565,10 @@ document.querySelectorAll(".reset").forEach(function(element) {
     msg = `${msg}\n\nClick OK to proceed.`
     if (confirm(msg)) {
       event.preventDefault();
-      localStorage.removeItem("options");
-      localStorage.removeItem("sites");
+      // localStorage.removeItem("options");
+      // localStorage.removeItem("sites");
+      // localStorage.removeItem("history");
+      localStorage.clear();
       PASSWORD = '';
       sessionStorage.setItem("password", PASSWORD);
       const pwdHash = await createHash(PASSWORD);
