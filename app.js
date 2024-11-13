@@ -345,14 +345,19 @@ async function createSplashScreen(opts) {
   let msg = `<h3>To start using HPASS:</h3>
   <ul>
   <li>Close this menu.
-  <li>Change (${changeImg}) Master Password - see
-      Help (${helpImg}) and Info (${infoImg})
-      for guidance and resources about selecting secure password.
+  <li>Create new Master Password - it is initially blank. This
+  <a href="https://www.pcmag.com/how-to/tricks-for-remembering-strong-passwords">PC article</a>
+  can be a good starting guide how to create strong and memorable password.
+  <li>Change (${changeImg}) Master Password
   </ul>
   <hr style="color: black;">
   <div>
   <br>
   <p style="background-color: yellow;">Store Master Password in a safe location.</p>
+  <br>
+  All settings are stored encrypted on your local device using
+  Master Password as the encryption key.
+
   </div>
   `;
   const container = document.createElement("div"); // container
@@ -367,7 +372,7 @@ async function createSplashScreen(opts) {
   closeButton.innerHTML = '&times;';
   closeButton.addEventListener('click', function() {
     container.style.display = "none";
-    window.location.href = 'help.html';
+    // window.location.href = 'help.html';
   });
   content.appendChild(closeButton);
   container.appendChild(content);
