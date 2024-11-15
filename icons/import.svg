@@ -1,19 +1,13 @@
 <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-   <!-- <polygon points="48,10 52,10 52,70 60,70 50,90 40,70 48,70"/>
-   <polygon points="10,80 14,80 14,90 86,90 86,80 90,80 90,94 10,94"/> -->
-<!-- <polygon points="47,10 53,10 53,70 60,70 50,84 40,70 47,70"/>  -->
-<!--                   1     2    3     4     5     6     7 -->
-   <!-- <polygon points="47,0 53,0 53,60 60,60 50,84 40,60 47,60"/> arrow -->
-<!--<polygon points="10,80 14,80 14,90 86,90 86,80 90,80 90,94 10,94"/> -->
-   <!-- <polygon points="10,78 16,78 16,84 84,84 84,78 90,78 90,90 10,90" fill="black"/> -->
-   <!-- <text x="0" y="120" font-size="32" font-weight="bold" font-family="Arial">Import</text> -->
-
-  <defs>
-   <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="1.5" refY="1.5" orient="auto">
-      <path d="M 0 0 L 3 1.5 L 0 3 Z" />
-   </marker>
-  </defs>
-  <line x1="50" y1="0" x2="50" y2="70" stroke="black" stroke-width="8" marker-end="url(#arrowhead)" />
-  <line x1="2" y1="98" x2="98" y2="98" stroke="black" stroke-width="16" />
-
+   <style>
+       .rounded {
+             fill:black;stroke:black;
+             stroke-linejoin:round;
+             stroke-linecap:round;
+             stroke-miterlimit:4;
+       }
+   </style>
+   <path id="horizontal" class="rounded" d="M4 96 H96" stroke-width="16"/>
+   <path id="vertical" class="rounded" d="M50 80 V4" stroke-width="8" />
+   <path id="arrowhead" class="rounded" d="M38 60 L50 80 L62 60 Z" stroke-width="8" />
 </svg>
