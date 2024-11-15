@@ -397,7 +397,7 @@ if ("serviceWorker" in navigator) {
   const debug = false;
   if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
-  .register("/hpass/sw.js", { scope: '/hpass/' })
+  .register("sw.js", { scope: './' })
   .then((reg) => {
     // alert(`app: register: PASSWORD= ${PASSWORD}`);
     let opts = localStorage.getItem("options");
