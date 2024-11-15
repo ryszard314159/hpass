@@ -397,7 +397,7 @@ if ("serviceWorker" in navigator) {
   const debug = false;
   if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
-  .register("/sw.js", { scope: '/' })
+  .register("/hpass/sw.js", { scope: '/hpass/' })
   .then((reg) => {
     // alert(`app: register: PASSWORD= ${PASSWORD}`);
     let opts = localStorage.getItem("options");
@@ -429,10 +429,11 @@ if ("serviceWorker" in navigator) {
 }
 
 navigator.serviceWorker.addEventListener("message", (event) => {
-  const debug = false;
+  const debug = true;
   if (debug) console.log("app: message: event= ", event);
   if (event.data && event.data.type === "VERSION") {
-    // console.log("app: message: event.data= ", event.data);
+    if (debug) console.log("app: message: event.data= ", event.data);
+    // document.getElementById("version").version.innerHTML = `${event.data.version}`;
     el.version.innerHTML = `${event.data.version}`;
   }
 });

@@ -15,7 +15,7 @@
   "categories": ["security", "productivity", "navigation"],
   "icons": [
     {
-      "src": "/icons/logo.svg",
+      "src": "icons/logo.svg",
       "type": "image/svg+xml",
       "sizes": "any"
     }
