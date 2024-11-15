@@ -66,7 +66,7 @@
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
+  <body class="index">
     <!-- Google Tag Manager (noscript) -->
     <noscript
       ><iframe
@@ -121,61 +121,45 @@
         </div>
     </div>
 
-    <div id="topIcons2" class="topIcons">
-        <img class="btn share" src="icons/share.svg" title="Share">
-        <img id="lockEntry" class="btn lock" src="icons/lock.svg" title="Lock"/>
-    </div>
+    <div id="enterContainer">
+      <div id="enterIcons" class="topIcons">
+          <img class="btn share" src="icons/share.svg" title="Share">
+          <img id="lockEntry" class="btn lock" src="icons/lock.svg" title="Lock"/>
+      </div>
+      <div id="burnAndPeak" class="inputsContainer">
+        <div id="pgHintContainer" class="container">
+          <img id="gear" class="" src="icons/gear.svg">
+          <input id="pgHint" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Enter Hint"/>
+          <img id="generate" class="" src="icons/generate.svg">
+        </div>
 
-    <div id="burnAndPeak" class="inputsContainer">
-      <div id="pgHintContainer" class="container">
-        <img id="gear" class="" src="icons/gear.svg">
-        <input id="pgHint" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Enter Hint"/>
-        <img id="generate" class="" src="icons/generate.svg">
-      </div>
+        <div id="burnContainer" class="container" >
+          <button id="burnButton" class="leading-icon">🔥</button>
+          <input id="burn" class="input"
+            placeholder="Warm-up rounds (0-999999)"/>
+        </div>
+        <div id="peakContainer" class="container">
+          <button id="peakButton" class="leading-icon">🤐</button>
+          <input id="peak" class="input" placeholder="Top Secret" />
+        </div>
 
-      <div id="burnContainer" class="container" >
-        <button id="burnButton" class="leading-icon">🔥</button>
-        <input id="burn" class="input"
-          placeholder="Warm-up rounds (0-999999)"/>
-      </div>
-      <div id="peakContainer" class="container">
-        <button id="peakButton" class="leading-icon">🤐</button>
-        <input id="peak" class="input" placeholder="Top Secret" />
-      </div>
-      <hr>
-      <div id="topSecurity" style="width: 90%; text-align: left;
-          margin: 5% 5% 5% 5%;">
-        <strong>Warm-up ( 🔥 )</strong> and
-        <strong>Top Secret ( 🤐 )</strong> are never saved.
-        You may want to use them for extra security.
-        In the unlikely event of your device being compromised and locally
-        stored (and encrypted) HPASS data hacked,
-        passwords generated with non-empty one (or both) of these fields,
-        still will be safe.  
+        <div id="topSecurity" style="width: 90%; text-align: left;
+            margin: 5% 5% 5% 5%;">
+          <strong>Warm-up ( 🔥 )</strong> and
+          <strong>Top Secret ( 🤐 )</strong> are never saved.
+          You may want to use them for extra security.
+          In the unlikely event of your device being compromised and locally
+          stored (and encrypted) HPASS data hacked,
+          passwords generated with non-empty one (or both) of these fields,
+          still will be safe.  
+        </div>
       </div>
     </div>
 
     <hr>
 
-    <!-- <div id="versionContainer">
-      <div class="flex-item">
-        <img id="logo" loading="lazy" src="icons/logo.svg" />
-      </div>
-      <div class="flex-item">
-        <p id="version">YYYY-MM-DD</p>
-      </div>
-      <div class="flex-item">
-        <a href="privacy/index.html">Privacy</a>
-      </div>
-      <div class="flex-item">
-        <a href="help.html#FAQ">FAQ</a>
-      </div>
-      <div class="flex-item">
-        <a href="help.html#Contact">info@hpass.app</a>
-      </div>
-    </div> -->
-
     <div id="editContainer">
+
       <div id="editIcons" class="topIcons">
         <img class="btn import" src="icons/import.svg" title="Import">
         <img class="btn export" src="icons/export.svg" title="Export">
@@ -242,8 +226,7 @@
       </div>
     </div>
 
-    <hr />
-    <footer style="width: 90%; text-align: left; margin: 5% 5% 5% 5%;">
+    <div id="footer" style="width: 90%; margin: 5% 5% 5% 5%;">
       <h2 style="text-align: center">
         Why strong passwords are important?
       </h2>
@@ -387,7 +370,7 @@
           >
         </li>
       </ol>
-    </footer>
+    </div>
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     <br><br><br>
     <div id="adunit">
