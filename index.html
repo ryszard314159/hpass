@@ -161,6 +161,7 @@
     <div id="editContainer">
 
       <div id="editIcons" class="topIcons">
+        <img class="btn back" src="icons/back.svg" title="Back">
         <img class="btn import" src="icons/import.svg" title="Import">
         <img class="btn export" src="icons/export.svg" title="Export">
         <img id="save" class="btn save" src="icons/save.svg" title="Save"/>
@@ -168,7 +169,9 @@
         <img id="lockEdit" class="btn lock" src="icons/lock.svg" title="Lock"/>
       </div>
 
-      <div id= "inputsContainer" class="inputsContainer">
+      <h3>Edit Settings</h3>
+
+      <div id="inputsContainer" class="inputsContainer">
         <div id="edHintContainer" class="container">
           <input id="edHint" class="input" placeholder="Hint">
         </div>
@@ -186,15 +189,18 @@
         </div>
       </div>
 
-      <div id="backBanner" style="position: relative; width: 100%; height: 5%; background-color: lightgrey;
-      left: 0; right:0; margin: 0 0 0 0; vertical-align: center;
-      align-items: center; display: inline-flex">
-      <span id="back"> <img class="btn" src="icons/back.svg"/>Back</span>
-      </div>
+      <!-- <div id="backBanner" style="position: relative; width: 100%; height: 5%;
+           background-color: lightgrey;
+           left: 0; right:0; margin: 0 0 0 0; vertical-align: center;
+           align-items: center; display: inline-flex">
+           <span id="back"> <img class="btn" src="icons/back.svg"/>Back</span>
+      </div> -->
 
       <div id="editLegend" style="width: 90%; justify-content: center; text-align: center;
                   margin: 1rem 1rem 0 1rem;">
         <p style="justify-content: center; text-align: left;">
+          <hr>
+          <br>
           <ul>
             <li><strong>Hint</strong>: leave it empty to change <em>generic settings</em>.
                 You may need to create hint/site <em>specific settings</em>
@@ -208,13 +214,14 @@
             <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
             <li><strong>Special Character
                 (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
-                one or more !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~</li>
+                one or more !\"#$%&'()*+,-./:;<=>?@[ ]^_`{|}~</li>
             <li><strong>Length (📏):</strong> longer is better,
                         note however that a lot of sites have unreasonably short upper limit
                         - 15 seems to be a reasonable balance between security and a need to create
                         many <em>site-specific settings</em>.</li>
           </ul>
         </p>
+        <br><hr><br>
       </div>
 
       <div id="fileInputModal" class="modal">

@@ -113,7 +113,7 @@ el.gear.addEventListener('click', async function () {
   el.pepper.value = opts.pepper;
   el.length.value = opts.length;
   el.editContainer.style.display = "block";
-  el.editContainer.style.zIndex = 99;
+  // el.editContainer.style.zIndex = 99;
   // //
   // const nonWhitespaceHeight = Array.from(el.editContainer.children).reduce((acc, child) => {
   //   const rect = child.getBoundingClientRect();
@@ -128,7 +128,13 @@ el.gear.addEventListener('click', async function () {
   // el.adunit.style.display = "none";
 });
 
-el.back.addEventListener('click', function () {
+// el.back.addEventListener('click', function () {
+//   el.editContainer.style.display = "none";
+//   el.adunit.style.top = "50%";
+//   el.adunit.style.display = "block";
+// });
+
+document.querySelector(".btn.back").addEventListener('click', function () {
   el.editContainer.style.display = "none";
   el.adunit.style.top = "50%";
   el.adunit.style.display = "block";
