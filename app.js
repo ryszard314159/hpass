@@ -348,7 +348,12 @@ async function createSplashScreen(opts) {
   const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
   const helpImg = `<img src="icons/help.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
   const infoImg = `<img src="icons/info.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
-  let msg = `<h3>To start using HPASS:</h3>
+  let msg = `<h3>New in ${el.version.innerHTML}:</h3>
+  <ul>
+    <li>Full encryption of locally stored settings.
+    <li>UX improvements.
+  </ul>
+  <h3>To start using HPASS:</h3>
   <ul>
   <li>Close this menu.
   <li>Create new Master Password - it is initially blank. This

@@ -7,7 +7,7 @@
              stroke-miterlimit:4;
        }
    </style>
-   <path id="horizontal" class="rounded" d="M8 8 H92" stroke-width="16"/>
-   <path id="vertical" class="rounded" d="M50 96 V25" stroke-width="8" />
-   <path id="arrowhead" class="rounded" d="M38 40 L50 25 L62 40 Z" stroke-width="8" />
+   <path id="horizontal" class="rounded" d="M8 92 H92" stroke-width="16"/>
+   <path id="vertical" class="rounded" d="M50 75 V4" stroke-width="8" />
+   <path id="arrowhead" class="rounded" d="M40 30 H60 L50 4 Z" stroke-width="8" />
 </svg>
