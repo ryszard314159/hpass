@@ -37,8 +37,9 @@ body.index {
 
 body.help {
   background-color: rgb(175, 231, 191);
-  width: 95%;
-  margin-left: 1.5rem;
+  width: 93%;
+  /* margin-left: 1.5rem; */
+  margin: 0 0 0 1.5rem;
 }
 
 body.info {
@@ -272,8 +273,23 @@ ul li {
 }
 */
 
-li {
+/* li {
   text-align: left;
+} */
+
+/* .indent {
+  padding-left: 20px;
+} */
+
+.indent li {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+.indent li:before {
+  content: "\2022";
+  position: absolute;
+  left: 10px;
 }
 
 hr {
@@ -727,7 +743,7 @@ margin-top: 9rem;
 }
 
 .topIcons {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   display: inline-flex;
