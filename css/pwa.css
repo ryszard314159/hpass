@@ -238,12 +238,6 @@ button {
   transform: scale(1.5);
 }
 
-/* display: block;
-border: 0px solid blue;
-padding: 0px;
-margin: 0 0 1rem 0;
-box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-z-index: 1; */
 form {
   text-align: center;
 }
@@ -260,36 +254,6 @@ p {
   text-align: left;
   /* display: inline-block;
   margin: 0 0 10px 0; */
-}
-
-/* ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-ul li {
-  margin-bottom: 0;
-}
-*/
-
-/* li {
-  text-align: left;
-} */
-
-/* .indent {
-  padding-left: 20px;
-} */
-
-.indent li {
-  list-style-type: none;
-  padding-left: 20px;
-}
-
-.indent li:before {
-  content: "\2022";
-  position: absolute;
-  left: 10px;
 }
 
 hr {
@@ -376,8 +340,6 @@ hr {
   object-fit: contain;
 }
 
-
-
 #editHint, #editSalt, #editPepper, #editLength,
 #pgHint, #salt, #pepper, #length {
   width: 100%;
@@ -443,7 +405,6 @@ hr {
   visibility: hidden;
 }
 
-
 #adunit {
   z-index: 2;
   width: 100%;
@@ -491,7 +452,6 @@ hr {
 #burn, #peak {
     background-color: rgba(0, 0, 0, 0.1);
 }
-
 
 #pgHint {
   border: none;
@@ -575,9 +535,6 @@ input[type="number"] {
   height: 4%;
   width: 100%;
   font-size: 1rem;
-  /* display: grid; */
-  /* grid-template-columns: repeat(5, 1fr); Adjust columns */
-  /* gap: 2rem; Adjust gap */
 }
 
 .flex-item {
@@ -607,7 +564,6 @@ input[type="number"] {
   align-items: center;
   border-radius: 50%;
 }
-
 
 .hidden {
   opacity: 0;
@@ -763,6 +719,7 @@ margin-top: 9rem;
   align-items: center;
   justify-items: center; /* instead of justify-content */
 }
+
 .container {
   position: relative;
   width: 90%;
@@ -911,68 +868,6 @@ margin-top: 9rem;
   border-bottom: none;
 }
 
-/* from styles.css
-.center {
-  border: 0px solid;
-  display: flex;
-  height: 100%;
-  text-align: center;
-  align-items: center;
-  vertical-align: middle;
+li {
+  text-align: left;
 }
-  .container {
-  width: 100%;
-  min-height: 100vh;
-  background: transparent;
-  display: flex;
-  display: inline;
-  justify-content: center;
-  align-items: center;
-}
-
-.svg-bullets {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.svg-bullets li {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-}
-
-.svg-bullets li img {
-  margin-right: 10px;
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3rem;
-  background-color: lightgrey;
-  vertical-align: middle;
-}
-
-.vertical-align {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-
-.flex-container {
-  display: flex;
-  align-items: center;
-}
-
-.flex-container.column {
-  display: flex;
-  flex-direction: column;
-}
-
-
-*/

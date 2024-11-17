@@ -65,3 +65,69 @@ body.info {
 .cell:nth-child(n + 10) {
   border-bottom: none;
 }
+
+/* from styles.css
+.center {
+  border: 0px solid;
+  display: flex;
+  height: 100%;
+  text-align: center;
+  align-items: center;
+  vertical-align: middle;
+}
+  .container {
+  width: 100%;
+  min-height: 100vh;
+  background: transparent;
+  display: flex;
+  display: inline;
+  justify-content: center;
+  align-items: center;
+}
+
+.svg-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.svg-bullets li {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.svg-bullets li img {
+  margin-right: 10px;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3rem;
+  background-color: lightgrey;
+  vertical-align: middle;
+}
+
+.vertical-align {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+.flex-container {
+  display: flex;
+  align-items: center;
+}
+
+.flex-container.column {
+  display: flex;
+  flex-direction: column;
+}
+
+
+*/
