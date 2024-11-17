@@ -7,5 +7,5 @@
              stroke-miterlimit:4;
        }
   </style>
-  <path class="rounded" d="M4 50 H96 M50 15 L4 50 L50 85" />
+  <path class="rounded" d="M4 50 H96 M50 4 L4 50 L50 96" />
 </svg>
