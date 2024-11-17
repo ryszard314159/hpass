@@ -31,9 +31,9 @@ body {
   justify-content: center;
 }
 
-body.index {
+/* body.index {
   text-align: center;
-}
+} */
 
 body.help {
   background-color: rgb(175, 231, 191);
@@ -47,6 +47,10 @@ body.info {
   width: 95%;
   margin-left: 1.8rem;
 }
+
+/* li {
+  text-align: left;
+} */
 
 h1, h2, h3 {
   /* margin-bottom: 1rem; */
@@ -866,8 +870,4 @@ margin-top: 9rem;
 
 .cell:nth-child(n + 10) {
   border-bottom: none;
-}
-
-li {
-  text-align: left;
 }
