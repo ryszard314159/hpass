@@ -212,7 +212,7 @@ el.masterPassword.addEventListener("keydown", function(event) {
         alert("Password Hash was null.\nAll settings removed & Master Password set to empty string");
         localStorage.clear();
         PASSWORD = '';
-        sessionStorage.setItem("password", PASSWORD);
+        // sessionStorage.setItem("password", PASSWORD);
         const hash = await createHash(PASSWORD);
         hpassStorage.setItem("pwdHash", hash, `el.masterPassword: pwd=''`);
         return;
@@ -221,7 +221,7 @@ el.masterPassword.addEventListener("keydown", function(event) {
       const isCorrect = await verifyPassword(storedHash, pwd);
       if (isCorrect) {
         PASSWORD = pwd;
-        sessionStorage.setItem("password", pwd);
+        // sessionStorage.setItem("password", pwd);
         el.entryContainer.style.display = "none";
         window.sessionStorage.setItem("entryContainerHidden", true);
         window.scrollTo(0, 0); // scroll window to the top!
@@ -287,7 +287,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const pwdHash = await createHash(newPassword);
   hpassStorage.setItem("pwdHash", pwdHash, `el.newPassword:`);
   PASSWORD = newPassword;
-  sessionStorage.setItem("password", newPassword);
+  // sessionStorage.setItem("password", newPassword);
 
   // change encryption from old to new password
   try {
@@ -318,7 +318,7 @@ function setGenericOptions() {
   if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
   if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
   PASSWORD = '';
-  sessionStorage.setItem("password", '');
+  // sessionStorage.setItem("password", '');
   storageSet({key: "options", value: opts, pwd: PASSWORD, debug: true}).then( () => {
     sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
   });
@@ -342,7 +342,7 @@ async function createSplashScreen(opts) {
   if (debug) console.log("createSplashScreen: at the START");
   if (debug) console.trace();
   PASSWORD = '';
-  sessionStorage.setItem("password", PASSWORD);
+  // sessionStorage.setItem("password", PASSWORD);
   const pwdHash = await createHash(PASSWORD);
   localStorage.setItem("pwdHash", pwdHash);
   const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
@@ -587,7 +587,7 @@ document.querySelectorAll(".reset").forEach(function(element) {
       // localStorage.removeItem("history");
       localStorage.clear();
       PASSWORD = '';
-      sessionStorage.setItem("password", PASSWORD);
+      // sessionStorage.setItem("password", PASSWORD);
       const pwdHash = await createHash(PASSWORD);
       hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
       const opts = setGenericOptions();
@@ -861,11 +861,11 @@ function handleExport(args = {}) {
   
   if (args.decrypted) {
     if (!confirm("Plain text export!")) return;
-    const sessionPassword = sessionStorage.getItem("password");
-    if (PASSWORD !== sessionPassword) {
-      alert(`ERROR: edit: handleExport: PASSWORD !== sessionPassword`);
-      PASSWORD = sessionPassword;
-    }
+    // const sessionPassword = sessionStorage.getItem("password");
+    // if (PASSWORD !== sessionPassword) {
+    //   alert(`ERROR: edit: handleExport: PASSWORD !== sessionPassword`);
+    //   PASSWORD = sessionPassword;
+    // }
     const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
       if (toExport[key] === undefined) return;
       toExport[key] = await decryptText(PASSWORD, toExport[key]);
@@ -908,11 +908,11 @@ function handleImport(event) {
               const backUp = JSON.stringify(localStorage);
               const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
               let opts;
-              const sessionPassword = sessionStorage.getItem("password");
-              if (PASSWORD !== sessionPassword) {
-                alert(`ERROR: edit: handleImport: PASSWORD !== sessionPassword`);
-                PASSWORD = sessionPassword;
-              }
+              // const sessionPassword = sessionStorage.getItem("password");
+              // if (PASSWORD !== sessionPassword) {
+              //   alert(`ERROR: edit: handleImport: PASSWORD !== sessionPassword`);
+              //   PASSWORD = sessionPassword;
+              // }
               for (const key in importedLocalStorage) {
                 const txt = importedLocalStorage[key]; // imported text
                 if (!CRYPTO.encryptedItems.includes(key)) { // for pwdHash and encrypted keys
