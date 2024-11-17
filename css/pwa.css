@@ -175,9 +175,10 @@ button {
   flex-grow: 1;
 }
 .btn {
-  object-fit: cover;
-  height: 100%;
+  /* object-fit: cover; */
   /* width: 100%; */
+  max-width: 2.5rem; /* adjust as needed */
+  max-height: 2.5rem; /* adjust as needed */
   height: 100%;
   padding: 0.3rem;
   margin: 0rem;
@@ -266,6 +267,7 @@ hr {
 
 #entryContainer, #editContainer {
 /* #entryContainer { */
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -712,11 +714,22 @@ margin-top: 9rem;
   position: fixed;
   top: 0;
   left: 0;
-  display: inline-flex;
+  /* display: inline-flex; */
+  display: flex;
+  flex-wrap: nowrap;
+  -moz-box-align: center;
   width: 100%;
   height: 2.7rem;
   justify-content: space-around;
   background-color: lightgray;
+}
+
+/* assuming 6 icons */
+.topIcons > a, .topIcons > img {
+  width: calc(100% / 6); 
+  text-align: center;
+  max-width: 100%;
+  height: auto;
 }
 
 .inputsContainer {
