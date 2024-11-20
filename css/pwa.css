@@ -37,14 +37,14 @@ body {
 
 body.help {
   background-color: rgb(175, 231, 191);
-  width: 93%;
-  margin: 0 0 0 1.5rem;
+  width: 90%;
+  margin-left: 1.5rem;
 }
 
 body.info {
   background-color: rgb(195, 223, 238);
-  width: 93%;
-  margin-left: 1.8rem;
+  width: 90%;
+  margin-left: 1.5rem;
 }
 
 /* li {
@@ -734,13 +734,15 @@ margin-top: 9rem;
 
 .inputsContainer {
   position: relative;
-  /* top: 2rem; */
   margin: 2rem 0 0 0;
   flex: 1;
   display: grid;
   grid-template-columns: 1fr; /* or repeat(3, 1fr) for three equal columns */
   align-items: center;
   justify-items: center; /* instead of justify-content */
+}
+.inputsContainer.edit {
+  margin: -1rem 0 0 0;
 }
 
 .container {

@@ -17,7 +17,6 @@ TODO:
       navigator.serviceWorker.controller.postMessage(msg);
     }
 7 - <img id="editShare"...> does not show showPopup element.
-8 - reset from 15 to 32 and back does not work
 */
 
 //
@@ -33,7 +32,8 @@ TODO:
 
 "use strict";
 
-import { CHARS, getPass, get_random_string, objDiff, isEmpty } from "./core/lib.js";
+import { CHARS, getPass, get_random_string, objDiff, isEmpty,
+         MINLENGTH, MAXLENGTH } from "./core/lib.js";
 import { storageGet, storageSet, CRYPTO, sanityCheck,
          globalDefaults, hpassStorage } from "./core/lib.js";
 import { decryptText, encryptText, createHash, verifyPassword} from "./core/crypto.js"
@@ -721,8 +721,191 @@ document.body.querySelectorAll(".close").forEach(function(element) {
   });
 });
 
-el.save.addEventListener("click", saveOptions);
+function validLength(x, minLen = MINLENGTH, maxLen = MAXLENGTH) {
+  if (typeof(x) !== 'string') return false;
+  const n = parseInt(x);
+  const v = n.toString() !== x  || n < minLen || maxLen < n;
+  return !v;
+}
+
 async function saveOptions(args) {
+  const stringEmpty = (x) => x === '';
+  const objEmpty = (x) => Object.keys(x).length === 0;
+  const objEqual = (x, y) => objEmpty(objDiff(x, y));
+  // let currentOpts = null;
+  // let updateCurrentOpts = () => currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  // updateCurrentOpts();
+  let hint = el.edHint.value;
+  const storedOpts = await storageGet({key: "options", pwd: PASSWORD});
+  if (storedOpts === null) {
+    const msg = `saveOptions: ERROR: problem decrypting stored options`;
+    alert(msg);
+    throw new Error(msg);
+  }
+  const currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  if (!validLength(el.length.value)) {
+    alert(`Length must be an integer in ${MINLENGTH}-${MAXLENGTH} range`);
+    el.length.value = storedOpts.length;
+    return;
+  }
+  let sites = localStorage.getItem("sites");
+  if (sites !== null) {
+    sites = await storageGet({key: "sites", pwd: PASSWORD});// decrypt: true is the default!
+    if (sites === null) {
+      alert(`saveOptions: ERROR: cannot decrypt sites!`);
+      throw new Error(`saveOptions: ERROR: cannot decrypt sites!`);
+    }
+  } else {
+    sites = {};
+  }
+  const storedHintValues = sites[hint];
+  const diff = objDiff(currentOpts, storedOpts);
+  const empty = stringEmpty(hint);
+  const equal = objEmpty(diff);
+  const undef = storedHintValues === undefined;
+  const state = [empty, equal, undef].map(x => +x).join('');
+  // "000": "Hint Field is NOT empty, current != stored, storedHint is defined",
+  // "001": "Hint Field is NOT empty, current != stored, storedHint is undefined",
+  // "010": "Hint Field is NOT empty, current == stored, storedHint is defined",
+  // "011": "Hint Field is NOT empty, current == stored, storedHint is undefined",
+  // "100": "Hint Field is empty,     current != stored, storedHint is defined",
+  // "101": "Hint Field is empty,     current != stored, storedHint is undefined",
+  // "110": "Hint Field is empty,     current == stored, storedHint is defined",
+  // "111": "Hint Field is empty,     current == stored, storedHint is undefined",
+  const messages = {
+    "000": `Replace site-specific settings for >>${hint}<<`,    // A
+    "001": `Create New site-specific settings for >>${hint}<<`, // B
+    "010": `Restore generic settings for >>${hint}<<`,          // C
+    "011": `Nothing new to save`,                               // D
+    "100": "New generic settings",                              // E
+    "101": "New generic settings",                              // E
+    "110": "Nothing new to save",                               // D
+    "111": "Nothing new to save",                               // D
+  }
+  let msg = messages[state];
+  //
+  // "000": `Replace site-specific settings for >>${hint}<<`,    // A
+  // "000": "Hint Field is NOT empty, current != stored, storedHint is defined",
+  //
+  if (state === "000") {
+    const hs = {...currentOpts, ...sites[hint]};
+    const remove = objEqual(hs, storedOpts); //
+    const doNothing = objEqual(hs, currentOpts); //
+    if (remove) {
+      msg = `Remove site-specific settings for >>${hint}<<`;
+    } else if (doNothing) {
+      msg = `Nothing new for >>${hint}<<`;
+      alert(msg);
+      return;
+    } else {
+      // updateCurrentOpts();
+      const rep = {...sites[hint], ...currentOpts};
+      msg = `Replace site-specific settings for >>${hint}<<`
+      msg = `${msg}\nSecret= ${rep.salt}`;
+      msg = `${msg}\nSpecial Character= ${rep.pepper}`;
+      msg = `${msg}\nLength= ${rep.length}`;
+      sites[hint] = objDiff(rep, storedOpts);
+    }
+    msg = `${msg}\nDo you want to proceed?`;
+    // msg = `state= ${state}\n${msg}\n`;
+    if (confirm(msg)) {
+      if (remove) {
+        delete sites[hint];
+        if (objEmpty(sites)) localStorage.removeItem("sites");
+        alert("Removed!");
+      } else {
+        alert("Saved!");   
+      }
+      if (!objEmpty(sites)) {
+        await storageSet({key: "sites", value: sites, pwd: PASSWORD});
+      }
+    }
+    return;
+  }
+  // "001": "Hint Field is NOT empty, current != stored, storedHint is undefined",
+  // "001": `Create New site-specific settings for >>${hint}<<`, // B
+  if (state === "001") {
+    sites[hint] = diff;
+    // msg = `state= ${state}\n${msg}\n`;
+    msg = `${msg}\nSecret= ${currentOpts.salt}`;
+    msg = `${msg}\nSpecial Character= ${currentOpts.pepper}`;
+    msg = `${msg}\nLength= ${currentOpts.length}`;
+    msg = `${msg}\nDo you want to save them?`;
+    if (confirm(msg)) {
+      await storageSet({key: "sites", value: sites, pwd: PASSWORD});
+      alert("Saved!");
+    } else {
+      el.salt.value = storedOpts.salt;
+      el.pepper.value = storedOpts.pepper;
+      el.length.value = storedOpts.length;      
+    }
+    return;
+  }
+  //
+  // "010": "Hint Field is NOT empty, current == stored, storedHint is defined",
+  // "010": `Restore generic settings for >>${hint}<<`,          // C
+  //
+  if (state === "010") {
+    // msg = `state= ${state}\n${msg}\n`;
+    if (confirm(msg)) {
+      delete sites[hint];
+      if (objEmpty(sites)) {
+        localStorage.removeItem("sites");
+      } else {
+        await storageSet({key: "sites", value: sites, pwd: PASSWORD});
+      }
+      alert(`Generic settings restored for >>${hint}<<`);
+    } else {
+      const x = {...currentOpts, ...sites[hint]};
+      el.salt.value = x.salt;
+      el.pepper.value = x.pepper;
+      el.length.value = x.length;
+    }
+    return;
+  }
+  //
+  // "011": "Hint Field is NOT empty, current == stored, storedHint is defined",
+  // "110": "Hint Field is empty,     current == stored, storedHint is defined",
+  // "111": "Hint Field is empty,     current == stored, storedHint is undefined",
+  // "011": `Nothing new to save`,                               // D
+  // "110": "Nothing new to save",                               // D
+  // "111": "Nothing new to save",                               // D
+  //
+  if (state === "011" || state === "110" || state === "111") {
+    // msg = `state= ${state}\n${msg}\n`;
+    alert(msg);
+    return;
+  }
+  //
+  // D: New generic settings
+  // "100": "Hint Field is empty,     current != stored, storedHint is undefined",
+  // "101": "Hint Field is empty,     current != stored, storedHint is defined",
+  //
+  if (state === "100" || state === "101") {
+    if (!validLength(currentOpts.length)) {
+      const msg = "ERROR: invalid Length parameter\nMust be an integer in 4-128 range";
+      alert(msg);
+      return;
+    }
+    // msg = `state= ${state}\n${msg}\n`;
+    msg = `${msg}\nSecret= ${currentOpts.salt}`;
+    msg = `${msg}\nSpecial Character= ${currentOpts.pepper}`;
+    msg = `${msg}\nLength= ${currentOpts.length}`;
+    if (confirm(msg)) {
+      await storageSet({key: "options", value: currentOpts, pwd: PASSWORD});
+      alert("Saved!");
+    } else {
+      el.salt.value = storedOpts.salt;
+      el.pepper.value = storedOpts.pepper;
+      el.length.value = storedOpts.length;
+    }
+    return;
+  }
+}
+
+el.save.addEventListener("click", saveOptions);
+
+async function defunct_saveOptions(args) {
   args = {debug: -1, ...args};
   const debug = args.debug;
   let msg;
@@ -749,6 +932,10 @@ async function saveOptions(args) {
     if (confirm(msg)) {
       await storageSet({key: "options", value: currentOpts, pwd: PASSWORD});
       alert("Saved!");
+    } else {
+      el.salt.value = storedOpts.salt;
+      el.pepper.value = storedOpts.pepper;
+      el.length.value = storedOpts.length;
     }
     return;
   }
@@ -789,6 +976,7 @@ async function saveOptions(args) {
     return;
   }
   if (isEmpty(hintDiff) && storedHintValues !== undefined) {
+    const toStore = {...storedOpts, ...currentOpts};
     replacedOrCreated = "restored to default values"
   }
   msg = `Hint-specific settings ${replacedOrCreated}:\n`;
