@@ -290,57 +290,28 @@ hr {
   /* visibility: hidden; */
   background-color: white;
 }
+
 ul {
   list-style-position: inside;
-  /* padding-right: 1rem; */
 }
 
 ul li {
   padding-left: 0em;
-  text-indent: 0em;
+  margin-bottom: 0.2em;
 }
 
 ol {
   list-style-position: inside;
-  /* padding-right: 1rem; */
 }
 
 ol li::marker {
   font-weight: bold;
 }
 
-/* li { */
-  /* text-align: left; */
-  /* padding-right: 20px; */
-/* } */
-/* li:before {
-  margin-left: 1rem;
-} */
- /* Adjust the value to control the indent amount */
-/* ul li {
-  text-indent: 40px;
-} */
-/* ol li {
-  text-indent: 40px;
-} */
-/* #editLegend {
-  text-align: left;
-} */
-/*
-#editContainer {
-  position: fixed;
-  top: 0;
-  display: flex;
-  display: block;
-  visibility: hidden;
-  flex-direction: column;
-  background-color: white;
-  overflow: scroll;
-  margin: 0 0 10% 0;
+ol li {
+  margin-bottom: 0.2em;
 }
-*/
 
-  /* float: right; */
 #passwordInputContainer {
     display: flex;
     flex-direction: column;
