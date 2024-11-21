@@ -742,12 +742,7 @@ async function saveOptions(args) {
     alert(msg);
     throw new Error(msg);
   }
-  const currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
-  if (!validLength(el.length.value)) {
-    alert(`Length must be an integer in ${MINLENGTH}-${MAXLENGTH} range`);
-    el.length.value = storedOpts.length;
-    return;
-  }
+
   let sites = localStorage.getItem("sites");
   if (sites !== null) {
     sites = await storageGet({key: "sites", pwd: PASSWORD});// decrypt: true is the default!
@@ -759,6 +754,15 @@ async function saveOptions(args) {
     sites = {};
   }
   const storedHintValues = sites[hint];
+
+  const currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
+  if (!validLength(el.length.value)) {
+    alert(`Length must be an integer in ${MINLENGTH}-${MAXLENGTH} range`);
+    el.length.value = storedHintValues && storedHintValues.length
+                      ? storedHintValues.length : storedOpts.length
+    return;
+  }
+
   const diff = objDiff(currentOpts, storedOpts);
   const empty = stringEmpty(hint);
   const equal = objEmpty(diff);
