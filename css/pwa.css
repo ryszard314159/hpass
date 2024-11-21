@@ -37,14 +37,14 @@ body {
 
 body.help {
   background-color: rgb(175, 231, 191);
-  width: 90%;
-  margin-left: 1.5rem;
+  width: 95%;
+  margin-left: 0.5rem;
 }
 
 body.info {
   background-color: rgb(195, 223, 238);
-  width: 90%;
-  margin-left: 1.5rem;
+  width: 95%;
+  margin-left: 0.5rem;
 }
 
 /* li {
@@ -290,9 +290,39 @@ hr {
   /* visibility: hidden; */
   background-color: white;
 }
-li {
-  text-align: left;
+ul {
+  list-style-position: inside;
+  /* padding-right: 1rem; */
 }
+
+ul li {
+  padding-left: 0em;
+  text-indent: 0em;
+}
+
+ol {
+  list-style-position: inside;
+  /* padding-right: 1rem; */
+}
+
+ol li::marker {
+  font-weight: bold;
+}
+
+/* li { */
+  /* text-align: left; */
+  /* padding-right: 20px; */
+/* } */
+/* li:before {
+  margin-left: 1rem;
+} */
+ /* Adjust the value to control the indent amount */
+/* ul li {
+  text-indent: 40px;
+} */
+/* ol li {
+  text-indent: 40px;
+} */
 /* #editLegend {
   text-align: left;
 } */
