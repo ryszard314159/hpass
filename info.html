@@ -30,7 +30,7 @@
 
     <h2>Why?</h2>
     If you think there is room for improvement in your current approach to
-    password handling you may find HPASS helpful. One way to store and share
+    password handling, you may find HPASS helpful. One way to store and share
     passwords is by using a
     <a href="https://en.wikipedia.org/wiki/Password_manager">password manager</a
     >. It is an often recommended and widely used solution, but not without
@@ -38,13 +38,13 @@
     <p>
       HPASS(&trade;, &copy;) uses an alternative approach with one major advantage:
       passwords are generated locally, on-demand, and never stored anywhere.
-      Three <em>generic settings</em>  (
+      For convenience, three <em>generic settings</em>  (
       <strong>Secret</strong>,
       <strong>Special Character</strong>,
       <strong>Length</strong>),
       to generate strong, reproducible passwords for any given
-      site (defined by <strong>Hint</strong>)
-      are stored only on your local device for convenience. 
+      site (defined by <strong>Hint</strong>),
+      are stored only on your local device. 
       For extra layer of security you may want to use two additional
       parameters, which are never stored anywhere:
       <strong>Top Secret</strong> and
@@ -99,23 +99,24 @@
     <h2>Notes</h2>
     <ul>
       <li>
-        Some sites are not accepting arbitrary special characters,
-        and some impose rather short maximum password length.
-        <strong>Special Character</strong> (default: "_") and
-        <strong>Length</strong> (default: 15) default values
+        Some sites do not accept arbitrary special characters,
+        and some impose rather short maximum password lengths.
+        The default values for <strong>Special Character</strong>
+        (default: "_") and <strong>Length</strong> (default: 15)
         have been selected to be accepted by most sites.
       </li>
       <li>
-        Purpose of <strong>Secret</strong> is to create different
-        passwords for users using the same other parameters.
+        The purpose of <strong>Secret</strong> is to create unique
+        passwords for each user.
       </li>
 
       <li>
-        HPASS generates password from given input parameters through
+        HPASS generates password from given input parameters through a
         <a href="https://csrc.nist.gov/glossary/term/one_way_hash_algorithm"
           >one-way hash function</a
         >
-        and the input parameters cannot be recovered from the password string.
+        The input parameters used to generate password cannot be recovered
+        from the password string.
       </li>
     </ul>
 

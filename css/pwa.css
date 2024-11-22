@@ -292,17 +292,19 @@ hr {
 }
 
 ul {
-  list-style-position: inside;
+  list-style-position: outside;
+  padding-left: 2%;
 }
 
 ul li {
-  padding-left: 0em;
+  padding-left: -1em;
   margin-bottom: 0.2em;
   text-align: left;
 }
 
 ol {
-  list-style-position: inside;
+  list-style-position: outside;
+  padding-left: 4%;
 }
 
 ol li::marker {

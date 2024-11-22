@@ -87,8 +87,8 @@
     <br><br>
     <strong>Special Character</strong> and
     <strong>Length</strong> values are selected to satisfy most sites.
-    You may need to change these values if some site enforces
-    inconsistent password requirements e.g. doesn't allow "_",
+    You may need to change them if some site enforces
+    password requirements inconsistent with your generic values e.g. doesn't allow "_",
     requires a password shorter than 15 characters, etc.
     These will be <em>site-specific settings</em>.
 <hr>
@@ -101,7 +101,7 @@
 
 <p>
   Click the gear button (<img src="icons/gear.svg" style="width:1rem; height:1rem;">)
-  to view, modify, save, and export / import settings.
+  to view, modify, save, export, and import settings.
 </p>
 
     <h2>Multiple devices</h2>
@@ -123,27 +123,28 @@
       <li><strong>Top Secret</strong> (🤐): any string (default: empty string)</li>
       <li><strong>Warm up</strong> (🔥): the number of warm up rounds
         for
-        (<a href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">PRNG</a>)
+        <a href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">PRNG</a>
         (default: 0)</li>
     </ul>
     <br>
 
     They aren't stored, and discarded at the session's end or page reload.
-    You to enter them every time to generate passwords.
+    You need to enter them every time to generate passwords.
     This is a small price in for high-value passwords
     (bank accounts, social security, etc.) if you're concerned about
     data security on your device.
     
     <p>
-    The password prompt or hint entered in the <strong>Enter Hint</strong> box at
-    the top of the screen, and
+    The password prompt entered in the <strong>Enter Hint</strong> box at
+    the top of the screen together with
     <strong>Secret</strong>, <strong>Special Character</strong>,
-    <strong>Length</strong>, <strong>Top Secret</strong>
+    <strong>Length</strong>, and <strong>Top Secret</strong>
     are used to construct the
     <a href="https://en.wikipedia.org/wiki/Random_seed">seed</a> for
-    <a href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">PRNG</a>.
+    <a href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">PRNG</a>
+    (Pseudo-random Number Generator).
     This seed, together with <strong>Warm up</strong> parameter (number of warm up rounds for PRNG),
-    determines the generated password;
+    determines the generated password i.e.
     the same values always generate the same password.
 
     <h1>Icons</h1>

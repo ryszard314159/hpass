@@ -17,6 +17,9 @@ TODO:
       navigator.serviceWorker.controller.postMessage(msg);
     }
 7 - <img id="editShare"...> does not show showPopup element.
+8 - The Google Pay & Wallet Console lets you easily enable seamless payments
+    on your apps and websites. Here’s your Merchant ID so you can complete your setup now.
+
 */
 
 //
