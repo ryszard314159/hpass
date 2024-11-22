@@ -601,9 +601,9 @@ document.querySelectorAll(".reset").forEach(function(element) {
 // });
 
 document.querySelectorAll(".share").forEach(function(element) {
-  console.log("INFO: .share selected");
+  // console.log("INFO: .share selected");
   element.addEventListener("click", function (event) {
-    console.log("INFO: .share clicked");
+    // console.log("INFO: .share clicked");
     copyToClipboard(URL);
     // alert("Copied!!!");
     showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
@@ -1082,8 +1082,9 @@ document.body.querySelectorAll(".import").forEach(function(element) {
 });
 
 el.importFileInput.addEventListener('change', handleImport);
-function handleImport(event) {
+async function handleImport(event) {
   const debug = false;
+  el.edHint.value = '';
   const file = el.importFileInput.files[0];
   const fileName = el.importFileInput.value;
   if (debug) console.log("handleImport: file=", file);
@@ -1094,7 +1095,7 @@ function handleImport(event) {
               // Parse the JSON string from the file
               if (debug) console.log("handleImport: e.target.result=", e.target.result);
               const importedLocalStorage = JSON.parse(e.target.result);
-              console.log("handleImport: importedLocalStorage= ", importedLocalStorage);
+              if (debug) console.log("handleImport: importedLocalStorage= ", importedLocalStorage);
               if (debug) alert(`INFO: handleImport: e.target.result= ${e.target.result})}`)
               if (debug) alert(`INFO: handleImport: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
               const backUp = JSON.stringify(localStorage);
@@ -1138,8 +1139,9 @@ function handleImport(event) {
                 }
               }
               localStorage.setItem("encrypted", true);
+              // await populateVisibleSettings();
               if (debug) alert(`INFO: handleImport: localStorage= ${JSON.stringify(localStorage)}`);
-              alert(`Settings imported from: ${fileName}`);
+              // alert(`Settings imported from: ${fileName}`);
           } catch (error) {
               console.error('Error parsing JSON file:', error);
               alert('Failed to import settings. Please ensure the file is a valid JSON.');
@@ -1148,10 +1150,20 @@ function handleImport(event) {
       reader.readAsText(file);
       el.fileInputModal.style.display = "none";
       el.importFileInput.value = "";
+      // await populateVisibleSettings();
+      alert(`Settings imported from: ${fileName}`);
   } else {
       alert('No file selected.');
   }
 }
+
+// async function populateVisibleSettings() {
+//   const storedOpts = await storageGet("options");
+//   // const sites = await storageGet("sites");
+//   el.salt.value = storedOpts.salt;
+//   el.pepper.value = storedOpts.pepper;
+//   el.length.value = storedOpts.length;
+// }
 
 function setDisplayedOptions(decrypted) {
   const debug = false;
