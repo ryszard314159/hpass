@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebAuthn Test</title>
+</head>
+<body>
+  <button id="authenticate">Authenticate</button>
+  <script>
+    document.getElementById('authenticate').addEventListener('click', async () => {
+      try {
+        const credentialOptions = {
+          rp: {
+            name: 'Your Website Name',
+            id: 'http://127.0.0.1:5500'
+            // id: 'https://your-website.com'
+          },
+          pubKeyCredParams: [
+            {alg: -7, type: 'public-key-credential'}
+          ],
+          timeout: 60000,
+          attestation: 'direct'
+        };
+
+        const credential = await navigator.credentials.create(credentialOptions);
+        console.log('Credential created:', credential);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+</html>
