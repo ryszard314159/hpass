@@ -9,25 +9,56 @@
   <script>
     const authenticateButton = document.getElementById('authenticate');
     const errorMessageDiv = document.getElementById('error-message');
+    const randomStringFromServer = "YVOYVOYV";
 
     authenticateButton.addEventListener('click', async () => {
       try {
-        const credentialOptions = {
-          rp: {
-            name: 'Your Website Name',
-            id: window.location.origin // e.g. https://hpass.app
-          },
-          pubKeyCredParams: [
-            {alg: -7} //, type: 'public-key-credential'}
-          ],
-          timeout: 60000,
-          attestation: 'direct'
+
+        // const credentialOptions = {
+        //   rp: { // relying party
+        //     name: 'HPASS',
+        //     id: window.location.origin // e.g. https://hpass.app
+        //   },
+        //   pubKeyCredParams: [
+        //     { type: "public-key", alg: -7 },  // ES256
+        //     { type: "public-key", alg: -257 } // RS256
+        //   ],
+        //   timeout: 60000,
+        //   attestation: 'none'
+        // };
+        // // https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions
+        // const credential = await navigator.credentials.create(credentialOptions);
+
+        // from https://webauthn.guide/
+        const publicKeyCredentialCreationOptions = {
+            challenge: Uint8Array.from(
+                randomStringFromServer, c => c.charCodeAt(0)),
+            rp: {
+                name: "HPASS",
+                id: "https://ryszard314159.github.io" // window.location.origin
+            },
+            user: {
+                id: Uint8Array.from(
+                    "UZSL85T9AFC", c => c.charCodeAt(0)),
+                name: "lee@webauthn.guide",
+                displayName: "Lee",
+            },
+            pubKeyCredParams: [{alg: -7, type: "public-key"}],
+            // authenticatorSelection: {
+            //     authenticatorAttachment: "cross-platform",
+            // },
+            timeout: 60000,
+            attestation: "none"
         };
 
-        const credential = await navigator.credentials.create(credentialOptions);
+        const credential = await navigator.credentials.create({
+            publicKey: publicKeyCredentialCreationOptions
+        });
+
         console.log('Credential created:', credential);
       } catch (error) {
         console.error('Error:', error);
+        alert(`ERROR: ${error.message}`)
         errorMessageDiv.innerText = `An error occurred: ${error.message}`;
       }
     });
