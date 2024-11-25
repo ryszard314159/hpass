@@ -7,53 +7,60 @@
   <button id="authenticate">Authenticate</button>
   <div id="error-message"></div>
   <script>
+    function generateRandomString(N) {
+        const array = new Uint32Array(N);
+        crypto.getRandomValues(array);
+        return Array.from(array).map(x => x.toString(36)).join('').slice(0, N);
+    }
+    // const randomStringFromServer = generateRandomString(64);
+    // const challenge = Uint8Array.from(randomStringFromServer, c => c.charCodeAt(0));
+
     const authenticateButton = document.getElementById('authenticate');
     const errorMessageDiv = document.getElementById('error-message');
-    const randomStringFromServer = "YVOYVOYV";
 
     authenticateButton.addEventListener('click', async () => {
       try {
-
-        // const credentialOptions = {
-        //   rp: { // relying party
-        //     name: 'HPASS',
-        //     id: window.location.origin // e.g. https://hpass.app
-        //   },
-        //   pubKeyCredParams: [
-        //     { type: "public-key", alg: -7 },  // ES256
-        //     { type: "public-key", alg: -257 } // RS256
-        //   ],
-        //   timeout: 60000,
-        //   attestation: 'none'
-        // };
         // // https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions
         // const credential = await navigator.credentials.create(credentialOptions);
-
         // from https://webauthn.guide/
-        const publicKeyCredentialCreationOptions = {
-            challenge: Uint8Array.from(
-                randomStringFromServer, c => c.charCodeAt(0)),
+        // const publicKeyCredentialCreationOptions = {
+        // const challenge = new Uint8Array(64);
+        // const userId = new Uint8Array(32);
+        // crypto.getRandomValues(challenge);
+        // crypto.getRandomValues(userId);
+        function randomBytes(N) {
+            arr = new Uint8Array(N);
+            crypto.getRandomValues(arr);
+            return arr;
+        }
+        function rpId() {
+            const domain = window.location.origin.split("//").pop().split(':')[0]
+            // use http://localhost:5500 NOT http://127.0.0.1:5500
+            // for local testing!!!
+            return domain;
+        }
+        const options = {
+            challenge: randomBytes(64),
             rp: {
                 name: "HPASS",
-                id: "ryszard314159.github.io" // window.location.origin
+                // id: "ryszard314159.github.io" // window.location.origin
+                // id: "192.168.1.29" // this is invalid domain
+                // id: "hpass.app"
+                id: rpId()
             },
             user: {
-                id: Uint8Array.from(
-                    "UZSL85T9AFC", c => c.charCodeAt(0)),
-                name: "lee@webauthn.guide",
-                displayName: "Lee",
+                id: randomBytes(32),
+                name: "You",
+                displayName: "You",
             },
             pubKeyCredParams: [{alg: -7, type: "public-key"}],
-            // authenticatorSelection: {
-            //     authenticatorAttachment: "cross-platform",
-            // },
             timeout: 60000,
             attestation: "none"
         };
-
-        const credential = await navigator.credentials.create({
-            publicKey: publicKeyCredentialCreationOptions
-        });
+        // alert(`rp.id= ${options.rp.id}`);
+        const credential = await navigator.credentials.create({publicKey: options});
+        const x = JSON.stringify(credential);
+        console.log(`credential= ${x}`);
 
         console.log('Credential created:', credential);
       } catch (error) {
