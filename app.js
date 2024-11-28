@@ -1,7 +1,8 @@
 /*
 TODO:
 0 - use rcz: "start_url": "/hpass/"; main: "start_url": "/", - the same for scope
-* - https://stripe.com for payments
+* - biometric https://stackoverflow.blog/2022/11/16/biometric-authentication-for-web-devs/
+* - https://stripe.com for payments???
 1 - ML-KEM to replace CryptoJS https://www.npmjs.com/package/mlkem
 2 - restore does not work for Secret
 3 - If you need high-performance, high-security cryptography,
