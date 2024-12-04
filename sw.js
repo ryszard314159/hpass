@@ -6,7 +6,24 @@
 // console.log(CryptoJS); // Verify Crypto-JS is loaded
 
 // import { getPass } from "./core/lib.js";
-const version = "2024-11-21";
+// const version = "2024-04-12";
+// const version = require('./manifest.json').version;
+// import {version} from './manifest.json';
+// console.log(`sw: version= ${version}`);
+
+let version = null;
+
+(async () => {
+  const url = "manifest.json";
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    version = data.version;
+  } catch (error) {
+    console.error("sw: install: Error fetching manifest.json:", error);
+  }
+  console.log(`sw: version= ${version} from url= ${url}`);
+}) ();
 
 const appAssets = [
   "index.html",
@@ -42,6 +59,19 @@ const appAssets = [
 
 self.addEventListener("install", (installEvent) => {
   const debug = false;
+  //
+  // const response = await fetch('manifest.json');
+  // const data = await response.json();
+  // version = data.version;
+  // try {
+  //   const response = await fetch('manifest.json');
+  //   const data = await response.json();
+  //   version = data.version;
+  // } catch (error) {
+  //   console.error("sw: install: Error fetching manifest.json:", error);
+  //   version = "sw: 2024-12-04";
+  // }
+  //
   const msg = { install: true };
   const installChannel = new BroadcastChannel("installChannel");
   installChannel.postMessage(msg);

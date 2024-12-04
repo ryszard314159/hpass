@@ -27,6 +27,8 @@
     <h1>What is HPASS?</h1>
     HPASS(&trade;, &copy;) is a lightweight, intuitive, simple and easy-to-use tool to
     create and use strong and unique passwords.
+    It is implemented as Progressive Web Application
+    (<a href="https://en.wikipedia.org/wiki/Progressive_web_app">PWA</a>).
 
     <h2>Why?</h2>
     If you think there is room for improvement in your current approach to
@@ -89,11 +91,20 @@
         src="icons/generate.svg"
         style="width: 2rem; height: 0.8rem"
       />). This will generate password and copy it to the clipboard -
-      you can paste it where it is needed. As a convenience feature, if you
+      you can paste it where it is needed.
+      <p>
+        Note: You can use Second-level Domain
+        (<a href="https://en.wikipedia.org/wiki/Second-level_domain">SLD</a>)
+        - "abc" in the example above as a password hint,
+        or any other string associated for you with a particular site.
+        For example, "fb" for "facebook", 
+      </p>
+      <!--
+      As a convenience feature, if you
       enter the whole URL the app will automatically extract
       <a href="https://en.wikipedia.org/wiki/Second-level_domain">second-level domain (SLD)</a>
-      (i.e. "abc" in this example) as a password <tt><strong>Hint</strong></tt
-      >.
+      (i.e. "abc" in this example) as a password <tt><strong>Hint</strong></tt>.
+      -->
     </p>
 
     <h2>Notes</h2>
@@ -282,6 +293,9 @@ https://sitepassword.alanhkarp.com/
     <!-- https://www.pcmag.com/opinions/warning-dont-let-google-manage-your-passwords -->
 
     <ol>
+      <li>
+        <a href="https://whatpwacando.today">What PWA Can Do Today</a>
+      </li>
       <li>
         <a href="https://pages.nist.gov/800-63-4/sp800-63b.html#appA">
           NIST Digital Identity Guidelines SP 800-63-4 (second public draft, 28 Aug 2024)

@@ -1028,19 +1028,24 @@ document.querySelectorAll('.export').forEach(function(element) {
     clearTimeout(pendingClick);
     if (timeDiff > timeDiffThreshold) {
       pendingClick = setTimeout(function() {
-        handleExport({decrypted: false}); // Single click
+        handleExport({encrypted: true}); // Single click
       }, timeDiffThreshold);
     } else {
-      handleExport({decrypted: true}); // Double click
+      handleExport({encrypted: false}); // Double click
     }
   });
 });
 
 function handleExport(args = {}) {
-  args = {fileName: "hpass-settings", decrypted: false, ...args};
+  args = {fileName: "hpass-settings", encrypted: true, ...args};
+  const keys = ["encrypted", "sites", "options", "pwdHash"];
   const toExport = {}; // prepare localStorage copy for export
-  Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
-  toExport.encrypted = !args.decrypted;
+  // Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
+  keys.forEach ((key) => {
+    const x = localStorage.getItem(key);
+    if (x !== null) toExport[key] = x;
+  });
+  toExport.encrypted = args.encrypted;
 
   console.log(`DEBUG: handleExport: toExport= ${JSON.stringify(toExport)}`);
 
@@ -1055,7 +1060,7 @@ function handleExport(args = {}) {
     document.body.removeChild(link);
   }
   
-  if (args.decrypted) {
+  if (!args.encrypted) {
     if (!confirm("Plain text export!")) return;
     // const sessionPassword = sessionStorage.getItem("password");
     // if (PASSWORD !== sessionPassword) {
