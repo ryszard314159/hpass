@@ -40,66 +40,66 @@ function get_parser() {
     description: DESCRIPTION,
     formatter_class: ArgumentDefaultsHelpFormatter,
   });
-  // parser.addArgument('-v', '--version', { action: 'version', version });
-  // parser.addArgument("hint", {
-  parser.addArgument("hint", {
+  // parser.add_argument('-v', '--version', { action: 'version', version });
+  // parser.add_argument("hint", {
+  parser.add_argument("hint", {
     help: "password hint; '' generates random passwd",
   });
-  parser.addArgument(["-p", "--pepper"], {
+  parser.add_argument("-p", "--pepper", {
     help: "punctuation pepper to use",
     default:
       typeof process.env.PEPPER === "undefined" ? "!" : process.env.PEPPER,
   });
-  parser.addArgument(["-s", "--salt"], {
+  parser.add_argument("-s", "--salt", {
     help: "hint augmentation",
     default:
       typeof process.env.SALT === "undefined" ? "SALT" : process.env.SALT,
   });
-  parser.addArgument(["-b", "--burn"], {
+  parser.add_argument("-b", "--burn", {
     help: "discard cycles",
     type: "int",
     default: 0,
   });
-  parser.addArgument(["-L", "--length"], {
+  parser.add_argument("-L", "--length", {
     help: "password length",
     type: "int",
     default:
       typeof process.env.LENGTH === "undefined" ? 15 : process.env.LENGTH,
   });
-  parser.addArgument(["-u", "--unicode"], {
+  parser.add_argument("-u", "--unicode", {
     help: "use ALL unicode chars",
-    action: "storeTrue",
+    action: "store_true",
   });
-  parser.addArgument(["-r", "--letters"], {
+  parser.add_argument("-r", "--letters", {
     help: "use ascii letters",
-    action: "storeTrue",
+    action: "store_true",
   });
-  parser.addArgument(["-t", "--digits"], {
+  parser.add_argument("-t", "--digits", {
     help: "use digits",
-    action: "storeTrue",
+    action: "store_true",
   });
-  parser.addArgument(["-n", "--punctuation"], {
+  parser.add_argument("-n", "--punctuation", {
     help: "use punctuation",
-    action: "storeTrue",
+    action: "store_true",
   });
-  parser.addArgument(["-f", "--no-shuffle"], {
+  parser.add_argument("-f", "--no-shuffle", {
     help: "dont shuffle final string",
-    action: "storeTrue",
+    action: "store_true",
   });
-  parser.addArgument(["-a", "--random"], {
+  parser.add_argument("-a", "--random", {
     help: "create random password",
-    action: "storeTrue",
+    action: "store_true",
   });
-  parser.addArgument(["-d", "--debug"], {
+  parser.add_argument("-d", "--debug", {
     help: "debug on",
-    action: "storeTrue",
+    action: "store_true",
   });
-  parser.addArgument(["-v", "--verbose"], {
+  parser.add_argument("-v", "--verbose", {
     help: "verbose output",
-    action: "storeTrue",
+    action: "store_true",
   });
 
-  // let args =  parser.parseArgs()
+  // let args =  parser.parse_args()
   // if (args.debug) console.dir(args);
   return parser;
 }
@@ -112,10 +112,10 @@ if (
 ) {
   // get args from window s
   console.log(`DEBUG: env.BUILTIN= ${process.env.BUILTIN}`);
-  args = parser.parseArgs([$("#hint").val(), "-v"]);
+  args = parser.parse_args([$("#hint").val(), "-v"]);
 } else {
   // get args from command line
-  args = parser.parseArgs();
+  args = parser.parse_args();
 }
 
 const defaults = {
