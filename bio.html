@@ -33,7 +33,7 @@
             crypto.getRandomValues(arr);
             return arr;
         }
-        function rpId() {
+        function getRpId() {
             const domain = window.location.origin.split("//").pop().split(':')[0]
             // use http://localhost:5500 NOT http://127.0.0.1:5500
             // for local testing!!!
@@ -46,7 +46,7 @@
                 // id: "ryszard314159.github.io" // window.location.origin
                 // id: "192.168.1.29" // this is invalid domain
                 // id: "hpass.app"
-                id: rpId()
+                id: getRpId()
             },
             user: {
                 id: randomBytes(32),
@@ -61,8 +61,9 @@
         const credential = await navigator.credentials.create({publicKey: options});
         const x = JSON.stringify(credential);
         console.log(`credential= ${x}`);
-
         console.log('Credential created:', credential);
+        const retrieved = await navigator.credentials.get({publicKey: {}});
+        console.log('Credential retrieved:', retrieved);
       } catch (error) {
         console.error('Error:', error);
         alert(`ERROR: ${error.message}`)
@@ -72,3 +73,25 @@
   </script>
 </body>
 </html>
+
+
+<!-- 
+
+kp = null;
+( async () => {
+    const keyPair = await crypto.subtle.generateKey(
+  {
+    name: "RSASSA-PKCS1-v1_5",
+    modulusLength: 2048,
+    publicExponent: new Uint8Array([1, 0, 1]),
+    hash: { name: "SHA-256" }
+  },
+  true,
+  ["sign", "verify"]
+);
+
+kp = keyPair;
+
+}) ();
+
+-->

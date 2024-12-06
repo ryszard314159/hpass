@@ -291,9 +291,17 @@ hr {
   background-color: white;
 }
 
+/* justify-content: center; */
+/* text-align: center; */
+#editLegend {
+  width: 90%;
+  margin: 1rem 0rem 0 0rem;
+}
+
 ul {
   list-style-position: outside;
   padding-left: 2%;
+  padding-right: 2%;
 }
 
 ul li {

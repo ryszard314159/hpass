@@ -89,6 +89,7 @@
           <img class="btn share" src="icons/share.svg" title="Share">
           <img class="btn change" src="icons/change.svg" title="Change Password">
           <img class="btn reset" src="icons/reset.svg" title="Reset">
+          <img class="btn install" src="icons/install.svg" title="Install">
         </div>
         <img id="logop" class="share" src="icons/logo.svg" />
         <div id="masterPasswordDiv" class="password-container">
@@ -158,7 +159,7 @@
 
     <hr>
 
-    <div id="editContainer">
+    <div id="editContainer" class="">
 
       <div id="editIcons" class="topIcons">
         <img class="btn back" src="icons/back.svg" title="Back">
@@ -187,49 +188,43 @@
           <button id="lengthButton" class="leading-icon">📏</button>
           <input id="length" class="input" placeholder="Length">
         </div>
-      </div>
 
-      <!-- <div id="backBanner" style="position: relative; width: 100%; height: 5%;
-           background-color: lightgrey;
-           left: 0; right:0; margin: 0 0 0 0; vertical-align: center;
-           align-items: center; display: inline-flex">
-           <span id="back"> <img class="btn" src="icons/back.svg"/>Back</span>
-      </div> -->
-
-      <div id="editLegend" style="width: 90%; justify-content: center; text-align: center;
-                  margin: 1rem 1rem 0 1rem;">
-        <p style="justify-content: center; text-align: left;">
-          <hr>
-          <br>
-          <ul>
-            <li><strong>Hint</strong>: leave it empty to change <em>generic settings</em>.
-                You may need to create hint/site <em>specific settings</em>
-                if a site does not allow <strong><tt>Special Character</tt></strong> in your
-                <em>generic settings</em>, or demands longer/shorter password etc.
-                In such a case, enter a <strong><tt>Hint</strong></tt>,
-                modify <strong><tt>Special Character</tt></strong> and/or
-                <tt><strong>Length</strong></tt>.
-
-            </li>
-            <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
-            <li><strong>Special Character
-                (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
-                one or more !\"#$%&'()*+,-./:;<=>?@[ ]^_`{|}~</li>
-            <li><strong>Length (📏):</strong> longer is better,
-                        note however that a lot of sites have unreasonably short upper limit
-                        - 15 seems to be a reasonable balance between security and a need to create
-                        many <em>site-specific settings</em>.</li>
-          </ul>
-        </p>
-        <br><hr><br>
-      </div>
-
-      <div id="fileInputModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>Select a JSON file to import hpass settings:</p><br>
-            <input type="file" id="importFileInput" accept="application/json">
+        <div id="editLegend">
+          <p><!-- style="justify-content: center; text-align: left;"> -->
+            <hr>
+            <br>
+            <ul>
+              <li><strong>Hint</strong>: leave it empty to change <em>generic settings</em>.
+                  You may need to create hint/site <em>specific settings</em>
+                  if a site does not allow <strong><tt>Special Character</tt></strong> in your
+                  <em>generic settings</em>, or demands longer/shorter password etc.
+                  In such a case, enter a <strong><tt>Hint</strong></tt>,
+                  modify <strong><tt>Special Character</tt></strong> and/or
+                  <tt><strong>Length</strong></tt>.
+  
+              </li>
+              <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
+              <li><strong>Special Character
+                  (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
+                  one or more !\"#$%&'()*+,-./:;<=>?@[ ]^_`{|}~</li>
+              <li><strong>Length (📏):</strong> longer is better,
+                          note however that a lot of sites have unreasonably short upper limit
+                          - 15 seems to be a reasonable balance between security and a need to create
+                          many <em>site-specific settings</em>.</li>
+            </ul>
+          </p>
+          <br><hr><br>
         </div>
+
+      </div>
+
+    </div>
+
+    <div id="fileInputModal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Select a JSON file to import hpass settings:</p><br>
+          <input type="file" id="importFileInput" accept="application/json">
       </div>
     </div>
 

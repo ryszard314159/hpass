@@ -46,14 +46,13 @@
       <strong>Length</strong>),
       to generate strong, reproducible passwords for any given
       site (defined by <strong>Hint</strong>),
-      are stored only on your local device. 
-      For extra layer of security you may want to use two additional
-      parameters, which are never stored anywhere:
+      are stored (encrypted!) only on your local device. 
+      For extra layer of security two additional
+      parameters are provided, which are never stored anywhere:
       <strong>Top Secret</strong> and
       <strong>Burn</strong>.
-      See
-      <a href="help.html">Help section</a>
-      for detailed description of these parameters and how
+      See <a href="help.html">Help section</a>
+      for detailed description of all parameters and how
       they are used to generate passwords.
     </p>
     <!--
@@ -95,9 +94,9 @@
       <p>
         Note: You can use Second-level Domain
         (<a href="https://en.wikipedia.org/wiki/Second-level_domain">SLD</a>)
-        - "abc" in the example above as a password hint,
-        or any other string associated for you with a particular site.
-        For example, "fb" for "facebook", 
+        - "abc" in the example above - as a password hint,
+        or any other string you can easily associate with a particular site.
+        For example, "fb" for "facebook", "bofa" for "bankofamerica", etc.
       </p>
       <!--
       As a convenience feature, if you
@@ -110,11 +109,13 @@
     <h2>Notes</h2>
     <ul>
       <li>
-        Some sites do not accept arbitrary special characters,
-        and some impose rather short maximum password lengths.
         The default values for <strong>Special Character</strong>
         (default: "_") and <strong>Length</strong> (default: 15)
-        have been selected to be accepted by most sites.
+        have been selected to be accepted by most sites, however,
+        some sites do not accept all special characters,
+        and some impose rather short maximum password lengths.
+        For these sites you need to change these values and save them
+        as <em>site-specific settings</em>.
       </li>
       <li>
         The purpose of <strong>Secret</strong> is to create unique
@@ -149,9 +150,9 @@
     >
     (barring any
     <a href="https://link.springer.com/article/10.1007/s10676-016-9398-9">mind-reading capabilities</a>).
-    Given that, if you are still
-    concerned about some bad actors breaking into your device
-    and stealing settings you use to generate password, there are some steps you
+    Given that, if you are
+    concerned about bad actors breaking into your device
+    and stealing settings you use to generate passwords, there are some steps you
     can take to make your passwords virtually 100% secure by paying (small)
     inconvenience price.
     <br><br>
@@ -213,9 +214,11 @@
       manager. Very short list is:
     </p>
     <ul>
-      <li><strong>Pros:</strong> convenience, ability to share passwords</li>
+      <li><strong>Pros:</strong> ability to share passwords,
+        some offer encrypted storage for other sensitive information
+        (credit card numbers, bank accounts, etc.)</li>
       <li>
-        <strong>Cons:</strong> need to remember master password, vulnerability
+        <strong>Cons:</strong> vulnerability
         to hacking, safety, lock-in for browser build-in password managers.
       </li>
     </ul>

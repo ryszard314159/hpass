@@ -90,6 +90,27 @@ el.navMenu = document.getElementById("nav-menu");
 el.save = document.getElementById("save");
 el.fileInputModal = document.getElementById("fileInputModal");
 el.importFileInput = document.getElementById('importFileInput');
+el.install = document.querySelector(".btn.install");
+
+//
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault(); // Prevent the default prompt from showing
+  deferredPrompt = event;
+  // Show your custom install button
+  el.install.style.display = "block";
+});
+
+// When the install button is clicked:
+el.install.addEventListener('click', () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt(); // Show the install prompt
+    deferredPrompt = null; // Reset the variable
+    el.install.style.display = "none";
+  }
+});
+
+//
 
 window.onload = function() {
   // alert(`PAGE LOADED! PASSWORD= ${PASSWORD}`);
@@ -662,6 +683,8 @@ async function generateFun(event) {
   let args = { ...opts };
   args.burn = el.burn.value;
   args.peak = el.peak.value;
+  el.burn.value = '';
+  el.peak.value = '';
   args.hint = el.pgHint.value;
   if (debug) console.log("generate:1: opts=", opts);
   args.digits = false;
