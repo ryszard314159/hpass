@@ -22,43 +22,49 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshots/basic.png",
+      "src": "/screenshots/edit_and_save.png",
       "type": "image/png",
       "form_factor": "narrow",
       "sizes": "1080x2400"
     },
     {
-      "src": "/screenshots/copied-to-clipboard.png",
+      "src": "/screenshots/enter_hint.png",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "/screenshots/entry.png",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "/screenshots/export.png",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "/screenshots/help.png",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "/screenshots/import.png",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "sizes": "1080x2400"
+    },
+    {
+      "src": "/screenshots/info.png",
       "type": "image/png",
       "form_factor": "narrow",
       "sizes": "1080x2400"
     },
     {
       "src": "/screenshots/privacy.png",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "sizes": "1080x2400"
-    },
-    {
-      "src": "/screenshots/settings.png",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "sizes": "1080x2400"
-    },
-    {
-      "src": "/screenshots/usage.png",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "sizes": "1080x2400"
-    },
-    {
-      "src": "/screenshots/warning.png",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "sizes": "1080x2400"
-    },
-    {
-      "src": "/screenshots/what-is-hpass.png",
       "type": "image/png",
       "form_factor": "narrow",
       "sizes": "1080x2400"
