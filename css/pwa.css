@@ -892,7 +892,7 @@ margin-top: 9rem;
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
   gap: 0px;
   border: 1px solid grey;
 }
@@ -911,6 +911,6 @@ margin-top: 9rem;
   border-right: none;
 }
 
-.cell:nth-child(n + 10) {
+.cell:nth-child(n + 13) {
   border-bottom: none;
 }
