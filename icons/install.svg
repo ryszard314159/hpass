@@ -6,9 +6,12 @@
       stroke-linecap:round;
       stroke-miterlimit:4;
     }
+    .rounded.green {
+      stroke:green;
+    }
   </style>
   <path class="rounded" d="M50 4 L4 4 L4 70 L96 70 L96 50"/>
   <path class="rounded" d="M30 70 L10 96 L90 96 L70 70"/>
-  <path class="rounded" d="M75 4 L75 40"/>
-  <path class="rounded" d="M65 30 L75 40 L85 30"/>
+  <path class="rounded green" d="M75 4 L75 40"/>
+  <path class="rounded green" d="M65 30 L75 40 L85 30"/>
 </svg>

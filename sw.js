@@ -48,6 +48,7 @@ const appAssets = [
   "icons/granite.png",
   "icons/help.svg",
   "icons/info.svg",
+  "icons/install.svg",
   "icons/lock.svg",
   "icons/logo.svg",
   "icons/reload.svg",

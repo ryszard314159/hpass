@@ -46,6 +46,12 @@ body.info {
   width: 95%;
   margin-left: 0.5rem;
 }
+body.privacy {
+  background-color: wheat;
+  width: 95%;
+  margin-left: 0.5rem;
+}
+
 
 /* li {
   text-align: left;
@@ -159,6 +165,10 @@ button {
   width: 100%;
   /* align-items: center; */
   /* vertical-align: middle; */
+}
+
+.btn.install {
+  display: none;
 }
 
 #hamburger {
