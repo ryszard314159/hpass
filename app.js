@@ -375,8 +375,7 @@ async function createSplashScreen(opts) {
   const infoImg = `<img src="icons/info.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
   let msg = `<h3>New in ${el.version.innerHTML}:</h3>
   <ul>
-    <li>Full encryption of locally stored settings.
-    <li>UX improvements.
+    <li>Added install button.
   </ul>
   <h3>To start using HPASS:</h3>
   <ul>
