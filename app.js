@@ -70,7 +70,6 @@ el.settings = document.getElementById("settings");
 el.help = document.getElementById("help");
 el.info = document.getElementById("info");
 el.storeButton = document.getElementById("storeButton");
-// el.share = document.getElementById("share");
 el.reset = document.getElementById("reset");
 el.adunit = document.getElementById("adunit");
 el.more = document.getElementById("more");
@@ -624,13 +623,33 @@ document.querySelectorAll(".reset").forEach(function(element) {
 //   showPopup(`${URL}<br>copied to clipoard - share it! `, 9 * SHORTPOPUP);
 // });
 
+// text: "Simple and easy tool to generate and use strong and unique passwords.\n\
+// I found it useful - you may find it useful too.",
+
+const shareData = {
+  title: "HPASS Password Generator",
+  text: "HPASS is simple and easy tool to generate and use strong and unique passwords.\
+\n\nVisit https://hpass.app to check it out!",
+  // url: "https://hpass.app",
+};
+
 document.querySelectorAll(".share").forEach(function(element) {
-  // console.log("INFO: .share selected");
-  element.addEventListener("click", function (event) {
-    // console.log("INFO: .share clicked");
-    copyToClipboard(URL);
-    // alert("Copied!!!");
-    showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
+  console.log("INFO: .share selected");
+  element.addEventListener("click", async function (event) {
+    console.log("INFO: .share clicked");
+    if (!navigator.canShare) {
+      copyToClipboard(URL);
+      // alert("Copied!!!");
+      showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
+    } else {
+      try {
+        await navigator.share(shareData);
+        // resultPara.textContent = "HPASS shared successfully";
+      } catch (err) {
+        // resultPara.textContent = `Error: ${err}`;
+        console.error(`ERROR: .share err= ${err}`);
+      }
+    }
   });
 });
 
