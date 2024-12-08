@@ -628,8 +628,8 @@ document.querySelectorAll(".reset").forEach(function(element) {
 
 const shareData = {
   title: "HPASS Password Generator",
-  text: "HPASS is simple and easy tool to generate and use strong and unique passwords.\
-\n\nVisit https://hpass.app to check it out!",
+  text: `HPASS is a simple and easy tool for generating and using strong and unique passwords.\
+\nVisit ${URL} to check it out!`,
   // url: "https://hpass.app",
 };
 
@@ -638,15 +638,12 @@ document.querySelectorAll(".share").forEach(function(element) {
   element.addEventListener("click", async function (event) {
     console.log("INFO: .share clicked");
     if (!navigator.canShare) {
-      copyToClipboard(URL);
-      // alert("Copied!!!");
-      showPopup(`${URL}<br>copied to clipoard - share it! `, 3 * SHORTPOPUP);
+      copyToClipboard(shareData.text);
+      showPopup(`Message about HPASS copied to Clipboard - share it! `, 3 * SHORTPOPUP);
     } else {
       try {
         await navigator.share(shareData);
-        // resultPara.textContent = "HPASS shared successfully";
       } catch (err) {
-        // resultPara.textContent = `Error: ${err}`;
         console.error(`ERROR: .share err= ${err}`);
       }
     }
