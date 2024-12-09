@@ -626,19 +626,17 @@ document.querySelectorAll(".reset").forEach(function(element) {
 // text: "Simple and easy tool to generate and use strong and unique passwords.\n\
 // I found it useful - you may find it useful too.",
 
-const shareData = {
-  title: "HPASS Password Generator",
-  text: `HPASS is a simple and easy tool for generating and using strong and unique passwords.\
-\nVisit ${URL} to check it out!`,
-  // url: "https://hpass.app",
-};
-
 document.querySelectorAll(".share").forEach(function(element) {
   console.log("INFO: .share selected");
   element.addEventListener("click", async function (event) {
     console.log("INFO: .share clicked");
+    const shareData = {
+      title: "HPASS Password Generator",
+      text: `Simple and easy tool for generating and using strong and unique passwords.\
+    \nVisit ${URL} to check it out!`,
+    };
     if (!navigator.canShare) {
-      copyToClipboard(shareData.text);
+      copyToClipboard(`${shareData.title}: ${shareData.text}`);
       showPopup(`Message about HPASS copied to Clipboard - share it! `, 3 * SHORTPOPUP);
     } else {
       try {
@@ -1085,7 +1083,7 @@ function handleExport(args = {}) {
   });
   toExport.encrypted = args.encrypted;
 
-  console.log(`DEBUG: handleExport: toExport= ${JSON.stringify(toExport)}`);
+  // console.log(`DEBUG: handleExport: toExport= ${JSON.stringify(toExport)}`);
 
   function finish() {
     const x = JSON.stringify(toExport, null, 2);
