@@ -1134,57 +1134,42 @@ async function handleImport(event) {
   const fileName = el.importFileInput.value;
   if (debug) console.log("handleImport: file=", file);
   if (file) {
+      const tmpStorage = {};
       const reader = new FileReader();
       reader.onload = async function(e) {
           try {
               // Parse the JSON string from the file
               if (debug) console.log("handleImport: e.target.result=", e.target.result);
-              const importedLocalStorage = JSON.parse(e.target.result);
-              if (debug) console.log("handleImport: importedLocalStorage= ", importedLocalStorage);
+              const imp = JSON.parse(e.target.result); // imported JSON file with settings
+              if (debug) console.log("handleImport: imported= ", imp);
               if (debug) alert(`INFO: handleImport: e.target.result= ${e.target.result})}`)
-              if (debug) alert(`INFO: handleImport: importedLocalStorage= ${JSON.stringify(importedLocalStorage)}`)
-              const backUp = JSON.stringify(localStorage);
-              const isEncrypted = JSON.parse(importedLocalStorage["encrypted"]);
-              let opts;
-              // const sessionPassword = sessionStorage.getItem("password");
-              // if (PASSWORD !== sessionPassword) {
-              //   alert(`ERROR: edit: handleImport: PASSWORD !== sessionPassword`);
-              //   PASSWORD = sessionPassword;
-              // }
-              for (const key in importedLocalStorage) {
-                const txt = importedLocalStorage[key]; // imported text
-                if (!CRYPTO.encryptedItems.includes(key)) { // for pwdHash and encrypted keys
-                  localStorage.setItem(key, txt);
-                  continue;
-                } // for "options" || "sites"
-                if (isEncrypted) {
-                  localStorage.setItem(key, txt);
-                  if (CRYPTO.encryptedItems.includes(key)) {
-                      try {
-                        const decrypted = await decryptText(PASSWORD, txt);
-                        if (decrypted === null) { // Decryption failed
-                          const parsed = JSON.parse(backUp);
-                          Object.keys(parsed).forEach((key) => localStorage.setItem(key, parsed[key]));
-                          alert(`ERROR: wrong Master Password`);
-                          return;
-                        } else {
-                          setDisplayedOptions(decrypted);
-                        }
-                      } catch (error) {
-                        console.error('Error parsing JSON file:', error);
-                        alert('Failed to import settings. Please ensure the file is a valid JSON.');
-                      }
-                  }
-                } else {
-                  encryptText(PASSWORD, txt).then( encrypted => {
-                    localStorage.setItem(key, encrypted);
-                  });
-                  // opts = JSON.parse(txt);
-                  setDisplayedOptions(txt);
+              if (debug) alert(`INFO: handleImport: imp= ${JSON.stringify(imp)}`)
+              // const backUp = JSON.stringify(localStorage);
+              const isEncrypted = JSON.parse(imp["encrypted"]);
+              if (isEncrypted) {
+                const isCorrect = await verifyPassword(imp.pwdHash, PASSWORD);
+                if (!isCorrect) {
+                  alert(`ERROR: Master Password does not match password used for encryption`);
+                  return;
                 }
               }
+              // should be ["options", "sites"] or ["options"]
+              const common = Object.keys(imp).filter(key => CRYPTO.encryptedItems.includes(key));
+              imp.options = isEncrypted ? await decryptText(PASSWORD, imp.options) : imp.options;
+              if (imp.options === null) {
+                alert(`ERROR: decryption failed`);
+                return;
+              }
+              if (imp.sites !== undefined) {
+                imp.sites = isEncrypted ? await decryptText(PASSWORD, imp.sites) : imp.sites;
+              }
+              common.forEach(async function(key) {
+                imp[key] = await encryptText(PASSWORD, imp[key]);
+                localStorage.setItem(key, imp[key]);
+              });
+              // Object.keys(imp).forEach(key => localStorage.setItem(key, imp[key]))
               localStorage.setItem("encrypted", true);
-              // await populateVisibleSettings();
+              setDisplayedOptions(imp.options);
               if (debug) alert(`INFO: handleImport: localStorage= ${JSON.stringify(localStorage)}`);
               // alert(`Settings imported from: ${fileName}`);
           } catch (error) {
