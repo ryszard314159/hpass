@@ -377,20 +377,20 @@ async function createSplashScreen(opts) {
     <li>Added install button.
   </ul>
   <h3>To start using HPASS:</h3>
-  <ul>
+  <ol>
   <li>Close this menu.
-  <li>Create new Master Password - it is initially blank. This
+  <li>Password is initially blank. This
   <a href="https://www.pcmag.com/how-to/tricks-for-remembering-strong-passwords">PC article</a>
-  can be a good starting guide how to create strong and memorable password.
-  <li>Change (${changeImg}) Master Password
-  </ul>
+  is a good starting guide how to create strong and memorable passwords.
+  <li>Change (${changeImg}) Password.
+  </ol>
   <hr style="color: black;">
   <div>
   <br>
-  <p style="background-color: yellow;">Store Master Password in a safe location.</p>
+  <p style="background-color: yellow;">Store Password in a safe location.</p>
   <br>
   All settings are stored encrypted on your local device using
-  Master Password as the encryption key.
+  Password as the encryption key.
 
   </div>
   `;

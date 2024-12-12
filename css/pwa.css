@@ -43,8 +43,8 @@ body.help {
 
 body.info {
   background-color: rgb(195, 223, 238);
-  width: 95%;
-  margin-left: 0.5rem;
+  width: 80%;
+  margin-left: 1rem;
 }
 body.privacy {
   background-color: wheat;
@@ -309,7 +309,7 @@ hr {
 }
 
 ul {
-  list-style-position: outside;
+  list-style-position: inside;
   padding-left: 2%;
   padding-right: 2%;
 }
@@ -575,10 +575,10 @@ input[type="number"] {
   display: flex;
 }
 
-.flex-item:not(:first-child):before {
+/* .flex-item:not(:first-child):before {
   content: "•";
   margin-right: 1rem;
-}
+} */
 
 #version {
   display: flex;
