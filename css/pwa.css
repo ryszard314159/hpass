@@ -37,14 +37,16 @@ body {
 
 body.help {
   background-color: rgb(175, 231, 191);
-  width: 95%;
-  margin-left: 0.5rem;
+  width: 93%;
+  margin-left: 1rem;
 }
 
 body.info {
   background-color: rgb(195, 223, 238);
-  width: 80%;
+  width: 93%;
   margin-left: 1rem;
+  /* margin-right: 0rem; */
+  /* margin: 0 1rem 0 1rem; */
 }
 body.privacy {
   background-color: wheat;
@@ -309,7 +311,7 @@ hr {
 }
 
 ul {
-  list-style-position: inside;
+  list-style-position: outside;
   padding-left: 2%;
   padding-right: 2%;
 }
