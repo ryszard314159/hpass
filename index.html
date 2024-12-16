@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <!-- Bidvertiser2086285 -->
   <!-- Some useful links:
     https://general.support.brightcove.com/developer/debugging-mobile-devices.html
@@ -6,6 +7,7 @@
     https://uxplanet.org/the-anatomy-of-input-field-c3ef863e01d7
   -->
   <head>
+    <meta charset="utf-8" />
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
@@ -47,7 +49,6 @@
       }
     </script>
     <meta name="description" content="Hinted easy to use password generator" />
-    <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#db4938" />
@@ -91,11 +92,11 @@
           <img class="btn reset" src="icons/reset.svg" title="Reset">
           <img class="btn install" src="icons/install.svg" title="Install">
         </div>
-        <img id="logop" class="share" src="icons/logo.svg" />
+        <img id="logop" width="100" height="100" class="share" src="icons/logo.svg" alt="HPASS Logo"/>
         <div id="masterPasswordDiv" class="password-container">
           <input id="masterPassword" type="password" autocomplete="off"
                  enterkeyhint="Enter" placeholder="Password"/>
-          <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg"></span>
+          <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg" alt="Crossed Eye"></span>
         </div>
         <div id="newPasswordDiv" class="password-container">
           <input id="newPassword" type="password" autocomplete="off"
@@ -124,9 +125,9 @@
       </div>
       <div id="burnAndPeak" class="inputsContainer">
         <div id="pgHintContainer" class="container">
-          <img id="gear" class="" src="icons/gear.svg">
+          <img id="gear" class="" src="icons/gear.svg" alt="Gear symbol">
           <input id="pgHint" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Enter Hint"/>
-          <img id="generate" class="" src="icons/generate.svg">
+          <img id="generate" class="" src="icons/generate.svg" alt="Arrow to generate password">
         </div>
 
         <div id="burnContainer" class="container" >
