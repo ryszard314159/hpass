@@ -226,12 +226,14 @@ document.addEventListener("click", (event) => {
   }
 });
 
-el.masterPassword.addEventListener("keydown", function(event) {
+el.masterPassword.addEventListener("keydown", async function(event) {
   const debug = false;
   if (debug) console.log(`el.masterPassword: event key: ${event.key}, code: ${event.code}`);
   if (event.key === "Enter") {
-    if (debug) console.log('masterPassword: Enter key pressed!');
-    setTimeout( async () => {
+    event.preventDefault(); // NOTE: to make <form> wrapper work for <input>
+    if (debug) console.log('masterPssword: Enter key pressed!');
+    // alert("masterPssword: Enter key pressed!");
+    // setTimeout( async () => {
       const storedHash = localStorage.getItem("pwdHash");
       if (storedHash === null) {
         alert("Password Hash was null.\nAll settings removed & Master Password set to empty string");
@@ -243,7 +245,9 @@ el.masterPassword.addEventListener("keydown", function(event) {
         return;
       }
       const pwd = el.masterPassword.value;
+      // alert("masterPssword: before verifyPassword");
       const isCorrect = await verifyPassword(storedHash, pwd);
+      // alert(`masterPssword: after verifyPassword: isCorrect= ${isCorrect}`);
       if (isCorrect) {
         PASSWORD = pwd;
         // sessionStorage.setItem("password", pwd);
@@ -255,12 +259,12 @@ el.masterPassword.addEventListener("keydown", function(event) {
         if (debug) console.log(`masterPassword: storedHash= ${storedHash}`);
         alert(`>>${pwd}<< Wrong password - try again!`)
       }
-    }, 0);
+    // }, 0);
   }
 });
 
 el.newPassword.addEventListener("keydown", async (event) => {
-  const debug = true;
+  const debug = false;
   if (event.key !== 'Enter') return;
   function _cleanup() {
     el.newPassword.value = '';
@@ -278,7 +282,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
 
   const storedHash = localStorage.getItem("pwdHash");
   const isCorrect = await verifyPassword(storedHash, masterPassword);
-  if (0) console.log(`masterPassword= ${masterPassword}, verified= ${verified}, storedHash= ${storedHash}`)
+  if (debug) console.log(`masterPassword= ${masterPassword}, verified= ${verified}, storedHash= ${storedHash}`)
   // const sessionPassword = sessionStorage.getItem("password");
   // if (PASSWORD !== sessionPassword) {
   //   const msg = `ERROR: app: PASSWORD= ${PASSWORD}, sessionPassword= ${sessionPassword}`;
@@ -290,7 +294,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
   // if (!isCorrect || masterPassword !== PASSWORD) {
   if (!isCorrect) {
     let msg = "Incorrect Master Password - try again."
-    if (1) {
+    if (debug) {
       msg = `${msg}\nstoredHash= ${storedHash.slice(0,9)}...`;
       msg = `${msg}\nmasterPassword= ${masterPassword}`;
       msg = `${msg}\nPASSWORD= ${PASSWORD}`;

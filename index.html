@@ -100,16 +100,17 @@
           <img class="btn install" width="40" height="40" src="icons/install.svg" title="Install">
         </div>
         <img id="logop" width="100" height="100" class="share" src="icons/logo.svg" alt="HPASS Logo"/>
-        <div id="masterPasswordDiv" class="password-container">
+        <!-- NOTE: need event.preventDefault(); in app.js code for id="masterPassword" -->
+        <form id="masterPasswordDiv" class="password-container">
           <input id="masterPassword" type="password" autocomplete="off"
                  enterkeyhint="Enter" placeholder="Password"/>
           <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg" alt="Crossed Eye"></span>
-        </div>
-        <div id="newPasswordDiv" class="password-container">
+        </form>
+        <form id="newPasswordDiv" class="password-container">
           <input id="newPassword" type="password" autocomplete="off"
                  enterkeyhint="Enter" placeholder="New Password"/>
-          <span><img id="eye-new" class="eye-img" src="icons/eye-hide.svg"></span>
-        </div>
+          <span><img id="eye-new" class="eye-img" src="icons/eye-hide.svg" alt="Crossed Eye"></span>
+        </form>
         <div id="versionContainer">
           <div class="flex-item">
             <p id="version">YYYY-MM-DD</p>
