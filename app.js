@@ -266,6 +266,7 @@ el.masterPassword.addEventListener("keydown", async function(event) {
 el.newPassword.addEventListener("keydown", async (event) => {
   const debug = false;
   if (event.key !== 'Enter') return;
+  event.preventDefault(); // NOTE: to make <form> wrapper work for <input>
   function _cleanup() {
     el.newPassword.value = '';
     el.masterPassword.value = '';
