@@ -86,7 +86,7 @@
     <audio id="lockSound" src="door-close.mp3" preload="auto"></audio>
     
     <div id="entryContainer">
-        <div id="topIcons1" class="topIcons"> 
+        <div id="entryIcons" class="topIcons">
           <a href="help.html" target="_blank">
             <img id="help" class="btn" width="40" height="40" src="icons/help.svg" title="Help">
           </a>
@@ -193,18 +193,28 @@
           <input id="length" class="input" placeholder="Length">
         </div>
 
-        <div id="editLegend">
+        <div id="editLegend" style="text-align: left;">
           <p><!-- style="justify-content: center; text-align: left;"> -->
             <hr>
             <br>
+
+            <p>
+              To change <em>site settings</em> enter site hint in the 
+              <strong>Hint</strong> field, populate 
+              <strong>Secret</strong>, <strong>Special Character</strong>,
+              and <strong>Length</strong> with desired values, and press save icon
+              <img class="icon" src="icons/save.svg"/>.
+            </p>
+            <br>
+            <p>
+              Do the same to change <em>generic settings</em>,
+              but with empty <strong>Hint</strong> field. 
+            </p>
+
+            <br>
             <ul>
-              <li><strong>Hint</strong>: leave it empty to change <em>generic settings</em>.
-                  You may need to create hint/site <em>specific settings</em>
-                  if a site does not allow <strong><tt>Special Character</tt></strong> in your
-                  <em>generic settings</em>, or demands longer/shorter password etc.
-                  In such a case, enter a <strong><tt>Hint</strong></tt>,
-                  modify <strong><tt>Special Character</tt></strong> and/or
-                  <tt><strong>Length</strong></tt>.
+              <li><strong>Hint</strong>: keep it empty to change <em>generic settings</em>;
+                enter value to change <em>site settings</em>.
   
               </li>
               <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
@@ -227,10 +237,37 @@
     <div id="fileInputModal" class="modal">
       <div class="modal-content">
           <span class="close">&times;</span>
-          <p>Select a JSON file to import hpass settings:</p><br>
-          <input type="file" id="importFileInput" accept="application/json">
-      </div>
+          <br>
+          <!-- <p>Select a JSON file to import settings:</p><br> -->
+          <!-- <form class="password-container" > -->
+            <input type="file" id="importFileInput" accept="application/json">
+          <!-- </form> -->
+          <!-- <label for="importFileInput">Select File</label> -->
+           <br>
+          <form class="password-container" >
+            <input type="password" id="importPassword" placeholder="File Password">
+            <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg" alt="Crossed Eye"></span>
+          </form>
+          <p>
+            Enter password used to encrypt the file in File Password field.
+            Leave it empty if the current Master Password is the same.
+          </p>
+          <!-- <label for="importPassword">Password</label> -->
+        </div>
     </div>
+
+    <!-- <div id="fileInputModal" class="modal">
+      <form action="/upload" method="POST" enctype="multipart/form-data" class="modal-content">
+        <span class="close">&times;</span>
+        <label for="file">Select a file:</label>
+        <input type="file" id="importFileInput" name="file" required>
+        <br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="importPassword" name="password">
+        <br><br>
+        <button type="submit">Submit</button>
+      </form>
+    </div> -->
 
     <div id="footer" style="width: 90%; margin: 5% 5% 5% 5%;">
       <h2 style="text-align: center">

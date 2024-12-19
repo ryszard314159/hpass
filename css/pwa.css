@@ -254,15 +254,16 @@ button {
   transform: scale(1.5);
 }
 
-form {
+/* form {
   text-align: center;
-}
+} */
 form input {
   margin: 10px auto;
 }
 
 form {
   text-align: left;
+  align-items: left;
   display: inline-block;
   margin: 0 0 10px 0;
 }
@@ -734,8 +735,17 @@ margin-top: 9rem;
   line-height: 1.5rem; /* adjust to match the height */
 }
 
+/* #editIcons {
+  position: fixed;
+  z-index: 9;
+} */
+#entryIcons {
+  z-index: 9;
+}
+
 .topIcons {
   position: fixed;
+  z-index: 8;
   top: 0;
   left: 0;
   /* display: inline-flex; */
@@ -781,9 +791,6 @@ margin-top: 9rem;
   text-align: center;
 }
 
-#editIcons {
-  position: relative;
-}
 
 /* Hidden menu */
 .nav-menu {

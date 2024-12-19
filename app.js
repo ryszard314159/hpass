@@ -90,6 +90,7 @@ el.navMenu = document.getElementById("nav-menu");
 el.save = document.getElementById("save");
 el.fileInputModal = document.getElementById("fileInputModal");
 el.importFileInput = document.getElementById('importFileInput');
+el.importPassword = document.getElementById('importPassword');
 el.install = document.querySelector(".btn.install");
 
 //
@@ -1138,7 +1139,10 @@ async function handleImport(event) {
   el.edHint.value = '';
   const file = el.importFileInput.files[0];
   const fileName = el.importFileInput.value;
+  let importPassword = el.importPassword.value;
+  importPassword = importPassword !== PASSWORD ? importPassword : PASSWORD;
   if (debug) console.log("handleImport: file=", file);
+  if (debug) console.log(`handleImport: importPassword= ${importPassword}`);
   if (file) {
       const tmpStorage = {};
       const reader = new FileReader();
@@ -1153,21 +1157,21 @@ async function handleImport(event) {
               // const backUp = JSON.stringify(localStorage);
               const isEncrypted = JSON.parse(imp["encrypted"]);
               if (isEncrypted) {
-                const isCorrect = await verifyPassword(imp.pwdHash, PASSWORD);
+                const isCorrect = await verifyPassword(imp.pwdHash, importPassword);
                 if (!isCorrect) {
-                  alert(`ERROR: Master Password does not match password used for encryption`);
+                  alert(`ERROR: Password does not match password used for encryption`);
                   return;
                 }
               }
               // should be ["options", "sites"] or ["options"]
               const common = Object.keys(imp).filter(key => CRYPTO.encryptedItems.includes(key));
-              imp.options = isEncrypted ? await decryptText(PASSWORD, imp.options) : imp.options;
+              imp.options = isEncrypted ? await decryptText(importPassword, imp.options) : imp.options;
               if (imp.options === null) {
                 alert(`ERROR: decryption failed`);
                 return;
               }
               if (imp.sites !== undefined) {
-                imp.sites = isEncrypted ? await decryptText(PASSWORD, imp.sites) : imp.sites;
+                imp.sites = isEncrypted ? await decryptText(importPassword, imp.sites) : imp.sites;
               }
               common.forEach(async function(key) {
                 imp[key] = await encryptText(PASSWORD, imp[key]);
