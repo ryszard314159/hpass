@@ -133,7 +133,21 @@
       </li>
     </ul>
 
-    <h2>Security considerations</h2>
+    <h2>Your settings are encrypted</h2>
+
+    All settings used to generate passwords are encrypted
+    (Master Password is used to derive encryption key)
+    and stored locally on your device. Encryption is done using
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto">SubleCrypto</a>
+    interface to
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API">Web Crypto API</a>
+    using <a href="https://en.wikipedia.org/wiki/Galois/Counter_Mode">AES-GCM-256</a> algorithm.
+    Master Password is hashed using
+    <a href="https://en.wikipedia.org/wiki/Secure_Hash_Algorithms">SHA-512</a> algorithm
+    and locally stored hash is used for password validation. Password itself is never stored.
+
+
+    <h2>Further security considerations</h2>
     Keeping only local copy of any sensitive information is more secure and
     less tempting for any potential hackers then keeping it in a centralized location -
     just compare relative effort and payoff of breaking once into
@@ -150,31 +164,41 @@
       the only secure data is the one that is kept in your head</a
     >
     (barring any
-    <a href="https://link.springer.com/article/10.1007/s10676-016-9398-9">mind-reading capabilities</a>).
-    Given that, if you are
-    concerned about bad actors breaking into your device
+    <a href="https:/1/link.springer.com/article/10.1007/s10676-016-9398-9">mind-reading capabilities</a>).
+    <!-- If you are throughly paranoid about bad actors breaking into your device
     and stealing settings you use to generate passwords, there are some steps you
     can take to make your passwords virtually 100% secure by paying (small)
-    inconvenience price.
+    inconvenience price. -->
+    <br><br>
+    There is a 
+    <a
+      href="https://medium.com/face-value/security-vs-convenience-the-ultimate-trade-off-843e476bf538"
+    >trade-off between security and convenience.</a>
+
+    For those deeply concerned about malicious actors compromising their devices
+    and stealing password generation settings,
+    there are some extra steps you can take to achieve virtually 100% password security.
+
     <br><br>
     For example you can:
     <br><br>
     <ol>
       <li>
         Use <strong>Top Secret</strong> and/or <strong>Burn</strong> for extra layer
-        of security. These two parameters are never stored.
-      </li>
-      <li>Instead of using secondary domain use some nickname
-        e.g. "cr" instead "consumerreports" for https://www.consumerreports.org
+        of security. These two parameters are never stored and removed from working memory
+        immediately after password is generated.
       </li>
       <li>
-        obfuscate secondary domain in some known only to you fashion e.g.
-        append some character(s), insert space before the last character, etc.
+        Obfuscate secondary domain in some known only to you fashion e.g.
+        append some character(s), insert space before the last character,
+        use a nickname e.g. "cr" instead "consumerreports"
+        for consumerreports.org        
       </li>
-      <li>use generated password as a hint and generate password again</li>
+      <li>Use generated password as a hint and generate password again.</li>
     </ol>
     <br>
-    You can probably invent infinite number of similar simple schemes to accomplish the same goal i.e.
+    You can probably invent infinite number of similar simple mnemonic schemes
+    to accomplish the same goal i.e.
     that the part of the whole password generating procedure is stored only in
     your head :)
     <!-- Of course, if the sites you need to login into where the
