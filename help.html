@@ -49,7 +49,7 @@
 
     <br><br>
     <div id="title">
-    <h1>Basic usage:</h1>
+    <h2>Basic usage:</h2>
     </div>
 
     <ol>
@@ -65,7 +65,7 @@
     <br>
     <p><strong>...or read on for more...</strong></p>
 
-    <h1>Installation and Settings</h1>
+    <h2>Installation and Settings</h2>
     When you first visit the <a href="https://hpass.app">HPASS site</a>,
     <em>generic settings</em> are initialized to default values,
     encrypted using Password (a.k.a. Master Password a.k.a. HPASS Password) as a key,
@@ -155,7 +155,7 @@
     determines the generated password i.e.
     the same values always generate the same password.
 
-    <h1>Icons</h1>
+    <h2>Icons</h2>
 
     <div class="grid">
       <div class="cell">
@@ -200,13 +200,56 @@
     </div>
 
     <a id="Contact"></a>
-    <h1>Contact</h1>
+    <h2>Contact</h2>
     <p>Email <strong>info@hpass.app</strong> to ask questions,
       suggest improvements, etc.
     </p>
-    <a id="FAQ"></a>
-    <h1>Frequently Asked Questions (FAQ)</h1>
-    <p>Nothing here yet...</p>
-  <!-- </div> -->
+
+    <!-- <h2>See also:</h2> 
+
+    Frequently Asked Questions
+    <a href="faq.html" target="_blank" rel="opener">FAQ</a> page. -->
+
+    <br><br>
+    <h2>Frequently Asked Questions</h2>
+
+    <button type="button" class="collapsible">
+      What to do if I need to change password for the site?
+    </button>
+
+    <div class="content">
+      <br><p>
+        One simple way to change password periodically, is
+        to add a counter to the <tt><strong>Special Character</strong></tt> field and save
+        new value as <em>site-specific setting</em>.
+        For example, you change "_" to "_1", next time to "_2", etc.
+        <br><br>
+        <strong>NOTE:</strong> NIST now recommends againts forced periodic password changes.
+        From
+        <a href="https://pages.nist.gov/800-63-4/sp800-63b.html">NIST SP800-63B</a>:
+        <em>
+        [...] Do not require that passwords be changed arbitrarily (e.g., periodically)
+        unless there is a user request or evidence of authenticator compromise [...]
+        </em>
+      </p><br>
+    </div>
+    <hr>
+
+    <script>
+      let coll = document.getElementsByClassName("collapsible");
+      let i;
+      for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+          this.classList.toggle("active");
+          let content = this.nextElementSibling;
+          if (content.style.display === "block") {
+            content.style.display = "none";
+          } else {
+            content.style.display = "block";
+          }
+        });
+      }
+    </script>
+   <br><br>
   </body>
 </html>
