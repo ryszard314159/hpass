@@ -62,6 +62,7 @@
     <link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />
     <!-- <script defer type="module" src="core/crypto.js"></script> -->
     <!-- <script defer type="module" src="core/lib.js"></script>  -->
+    <script defer type="module" src="webauthn.js"></script>
     <script defer type="module" src="app.js"></script>
     <!-- <script defer type="module" src="sw.js"></script> -->
     <script
@@ -101,16 +102,29 @@
         </div>
         <img id="logop" width="100" height="100" class="share" src="icons/logo.svg" alt="HPASS Logo"/>
         <!-- NOTE: need event.preventDefault(); in app.js code for id="masterPassword" -->
-        <form id="masterPasswordDiv" class="password-container">
-          <input id="masterPassword" type="password" autocomplete="off"
-                 enterkeyhint="Enter" placeholder="Password"/>
-          <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg" alt="Crossed Eye"></span>
-        </form>
-        <form id="newPasswordDiv" class="password-container">
-          <input id="newPassword" type="password" autocomplete="off"
-                 enterkeyhint="Enter" placeholder="New Password"/>
-          <span><img id="eye-new" class="eye-img" src="icons/eye-hide.svg" alt="Crossed Eye"></span>
-        </form>
+
+        <div class="securityContainer">
+          <form id="masterPasswordDiv" class="password-container">
+            <input id="masterPassword" type="password" autocomplete="off"
+                  enterkeyhint="Enter" placeholder="Password"/>
+            <span><img id="eye-master" class="eye-img"
+                  src="icons/eye-hide.svg" alt="Crossed Eye">
+            </span>
+          </form>
+          <img id="_register" width="64" height="64" class="security"
+               src="icons/fp.svg" alt="Fingerprint"/>
+               <button id="register">Register</button>
+               <button id="authenticate">Authenticate</button>
+          <form id="newPasswordDiv" class="password-container">
+            <input id="newPassword" type="password" autocomplete="off"
+                  enterkeyhint="Enter" placeholder="New Password"/>
+            <span><img id="eye-new" class="eye-img"
+                  src="icons/eye-hide.svg" alt="Crossed Eye">
+            </span>
+          </form>
+
+        </div>
+
         <div id="versionContainer">
           <div class="flex-item">
             <p id="version">YYYY-MM-DD</p>

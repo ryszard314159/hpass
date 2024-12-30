@@ -42,6 +42,7 @@ import { CHARS, getPass, get_random_string, objDiff, isEmpty,
 import { storageGet, storageSet, CRYPTO, sanityCheck,
          globalDefaults, hpassStorage } from "./core/lib.js";
 import { decryptText, encryptText, createHash, verifyPassword} from "./core/crypto.js"
+import { register, authenticate } from "./webauthn.js";
 
 // const debug = 0;
 let PASSWORD = null;
@@ -261,6 +262,23 @@ el.masterPassword.addEventListener("keydown", async function(event) {
         alert(`>>${pwd}<< Wrong password - try again!`)
       }
     // }, 0);
+  }
+});
+
+el.fingerPrint = document.getElementById("fingerPrint");
+el.fingerPrint.addEventListener('click', async () => {
+  const key = {
+    challenge: new Uint8Array(32),
+    rpId: window.location.hostname,
+    // rpId: "localhost",
+    userVerification: "required",
+  }
+  try {
+    const credential = await navigator.credentials.get({publicKey: key});
+    console.log("Authentication successful!", credential);
+  } catch (error) {
+    console.error("Authentication failed", error);
+    console.error(`key.rpId= ${key.rpId}`)
   }
 });
 
@@ -1219,3 +1237,28 @@ function setDisplayedOptions(decrypted) {
   msg = `${msg}\nafterValues= ${JSON.stringify(afterValues)}`;
   if (debug) alert(msg);
 }
+
+// Simulate registration (create credentials)
+document.getElementById("register").addEventListener("click", async () => {
+  alert("Register!");
+  if (!navigator.credentials || !navigator.credentials.create) {
+    console.error("WebAuthn is not supported in this browser.");
+    alert("WebAuthn is not supported in this browser.");
+    return;
+  }
+  await register({userName: crypto.randomUUID(), displayName: "Anonymous"});
+  // or prompt the user
+  // await register();
+  console.log("Credential created?")
+});
+
+// Simulate authentication (retrieve credentials)
+document.getElementById("authenticate").addEventListener("click", async () => {
+  alert("Autheticate!");
+  if (!navigator.credentials || !navigator.credentials.get) {
+    console.error("WebAuthn is not supported in this browser.");
+    alert("WebAuthn is not supported in this browser.");
+    return;
+  }
+  await authenticate();
+});
