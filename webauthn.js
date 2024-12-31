@@ -37,23 +37,23 @@ function base64UrlToAb(base64Url) {
 function getUserIdUint8Array(userIdLength) {
   // NOTE: just generate it fresh for now...
   let userIdUint8Array = crypto.getRandomValues(new Uint8Array(userIdLength));
-  // let userIdBase64URL = localStorage.getItem("userIdBase64URL");
-  // if (!userIdBase64URL) {
-  //   userIdUint8Array = crypto.getRandomValues(new Uint8Array(userIdLength));
-  //   userIdBase64URL = abToBase64URL(userIdUint8Array.buffer);
-  //   localStorage.setItem("userIdBase64URL", userIdBase64URL);
-  //   console.log("Generated new userId:", userIdBase64URL);
-  // } else {
-  //   console.log("Retrieved existing userIdBase64URL:", userIdBase64URL);
-  //   try {
-  //     userIdUint8Array = new Uint8Array(base64UrlToAb(userIdBase64URL));
-  //   } catch (error) {
-  //     console.warn("Error decoding userId. Generating a new one:", error);
-  //     userIdUint8Array = crypto.getRandomValues(new Uint8Array(userIdLength));
-  //     userIdBase64URL = abToBase64URL(userIdUint8Array.buffer);
-  //     localStorage.setItem("userIdBase64URL", userIdBase64URL);
-  //   }
-  // }
+  let userIdBase64URL = localStorage.getItem("userIdBase64URL");
+  if (!userIdBase64URL) {
+    userIdUint8Array = crypto.getRandomValues(new Uint8Array(userIdLength));
+    userIdBase64URL = abToBase64URL(userIdUint8Array.buffer);
+    localStorage.setItem("userIdBase64URL", userIdBase64URL);
+    console.log("Generated new userId:", userIdBase64URL);
+  } else {
+    console.log("Retrieved existing userIdBase64URL:", userIdBase64URL);
+    try {
+      userIdUint8Array = new Uint8Array(base64UrlToAb(userIdBase64URL));
+    } catch (error) {
+      console.warn("Error decoding userId. Generating a new one:", error);
+      userIdUint8Array = crypto.getRandomValues(new Uint8Array(userIdLength));
+      userIdBase64URL = abToBase64URL(userIdUint8Array.buffer);
+      localStorage.setItem("userIdBase64URL", userIdBase64URL);
+    }
+  }
   return userIdUint8Array;
 }
 
@@ -67,6 +67,11 @@ async function register({
                          timeout = TIMEOUT
                         } = {}) {
     console.log("Registering credential...");
+    const storedCredentialId = localStorage.getItem("credential.id");
+    if (storedCredentialId) {
+      alert("register: credential.id already stored- quitting...");
+      return true;
+    }
     // Prompt for user details if not provided
     userName = userName || prompt("Username (e.g., email):", "example@domain.com");
     displayName = displayName || prompt("Enter a display name:", "Example User");
@@ -95,22 +100,23 @@ async function register({
         attestation: "none"    // Use "none" for privacy, "direct" for more info
       }
     };
-  
     try {
       const credential = await navigator.credentials.create(options);
-      console.log("Credential created:", credential); 
+      console.log("register: created credential=", credential); 
       // NOTE: credential.id is the same as Base64 encoded rawId !!!
       localStorage.setItem("credential.id", credential.id);
       // localStorage.setItem("credential.type", credential.type); // for potential future use
       // NOTE: do not store crential.publicKey???
       // const publicKey = JSON.stringify(credential.publicKey);
       // localStorage.setItem("publicKey", publicKey);
-    } catch (err) {
-      console.error("Error creating credential:", err);
+    } catch (error) {
+      console.error("register: error=", error);
+      // console.error(`register: JSON.stringify(error)=", ${JSON.stringify(error)}`);
+      alert(`ERROR: in register; check log`);
+      return false;
     }
+    return true;
 }
-
-
 
 async function authenticate({
                              challengeLength = CHALLENGE_LENGTH,
@@ -118,8 +124,7 @@ async function authenticate({
                             } = {}) {
   console.log("Authenticating credential...");
   const challenge = crypto.getRandomValues(new Uint8Array(challengeLength));
-  const storedId = localStorage.getItem("credential.id"); // Base64 URL-encoded rawId
-  
+  // const storedId = localStorage.getItem("credential.id"); // Base64 URL-encoded rawId 
   const options = {
     publicKey: {
       challenge: challenge,         // Challenge must be random and unique per request
@@ -127,11 +132,9 @@ async function authenticate({
       userVerification: "required"  // "preferred", "required", or "discouraged"
     }
   };
-
   try {
     const credential = await navigator.credentials.get(options);
     console.log("Credential retrieved:", credential);
-    
     // Browser-level validation is sufficient for client-only PWA use cases.
     // Uncomment the following section if manual validation is added in the future:
     /*
@@ -142,10 +145,11 @@ async function authenticate({
       console.error("Authentication failed");
     }
     */
-    
     console.log("Authentication successful (browser-verified).");
+    return true;
   } catch (err) {
     console.error("Error retrieving credential:", err);
+    return false;
   }
 }
 
@@ -165,30 +169,30 @@ async function validateSignature(credential, challenge) {
   return true; // Assume the browser's validation is sufficient for the current use case
 }
 
-// Simulate registration (create credentials)
-document.getElementById("register").addEventListener("click", async () => {
-    alert("Register!");
-    if (!navigator.credentials || !navigator.credentials.create) {
-      console.error("WebAuthn is not supported in this browser.");
-      alert("WebAuthn is not supported in this browser.");
-      return;
-    }
-    await register({userName: crypto.randomUUID(), displayName: "Anonymous"});
-    // or prompt the user
-    // await register();
-    console.log("Credential created?")
-});
+// // Simulate registration (create credentials)
+// document.getElementById("register").addEventListener("click", async () => {
+//     alert("Register!");
+//     if (!navigator.credentials || !navigator.credentials.create) {
+//       console.error("WebAuthn is not supported in this browser.");
+//       alert("WebAuthn is not supported in this browser.");
+//       return;
+//     }
+//     await register({userName: crypto.randomUUID(), displayName: "Anonymous"});
+//     // or prompt the user
+//     // await register();
+//     console.log("Credential created?")
+// });
   
-// Simulate authentication (retrieve credentials)
-document.getElementById("authenticate").addEventListener("click", async () => {
-  alert("Autheticate!");
-  if (!navigator.credentials || !navigator.credentials.get) {
-    console.error("WebAuthn is not supported in this browser.");
-    alert("WebAuthn is not supported in this browser.");
-    return;
-  }
-  await authenticate();
-});
+// // Simulate authentication (retrieve credentials)
+// document.getElementById("authenticate").addEventListener("click", async () => {
+//   alert("Autheticate!");
+//   if (!navigator.credentials || !navigator.credentials.get) {
+//     console.error("WebAuthn is not supported in this browser.");
+//     alert("WebAuthn is not supported in this browser.");
+//     return;
+//   }
+//   await authenticate();
+// });
 
 export { register, authenticate }
 

@@ -94,7 +94,8 @@ el.importFileInput = document.getElementById('importFileInput');
 el.importPassword = document.getElementById('importPassword');
 el.install = document.querySelector(".btn.install");
 
-//
+// TODO: test if this is needed
+// 
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (event) => {
   event.preventDefault(); // Prevent the default prompt from showing
@@ -1241,21 +1242,21 @@ function setDisplayedOptions(decrypted) {
 
 // Simulate registration (create credentials)
 document.getElementById("register").addEventListener("click", async () => {
-  alert("Register!");
+  // alert("Register!");
   if (!navigator.credentials || !navigator.credentials.create) {
     console.error("WebAuthn is not supported in this browser.");
     alert("WebAuthn is not supported in this browser.");
     return;
   }
-  await register({userName: crypto.randomUUID(), displayName: "Anonymous"});
+  const created = await register({userName: "hpass.app", displayName: "hpass"});
   // or prompt the user
   // await register();
-  console.log("Credential created?")
+  console.log(`Credential: created= ${created}`);
 });
 
 // Simulate authentication (retrieve credentials)
 document.getElementById("authenticate").addEventListener("click", async () => {
-  alert("Autheticate!");
+  // alert("Autheticate!");
   if (!navigator.credentials || !navigator.credentials.get) {
     console.error("WebAuthn is not supported in this browser.");
     alert("WebAuthn is not supported in this browser.");
