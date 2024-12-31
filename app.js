@@ -265,22 +265,22 @@ el.masterPassword.addEventListener("keydown", async function(event) {
   }
 });
 
-el.fingerPrint = document.getElementById("fingerPrint");
-el.fingerPrint.addEventListener('click', async () => {
-  const key = {
-    challenge: new Uint8Array(32),
-    rpId: window.location.hostname,
-    // rpId: "localhost",
-    userVerification: "required",
-  }
-  try {
-    const credential = await navigator.credentials.get({publicKey: key});
-    console.log("Authentication successful!", credential);
-  } catch (error) {
-    console.error("Authentication failed", error);
-    console.error(`key.rpId= ${key.rpId}`)
-  }
-});
+// el.fingerPrint = document.getElementById("fingerPrint");
+// el.fingerPrint.addEventListener('click', async () => {
+//   const key = {
+//     challenge: new Uint8Array(32),
+//     rpId: window.location.hostname,
+//     // rpId: "localhost",
+//     userVerification: "required",
+//   }
+//   try {
+//     const credential = await navigator.credentials.get({publicKey: key});
+//     console.log("Authentication successful!", credential);
+//   } catch (error) {
+//     console.error("Authentication failed", error);
+//     console.error(`key.rpId= ${key.rpId}`)
+//   }
+// });
 
 el.newPassword.addEventListener("keydown", async (event) => {
   const debug = false;
@@ -674,6 +674,7 @@ document.querySelectorAll(".share").forEach(function(element) {
 });
 
 document.querySelectorAll(".lock").forEach(function(element) {
+  console.log("DEBUG: querySelectorAll(.lock");
   element.addEventListener("click", function (event) {
     const lock = document.getElementById("lockSound");
     if (el.masterPassword && el.entryContainer && lockSound) {
@@ -1260,5 +1261,13 @@ document.getElementById("authenticate").addEventListener("click", async () => {
     alert("WebAuthn is not supported in this browser.");
     return;
   }
-  await authenticate();
+  const isValid = await authenticate();
+  if (isValid) {
+    el.entryContainer.style.display = "none";
+    window.sessionStorage.setItem("entryContainerHidden", true);
+    window.scrollTo(0, 0); // scroll window to the top!
+    console.log(`authenticate: PASSWORD= ${PASSWORD}`);
+  } else {
+    alert('fingerprint authentication failed: enter PASSWORD');
+  }
 });
