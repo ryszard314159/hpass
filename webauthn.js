@@ -77,6 +77,7 @@ async function register({
     displayName = displayName || prompt("Enter a display name:", "Example User");
     const challenge = crypto.getRandomValues(new Uint8Array(challengeLength));
     const userIdUint8Array = getUserIdUint8Array(userIdLength);
+    const isAvailable = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
     const options = {
       publicKey: {
         rp: {
@@ -88,8 +89,10 @@ async function register({
         authenticatorSelection: {
           // requireResidentKey: false,
           // residentKey: 'discouraged',
-          requireResidentKey: true,
-          residentKey: "required",
+          // requireResidentKey: true,
+          // residentKey: "required",
+          requireResidentKey: isAvailable,
+          residentKey: isAvailable ? "required" : "discouraged",
           userVerification: 'required',
           // authenticatorAttachment: 'platform'
         },
