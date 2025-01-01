@@ -415,7 +415,8 @@ async function storageSet(args) {
   args = {key: null, value: null, pwd: null, encrypt: true, ...args};
   // args.pwd = sessionStorage.getItem("password");
   if (args.pwd === null) {
-    alert(`ERROR: storageSet: null password`);
+    // alert(`ERROR: storageSet: null password`);
+    alert(`Please enter Password`);
     throw new Error(`storageSet: null password`);
   }
   if (!CRYPTO.encryptedItems.includes(args.key)) {
@@ -454,7 +455,8 @@ async function storageGet(args) {
   args = {key: null, pwd: null, decrypt: true, ...args};
   // args.pwd = sessionStorage.getItem("password");
   if (args.pwd === null) {
-    alert("storageGet: no password!?");
+    // alert("storageGet: no password!?");
+    alert(`Please enter Password`);
     throw new Error("no password!?");
   }
   const debug = false;
