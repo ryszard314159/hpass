@@ -1,5 +1,8 @@
 /*
 TODO:
+* Error while trying to use the following icon from the Manifest:
+* https://ryszard314159.github.io/screenshots/info.png
+* (Download error or resource isn't a valid image)
 0 - use rcz: "start_url": "/hpass/"; main: "start_url": "/", - the same for scope
 * - biometric https://stackoverflow.blog/2022/11/16/biometric-authentication-for-web-devs/
 * - https://stripe.com for payments???
@@ -1269,6 +1272,7 @@ document.getElementById("authenticate").addEventListener("click", async () => {
     window.scrollTo(0, 0); // scroll window to the top!
     console.log(`authenticate: PASSWORD= ${PASSWORD}`);
   } else {
-    alert('fingerprint authentication failed: enter PASSWORD');
+    alert('fingerprint authentication failed: enter PASSWORD or register again');
+    localStorage.removeItem("credential.id")
   }
 });

@@ -86,9 +86,11 @@ async function register({
         // user is required for Client-side PWA
         user: { id: userIdUint8Array, name: userName, displayName: displayName },
         authenticatorSelection: {
-          requireResidentKey: false,
+          // requireResidentKey: false,
+          // residentKey: 'discouraged',
+          requireResidentKey: true,
+          residentKey: "required",
           userVerification: 'required',
-          residentKey: 'discouraged',
           // authenticatorAttachment: 'platform'
         },
         pubKeyCredParams: [
