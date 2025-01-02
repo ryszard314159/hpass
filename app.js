@@ -1244,18 +1244,18 @@ function setDisplayedOptions(decrypted) {
 }
 
 // Simulate registration (create credentials)
-document.getElementById("register").addEventListener("click", async () => {
-  // alert("Register!");
-  if (!navigator.credentials || !navigator.credentials.create) {
-    console.error("WebAuthn is not supported in this browser.");
-    alert("WebAuthn is not supported in this browser.");
-    return;
-  }
-  const created = await register({userName: "hpass.app", displayName: "hpass"});
-  // or prompt the user
-  // await register();
-  console.log(`Credential: created= ${created}`);
-});
+// document.getElementById("register").addEventListener("click", async () => {
+//   // alert("Register!");
+//   if (!navigator.credentials || !navigator.credentials.create) {
+//     console.error("WebAuthn is not supported in this browser.");
+//     alert("WebAuthn is not supported in this browser.");
+//     return;
+//   }
+//   const created = await register({userName: "hpass.app", displayName: "hpass"});
+//   // or prompt the user
+//   // await register();
+//   console.log(`Credential: created= ${created}`);
+// });
 
 // Simulate authentication (retrieve credentials)
 document.getElementById("authenticate").addEventListener("click", async () => {
@@ -1267,12 +1267,18 @@ document.getElementById("authenticate").addEventListener("click", async () => {
   }
   const isValid = await authenticate();
   if (isValid) {
-    el.entryContainer.style.display = "none";
-    window.sessionStorage.setItem("entryContainerHidden", true);
-    window.scrollTo(0, 0); // scroll window to the top!
-    console.log(`authenticate: PASSWORD= ${PASSWORD}`);
+    if (PASSWORD === null) {
+      alert("Enter Password as well");
+    } else {
+      el.entryContainer.style.display = "none";
+      window.sessionStorage.setItem("entryContainerHidden", true);
+      window.scrollTo(0, 0); // scroll window to the top!
+      console.log(`authenticate: PASSWORD= ${PASSWORD}`);
+    }
   } else {
-    alert('fingerprint authentication failed: enter PASSWORD or register again');
-    localStorage.removeItem("credential.id")
+    alert('fingerprint authentication failed: try to register again');
+    // localStorage.removeItem("credential.id");
+    const created = await register({userName: "hpass.app", displayName: "hpass"});
+    console.log(`Credential: created from register()= ${created}`);
   }
 });
