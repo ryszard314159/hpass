@@ -67,11 +67,11 @@ async function register({
                          timeout = TIMEOUT
                         } = {}) {
     console.log("Registering credential...");
-    const storedCredentialId = localStorage.getItem("credential.id");
-    if (storedCredentialId) {
-      alert("register: credential.id already stored- quitting...");
-      return true;
-    }
+    // const storedCredentialId = localStorage.getItem("credential.id");
+    // if (storedCredentialId) {
+    //   alert("register: credential.id already stored- quitting...");
+    //   return true;
+    // }
     // Prompt for user details if not provided
     userName = userName || prompt("Username (e.g., email):", "example@domain.com");
     displayName = displayName || prompt("Enter a display name:", "Example User");
