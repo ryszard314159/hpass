@@ -34,24 +34,41 @@ function base64UrlToAb(base64Url) {
   return uint8Array.buffer;
 }
 
+function abToHex(arrayBuffer) {
+  const uint8Array = new Uint8Array(arrayBuffer);
+  return Array.from(uint8Array, byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function uint8ArrayToHex(uint8Array) {
+  return Array.from(uint8Array, byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function hexToUint8Array(hex) {
+  const byteArray = [];
+  for (let i = 0; i < hex.length; i += 2) {
+    byteArray.push(parseInt(hex.substr(i, 2), 16));
+  }
+  return new Uint8Array(byteArray);
+}
+
 function getUserIdUint8Array(userIdLength) {
   // NOTE: just generate it fresh for now...
-  let userIdUint8Array = crypto.getRandomValues(new Uint8Array(userIdLength));
-  let userIdBase64URL = localStorage.getItem("userIdBase64URL");
-  if (!userIdBase64URL) {
+  let userIdUint8Array;
+  let userId = localStorage.getItem("userId");
+  if (!userId) {
     userIdUint8Array = crypto.getRandomValues(new Uint8Array(userIdLength));
-    userIdBase64URL = abToBase64URL(userIdUint8Array.buffer);
-    localStorage.setItem("userIdBase64URL", userIdBase64URL);
-    console.log("Generated new userId:", userIdBase64URL);
+    userId = uint8ArrayToHex(userIdUint8Array);
+    localStorage.setItem("userId", userId);
+    console.log("Generated new userId:", userId);
   } else {
-    console.log("Retrieved existing userIdBase64URL:", userIdBase64URL);
+    console.log("Retrieved existing userId:", userId);
     try {
-      userIdUint8Array = new Uint8Array(base64UrlToAb(userIdBase64URL));
+      userIdUint8Array = new Uint8Array(hexToUint8Array(userId));
     } catch (error) {
-      console.warn("Error decoding userId. Generating a new one:", error);
       userIdUint8Array = crypto.getRandomValues(new Uint8Array(userIdLength));
-      userIdBase64URL = abToBase64URL(userIdUint8Array.buffer);
-      localStorage.setItem("userIdBase64URL", userIdBase64URL);
+      console.warn("Error decoding userId. Generating a new one:", error);
+      userId = uint8ArrayToHex(userIdUint8Array);
+      localStorage.setItem("userId", userId);
     }
   }
   return userIdUint8Array;
@@ -94,10 +111,11 @@ async function register({
           requireResidentKey: isAvailable,
           residentKey: isAvailable ? "required" : "discouraged",
           userVerification: 'required',
-          // authenticatorAttachment: 'platform'
+          authenticatorAttachment: 'cross-platform'
         },
         pubKeyCredParams: [
           { type: "public-key", alg: -7 },   // ES256
+          { type: "public-key", alg: -8 },   // Ed25519 (Edwards-curve Digital Signature Algorithm)
           { type: "public-key", alg: -257 }, // RS256
         ],
         timeout: timeout,
@@ -106,6 +124,7 @@ async function register({
       }
     };
     try {
+      console.log("register: rp.id:", rpId, "Host:", window.location.hostname);
       const credential = await navigator.credentials.create(options);
       console.log("register: created credential=", credential); 
       // NOTE: credential.id is the same as Base64 encoded rawId !!!
@@ -133,11 +152,12 @@ async function authenticate({
   const options = {
     publicKey: {
       challenge: challenge,         // Challenge must be random and unique per request
-      rpId: rpId,
+      rpId: rpId, // TODO: do I need this?
       userVerification: "required"  // "preferred", "required", or "discouraged"
     }
   };
   try {
+    console.log("authenticate: rp.id:", rpId, "Host:", window.location.hostname)
     const credential = await navigator.credentials.get(options);
     console.log("Credential retrieved:", credential);
     // Browser-level validation is sufficient for client-only PWA use cases.

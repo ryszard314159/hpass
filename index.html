@@ -111,6 +111,7 @@
                   src="icons/eye-hide.svg" alt="Crossed Eye">
             </span>
           </form>
+          <button id="register">Register</button>
           <img id="authenticate" width="64" height="64" class="security"
                src="icons/fp.svg" alt="Fingerprint"/>
                <!-- <button id="register">Register</button> -->
@@ -269,6 +270,17 @@
           <!-- <label for="importPassword">Password</label> -->
         </div>
     </div>
+
+    <!-- TODO!!! -->
+    <dialog data-modal style="font-size: 3rem">
+      <button
+        data-close
+        style="font-size: 2rem; position: absolute; top: 0; right: 0"
+      >
+        &times;
+      </button>
+      <div data-content></div>
+    </dialog>
 
     <!-- <div id="fileInputModal" class="modal">
       <form action="/upload" method="POST" enctype="multipart/form-data" class="modal-content">
