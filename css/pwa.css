@@ -797,6 +797,23 @@ margin-top: 9rem;
   height: auto;
 }
 
+.fp {
+  margin: 1rem 0 1rem 0;
+  display: grid;
+  grid-template-columns: 1fr 3fr 3fr 1fr;
+  align-items: center;
+  justify-items: center;
+  display: flex;
+}
+.fp button { 
+  width: 80%;
+  margin: 0 1rem;
+  font-size: 1.2rem;
+}
+/* #register, #authenticate {
+  padding: 0 1rem 0 1rem;
+} */
+
 .securityContainer {
   position: relative;
   margin: 2rem 0 0 0;
