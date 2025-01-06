@@ -111,7 +111,7 @@ async function register({
           requireResidentKey: isAvailable,
           residentKey: isAvailable ? "required" : "discouraged",
           userVerification: 'required',
-          authenticatorAttachment: 'cross-platform'
+          // authenticatorAttachment: 'cross-platform'
         },
         pubKeyCredParams: [
           { type: "public-key", alg: -7 },   // ES256
