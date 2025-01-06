@@ -54,6 +54,27 @@ body.privacy {
   margin-left: 0.5rem;
 }
 
+button {
+  border-radius: 8px;
+  width: 25%;
+  border-width: 1px;
+}
+
+dialog {
+  margin: auto;
+  border-radius: 16px;
+  background-color: aqua;
+  width: 66%;
+  height: 20%;
+}
+
+.button-container {
+  /* padding: 0rem auto; */
+  margin: 12% 0 0 0;
+  display: flex; 
+  justify-content: space-between; 
+}
+
 .collapsible {
   background-color: lightcyan;
   color: black;
@@ -800,7 +821,7 @@ margin-top: 9rem;
 .fp {
   margin: 1rem 0 1rem 0;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
   justify-items: center;
   display: flex;

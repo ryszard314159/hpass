@@ -54,6 +54,7 @@ const URL = "https://hpass.app";
 
 // Selecting elements
 const el = {};
+el.dialog = document.getElementById("registerDialog");
 el.pgHint = document.getElementById("pgHint"); // to generate password
 el.edHint = document.getElementById("edHint"); // to edit options and sites
 el.salt = document.getElementById("salt");
@@ -1252,6 +1253,12 @@ document.getElementById("register").addEventListener("click", async () => {
     return;
   }
   const created = await register({userName: "hpass.app", displayName: "hpass"});
+  if (created) {
+    alert("Passkey registered.");
+  } else {
+    alert("Passkey registration failed.")
+  }
+  el.dialog.close();
   // or prompt the user
   // await register();
   console.log(`Credential: created= ${created}`);
@@ -1277,6 +1284,11 @@ document.getElementById("authenticate").addEventListener("click", async () => {
     }
   } else {
     console.log(`trying to authenticate: isValid= ${isValid}`);
+    const cancel = document.getElementById("cancel");
+    el.dialog.showModal();
+    cancel.addEventListener('click', () => {
+      el.dialog.close(); 
+    });
     // alert('fingerprint authentication failed: try to register again');
     // localStorage.removeItem("credential.id");
     // const created = await register({userName: "hpass.app", displayName: "hpass"});

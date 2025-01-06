@@ -112,11 +112,18 @@
             </span>
           </form>
           <div class="fp">
-            <button id="register"> Register </button>
-            <img id="" width="32" height="32" class="security"
+            <!-- <button id="register"> Register </button> -->
+            <img id="authenticate" width="32" height="32" class="security"
                 src="icons/fp.svg" alt="Fingerprint"/>
-            <button id="authenticate">Authenticate</button>
+            <!-- <button id="authenticate">Authenticate</button> -->
           </div>
+          <dialog id="registerDialog">
+            <h2 id="dialog-title">Passkey Registration</h2>
+            <div class="button-container">
+              <button id="register">Register</button>
+              <button id="cancel">Cancel</button>
+            </div>
+          </dialog>
           <form id="newPasswordDiv" class="password-container">
             <input id="newPassword" type="password" autocomplete="off"
                   enterkeyhint="Enter" placeholder="New Password"/>
