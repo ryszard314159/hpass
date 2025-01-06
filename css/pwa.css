@@ -800,16 +800,21 @@ margin-top: 9rem;
 .fp {
   margin: 1rem 0 1rem 0;
   display: grid;
-  grid-template-columns: 1fr 3fr 3fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   align-items: center;
   justify-items: center;
   display: flex;
 }
 .fp button { 
-  width: 80%;
-  margin: 0 1rem;
+  width: 100%;
+  margin: 0 0.5rem;
+  width: 8rem;
   font-size: 1.2rem;
+  border-radius: 16px;
+  border-width: 1px;
 }
+  /* border-radius: 16px;
+  border-width: 1px; */
 /* #register, #authenticate {
   padding: 0 1rem 0 1rem;
 } */
