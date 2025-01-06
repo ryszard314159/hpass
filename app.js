@@ -1276,7 +1276,8 @@ document.getElementById("authenticate").addEventListener("click", async () => {
       console.log(`authenticate: PASSWORD= ${PASSWORD}`);
     }
   } else {
-    alert('fingerprint authentication failed: try to register again');
+    console.log(`trying to authenticate: isValid= ${isValid}`);
+    // alert('fingerprint authentication failed: try to register again');
     // localStorage.removeItem("credential.id");
     // const created = await register({userName: "hpass.app", displayName: "hpass"});
     // console.log(`Credential: created from register()= ${created}`);
