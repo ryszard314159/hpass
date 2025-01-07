@@ -65,12 +65,12 @@ dialog {
   border-radius: 16px;
   background-color: aqua;
   width: 66%;
-  height: 20%;
+  height: 25%;
 }
 
 .button-container {
   /* padding: 0rem auto; */
-  margin: 12% 0 0 0;
+  margin: 4% 0 0 0;
   display: flex; 
   justify-content: space-between; 
 }
