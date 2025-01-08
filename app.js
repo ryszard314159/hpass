@@ -173,9 +173,11 @@ document.querySelector(".btn.back").addEventListener('click', function () {
 });
 
 function noIdlingHere() { // TODO: should this be activated?
-  const debug = true;
+  const debug = false;
+  const oneMinute = 60000;
+  const idleTime = debug ? 1e9 : 10 * oneMinute;
   function yourFunction() {
-      // alert('inactive!');
+      alert(`Closing after 10 minutes of inactivity...`);
       const secretInputs = document.querySelectorAll('.secret');
       secretInputs.forEach((input) => {
         input.value = '';
@@ -192,8 +194,6 @@ function noIdlingHere() { // TODO: should this be activated?
       // e.g. window.location.href = 'logout.php';
   }
   let t; // must be declared here
-  const idleTime = debug ? 1e9 : 60000; // 60 secs
-  // const idleTime = 60000; // 60 secs
   function resetTimer() {
       clearTimeout(t); // global function
       t = setTimeout(yourFunction, idleTime);  // time is in milliseconds (1 min)
