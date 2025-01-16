@@ -977,7 +977,9 @@ function noIdlingHere() { // TODO: should this be activated?
         localStorage.removeItem(input.name);
         // sessionStorage.removeItem(input.name);
       });
-      el.entryContainer.style.display = "block";
+      // el.entryContainer.style.display = "block";
+      el.hintDialog.close();
+      el.editDialog.close();
       // el.salt.value = ''; TODO: wipes clean input boxes, but...
       // el.pepper.value = '';
       // el.length.value = '';

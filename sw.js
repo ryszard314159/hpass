@@ -13,18 +13,6 @@
 
 let version = null;
 
-(async () => {
-  const url = "manifest.json";
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    version = data.version;
-  } catch (error) {
-    console.error("sw: install: Error fetching manifest.json:", error);
-  }
-  console.log(`sw: version= ${version} from url= ${url}`);
-}) ();
-
 const appAssets = [
   "index.html",
   // "edit.html",
@@ -58,21 +46,18 @@ const appAssets = [
   "privacy/index.html",
 ];
 
-self.addEventListener("install", (installEvent) => {
+self.addEventListener("install", async (installEvent) => {
   const debug = false;
-  //
-  // const response = await fetch('manifest.json');
-  // const data = await response.json();
-  // version = data.version;
-  // try {
-  //   const response = await fetch('manifest.json');
-  //   const data = await response.json();
-  //   version = data.version;
-  // } catch (error) {
-  //   console.error("sw: install: Error fetching manifest.json:", error);
-  //   version = "sw: 2024-12-04";
-  // }
-  //
+  const url = "manifest.json";
+  try {
+    const response = await fetch('manifest.json');
+    const data = await response.json();
+    version = data.version;
+  } catch (error) {
+    console.error("sw: install: Error fetching manifest.json:", error);
+    version = "sw: 2024-12-04";
+  }
+  console.log(`sw: version= ${version} from url= ${url}`);
   const msg = { install: true };
   const installChannel = new BroadcastChannel("installChannel");
   installChannel.postMessage(msg);
