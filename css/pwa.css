@@ -22,18 +22,17 @@ html, body {
 }
 
 body {
-  display: block;
-  margin: 0 auto;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
+  /* display: block; */
+  margin: 0;
+  padding: 0;
+  /* width: 100%; */
+  /* max-width: 100%; */
+  /* overflow-x: hidden; */
   align-items: center;
   justify-content: center;
+  overflow: hidden; /* Prevent scrollbars from appearing */
 }
 
-/* body.index {
-  text-align: center;
-} */
 
 body.help {
   background-color: rgb(175, 231, 191);
@@ -61,19 +60,60 @@ button {
   border-width: 1px;
 }
 
+  /* margin: 5% 5% 0 5%; */
+  /* padding: 1rem 0 0 0; */
+  /* border-radius: 16px; */
+  /* background-color: aqua; */
+
+/* dialog {
+  all: unset;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 0 0 0;
+  padding: 5% 0 0 0;
+  background: white;
+} */
+
 dialog {
-  margin: auto;
-  border-radius: 16px;
-  background-color: aqua;
-  width: 66%;
-  height: 40%;
+  all: unset;
+  display: none;
+  overflow: scroll;
+  position: fixed; /* Anchor to the viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0; /* Remove default margins */
+  padding: 0; /* Remove default padding if any */
+  border: none; /* Remove the default border if not needed */
+  background: white; /* Optional, to ensure visibility */
+  box-sizing: border-box; /* Ensure dimensions include padding and borders */
+}
+dialog[open] {
+  display: block; /* Show dialog when it's open */
+}
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5); /* Optional: Add a semi-transparent backdrop */
+  backdrop-filter: blur(2px);
 }
 
-dialog p {
+#importDialog, #registerDialog {
+  margin: 22% 0 0 0;
+  height: 50%;
+  padding: 5% 5% 5% 5%;
+}
+
+/* dialog p {
   width: 90%;
   text-align: left;
   margin: 5% 5% 5% 5%;
-}
+} */
 
 .button-container {
   /* padding: 0rem auto; */
@@ -161,7 +201,7 @@ button {
   margin: auto;
 }
 
-#gear, #generate {
+#openEditDialog, #generate {
   display: inline-block;
   width: 15vw;
   height: 15vh;
@@ -174,7 +214,7 @@ button {
   /* flex: 0 0 auto; */
 }
 
-#gear {
+#openEditDialog {
   border-radius: 1rem 0 0 1rem;
   /* background-color: lightgreen; */
   background-color: lightgreen;
@@ -331,8 +371,7 @@ hr {
   background-color: gray;
 }
 
-#entryContainer, #editContainer {
-/* #entryContainer { */
+#frontContainer, #editContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -347,7 +386,7 @@ hr {
   overflow: auto;
   z-index: 9;
 }
-#entryContainer {
+#frontContainer {
   display: block;
   background-color: rgba(255, 178, 102);
 }
@@ -736,9 +775,11 @@ margin-top: 9rem;
 .modal-content {
   position: relative;
   background-color: #fefefe;
+  background-color: white;
+  background-color: transparent;
   /* background-color: pink; */
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 2rem;
+  margin: 2% auto; /* 15% from the top and centered */
+  /* padding: 2rem; */
   border: 1px solid #888;
   width: 90%; /* Could be more or less, depending on screen size */
   display: flex;
@@ -751,10 +792,10 @@ margin-top: 9rem;
 }
 
 .close {
-  color: #aaa;
+  color: red;
   position: absolute;
-  top: 0.0rem;
-  right: 0.5rem;
+  top: -1rem;
+  right: -1rem;
   font-size: 3rem;
   font-weight: bold;
 }
@@ -798,12 +839,12 @@ margin-top: 9rem;
   position: fixed;
   z-index: 9;
 } */
-#entryIcons {
+#frontIcons {
   z-index: 9;
 }
 
 .topIcons {
-  position: fixed;
+  position: absolute;
   z-index: 8;
   top: 0;
   left: 0;
