@@ -42,6 +42,26 @@ el.importFileInput = document.getElementById('importFileInput');
 el.importPassword = document.getElementById('importPassword');
 el.saveOptions = document.getElementById('saveOptions');
 el.reset = document.getElementById("reset");
+el.install = document.querySelector(".btn.install");
+
+// TODO: test if this is needed
+//
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault(); // Prevent the default prompt from showing
+  deferredPrompt = event;
+  // Show your custom install button
+  el.install.style.display = "block";
+});
+
+// When the install button is clicked:
+el.install.addEventListener('click', () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt(); // Show the install prompt
+    deferredPrompt = null; // Reset the variable
+    el.install.style.display = "none";
+  }
+});
 //
 // Service worker section
 //
@@ -832,9 +852,9 @@ async function createSplashScreen(opts) {
 
   </div>
   `;
-  const container = document.createElement("div"); // container
+  const container = document.createElement("dialog"); // container
   container.id = "splash-screen-container";
-  container.className = "modal";
+  // container.className = "modal";
   const content = document.createElement("div"); // content
   content.id = "splash-screen-content";
   content.className = "modal-content";
@@ -843,13 +863,15 @@ async function createSplashScreen(opts) {
   closeButton.className = 'close';
   closeButton.innerHTML = '&times;';
   closeButton.addEventListener('click', function() {
-    container.style.display = "none";
+    // container.style.display = "none";
+    container.close()
     // window.location.href = 'help.html';
   });
   content.appendChild(closeButton);
   container.appendChild(content);
-  container.style.display = "block";
+  // container.style.display = "block";
   document.body.appendChild(container);
+  container.showModal();
   if (debug) console.log("createSplashScreen: at the end");
   if (debug) console.trace();
 };
@@ -922,8 +944,9 @@ document.getElementById("authenticate").addEventListener("click", async () => {
     if (PASSWORD === null) {
       alert("Enter Password for extra security");
     } else {
-      el.entryContainer.style.display = "none";
-      window.sessionStorage.setItem("entryContainerHidden", true);
+      // el.entryContainer.style.display = "none";
+      el.hintDialog.showModal();
+      // window.sessionStorage.setItem("entryContainerHidden", true);
       window.scrollTo(0, 0); // scroll window to the top!
       console.log(`authenticate: PASSWORD= ${PASSWORD}`);
     }
