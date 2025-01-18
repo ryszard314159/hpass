@@ -13,18 +13,36 @@
 
 let version = null;
 
+(async () => {
+  const url = "manifest.json";
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    version = data.version;
+  } catch (error) {
+    console.error("sw: install: Error fetching manifest.json:", error);
+  }
+  console.log(`sw: version= ${version} from url= ${url}`);
+}) ();
+
 const appAssets = [
   "index.html",
+  // "edit.html",
   "info.html",
   "help.html",
   "app.js",
+  // "edit.js",
   "core/lib.js",
   "core/storage.js",
   "settings.json",
   "css/pwa.css",
   "css/style.css",
+  // "icons/logo.256.png",
+  // "icons/logo.512.png",
+  // "icons/logo.1024.png",
   "icons/back.svg",
   "icons/change.svg",
+  // "icons/edit.svg", TODO: remove this line
   "icons/email.svg",
   "icons/generate.svg",
   "icons/granite.png",
@@ -40,37 +58,31 @@ const appAssets = [
   "privacy/index.html",
 ];
 
-self.addEventListener("install", async (installEvent) => {
-  self.skipWaiting();
+self.addEventListener("install", (installEvent) => {
   const debug = false;
-  const url = "manifest.json";
-  version = "sw: 2024-??-??";
-  try {
-    const response = await fetch('manifest.json');
-    const data = await response.json();
-    version = data.version;
-    console.log(`sw: version= ${version} from url= ${url}`);
-  } catch (error) {
-    console.error("sw: install: Error fetching manifest.json:", error);
-    console.log(`sw: version= ${version} (default)`);
-  }
+  //
+  // const response = await fetch('manifest.json');
+  // const data = await response.json();
+  // version = data.version;
+  // try {
+  //   const response = await fetch('manifest.json');
+  //   const data = await response.json();
+  //   version = data.version;
+  // } catch (error) {
+  //   console.error("sw: install: Error fetching manifest.json:", error);
+  //   version = "sw: 2024-12-04";
+  // }
+  //
   const msg = { install: true };
   const installChannel = new BroadcastChannel("installChannel");
   installChannel.postMessage(msg);
-  installChannel.close();
   if (debug) {
     console.log("sw: install: installChannel msg= ", msg);
     console.log("sw: install: installEvent= ", installEvent);
     console.log(`sw: install: open: static-version= ${version}`);
   }
   installEvent.waitUntil(
-    caches.open(`static-${version}`).then((cache) => cache
-      .addAll(appAssets)
-      .catch((error) => {
-        console.error("sw: install: Error adding assets to cache:", error);
-        throw error; // Ensure waitUntil fails if caching fails
-      })
-    )
+    caches.open(`static-${version}`).then((cache) => cache.addAll(appAssets))
   );
 });
 
@@ -99,40 +111,19 @@ self.addEventListener("activate", (e) => {
 //   );
 // };
 
-// Converted to async function...
-// function staticCache(req) {
-//   return fetch(req).then((networkRes) => {
-//     if (networkRes.ok && networkRes.status !== 206) { // Add this check
-//       return caches.open(`static-${version}`).then((cache) => {
-//         cache.put(req, networkRes.clone()); // Put a clone of the network response in the cache
-//         return networkRes; // Return the original network response
-//       });
-//     } else {
-//       return networkRes; // Return the original network response without caching
-//     }
-//   });
-// };
+const staticCache = (req) => {
+  return fetch(req).then((networkRes) => {
+    if (networkRes.ok && networkRes.status !== 206) { // Add this check
+      return caches.open(`static-${version}`).then((cache) => {
+        cache.put(req, networkRes.clone()); // Put a clone of the network response in the cache
+        return networkRes; // Return the original network response
+      });
+    } else {
+      return networkRes; // Return the original network response without caching
+    }
+  });
+};
 
-async function staticCache(req) {
-  try {
-    const networkRes = await fetch(req);
-    if (networkRes.ok && networkRes.status !== 206) {
-      const cache = await caches.open(`static-${version}`);
-      await cache.put(req, networkRes.clone());
-    }
-    return networkRes;
-  } catch (error) {
-    console.error("staticCache: Error handling request:", error); 
-    // Fallback to cached version if available
-    const cache = await caches.open(`static-${version}`);
-    const cachedRes = await cache.match(req);
-    if (cachedRes) {
-      console.log("Returning cached version of the resource");
-      return cachedRes; // Return cached response if network request fails
-    }
-    throw error; // Rethrow error if no cache is available
-  }
-}
 
 self.addEventListener("fetch", (e) => {
   if (e.request.url.match(location.origin)) {
@@ -143,6 +134,10 @@ self.addEventListener("fetch", (e) => {
 self.addEventListener("load", (e) => {
   const debug = false;
   if (debug) console.log("sw: load event detected: e= ", e);
+});
+
+self.addEventListener("install", function (event) {
+  event.waitUntil(self.skipWaiting()); // Activate worker immediately
 });
 
 self.addEventListener("activate", function (event) {
