@@ -207,31 +207,34 @@ button {
   margin: auto;
 }
 
-#openEditDialog, #generate {
+/* #openEditDialog, #generateee {
   display: inline-block;
   width: 15vw;
   height: 15vh;
-  /* max-height: 100%; */
   object-fit:cover;
   object-position:center;
-  /* padding: 0.9rem 0.9rem 0.9rem 0.9rem; */
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  /* margin: 0 auto; */
-  /* flex: 0 0 auto; */
+} */
+
+/* #openEditDialog {
+  border-radius: 1rem 0 0 1rem;
+  background-color: lightgreen;
+} */
+
+.animateGenerate {
+  animation: moveGenerateBtn 0.25s forwards;
 }
 
-#openEditDialog {
-  border-radius: 1rem 0 0 1rem;
-  /* background-color: lightgreen; */
-  background-color: lightgreen;
-}
-#generate {
-  border-radius: 0 1rem 1rem 0;
+.generate {
+  /* border-radius: 0 1rem 1rem 0; */
   background-color: lightblue;
   /* animation: moveGenerateBtn 0.25s forwards; */
 }
-.animateGenerate {
-  animation: moveGenerateBtn 0.25s forwards;
+#generateLeft {
+  border-radius: 1rem 0rem 0rem 1rem;
+}
+#generateRight {
+  border-radius: 0 1rem 1rem 0;
 }
 
 @keyframes moveGenerateBtn {
@@ -239,12 +242,6 @@ button {
  100% { transform: translateX(+0%);
  }
 }
-
-/* @media (max-width: 600px) {
-  #gear, #generate {
-    width: 15%;
-  }
-} */
 
 /* #gear:hover {
   background-color: lightgreen;
@@ -855,7 +852,15 @@ margin-top: 9rem;
   top: 0;
   left: 0;
   /* display: inline-flex; */
-  display: flex;
+  /* display: flex; */ /* FOCUS */
+    /* grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; */
+  display: grid;
+  grid-template-columns: repeat(6, minmax(15%, 1fr));
+  gap: 10px; /* Optional spacing */
+  max-width: 100%; /* Constrain to parent width */
+  box-sizing: border-box; /* Ensure padding is included in width calculations */
+  margin: 0 auto; /* Center the grid */
+  /* overflow-x: hidden; */
   flex-wrap: nowrap;
   -moz-box-align: center;
   width: 100%;

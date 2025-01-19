@@ -7,6 +7,14 @@ import { storageGet, storageSet, CRYPTO, sanityCheck,
 import { decryptText, encryptText, createHash, verifyPassword} from "./core/crypto.js"
 import { register, authenticate } from "./webauthn.js";
 
+function setPassword(pwd) {
+  sessionStorage.setItem('PASSWORD', pwd);
+};
+
+function getPassword() {
+  sessionStorage.getItem('PASSWORD');
+};
+
 // const debug = 0;
 let PASSWORD = null;
 const SHORTPOPUP = 1e3; // short popup time
@@ -30,7 +38,8 @@ el.version = document.getElementById("version");
 el.masterPassword = document.getElementById("masterPassword");
 el.changePassword = document.getElementById("changePassword");
 el.newPassword = document.getElementById("newPassword");
-el.generate = document.getElementById("generate");
+// el.generate = document.getElementById("generate");
+el.generate = document.querySelectorAll(".generate");
 el.pgHint = document.getElementById("pgHint"); // to generate password
 el.edHint = document.getElementById("edHint"); // to edit options and sites
 el.burn = document.getElementById("burn"); // number of warmup rounds
@@ -445,8 +454,9 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   setTimeout(() => popup.close(), timeOut);
 }
 
-function handleFeedback() {
+function handleFeedback(event) {
   const debug = false;
+  const button = event.currentTarget; 
   if (navigator.vibrate) {   // haptic
       navigator.vibrate(50); // vibrate for 100ms
   }
@@ -458,18 +468,20 @@ function handleFeedback() {
   if (debug) console.log("handleFeedback: animation added to classList");
   // el.generate.style.animation = 'moveGenerateBtn 0.25s forwards';
   if (debug) console.log("handleFeedback: animation added to classList");
-  el.generate.classList.add('animateGenerate');
+  button.classList.add('animateGenerate');
   // Reset position after animation ends
-  el.generate.addEventListener('animationend', () => {
+  button.addEventListener('animationend', () => {
     // el.generate.style.animation = '';
-    el.generate.classList.remove('animateGenerate');
-    el.generate.style.left = '55%';
-    el.generate.style.transform = 'translateX(0%)';
+    button.classList.remove('animateGenerate');
+    button.style.left = '55%';
+    button.style.transform = 'translateX(0%)';
   }, { once: true });
 };
 
-el.generate.addEventListener("click", handleFeedback)
-el.generate.addEventListener("click", generateFun);
+el.generate.forEach((button) => {
+  button.addEventListener("click", handleFeedback)
+  button.addEventListener("click", generateFun);
+});
 
 el.pgHint.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
