@@ -89,7 +89,7 @@
     <body>
 
       <div id="frontContainer">
-        <div id="entryIcons" class="topIcons">
+        <div id="entryIcons" class="frontIcons">
           <div>
           <a href="help.html" target="_blank">
             <img id="help" class="btn" width="40" height="40" src="icons/help.svg" title="Help">
@@ -175,9 +175,9 @@
     </div>
 
     <dialog id="hintDialog">
-      <div id="enterIcons" class="topIcons">
+      <div id="hintIcons" class="topIcons">
           <div>
-            <img id="openEditDialog" class="btn lock" width="40" height="40" src="icons/gear.svg" alt="Gear symbol">
+            <img id="openEditDialog" class="btn" width="40" height="40" src="icons/gear.svg" alt="Gear symbol">
           </div>
           <div>
             <img class="btn share" width="40" height="40" src="icons/share.svg" title="Share">
@@ -192,7 +192,7 @@
           <!-- <img id="openEditDialog" class="" src="icons/gear.svg" alt="Gear symbol"> -->
           <img id="generateLeft" class="generate" src="icons/generate.svg" alt="Arrow to generate password">
           <input id="pgHint" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Enter Hint"/>
-          <img id="generateRight" class="generate" src="icons/generate.svg" alt="Arrow to generate password">
+          <img id="generateRight" class="generate" src="icons/right-generate.svg" alt="Arrow to generate password">
         </div>
 
         <div id="burnContainer" class="container" >
@@ -382,7 +382,8 @@
 
       <div id="editIcons" class="topIcons">
         <div>
-          <img id="closeEditDialog" class="btn back" width="40" height="40" src="icons/back.svg" title="Back">
+          <img id="closeEditDialog" class="btn back" width="40" height="40" src="icons/cross.svg" title="Back">
+          <!-- <span id="closeEditDialog" class="btn back" width="80" height="80">&times;</span> -->
         </div>
         <div>
           <img id="openImportDialog" class="btn import" width="40" height="40" src="icons/import.svg" title="Import">
@@ -396,9 +397,9 @@
         <div>
           <img id="editShare" class="btn share" width="40" height="40" src="icons/share.svg" title="Share">
         </div>
-        <div>
-          <img id="lockEdit" class="btn lock" width="40" height="40" src="icons/lock.svg" title="Lock"/>
-        </div>
+        <!-- <div> -->
+          <!-- <img id="lockEdit" class="btn lock" width="40" height="40" src="icons/lock.svg" title="Lock"/> -->
+        <!-- </div> -->
       </div>
 
       <h3 style="text-align: center;">Edit & Save Settings</h3>

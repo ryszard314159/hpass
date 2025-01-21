@@ -24,7 +24,6 @@ const URL = "https://hpass.app";
 const el = {}
 el.frontContainer = document.getElementById("frontContainer");
 el.registerDialog = document.getElementById("registerDialog");
-el.openHintDialog = document.getElementById("openHintDialog");
 el.hintDialog = document.getElementById("hintDialog");
 el.closeHintDialog = document.getElementById("closeHintDialog");
 el.editDialog = document.getElementById("editDialog");
@@ -249,6 +248,7 @@ el.openEditDialog.addEventListener('click', async () => {
 });
 el.closeEditDialog.addEventListener("click", () => {
   editDialog.close();
+  hintDialog.showModal();
 });
 el.openImportDialog.addEventListener('click', () => {
   el.importDialog.showModal();
@@ -977,7 +977,7 @@ document.getElementById("authenticate").addEventListener("click", async () => {
 });
 
 function noIdlingHere() { // TODO: should this be activated?
-  const debug = false;
+  const debug = true;
   const oneMinute = 60000;
   const idleTime = debug ? 1e9 : 10 * oneMinute;
   function yourFunction() {
