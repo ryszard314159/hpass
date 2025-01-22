@@ -11,7 +11,7 @@
 // import {version} from './manifest.json';
 // console.log(`sw: version= ${version}`);
 
-let version = null;
+let version = "2025-02-01";
 
 (async () => {
   const url = "manifest.json";
@@ -45,6 +45,7 @@ const appAssets = [
   // "icons/edit.svg", TODO: remove this line
   "icons/email.svg",
   "icons/generate.svg",
+  "icons/right-generate.svg",
   "icons/granite.png",
   "icons/help.svg",
   "icons/info.svg",

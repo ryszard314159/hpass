@@ -221,31 +221,36 @@ button {
   background-color: lightgreen;
 } */
 
-.animateGenerate {
-  animation: moveGenerateBtn 0.25s forwards;
+.animateGenerateLeft {
+  animation: moveBtnRight 0.25s forwards;
 }
 
-.generate {
-  /* border-radius: 0 1rem 1rem 0; */
-  background-color: lightblue;
-  /* animation: moveGenerateBtn 0.25s forwards; */
-}
-#generateLeft {
-  border-radius: 1rem 0rem 0rem 1rem;
-}
-#generateRight {
-  border-radius: 0 1rem 1rem 0;
+.animateGenerateRight {
+  animation: moveBtnLeft 0.25s forwards;
 }
 
-@keyframes moveGenerateBtn {
+@keyframes moveBtnRight {
   0% { transform: translateX(55%);}
  100% { transform: translateX(+0%);
  }
 }
 
-/* #gear:hover {
-  background-color: lightgreen;
-} */
+@keyframes moveBtnLeft {
+  0% { transform: translateX(-55%);}
+ 100% { transform: translateX(+0%);
+ }
+}
+
+.generate {
+  background-color: lightblue;
+}
+#generateLeft {
+  border-radius: 1rem 0 0 1rem;
+}
+#generateRight {
+  border-radius: 0 1rem 1rem 0;
+}
+
 
 #saveDiv {
   z-index: 90;
@@ -541,6 +546,18 @@ ol li {
 }
 .hidden {
   visibility: hidden;
+}
+
+#editTitle {
+  margin: 5rem 0 0 0;
+  text-align: center;
+  width: 100%;
+}
+
+#footer {
+  width: 90%;
+  margin: 5% 5% 5% 5%;
+  padding: 0 0 29rem 0;
 }
 
 #adunit {

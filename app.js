@@ -456,7 +456,8 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
 
 function handleFeedback(event) {
   const debug = false;
-  const button = event.currentTarget; 
+  const button = event.currentTarget;
+  console.log(`handleFeedback: button.id= ${button.id}`);
   if (navigator.vibrate) {   // haptic
       navigator.vibrate(50); // vibrate for 100ms
   }
@@ -468,11 +469,12 @@ function handleFeedback(event) {
   if (debug) console.log("handleFeedback: animation added to classList");
   // el.generate.style.animation = 'moveGenerateBtn 0.25s forwards';
   if (debug) console.log("handleFeedback: animation added to classList");
-  button.classList.add('animateGenerate');
+  const animateClass = button.id === "generateRight" ? "animateGenerateRight" : "animateGenerateLeft";
+  button.classList.add(animateClass);
   // Reset position after animation ends
   button.addEventListener('animationend', () => {
     // el.generate.style.animation = '';
-    button.classList.remove('animateGenerate');
+    button.classList.remove(animateClass);
     button.style.left = '55%';
     button.style.transform = 'translateX(0%)';
   }, { once: true });
@@ -842,9 +844,10 @@ async function createSplashScreen(opts) {
   const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
   const helpImg = `<img src="icons/help.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
   const infoImg = `<img src="icons/info.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
-  let msg = `<h3>New in ${el.version.innerHTML}:</h3>
+  let msg = `<br><br>
+  <h3>New in ${el.version.innerHTML}:</h3>
   <ul>
-    <li>Added install button.
+    <li>Biometric authentication.
   </ul>
   <h3>To start using HPASS:</h3>
   <ol>
@@ -874,6 +877,7 @@ async function createSplashScreen(opts) {
   const closeButton = document.createElement('span');
   closeButton.className = 'close';
   closeButton.innerHTML = '&times;';
+  closeButton.style.padding = "0.5rem 0.5rem 0 0";
   closeButton.addEventListener('click', function() {
     // container.style.display = "none";
     container.close()
