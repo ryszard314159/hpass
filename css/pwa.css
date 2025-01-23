@@ -436,6 +436,18 @@ ol li {
   margin-bottom: 0.2em;
 }
 
+/* #splash-screen-container ul {
+  padding-left: 0;
+  margin-left: 0; 
+} */
+
+/* #splash-screen-container ul li { */
+  /* display: list-item; */
+  /* white-space: nowrap; */
+  /* margin: 0;       */
+  /* padding: 0; */
+/* } */
+
 #passwordInputContainer {
     display: flex;
     flex-direction: column;
