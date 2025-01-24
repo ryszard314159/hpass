@@ -871,11 +871,8 @@ margin-top: 9rem;
   position: fixed;
   z-index: 9;
 } */
-#frontIcons {
-  z-index: 9;
-}
 
-.frontIcons {
+.topIcons, .frontIcons {
   position: absolute;
   z-index: 8;
   top: 0;
@@ -888,36 +885,18 @@ margin-top: 9rem;
   width: 100%;
   box-sizing: border-box;
   background-color: lightgray;
-  background-color: lightgray;
   padding: 0 10px;
 }
-
-.topIcons {
-  position: absolute;
-  z-index: 8;
-  top: 0;
-  left: 0;
   /* display: inline-flex; */
   /* display: flex; */ /* FOCUS */
-    /* grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; */
-  display: grid;
+  /* grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; */
   /* grid-template-columns: repeat(6, minmax(15%, 1fr)); */
-  grid-auto-flow: column;
-  align-items: center;
-  gap: 0px; /* Optional spacing */
-  height: 3rem;
-  width: 100%;
   /* max-width: 100%; */
-  box-sizing: border-box; /* Ensure padding is included in width calculations */
-  background-color: lightgray;
   /* margin: 0 auto; */
   /* overflow-x: hidden; */
   /* flex-wrap: nowrap; */
   /* -moz-box-align: center; */
   /* justify-content: space-around; */
-  background-color: lightgray;
-  padding: 0 10px;
-}
 
 .topIcons > div:first-child {
   justify-self: start; /* Ensure the leftmost icon is anchored */
