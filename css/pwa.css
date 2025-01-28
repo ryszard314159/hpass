@@ -290,9 +290,11 @@ button {
 .btn {
   /* object-fit: cover; */
   /* width: 100%; */
-  max-width: 2.5rem; /* adjust as needed */
-  max-height: 2.5rem; /* adjust as needed */
-  height: 100%;
+  /* max-width: 2.5rem; */
+  max-height: 2.5rem;
+  /* height: 100%; */
+  /* height: 40; */
+  /* width: 1; */
   padding: 0.3rem;
   margin: 0rem;
   border-radius: 10%;
@@ -898,16 +900,17 @@ margin-top: 9rem;
   /* -moz-box-align: center; */
   /* justify-content: space-around; */
 
-.topIcons > div:first-child {
-  justify-self: start; /* Ensure the leftmost icon is anchored */
-  width: 2.5rem;
-  height: 2.5rem;
-}
+/* .topIcons > div:first-child { */
+/*  justify-self: start; Ensure the leftmost icon is anchored */
+  /* width: 2.5rem; */
+  /* height: 2.5rem; */
+/* } */
 
-.topIcons > div:not(:first-child) {
-  flex: 1 1 auto; /* Distribute the remaining space evenly */
-  text-align: center;
-}
+/* flex: 1 1 auto; Distribute the remaining space evenly */
+/* .topIcons > div:not(:first-child) { */
+  /* flex: 1 1 auto; */
+  /* text-align: center; */
+/* } */
 
 /* assuming 6 icons */
 /* .topIcons > a, .topIcons > img { */

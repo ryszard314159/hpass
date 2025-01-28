@@ -88,32 +88,33 @@
     
     <body>
 
-      <div id="frontContainer">
+    <div id="frontContainer">
         <div id="frontBanner" class="frontIcons">
+          <!-- class="btn" width="40" height="40" -->
           <div>
             <a href="help.html" target="_blank">
-              <img id="help" class="btn" width="40" height="40" src="icons/help.svg" title="Help">
+              <img id="help" class="btn" src="icons/help.svg" title="Help">
             </a>
           </div>
           <div>
             <a href="info.html" target="_blank">
-              <img id="info" class="btn" width="40" height="40" src="icons/info.svg" title="Info">
+              <img id="info" class="btn" src="icons/info.svg" title="Info">
             </a>
           </div>
           <div>
-            <img class="btn email" width="40" height="40" src="icons/email.svg" title="Email Support">
+            <img class="btn email" src="icons/email.svg" title="Email Support">
           </div>
           <div>
-            <img class="btn share" width="40" height="40" src="icons/share.svg" title="Share">
+            <img class="btn share" src="icons/share.svg" title="Share">
           </div>
           <div>
-            <img id="changePassword" class="btn change" width="40" height="40" src="icons/change.svg" title="Change Password">
+            <img id="changePassword" class="btn change" src="icons/change.svg" title="Change Password">
           </div>
           <div>
-            <img class="btn reset" width="40" height="40" src="icons/reset.svg" title="Reset">
+            <img class="btn reset" src="icons/reset.svg" title="Reset">
           </div>
           <div>
-          <img class="btn install" width="40" height="40" src="icons/install.svg" title="Install">
+          <img class="btn install" src="icons/install.svg" title="Install">
           </div>
       </div>
       <img id="logop" width="100" height="100" class="share" src="icons/logo.svg" alt="HPASS Logo"/>
@@ -176,14 +177,15 @@
 
     <dialog id="hintDialog">
       <div id="hintIcons" class="topIcons">
+        <!-- class="btn" width="40" height="40" -->
           <div>
-            <img id="openEditDialog" class="btn" width="40" height="40" src="icons/gear.svg" alt="Gear symbol">
+            <img id="openEditDialog" class="btn" src="icons/gear.svg" alt="Gear symbol">
           </div>
           <div>
-            <img class="btn share" width="40" height="40" src="icons/share.svg" title="Share">
+            <img class="btn share" src="icons/share.svg" title="Share">
           </div>
           <div>
-            <img id="closeHintDialog" class="btn lock" width="40" height="40" src="icons/lock.svg" title="Lock"/>
+            <img id="closeHintDialog" class="btn lock" src="icons/lock.svg" title="Lock"/>
           </div>
       </div>
       <div id="burnAndPeak" class="inputsContainer">
@@ -480,6 +482,15 @@
             Leave it empty if the current Master Password is the same.
           </p>
         </div>
+    </dialog>
+
+    <dialog id="helpDialog">
+      <div id="helpBanner" class="topIcons" style="justify-content: left; margin-bottom: 3rem;">
+        <img id="closeHelp" class="btn back" src="icons/cross.svg" title="Close Help">
+      </div>
+      <div id="helpText">
+        <!-- Help content will be dynamically loaded here -->
+      </div>
     </dialog>
 
     <!--

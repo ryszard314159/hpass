@@ -1,0 +1,34 @@
+TODO:
+
+* - https://stripe.com for payments???
+1 - ML-KEM to replace CryptoJS https://www.npmjs.com/package/mlkem
+2 - restore does not work for Secret
+3 - If you need high-performance, high-security cryptography,
+    you may want to consider native libraries or more modern JavaScript libraries
+    like Web Cryptography API (W3C) :: https://www.w3.org/TR/WebCryptoAPI/
+    or Forge.
+
+5 - Another use case for env() variables is for desktop Progressive web apps (PWAs);
+    try it: https://developer.mozilla.org/en-US/docs/Web/CSS/env
+6 - how to store PASSWORD in-memory in serviceWorker
+    if (navigator.serviceWorker.controller) {
+      const msg = {type: "store-password", password: PASSWORD, tag: "app: setGenericOptions"};
+      navigator.serviceWorker.controller.postMessage(msg);
+    }
+7 - <img id="editShare"...> does not show showPopup element.
+8 - The Google Pay & Wallet Console lets you easily enable seamless payments
+    on your apps and websites. Here’s your Merchant ID so you can complete your setup now.
+
+
+NOTE: if you are working with DevTools
+      make sure that the Bypass for Network checkbox
+      is unchecked. If it is checked .controller will be null
+ See:
+ (1) https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/controller
+      "...This property returns null if the request is a force refresh..."
+ (2) https://www.youtube.com/watch?v=1d3KgacJv1I (Debugging Serviceworker Controller null)
+
+DONE:
+
+* - biometric https://stackoverflow.blog/2022/11/16/biometric-authentication-for-web-devs/
+4 - wipe pwd fields on lock!

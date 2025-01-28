@@ -1014,3 +1014,34 @@ function noIdlingHere() { // TODO: should this be activated?
   });
 };
 noIdlingHere();
+
+// TODO: use <dialog> to insert help.html (without <head> and <body>)
+/*
+<script>
+  const helpButton = document.getElementById("help");
+  const helpDialog = document.getElementById("helpDialog");
+
+  helpButton.addEventListener("click", async () => {
+    try {
+      // Fetch the help.html content
+      const response = await fetch("help.html");
+      if (!response.ok) throw new Error("Failed to load help content");
+
+      // Insert the content into the dialog
+      const helpText = helpDialog.querySelector("#helpText");
+      helpText.innerHTML = await response.text();
+
+      // Show the dialog
+      helpDialog.showModal();
+
+      // Attach the close button handler
+      const closeHelpButton = helpDialog.querySelector(".btn.back");
+      closeHelpButton.addEventListener("click", () => {
+        helpDialog.close();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  });
+</script>
+*/
