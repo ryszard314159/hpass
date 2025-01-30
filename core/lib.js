@@ -546,9 +546,8 @@ async function storageGet(args) {
 //   return mobileRegex.test(navigator.userAgent);
 // }
 
-export {
-  CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
-};
+export { CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff,
+         rig, setsAreEqual, setsDiff };
 export { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck, isEmpty, isDeepEmpty };
 export { globalDefaults, updateLocalStorage, hpassStorage }
 // export { setGenericOptions, createSplashScreen }

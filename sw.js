@@ -6,24 +6,33 @@
 // console.log(CryptoJS); // Verify Crypto-JS is loaded
 
 // import { getPass } from "./core/lib.js";
-// const version = "2024-04-12";
-// const version = require('./manifest.json').version;
-// import {version} from './manifest.json';
-// console.log(`sw: version= ${version}`);
+// const VERSION = "2024-04-12";
+// const VERSION = require('./manifest.json').VERSION;
+// import {VERSION} from './manifest.json';
+// console.log(`sw: VERSION= ${VERSION}`);
 
-let version = "2025-02-01";
+// import { getVersion } from "./core/lib.js";
 
-(async () => {
-  const url = "manifest.json";
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    version = data.version;
-  } catch (error) {
-    console.error("sw: install: Error fetching manifest.json:", error);
-  }
-  console.log(`sw: version= ${version} from url= ${url}`);
-}) ();
+// let VERSION = "2025-02-01";
+// function getVersion(json="manifest.json") {
+//   const v = (JSON.parse(fs.readFileSync(json, 'utf8'))).VERSION;
+//   return v;
+// }
+import { VERSION } from "./config.js";
+// const VERSION = VERSION;
+
+// (async () => {
+//   const url = "manifest.json";
+//   try {
+//     const response = await fetch(url);
+//     const data = await response.json();
+//     VERSION = data.VERSION;
+//   } catch (error) {
+//     console.error("sw: install: Error fetching manifest.json:", error);
+//   }
+//   console.log(`sw: VERSION= ${VERSION} from url= ${url}`);
+// }) ();
+
 
 const appAssets = [
   "index.html",
@@ -64,14 +73,14 @@ self.addEventListener("install", (installEvent) => {
   //
   // const response = await fetch('manifest.json');
   // const data = await response.json();
-  // version = data.version;
+  // VERSION = data.VERSION;
   // try {
   //   const response = await fetch('manifest.json');
   //   const data = await response.json();
-  //   version = data.version;
+  //   VERSION = data.VERSION;
   // } catch (error) {
   //   console.error("sw: install: Error fetching manifest.json:", error);
-  //   version = "sw: 2024-12-04";
+  //   VERSION = "sw: 2024-12-04";
   // }
   //
   const msg = { install: true };
@@ -80,18 +89,18 @@ self.addEventListener("install", (installEvent) => {
   if (debug) {
     console.log("sw: install: installChannel msg= ", msg);
     console.log("sw: install: installEvent= ", installEvent);
-    console.log(`sw: install: open: static-version= ${version}`);
+    console.log(`sw: install: open: static-VERSION= ${VERSION}`);
   }
   installEvent.waitUntil(
-    caches.open(`static-${version}`).then((cache) => cache.addAll(appAssets))
+    caches.open(`static-${VERSION}`).then((cache) => cache.addAll(appAssets))
   );
 });
 
-// clean old version caches on activation
+// clean old VERSION caches on activation
 self.addEventListener("activate", (e) => {
   let cleaned = caches.keys().then((keys) => {
     keys.forEach((key) => {
-      if (key !== `static-${version}` && key.match("static-")) {
+      if (key !== `static-${VERSION}` && key.match("static-")) {
         return caches.delete(key);
       }
     });
@@ -99,32 +108,34 @@ self.addEventListener("activate", (e) => {
   e.waitUntil(cleaned);
 });
 
-// Static cache strategy - Network first with Cache Fallback
 // const staticCache = (req) => {
-//   req.respondWith(
-//     fetch(req).then((networkRes) => {
-//       caches
-//         .open(`static-${version}`)
-//         .then((cache) => cache.put(req, networkRes));
-//       // Return Clone of Network Response
-//       return networkRes.clone();
-//     })
-//   );
+//   return fetch(req).then((networkRes) => {
+//     if (networkRes.ok && networkRes.status !== 206) { // Add this check
+//       return caches.open(`static-${VERSION}`).then((cache) => {
+//         cache.put(req, networkRes.clone()); // Put a clone of the network response in the cache
+//         return networkRes; // Return the original network response
+//       });
+//     } else {
+//       return networkRes; // Return the original network response without caching
+//     }
+//   });
 // };
 
-const staticCache = (req) => {
-  return fetch(req).then((networkRes) => {
-    if (networkRes.ok && networkRes.status !== 206) { // Add this check
-      return caches.open(`static-${version}`).then((cache) => {
-        cache.put(req, networkRes.clone()); // Put a clone of the network response in the cache
-        return networkRes; // Return the original network response
-      });
+async function staticCache(req) {
+  try {
+    const networkRes = await fetch(req);
+    if (networkRes.ok && networkRes.status !== 206) {
+      const cache = await caches.open(`static-${VERSION}`);
+      await cache.put(req, networkRes.clone()); // Cache the cloned response
+      return networkRes; // Return the original response
     } else {
-      return networkRes; // Return the original network response without caching
+      return networkRes; // Return the original response without caching
     }
-  });
+  } catch (error) {
+    console.error('Fetch request failed:', error);
+    throw error; // Re-throw the error to handle it elsewhere if needed
+  }
 };
-
 
 self.addEventListener("fetch", (e) => {
   if (e.request.url.match(location.origin)) {
@@ -162,7 +173,7 @@ self.addEventListener("message", (event) => {
         if (clients && clients.length) {
           // Send a response - the clients
           // array is ordered by last focused
-          const msg = { type: "VERSION", version: version };
+          const msg = { type: "VERSION", VERSION: VERSION };
           if (debug) console.log("sw: message: postMessage: msg= ", msg);
           clients[0].postMessage(msg);
         }

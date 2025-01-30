@@ -1,11 +1,15 @@
 "use strict";
 
+// const VERSION = "2025-02-01";
+
+// import fs from "fs";
 import { CHARS, getPass, get_random_string, objDiff, isEmpty,
          MINLENGTH, MAXLENGTH } from "./core/lib.js";
 import { storageGet, storageSet, CRYPTO, sanityCheck,
          globalDefaults, hpassStorage } from "./core/lib.js";
 import { decryptText, encryptText, createHash, verifyPassword} from "./core/crypto.js"
 import { register, authenticate } from "./webauthn.js";
+import { VERSION } from "./config.js";
 
 function setPassword(pwd) {
   sessionStorage.setItem('PASSWORD', pwd);
@@ -14,6 +18,11 @@ function setPassword(pwd) {
 function getPassword() {
   sessionStorage.getItem('PASSWORD');
 };
+
+// function getVersion(json="manifest.json") {
+//   const v = (JSON.parse(fs.readFileSync(json, 'utf8'))).version;
+//   return v;
+// }
 
 // const debug = 0;
 let PASSWORD = null;
@@ -33,9 +42,11 @@ el.closeEditDialog = document.getElementById("closeEditDialog");
 el.openImportDialog = document.getElementById("openImportDialog");
 el.importDialog = document.getElementById("importDialog");
 el.closeImportDialog = document.getElementById("closeImportDialog");
-el.version = document.getElementById("version");
+el.openResetDialog = document.querySelector(".btn.reset");
+el.resetDialog = document.getElementById("resetDialog");
+el.closeResetDialog = document.getElementById("closeResetDialog");
+el.version = document.querySelectorAll(".version");
 el.masterPassword = document.getElementById("masterPassword");
-el.changePassword = document.getElementById("changePassword");
 el.newPassword = document.getElementById("newPassword");
 // el.generate = document.getElementById("generate");
 el.generate = document.querySelectorAll(".generate");
@@ -51,6 +62,9 @@ el.importPassword = document.getElementById('importPassword');
 el.saveOptions = document.getElementById('saveOptions');
 el.reset = document.getElementById("reset");
 el.install = document.querySelector(".btn.install");
+
+// const VERSION = getVersion()
+el.version.forEach(x => { x.innerHTML = VERSION;})
 
 // TODO: test if this is needed
 //
@@ -77,7 +91,7 @@ if ("serviceWorker" in navigator) {
   const debug = false;
   if (debug) console.log("apps: before registration: swPath= ", swPath);
   navigator.serviceWorker
-  .register("sw.js", { scope: './' })
+  .register("sw.js", { scope: './', type: 'module' })
   .then((reg) => {
     // alert(`app: register: PASSWORD= ${PASSWORD}`);
     let opts = localStorage.getItem("options");
@@ -108,20 +122,17 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-navigator.serviceWorker.addEventListener("message", (event) => {
-  const debug = true;
-  if (debug) console.log("app: message: event= ", event);
-  if (event.data && event.data.type === "VERSION") {
-    if (debug) console.log("app: message: event.data= ", event.data);
-    // document.getElementById("version").version.innerHTML = `${event.data.version}`;
-    el.version.innerHTML = `${event.data.version}`;
-  }
-});
-//
-
-// el.masterPassword.addEventListener('click', () => {
-//   hintDialog.showModal();
+// navigator.serviceWorker.addEventListener("message", (event) => {
+//   const debug = true;
+//   if (debug) console.log("app: message: event= ", event);
+//   if (event.data && event.data.type === "VERSION") {
+//     if (debug) console.log("app: message: event.data= ", event.data);
+//     // document.getElementById("version").version.innerHTML = `${event.data.version}`;
+//     const e = document.getElementById("version");
+//     e.innerHTML = `${event.data.version}`;
+//   }
 // });
+//
 
 el.masterPassword.addEventListener("keydown", async function(event) {
   const debug = false;
@@ -161,7 +172,7 @@ el.masterPassword.addEventListener("keydown", async function(event) {
   }
 });
 // show/hide newPassword field by clicking on change button
-document.getElementById("changePassword").addEventListener("click", function() {
+document.querySelector(".btn.change").addEventListener("click", function() {
   document.getElementById("newPasswordDiv").classList.toggle("show");
 });
 el.newPassword.addEventListener("keydown", async (event) => {
@@ -228,7 +239,7 @@ el.newPassword.addEventListener("keydown", async (event) => {
 // Hide newPassword on click outside
 document.addEventListener("click", (event) => {
   if (!event.target.closest("#newPassword") &&
-      !event.target.closest("#changePassword") &&
+      !event.target.closest(".btn.change") &&
       !event.target.closest(".eye-img") &&
       !event.target.closest("#masterPassword")
     ) {
@@ -255,6 +266,12 @@ el.openImportDialog.addEventListener('click', () => {
 });
 el.closeImportDialog.addEventListener("click", () => {
   el.importDialog.close();
+});
+el.openResetDialog.addEventListener('click', () => {
+  el.resetDialog.showModal();
+});
+el.closeResetDialog.addEventListener("click", () => {
+  el.resetDialog.close();
 });
 
 el.edHint.addEventListener('input', async function(event) {
@@ -323,7 +340,6 @@ async function handleImport(event) {
           }
       };
       reader.readAsText(file);
-      // el.fileInputModal.style.display = "none";
       el.importDialog.close();
       el.importFileInput.value = "";
       // await populateVisibleSettings();
@@ -803,7 +819,7 @@ document.querySelectorAll(".reset").forEach(function(element) {
   });
 });
 
-function setGenericOptions() {
+async function setGenericOptions() {
   const debug = false;
   if (debug) console.log("setGenericOptions: null options in localStorage!");
   let opts = {...globalDefaults};
@@ -828,69 +844,88 @@ function setGenericOptions() {
       on all devices.`;
   if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
   
-  createSplashScreen(opts);
-  if (debug) console.log("setGenericOptions: returning opts= ", opts);
-  return opts;
-};
-
-async function createSplashScreen(opts) {
-  const debug = false;
-  if (debug) console.log("createSplashScreen: at the START");
-  if (debug) console.trace();
+  // createSplashScreen();
   PASSWORD = '';
   // sessionStorage.setItem("password", PASSWORD);
   const pwdHash = await createHash(PASSWORD);
   localStorage.setItem("pwdHash", pwdHash);
-  const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
-  const helpImg = `<img src="icons/help.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
-  const infoImg = `<img src="icons/info.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
-  let msg = `<br><br>
-  <h3>New in ${el.version.innerHTML}:</h3>
-  <ul>
-    <li>Biometric authentication.
-  </ul>
-  <h3>To start using HPASS:</h3>
-  <ol>
-  <li>Close this menu.
-  <li>Password is initially blank. This
-  <a href="https://www.pcmag.com/how-to/tricks-for-remembering-strong-passwords">PC article</a>
-  is a good starting guide how to create strong and memorable passwords.
-  <li>Change (${changeImg}) Password.
-  </ol>
-  <hr style="color: black;">
-  <div>
-  <br>
-  <p style="background-color: yellow;">Store Password in a safe location.</p>
-  <br>
-  All settings are stored encrypted on your local device using
-  Password as the encryption key.
+  el.resetDialog.showModal()
 
-  </div>
-  `;
-  const container = document.createElement("dialog"); // container
-  container.id = "splash-screen-container";
-  // container.className = "modal";
-  const content = document.createElement("div"); // content
-  content.id = "splash-screen-content";
-  content.className = "modal-content";
-  content.innerHTML = msg;
-  const closeButton = document.createElement('span');
-  closeButton.className = 'close';
-  closeButton.innerHTML = '&times;';
-  closeButton.style.padding = "0.5rem 0.5rem 0 0";
-  closeButton.addEventListener('click', function() {
-    // container.style.display = "none";
-    container.close()
-    // window.location.href = 'help.html';
-  });
-  content.appendChild(closeButton);
-  container.appendChild(content);
-  // container.style.display = "block";
-  document.body.appendChild(container);
-  container.showModal();
-  if (debug) console.log("createSplashScreen: at the end");
-  if (debug) console.trace();
+  if (debug) console.log("setGenericOptions: returning opts= ", opts);
+  return opts;
 };
+
+
+// async function _defunct_createSplashScreen(opts) {
+//   const debug = false;
+//   if (debug) console.log("createSplashScreen: at the START");
+//   if (debug) console.trace();
+//   PASSWORD = '';
+//   // sessionStorage.setItem("password", PASSWORD);
+//   const pwdHash = await createHash(PASSWORD);
+//   localStorage.setItem("pwdHash", pwdHash);
+//   const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
+//   const helpImg = `<img src="icons/help.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
+//   const infoImg = `<img src="icons/info.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
+//   let msg = `<br><br>
+//   <h3>New in ${el.version.innerHTML}:</h3>
+//   <ul>
+//     <li>Biometric authentication.
+//   </ul>
+//   <h3>To start using HPASS:</h3>
+//   <ol>
+//   <li>Close this menu.
+//   <li>Password is initially blank. This
+//   <a href="https://www.pcmag.com/how-to/tricks-for-remembering-strong-passwords">PC article</a>
+//   is a good starting guide how to create strong and memorable passwords.
+//   <li>Change (${changeImg}) Password.
+//   </ol>
+//   <hhhr style="color: black;">
+//   <div>
+//   <br>
+//   <p style="background-color: yellow;">Store Password in a safe location.</p>
+//   <br>
+//   All settings are stored encrypted on your local device using
+//   Password as the encryption key.
+
+//   </div>
+//   `;
+//   const container = document.createElement("dialog"); // container
+//   container.id = "splash-screen-container";
+//   // container.style.padding = "1rem";
+//   container.style.padding = "0"; // Reset padding
+//   container.style.margin = "0"; // Reset margin
+//   container.style.width = "auto";
+//   container.style.maxWidth = "100vw";
+//   container.style.position = "fixed";
+//   container.style.boxSizing = "border-box";
+//   container.style.overflow = "hidden";
+//   const content = document.createElement("div"); // content
+//   content.id = "splash-screen-content";
+//   content.style.padding = "2rem"; // Adjust padding as needed
+//   // content.style.width = "90%"; // Use 100% of the container's width
+//   // content.style.maxWidth = "600px"; // Limit content width
+//   // content.style.overflow = "hidden"; // Add scrollbars if content overflows
+//   content.style.boxSizing = "border-box";
+//   // content.className = "modal-content";
+//   content.innerHTML = msg;
+//   const closeButton = document.createElement('span');
+//   closeButton.className = 'close';
+//   closeButton.innerHTML = '&times;';
+//   closeButton.style.padding = "1rem 2rem 0 0";
+//   closeButton.addEventListener('click', function() {
+//     // container.style.display = "none";
+//     container.close()
+//     // window.location.href = 'help.html';
+//   });
+//   content.appendChild(closeButton);
+//   container.appendChild(content);
+//   // container.style.display = "block";
+//   document.body.appendChild(container);
+//   container.showModal();
+//   if (debug) console.log("createSplashScreen: at the end");
+//   if (debug) console.trace();
+// };
 
 document.querySelectorAll(".lock").forEach(function(element) {
   console.log("DEBUG: querySelectorAll(.lock");
@@ -1014,34 +1049,3 @@ function noIdlingHere() { // TODO: should this be activated?
   });
 };
 noIdlingHere();
-
-// TODO: use <dialog> to insert help.html (without <head> and <body>)
-/*
-<script>
-  const helpButton = document.getElementById("help");
-  const helpDialog = document.getElementById("helpDialog");
-
-  helpButton.addEventListener("click", async () => {
-    try {
-      // Fetch the help.html content
-      const response = await fetch("help.html");
-      if (!response.ok) throw new Error("Failed to load help content");
-
-      // Insert the content into the dialog
-      const helpText = helpDialog.querySelector("#helpText");
-      helpText.innerHTML = await response.text();
-
-      // Show the dialog
-      helpDialog.showModal();
-
-      // Attach the close button handler
-      const closeHelpButton = helpDialog.querySelector(".btn.back");
-      closeHelpButton.addEventListener("click", () => {
-        helpDialog.close();
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  });
-</script>
-*/

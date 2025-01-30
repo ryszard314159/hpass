@@ -63,6 +63,7 @@
     <!-- <script defer type="module" src="core/crypto.js"></script> -->
     <!-- <script defer type="module" src="core/lib.js"></script>  -->
     <script defer type="module" src="webauthn.js"></script>
+    <script defer type="module" src="config.js"></script>
     <script defer type="module" src="app.js"></script>
     <!-- <script defer type="module" src="sw.js"></script> -->
     <script
@@ -89,7 +90,7 @@
     <body>
 
     <div id="frontContainer">
-        <div id="frontBanner" class="frontIcons">
+        <div id="frontBanner" class="topIcons">
           <!-- class="btn" width="40" height="40" -->
           <div>
             <a href="help.html" target="_blank">
@@ -98,7 +99,7 @@
           </div>
           <div>
             <a href="info.html" target="_blank">
-              <img id="info" class="btn" src="icons/info.svg" title="Info">
+              <img class="btn" src="icons/info.svg" title="Info">
             </a>
           </div>
           <div>
@@ -108,7 +109,7 @@
             <img class="btn share" src="icons/share.svg" title="Share">
           </div>
           <div>
-            <img id="changePassword" class="btn change" src="icons/change.svg" title="Change Password">
+            <img class="btn change" src="icons/change.svg" title="Change Password">
           </div>
           <div>
             <img class="btn reset" src="icons/reset.svg" title="Reset">
@@ -142,12 +143,12 @@
           </div>
           <p>
             <br>
-            <strong>Note:</strong>
-            This is a convenience feature allowing to use biometric authentication for HPASS on
-            supported devices implemented using
-            <a href="https://en.wikipedia.org/wiki/WebAuthn">Webauth</a> framework.
-            It was tested in Chrome on desktop and Android (Pixel 6).
-            If it does not work on your device just use Password as before.
+            This is a convenience feature that allows you to use biometric authentication,
+            in addition to a password, to access HPASS functionality.
+            It is implemented using the
+            <a href="https://en.wikipedia.org/wiki/WebAuthn">WebAuthn</a>
+            framework and has been tested on Chrome for desktop and Android (Pixel 6).
+            If it does not work on your device, you can continue using your HPASS password as before.
           </p>
         </dialog>
         <form id="newPasswordDiv" class="password-container">
@@ -162,7 +163,7 @@
 
       <div id="versionContainer">
         <div class="flex-item">
-          <p id="version">2025-02-01</p>
+          <p id="version" class="version">YYYY-MM-DD</p>
         </div>
         &bull;
         <div class="flex-item">
@@ -386,21 +387,22 @@
     <dialog id="editDialog" class="">
 
       <div id="editIcons" class="topIcons">
+        <!-- width="40" height="40" -->
         <div>
-          <img id="closeEditDialog" class="btn back" width="40" height="40" src="icons/cross.svg" title="Back">
+          <img id="closeEditDialog" class="btn back"  src="icons/cross.svg" title="Back">
           <!-- <span id="closeEditDialog" class="btn back" width="80" height="80">&times;</span> -->
         </div>
         <div>
-          <img id="openImportDialog" class="btn import" width="40" height="40" src="icons/import.svg" title="Import">
+          <img id="openImportDialog" class="btn import" src="icons/import.svg" title="Import">
         </div>
         <div>
-          <img class="btn export" width="40" height="40" src="icons/export.svg" title="Export">
+          <img class="btn export" src="icons/export.svg" title="Export">
         </div>
         <div>
-          <img id="saveOptions" class="btn save" width="40" height="40" src="icons/save.svg" title="Save"/>
+          <img id="saveOptions" class="btn save" src="icons/save.svg" title="Save"/>
         </div>
         <div>
-          <img id="editShare" class="btn share" width="40" height="40" src="icons/share.svg" title="Share">
+          <img id="editShare" class="btn share" src="icons/share.svg" title="Share">
         </div>
         <!-- <div> -->
           <!-- <img id="lockEdit" class="btn lock" width="40" height="40" src="icons/lock.svg" title="Lock"/> -->
@@ -467,21 +469,48 @@
     </dialog>
 
     <dialog id="importDialog" class="">
-      <div class="modal-content">
-          <span id="closeImportDialog" class="close">&times;</span>
-          <br>
-            <input type="file" id="importFileInput" accept="application/json">
-           <br>
-          <form class="password-container" >
-            <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg" alt="Crossed Eye"></span>
-            <input type="password" id="importPassword" placeholder="File Password">
-          </form>
-          <p>
-            Enter password used to encrypt the file with HPASS settings
-            in "File Password" field.
-            Leave it empty if the current Master Password is the same.
-          </p>
-        </div>
+      <span id="closeImportDialog" class="close">&times;</span>
+      <br>
+        <input type="file" id="importFileInput" accept="application/json">
+        <br>
+      <form class="password-container" >
+        <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg" alt="Crossed Eye"></span>
+        <input type="password" id="importPassword" placeholder="File Password">
+      </form>
+      <p>
+        Enter password used to encrypt the file with HPASS settings
+        in "File Password" field.
+        Leave it empty if the current Master Password is the same.
+      </p>
+    </dialog>
+
+    <dialog id="resetDialog" class="">
+      <span id="closeResetDialog" class="close">&times;</span>
+      <h3>New in <span class="version">YYYY-MM-DD</span>:</h3>
+      <ul>
+        <li>Biometric authentication.
+      </ul>
+      <h3>To start using HPASS:</h3>
+      <ol>
+      <li>Close this menu. 
+      <li>Change (<img class="btn change" height="30" width="30" src="icons/change.svg">)
+          Password (it is initially blank).
+          This
+          <a href="https://www.pcmag.com/how-to/tricks-for-remembering-strong-passwords">PC article</a>
+          is a good starting guide how to create strong and memorable passwords.
+      <li>Consult Help (<img class="btn change" height="30" width="30" src="icons/help.svg">) for detail
+          usage guidance.
+      </ol>
+      <div style="background-color: yellow; text-align: center;">
+      <hr style="height: 0.1px; color: black;">
+        <br>
+        <h4>Store Password in a safe location.</h4>
+        <br>
+      <hr style="height: 0px; color: black;">
+      </div>
+      <br>
+      All settings are stored encrypted on your local device using
+      Password as the encryption key.
     </dialog>
 
     <dialog id="helpDialog">
@@ -492,13 +521,6 @@
         <!-- Help content will be dynamically loaded here -->
       </div>
     </dialog>
-
-    <!--
-    console.log("editDialog: after  close(): display= ", getComputedStyle(editDialog).display);
-    console.log("editDialog: before close(): display= ", getComputedStyle(editDialog).display);
-    console.log("editDialog: before showModal(): display= ", getComputedStyle(editDialog).display);
-    console.log("editDialog: after  showModal(): display= ", getComputedStyle(editDialog).display);
-    -->
   
     </body>
 

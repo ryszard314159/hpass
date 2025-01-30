@@ -57,10 +57,10 @@
            or use biometric authentication
            (<img src="icons/fp.svg" style="width:1rem; height:1rem;">), to open the app.
       <li> Enter password hint in the <strong>Enter Hint</strong> box.
-      <li> Press Enter key or click one of the arrows
-           (<img src="icons/generate.svg" style="width:2rem; height:0.8rem;"/> or
-           <img src="icons/right-generate.svg" style="width:2rem; height:0.8rem;"/>)
-           to generate password.
+      <li> Press Enter key or click one of the arrows 
+           (<img id="generateLeft" src="icons/generate.svg" class="generate" style="width:1rem; height:0.8rem;"/> or
+           <img id="generateRight" src="icons/right-generate.svg" class="generate" style="width:1rem; height:0.8rem;"/>)
+           next to the <strong>Enter Hint</strong> box to generate password.
            It will be automatically copied to the clipboard.
       <li> Paste this <strong><em>generated password</em> </strong>
            from the clipboard where needed.</li>
@@ -164,6 +164,9 @@
     <div class="grid">
       <div class="cell">
         <img class="icon" src="icons/generate.svg"/> Generate
+      </div>
+      <div class="cell">
+        <img class="icon" src="icons/right-generate.svg"/> Generate
       </div>
       <div class="cell">
         <img class="icon" src="icons/gear.svg"/> Edit

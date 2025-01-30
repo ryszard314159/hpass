@@ -4,12 +4,6 @@ https://www.w3schools.com/cssref/css_selectors.php
 https://www.sliderrevolution.com/resources/slide-menu/
 */
 
-/* html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-} */
-
 * {
   margin: 0;
   padding: 0;
@@ -19,12 +13,6 @@ https://www.sliderrevolution.com/resources/slide-menu/
 
 html, body {
   font-family: Arial, Helvetica, sans-serif;
-  /* margin: 0; */
-  /* padding: 0; */
-  /* width: 100%; height: 100%; */
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* overflow: auto; */
 }
 
 body {
@@ -35,13 +23,10 @@ body {
   overflow-x: hidden;
   align-items: center;
   justify-content: center;
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* text-align: left; */
 }
 
 body.help {
-  background-color: rgb(175, 231, 191);
+  background-color: rgb(233, 255, 233);
   width: 93%;
   margin-left: 1rem;
 }
@@ -50,8 +35,6 @@ body.info {
   background-color: rgb(195, 223, 238);
   width: 93%;
   margin-left: 1rem;
-  /* margin-right: 0rem; */
-  /* margin: 0 1rem 0 1rem; */
 }
 body.privacy {
   background-color: wheat;
@@ -62,41 +45,23 @@ body.privacy {
 button {
   border-radius: 16px;
   padding: 4px 8px 4px 8px; 
-  /* width: 25%; */
   border-width: 1px;
 }
-
-  /* margin: 5% 5% 0 5%; */
-  /* padding: 1rem 0 0 0; */
-  /* border-radius: 16px; */
-  /* background-color: aqua; */
-
-/* dialog {
-  all: unset;
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0 0 0 0;
-  padding: 5% 0 0 0;
-  background: white;
-} */
 
 dialog {
   all: unset;
   display: none;
-  overflow: scroll;
+  overflow-x:hidden;
+  overflow-y: scroll;
   position: fixed; /* Anchor to the viewport */
-  top: 0;
-  left: 0;
+  top: 5%;
+  left: 5%;
   right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
+  bottom: 5%;
+  width: 90%;
+  height: 90%;
   margin: 0; /* Remove default margins */
-  padding: 0; /* Remove default padding if any */
+  padding: 2rem 1rem 0 1rem; /* Remove default padding if any */
   border: none; /* Remove the default border if not needed */
   background: white; /* Optional, to ensure visibility */
   box-sizing: border-box; /* Ensure dimensions include padding and borders */
@@ -111,18 +76,21 @@ dialog::backdrop {
 
 #importDialog, #registerDialog {
   margin: 22% 0 0 0;
-  height: 50%;
+  height: 55%;
   padding: 5% 5% 5% 5%;
 }
 
-/* dialog p {
-  width: 90%;
-  text-align: left;
-  margin: 5% 5% 5% 5%;
-} */
+#editDialog, #hintDialog {
+  height: 100%;
+  width: 100%;
+  /* margin: 0; */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 
 .button-container {
-  /* padding: 0rem auto; */
   margin: 4% 0 0 0;
   display: flex; 
   justify-content: space-between; 
@@ -153,13 +121,7 @@ hr {
   background-color: gray;
 }
 
-
-/* li {
-  text-align: left;
-} */
-
 h1, h2, h3 {
-  /* margin-bottom: 1rem; */
   margin: 1rem 0 1rem 0;
 }
 
@@ -167,7 +129,6 @@ h1, h2, h3 {
   position: absolute;
   left: 0;
   width: 100%;
-  /* background-color: #f1f1f1; */
   background-color: pink;
   padding: 20px;
   text-align: center;
@@ -188,11 +149,9 @@ div {
 }
 
 .center {
-  /* display: flex; */
   display: block;
   justify-content: center;
   align-items: center;
-  /* height: 2rem; */
   border: 0px solid green;
 }
 
@@ -206,20 +165,6 @@ button {
   display: block;
   margin: auto;
 }
-
-/* #openEditDialog, #generateee {
-  display: inline-block;
-  width: 15vw;
-  height: 15vh;
-  object-fit:cover;
-  object-position:center;
-  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-} */
-
-/* #openEditDialog {
-  border-radius: 1rem 0 0 1rem;
-  background-color: lightgreen;
-} */
 
 .animateGenerateLeft {
   animation: moveBtnRight 0.25s forwards;
@@ -256,18 +201,12 @@ button {
   z-index: 90;
 }
 
-
 .btnContainer {
-  /* display: inline-flex; */
   position: absolute;
   top: 0;
   display: flex;
-  /* height: 2rem; */
-  /* justify-content: space-around; */
   justify-content: space-between;
   width: 100%;
-  /* align-items: center; */
-  /* vertical-align: middle; */
 }
 
 .btn.install {
@@ -277,71 +216,28 @@ button {
 #hamburger {
   display: flex;
   width: 2rem;
-  /* height: 100%; */
-  /* flex-grow: 1; */
   justify-content: center;
   align-items: center;
   text-align: center;
   background-color: yellow;
 }
+
 .top-icon {
   flex-grow: 1;
 }
+
 .btn {
-  /* object-fit: cover; */
-  /* width: 100%; */
-  /* max-width: 2.5rem; */
   max-height: 2.5rem;
-  /* height: 100%; */
-  /* height: 40; */
-  /* width: 1; */
   padding: 0.3rem;
   margin: 0rem;
   border-radius: 10%;
   vertical-align: middle;
 }
-  /* width: 2rem; */
-  /* border-radius: 0.8rem; */
-  /* width: 3rem; */
-  /* aspect-ratio: 1/1; */
-  /* background-color: rgb(238, 236, 236); */
-  /* border-radius: 0%; */
-  /* padding: 0 0rem 0 0; */
-  /* z-index: 9999; */
 
 .btn:hover {
   font-weight: bolder;
-  background-color: lightgrey;
-  /* transition: all 9.5s ease-in-out; */
-  /* border-radius: 50%; */
+  background-color: white;
 }
-
-#help,
-#reset,
-#demo,
-#share,
-#save,
-#info {
-  /* border-radius: 50%; */
-  /* margin: 0rem; */
-  border: 0px solid black;
-  /* border-radius: 15px; */
-}
-#share {
-  /* padding: 2pt 0 2pt 0; */
-  width: 6rem;
-  /* background-color: rgb(247, 237, 162); */
-  background-color: orange;
-  background-color: rgba(255, 178, 102);
-  /* background-color: rgba(255, 178, 102) */
-  border-radius: 0.8rem;
-}
-/* #save {
-  width: 6rem;
-  background-color: lightskyblue;
-  border-radius: 0.8rem;
-  margin-left: 0;
-} */
 
 .grow {
   transition: all 0.9s ease-in-out;
@@ -806,31 +702,27 @@ margin-top: 9rem;
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.modal-content {
+/* .modal-content {
   position: relative;
   background-color: #fefefe;
   background-color: white;
   background-color: transparent;
-  /* background-color: pink; */
-  margin: 2% auto; /* 15% from the top and centered */
-  /* padding: 2rem; */
+  margin: 2% auto;
   border: 1px solid #888;
-  width: 90%; /* Could be more or less, depending on screen size */
+  width: 90%;
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
   align-items: center;
-  /* height: 2rem; */
   border: 0px solid green;
   text-align: left;
-}
+} */
 
 .close {
   color: red;
   position: absolute;
-  top: -1rem;
-  right: -1rem;
-  font-size: 3rem;
+  top: 0rem;
+  right: 1rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 
@@ -841,40 +733,7 @@ margin-top: 9rem;
   cursor: pointer;
 }
 
-/* Container for the navigation */
-.nav-container {
-  position: relative;
-}
-
-/* Hamburger icon styles */
-.hamburgerrr {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-size: 1.5rem;
-  /* width: 2rem; */
-  /* height: 2rem; */
-  /* aspect-ratio: 2; */
-  /* overflow: hidden; /* add this */
-  padding: 1rem 2rem 0.5rem 1rem;
-  /* margin: 0.5rem 2rem 0 0; */
-  cursor: pointer;
-  position: absolute;
-  /* z-index: 99; */
-  /* top: 2rem; */
-  right: 0;
-  /* border-radius: 50%; /* makes the background circular */
-  background-color: pink;
-  line-height: 1.5rem; /* adjust to match the height */
-}
-
-/* #editIcons {
-  position: fixed;
-  z-index: 9;
-} */
-
-.topIcons, .frontIcons {
+.topIcons {
   position: absolute;
   z-index: 8;
   top: 0;
@@ -889,36 +748,6 @@ margin-top: 9rem;
   background-color: lightgray;
   padding: 0 10px;
 }
-  /* display: inline-flex; */
-  /* display: flex; */ /* FOCUS */
-  /* grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; */
-  /* grid-template-columns: repeat(6, minmax(15%, 1fr)); */
-  /* max-width: 100%; */
-  /* margin: 0 auto; */
-  /* overflow-x: hidden; */
-  /* flex-wrap: nowrap; */
-  /* -moz-box-align: center; */
-  /* justify-content: space-around; */
-
-/* .topIcons > div:first-child { */
-/*  justify-self: start; Ensure the leftmost icon is anchored */
-  /* width: 2.5rem; */
-  /* height: 2.5rem; */
-/* } */
-
-/* flex: 1 1 auto; Distribute the remaining space evenly */
-/* .topIcons > div:not(:first-child) { */
-  /* flex: 1 1 auto; */
-  /* text-align: center; */
-/* } */
-
-/* assuming 6 icons */
-/* .topIcons > a, .topIcons > img { */
-  /* width: calc(100% / 6);  */
-  /* text-align: center; */
-  /* max-width: 100%; */
-  /* height: auto; */
-/* } */
 
 .topIcons img {
   max-width: 100%;
@@ -941,20 +770,15 @@ margin-top: 9rem;
   border-radius: 16px;
   border-width: 1px;
 }
-  /* border-radius: 16px;
-  border-width: 1px; */
-/* #register, #authenticate {
-  padding: 0 1rem 0 1rem;
-} */
 
 .securityContainer {
   position: relative;
   margin: 2rem 0 0 0;
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr; /* or repeat(3, 1fr) for three equal columns */
+  grid-template-columns: 1fr;
   align-items: center;
-  justify-items: center; /* instead of justify-content */
+  justify-items: center;
 }
 
 .inputsContainer {
@@ -962,9 +786,9 @@ margin-top: 9rem;
   margin: 2rem 0 0 0;
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr; /* or repeat(3, 1fr) for three equal columns */
+  grid-template-columns: 1fr;
   align-items: center;
-  justify-items: center; /* instead of justify-content */
+  justify-items: center;
 }
 .inputsContainer.edit {
   margin: -1rem 0 0 0;
@@ -982,75 +806,19 @@ margin-top: 9rem;
   text-align: center;
 }
 
-
-/* Hidden menu */
-.nav-menu {
-  display: none;
-  /* position: absolute; */
-  /* top: 0; Adjust based on your layout */
-  /* right: 0; */
-  background-color: rgba(255, 255, 255, 0.9);
-  /* background-color: pink; */
-  text-align: justify;
-  text-align-last: left;
-  z-index: 9;
-  /* border-radius: 5px; */
-  position: absolute;
-  top: 0;
-  left: 0%;
-  right: 0%;
-  justify-content: center;
-  align-items: center;
-}
-.nav-menu.show
-{
-  display: block !important;
-}
-
-/* Menu items styling */
-.nav-menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.nav-menu ul li {
-  margin: 10px 0;
-}
-
-.nav-menu ul li a {
-  color: black;
-  text-decoration: none;
-  font-size: 2rem;
-}
-
-.nav-menu ul li a:hover {
-  text-decoration: underline;
-}
-
-.glow {
-  border: 2px solid red;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-}
-
-
 .eye-img {
   width: 1.5rem;
   height: 1.5rem;
 }
 
-/* *** */
-
 .password-container {
   display: inline-flex;
   align-items: center;
   justify-content: start;
-  /* outline: 6px solid red; */
   position: relative;
 }
 
 .password-container input {
-  /* grid-column: 1 / -1; */
   margin: 1rem 0;
   border-radius: 16px;
   border-width: 1px;
@@ -1060,10 +828,10 @@ margin-top: 9rem;
 }
 
 .password-container span {
-  position: absolute; /* Absolute positioning */
-  right: 0.5rem; /* Adjust right margin */
-  top: 50%; /* Vertical centering */
-  transform: translateY(-50%); /* Fine-tune vertical centering */
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 #masterPasswordDiv, #newPasswordDiv {
@@ -1101,7 +869,6 @@ margin-top: 9rem;
   background-color: rgb(197, 203, 160);
   background-color: transparent;
   padding: 0.5rem 0 0.5rem 0.5rem;
-  /* border: 1px solid grey; */
   border-right: 1px solid grey; /* Vertical grid lines */
   border-bottom: 1px solid grey; /* Horizontal grid lines */
   text-align: left;
