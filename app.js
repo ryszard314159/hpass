@@ -1,15 +1,12 @@
 "use strict";
 
-// const VERSION = "2025-02-01";
-
-// import fs from "fs";
+import { VERSION } from "./config.js";
 import { CHARS, getPass, get_random_string, objDiff, isEmpty,
          MINLENGTH, MAXLENGTH } from "./core/lib.js";
 import { storageGet, storageSet, CRYPTO, sanityCheck,
          globalDefaults, hpassStorage } from "./core/lib.js";
 import { decryptText, encryptText, createHash, verifyPassword} from "./core/crypto.js"
 import { register, authenticate } from "./webauthn.js";
-import { VERSION } from "./config.js";
 
 function setPassword(pwd) {
   sessionStorage.setItem('PASSWORD', pwd);
@@ -63,7 +60,6 @@ el.saveOptions = document.getElementById('saveOptions');
 el.reset = document.getElementById("reset");
 el.install = document.querySelector(".btn.install");
 
-// const VERSION = getVersion()
 el.version.forEach(x => { x.innerHTML = VERSION;})
 
 // TODO: test if this is needed
@@ -121,18 +117,6 @@ if ("serviceWorker" in navigator) {
     console.error("app: registration failed: error=", error);
   });
 }
-
-// navigator.serviceWorker.addEventListener("message", (event) => {
-//   const debug = true;
-//   if (debug) console.log("app: message: event= ", event);
-//   if (event.data && event.data.type === "VERSION") {
-//     if (debug) console.log("app: message: event.data= ", event.data);
-//     // document.getElementById("version").version.innerHTML = `${event.data.version}`;
-//     const e = document.getElementById("version");
-//     e.innerHTML = `${event.data.version}`;
-//   }
-// });
-//
 
 el.masterPassword.addEventListener("keydown", async function(event) {
   const debug = false;

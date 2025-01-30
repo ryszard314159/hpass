@@ -19,7 +19,7 @@
 //   return v;
 // }
 import { VERSION } from "./config.js";
-// const VERSION = VERSION;
+// const VERSION = "2025-02-01"
 
 // (async () => {
 //   const url = "manifest.json";
@@ -35,6 +35,7 @@ import { VERSION } from "./config.js";
 
 
 const appAssets = [
+  "config.js",
   "index.html",
   // "edit.html",
   "info.html",
