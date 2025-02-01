@@ -177,6 +177,7 @@
     </div>
 
     <dialog id="hintDialog">
+
       <div id="hintIcons" class="topIcons">
         <!-- class="btn" width="40" height="40" -->
           <div>
@@ -189,8 +190,9 @@
             <img id="closeHintDialog" class="btn lock" src="icons/lock.svg" title="Lock"/>
           </div>
       </div>
-      <div id="burnAndPeak" class="inputsContainer">
-        <br><br>
+
+      <div id="hintInputs" class="inputsContainer">
+        <h4 id="hintTitle">Enter hint & Generate password</h4><br>
         <div id="pgHintContainer" class="container">
           <!-- <img id="openEditDialog" class="" src="icons/gear.svg" alt="Gear symbol"> -->
           <img id="generateLeft" class="generate" src="icons/generate.svg" alt="Arrow to generate password">
@@ -219,9 +221,7 @@
           still will be safe.  
         </div>
       </div>
-      <!-- <button id="closeHintDialog" class="close">&times;</button> -->
-      <!-- <div id="footer" style="width: 90%; margin: 5% 5% 5% 5%;"> -->
-      <div id="footer">
+      <div id="hintLegend">
         <hr>
         <h2 style="text-align: center">
           Why strong passwords are important?
@@ -369,25 +369,11 @@
         <br><br>
         <hr>
       </div>
-      <div id="adunit">
-        <ins
-          class="adsbygoogle"
-          style="display: block"
-          data-ad-client="ca-pub-9946044372357745"
-          data-ad-slot="7381421405"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-      </div>
     </dialog>
 
-    <dialog id="editDialog" class="">
+    <dialog id="editDialog">
 
       <div id="editIcons" class="topIcons">
-        <!-- width="40" height="40" -->
         <div>
           <img id="closeEditDialog" class="btn back"  src="icons/cross.svg" title="Back">
           <!-- <span id="closeEditDialog" class="btn back" width="80" height="80">&times;</span> -->
@@ -409,7 +395,7 @@
         <!-- </div> -->
       </div>
 
-      <div id="inputsContainer" class="inputsContainer edit">
+      <div id="editInputs" class="inputsContainer">
         <h4 id="editTitle">Edit & Save Settings</h4>
         <div id="edHintContainer" class="container">
           <input id="edHint" class="input" placeholder="Hint">
@@ -426,44 +412,43 @@
           <button id="lengthButton" class="leading-icon">📏</button>
           <input id="length" class="input" placeholder="Length">
         </div>
+      </div>
 
-        <div id="editLegend" style="text-align: left;">
-          <p><!-- style="justify-content: center; text-align: left;"> -->
-            <hr>
-            <br>
+      <div id="editLegend" style="text-align: left;">
+        <p><!-- style="justify-content: center; text-align: left;"> -->
+          <hr>
+          <br>
 
-            <p>
-              To change <em>site settings</em> enter site hint in the 
-              <strong>Hint</strong> field, populate 
-              <strong>Secret</strong>, <strong>Special Character</strong>,
-              and <strong>Length</strong> with desired values, and press save icon
-              <img class="icon" src="icons/save.svg"/>.
-            </p>
-            <br>
-            <p>
-              Do the same to change <em>generic settings</em>,
-              but with empty <strong>Hint</strong> field. 
-            </p>
-
-            <br>
-            <ul>
-              <li><strong>Hint</strong>: keep it empty to change <em>generic settings</em>;
-                enter value to change <em>site settings</em>.
-  
-              </li>
-              <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
-              <li><strong>Special Character
-                  (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
-                  one or more !\"#$%&'()*+,-./:;<=>?@[ ]^_`{|}~</li>
-              <li><strong>Length (📏):</strong> longer is better,
-                          note however that a lot of sites have unreasonably short upper limit
-                          - 15 seems to be a reasonable balance between security and a need to create
-                          many <em>site-specific settings</em>.</li>
-            </ul>
+          <p>
+            To change <em>site settings</em> enter site hint in the 
+            <strong>Hint</strong> field, populate 
+            <strong>Secret</strong>, <strong>Special Character</strong>,
+            and <strong>Length</strong> with desired values, and press save icon
+            <img class="icon" src="icons/save.svg"/>.
           </p>
-          <br><hr><br>
-        </div>
+          <br>
+          <p>
+            Do the same to change <em>generic settings</em>,
+            but with empty <strong>Hint</strong> field. 
+          </p>
 
+          <br>
+          <ul>
+            <li><strong>Hint</strong>: keep it empty to change <em>generic settings</em>;
+              enter value to change <em>site settings</em>.
+
+            </li>
+            <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
+            <li><strong>Special Character
+                (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
+                one or more !\"#$%&'()*+,-./:;<=>?@[ ]^_`{|}~</li>
+            <li><strong>Length (📏):</strong> longer is better,
+                        note however that a lot of sites have unreasonably short upper limit
+                        - 15 seems to be a reasonable balance between security and a need to create
+                        many <em>site-specific settings</em>.</li>
+          </ul>
+        </p>
+        <br><hr><br>
       </div>
 
     </dialog>
@@ -522,6 +507,20 @@
         <!-- Help content will be dynamically loaded here -->
       </div>
     </dialog>
+
+    <div id="adunit" class="adContainer">
+      <ins
+        class="adsbygoogle"
+        style="display: block"
+        data-ad-client="ca-pub-9946044372357745"
+        data-ad-slot="7381421405"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      ></ins>
+      <script>
+
+      </script>
+    </div>
   
     </body>
 
