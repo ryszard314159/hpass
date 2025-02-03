@@ -81,6 +81,8 @@ dialog::backdrop {
 }
 
 #editDialog, #hintDialog {
+  overflow: auto;
+  position: fixed;
   height: 67%;
   width: 100%;
   /* margin: 0; */
@@ -89,7 +91,29 @@ dialog::backdrop {
   right: 0;
   bottom: 0;
   background: white;
+  transition: none !important;
+  animation: none !important;
+  /* z-index: 9; */
+  /* isolation: isolate; Prevent blending */
 }
+
+/* -webkit-backdrop-filter: none !important; /* Required for Android Chrome */
+/* #editDialog::backdrop,
+#hintDialog::backdrop {
+  background: transparent;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  filter: none;
+} */
+
+/* .dialog-backdrop::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: -1;
+} */
+
 
 .button-container {
   margin: 4% 0 0 0;
@@ -356,9 +380,8 @@ ol li {
 }
 
 #logop {
-  margin: 6rem 0 1rem 0;
+  margin: 4rem 0 0rem 0;
   font-size: 1.5rem;
-  width: 80%;
   position: relative;
   padding: 0;
   border: 1px solid #ccc;
@@ -464,7 +487,7 @@ ol li {
 #hintLegend, #editLegend {
   width: 90%;
   margin: 5% 5% 5% 5%;
-  padding: 0 0 29rem 0;
+  /* padding: 0 0 29rem 0; */
 }
 
 .adContainer {
@@ -827,7 +850,7 @@ margin-top: 9rem;
 }
 
 .password-container input {
-  margin: 1rem 0;
+  /* margin: 1rem 0; */
   border-radius: 16px;
   border-width: 1px;
   font-size: 1.5rem;
@@ -843,7 +866,9 @@ margin-top: 9rem;
 }
 
 #masterPasswordDiv, #newPasswordDiv {
-  margin: 0 auto;
+  /* margin: 0 auto; */
+  margin: 0;
+  padding: 0;
   width: 80%;
 }
 

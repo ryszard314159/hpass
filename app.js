@@ -34,7 +34,6 @@ el.hintDialog = document.getElementById("hintDialog");
 el.closeHintDialog = document.getElementById("closeHintDialog");
 el.editDialog = document.getElementById("editDialog");
 el.openEditDialog = document.getElementById("openEditDialog");
-el.editDialog = document.getElementById("editDialog");
 el.closeEditDialog = document.getElementById("closeEditDialog");
 el.openImportDialog = document.getElementById("openImportDialog");
 el.importDialog = document.getElementById("importDialog");
@@ -144,7 +143,9 @@ el.masterPassword.addEventListener("keydown", async function(event) {
         PASSWORD = pwd;
         // sessionStorage.setItem("password", pwd);
         // el.entryContainer.style.display = "none";
-        hintDialog.showModal();
+        // hintDialog.showModal();
+        el.frontContainer.style.display = "none";
+        el.hintDialog.style.display = "block";
         window.sessionStorage.setItem("entryContainerHidden", true);
         window.scrollTo(0, 0); // scroll window to the top!
       } else {
@@ -167,7 +168,8 @@ el.newPassword.addEventListener("keydown", async (event) => {
     el.newPassword.value = '';
     el.masterPassword.value = '';
     // el.entryContainer.style.display = "none";
-    el.hintDialog.showModal();
+    // el.hintDialog.showModal();
+    el.hintDialog.style.display = "block";
     el.newPassword.classList.toggle("show");
   }
   const masterPassword = el.masterPassword.value;
@@ -232,18 +234,23 @@ document.addEventListener("click", (event) => {
 });
 
 el.closeHintDialog.addEventListener('click', () => {
-  hintDialog.close();
+  // hintDialog.close();
+  el.hintDialog.style.display = "none";
+  el.frontContainer.style.display = "block";
 });
 el.openEditDialog.addEventListener('click', async () => {
   const opts = await storageGet({key: "options", pwd: PASSWORD});
   el.salt.value = opts.salt;
   el.pepper.value = opts.pepper;
   el.length.value = opts.length;
-  editDialog.showModal();
+  // editDialog.showModal();
+  el.editDialog.style.display = "block";
 });
 el.closeEditDialog.addEventListener("click", () => {
-  editDialog.close();
-  hintDialog.showModal();
+  el.editDialog.style.display = "none";
+  // editDialog.close();
+  // hintDialog.showModal();
+  el.hintDialog.style.display = "block";
 });
 el.openImportDialog.addEventListener('click', () => {
   el.importDialog.showModal();
@@ -251,9 +258,9 @@ el.openImportDialog.addEventListener('click', () => {
 el.closeImportDialog.addEventListener("click", () => {
   el.importDialog.close();
 });
-el.openResetDialog.addEventListener('click', () => {
-  el.resetDialog.showModal();
-});
+// el.openResetDialog.addEventListener('click', () => {
+//   el.resetDialog.showModal();
+// });
 el.closeResetDialog.addEventListener("click", () => {
   el.resetDialog.close();
 });
@@ -781,23 +788,19 @@ async function copyToClipboard(string) {
 
 document.querySelectorAll(".reset").forEach(function(element) {
   element.addEventListener("click", async function (event) {
-    const debug = false;
+    const debug = true;
     if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
     let msg = `WARNING: all existing settings will be removed!`;
     msg = `${msg}\nPassword will be reset to default (empty string) value.`;
     msg = `${msg}\n\nClick OK to proceed.`
-    if (confirm(msg)) {
-      event.preventDefault();
-      // localStorage.removeItem("options");
-      // localStorage.removeItem("sites");
-      // localStorage.removeItem("history");
-      localStorage.clear();
-      PASSWORD = '';
-      // sessionStorage.setItem("password", PASSWORD);
-      const pwdHash = await createHash(PASSWORD);
-      hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
-      const opts = setGenericOptions();
-    }
+    if (!confirm(msg)) return;
+    // return;
+    event.preventDefault();
+    localStorage.clear();
+    PASSWORD = '';
+    const pwdHash = await createHash(PASSWORD);
+    hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
+    const opts = setGenericOptions();
   });
 });
 
@@ -919,8 +922,10 @@ document.querySelectorAll(".lock").forEach(function(element) {
     if (el.masterPassword && el.frontContainer && lockSound) {
       el.masterPassword.value = "";
       // el.frontContainer.style.display = "block";
-      el.editDialog.close();
-      el.hintDialog.close();
+      // el.editDialog.close();
+      el.editDialog.style.display = "none";
+      // el.hintDialog.close();
+      el.hintDialog.style.display = "none";
       // el.entryContainer.style.visibility = "visible";
       // el.editContainer.style.visibility = "hidden";
       lockSound.currentTime = 0; // Reset audio to start
@@ -978,7 +983,9 @@ document.getElementById("authenticate").addEventListener("click", async () => {
       alert("Enter Password for extra security");
     } else {
       // el.entryContainer.style.display = "none";
-      el.hintDialog.showModal();
+      // el.hintDialog.showModal();
+      el.frontContainer.style.display = "none";
+      el.hintDialog.style.display = "block";
       // window.sessionStorage.setItem("entryContainerHidden", true);
       window.scrollTo(0, 0); // scroll window to the top!
       console.log(`authenticate: PASSWORD= ${PASSWORD}`);
@@ -1011,8 +1018,11 @@ function noIdlingHere() { // TODO: should this be activated?
         // sessionStorage.removeItem(input.name);
       });
       // el.entryContainer.style.display = "block";
-      el.hintDialog.close();
-      el.editDialog.close();
+      // el.hintDialog.close();
+      el.frontContainer.style.display = "block";
+      el.hintDialog.style.display = "none";
+      el.editDialog.style.display = "none";
+      // el.editDialog.close();
       // el.salt.value = ''; TODO: wipes clean input boxes, but...
       // el.pepper.value = '';
       // el.length.value = '';
