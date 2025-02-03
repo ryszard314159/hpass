@@ -816,6 +816,7 @@ margin-top: 9rem;
 }
 
 #hintTitle, #editTitle {
+  margin-top: 2rem;
   width: 90%;
   text-align: center;
   /* max-width: 200%; */
