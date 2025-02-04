@@ -454,7 +454,7 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
       popup.close();
     }
   });
-  console.log("showPopup: before setTimeout");
+  // console.log("showPopup: before setTimeout");
   // timeOut = 1000; // for debugging only!
   setTimeout(() => popup.close(), timeOut);
 }
@@ -462,7 +462,7 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
 function handleFeedback(event) {
   const debug = false;
   const button = event.currentTarget;
-  console.log(`handleFeedback: button.id= ${button.id}`);
+  // console.log(`handleFeedback: button.id= ${button.id}`);
   if (navigator.vibrate) {   // haptic
       navigator.vibrate(50); // vibrate for 100ms
   }
@@ -748,7 +748,7 @@ function handleExport(args = {}) {
 }
 
 document.querySelectorAll(".share").forEach(function(element) {
-  console.log("INFO: .share selected");
+  // console.log("INFO: .share selected");
   element.addEventListener("click", async function (event) {
     console.log("INFO: .share clicked");
     const shareData = {
@@ -788,7 +788,7 @@ async function copyToClipboard(string) {
 
 document.querySelectorAll(".reset").forEach(function(element) {
   element.addEventListener("click", async function (event) {
-    const debug = true;
+    const debug = false;
     if (debug) console.log("reset Event listener triggered!"); // Should log when clicked
     let msg = `WARNING: all existing settings will be removed!`;
     msg = `${msg}\nPassword will be reset to default (empty string) value.`;
@@ -913,12 +913,12 @@ async function setGenericOptions() {
 // };
 
 document.querySelectorAll(".lock").forEach(function(element) {
-  console.log("DEBUG: querySelectorAll(.lock");
+  // console.log("DEBUG: querySelectorAll(.lock");
   element.addEventListener("click", function (event) {
     const lockSound = document.getElementById("lockSound");
-    console.log(".lock: el.masterPassword= ", el.masterPassword);
-    console.log(".lock: el.frontContainer= ", el.frontContainer);
-    console.log(".lock: lockSound= ", lockSound);
+    // console.log(".lock: el.masterPassword= ", el.masterPassword);
+    // console.log(".lock: el.frontContainer= ", el.frontContainer);
+    // console.log(".lock: lockSound= ", lockSound);
     if (el.masterPassword && el.frontContainer && lockSound) {
       el.masterPassword.value = "";
       // el.frontContainer.style.display = "block";
