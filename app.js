@@ -1,6 +1,6 @@
 "use strict";
 
-import { VERSION } from "./config.js";
+import { VERSION, DEFAULT_SALT_LENGTH } from "./config.js";
 import { CHARS, getPass, get_random_string, objDiff, isEmpty,
          MINLENGTH, MAXLENGTH } from "./core/lib.js";
 import { storageGet, storageSet, CRYPTO, sanityCheck,
@@ -145,6 +145,7 @@ el.masterPassword.addEventListener("keydown", async function(event) {
         // el.entryContainer.style.display = "none";
         // hintDialog.showModal();
         el.frontContainer.style.display = "none";
+        el.editDialog.style.display = "none";
         el.hintDialog.style.display = "block";
         window.sessionStorage.setItem("entryContainerHidden", true);
         window.scrollTo(0, 0); // scroll window to the top!
@@ -796,11 +797,11 @@ document.querySelectorAll(".reset").forEach(function(element) {
     if (!confirm(msg)) return;
     // return;
     event.preventDefault();
-    localStorage.clear();
-    PASSWORD = '';
-    const pwdHash = await createHash(PASSWORD);
-    hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
-    const opts = setGenericOptions();
+    // localStorage.clear();
+    // PASSWORD = '';
+    // const pwdHash = await createHash(PASSWORD);
+    // hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
+    const opts = await setGenericOptions();
   });
 });
 
@@ -809,33 +810,26 @@ async function setGenericOptions() {
   if (debug) console.log("setGenericOptions: null options in localStorage!");
   let opts = {...globalDefaults};
   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
-  opts.salt = get_random_string(16, charset); //TODO: 
+  opts.salt = get_random_string(DEFAULT_SALT_LENGTH, charset); //TODO:
   // opts.salt = "DEBUG!!!"
   if (debug) console.log("setGenericOptions: opts= ", opts);
   if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
   if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
+  localStorage.clear();
   PASSWORD = '';
-  // sessionStorage.setItem("password", '');
-  storageSet({key: "options", value: opts, pwd: PASSWORD, debug: true}).then( () => {
-    sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
-  });
-  localStorage.setItem("encrypted", true);
-  let msg = `<br>Randomly generated secret is
-      <br><br><strong>${opts.salt}</strong><br><br>
-      You can use it as is or you can to change it
-      to some personalized value easy for you to remember.
-      <br><br>NOTE: to generate the same passwords on multiple
-      devices this secret and other options must be the same
-      on all devices.`;
-  if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
-  
-  // createSplashScreen();
-  PASSWORD = '';
-  // sessionStorage.setItem("password", PASSWORD);
   const pwdHash = await createHash(PASSWORD);
   localStorage.setItem("pwdHash", pwdHash);
+  await storageSet({key: "options", value: opts, pwd: PASSWORD, debug: true})
+  // .then( () => {
+  //   sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
+  // });
+  localStorage.setItem("encrypted", true);
+  if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
+  el.edHint.value = '';
+  el.pgHint.value = '';
+  el.hintDialog.style.display = "none";
+  el.editDialog.style.display = "none";
   el.resetDialog.showModal()
-
   if (debug) console.log("setGenericOptions: returning opts= ", opts);
   return opts;
 };
