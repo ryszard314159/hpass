@@ -16,17 +16,10 @@ function getPassword() {
   sessionStorage.getItem('PASSWORD');
 };
 
-// function getVersion(json="manifest.json") {
-//   const v = (JSON.parse(fs.readFileSync(json, 'utf8'))).version;
-//   return v;
-// }
-
-// const debug = 0;
 let PASSWORD = null;
 const SHORTPOPUP = 1e3; // short popup time
 const URL = "https://hpass.app";
 
-// Selecting elements
 const el = {}
 el.frontContainer = document.getElementById("frontContainer");
 el.registerDialog = document.getElementById("registerDialog");
@@ -44,7 +37,6 @@ el.closeResetDialog = document.getElementById("closeResetDialog");
 el.version = document.querySelectorAll(".version");
 el.masterPassword = document.getElementById("masterPassword");
 el.newPassword = document.getElementById("newPassword");
-// el.generate = document.getElementById("generate");
 el.generate = document.querySelectorAll(".generate");
 el.pgHint = document.getElementById("pgHint"); // to generate password
 el.edHint = document.getElementById("edHint"); // to edit options and sites
@@ -88,7 +80,6 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
   .register("sw.js", { scope: './', type: 'module' })
   .then((reg) => {
-    // alert(`app: register: PASSWORD= ${PASSWORD}`);
     let opts = localStorage.getItem("options");
     if (opts === null) {
       if (debug) console.log("app: register: null options in localStorage!");
@@ -123,44 +114,37 @@ el.masterPassword.addEventListener("keydown", async function(event) {
   if (event.key === "Enter") {
     event.preventDefault(); // NOTE: to make <form> wrapper work for <input>
     if (debug) console.log('masterPssword: Enter key pressed!');
-    // alert("masterPssword: Enter key pressed!");
-    // setTimeout( async () => {
-      const storedHash = localStorage.getItem("pwdHash");
-      if (storedHash === null) {
-        alert("Password Hash was null.\nAll settings removed & Master Password set to empty string");
-        localStorage.clear();
-        PASSWORD = '';
-        // sessionStorage.setItem("password", PASSWORD);
-        const hash = await createHash(PASSWORD);
-        hpassStorage.setItem("pwdHash", hash, `el.masterPassword: pwd=''`);
-        return;
-      }
-      const pwd = el.masterPassword.value;
-      // alert("masterPssword: before verifyPassword");
-      const isCorrect = await verifyPassword(storedHash, pwd);
-      // alert(`masterPssword: after verifyPassword: isCorrect= ${isCorrect}`);
-      if (isCorrect) {
-        PASSWORD = pwd;
-        // sessionStorage.setItem("password", pwd);
-        // el.entryContainer.style.display = "none";
-        // hintDialog.showModal();
-        el.frontContainer.style.display = "none";
-        el.editDialog.style.display = "none";
-        el.hintDialog.style.display = "block";
-        window.sessionStorage.setItem("entryContainerHidden", true);
-        window.scrollTo(0, 0); // scroll window to the top!
-      } else {
-        if (debug) console.log(`masterPassword: >>${pwd}<< Wrong password - try again!`);
-        if (debug) console.log(`masterPassword: storedHash= ${storedHash}`);
-        alert(`>>${pwd}<< Wrong password - try again!`)
-      }
-    // }, 0);
+    const storedHash = localStorage.getItem("pwdHash");
+    if (storedHash === null) {
+      alert("Password Hash was null.\nAll settings removed & Master Password set to empty string");
+      localStorage.clear();
+      PASSWORD = '';
+      const hash = await createHash(PASSWORD);
+      hpassStorage.setItem("pwdHash", hash, `el.masterPassword: pwd=''`);
+      return;
+    }
+    const pwd = el.masterPassword.value;
+    const isCorrect = await verifyPassword(storedHash, pwd);
+    if (isCorrect) {
+      PASSWORD = pwd;
+      el.frontContainer.style.display = "none";
+      el.editDialog.style.display = "none";
+      el.hintDialog.style.display = "block";
+      window.sessionStorage.setItem("entryContainerHidden", true);
+      window.scrollTo(0, 0);
+    } else {
+      if (debug) console.log(`masterPassword: >>${pwd}<< Wrong password - try again!`);
+      if (debug) console.log(`masterPassword: storedHash= ${storedHash}`);
+      alert(`>>${pwd}<< Wrong password - try again!`)
+    }
   }
 });
+
 // show/hide newPassword field by clicking on change button
 document.querySelector(".btn.change").addEventListener("click", function() {
   document.getElementById("newPasswordDiv").classList.toggle("show");
 });
+
 el.newPassword.addEventListener("keydown", async (event) => {
   const debug = false;
   if (event.key !== 'Enter') return;
@@ -168,8 +152,6 @@ el.newPassword.addEventListener("keydown", async (event) => {
   function _cleanup() {
     el.newPassword.value = '';
     el.masterPassword.value = '';
-    // el.entryContainer.style.display = "none";
-    // el.hintDialog.showModal();
     el.hintDialog.style.display = "block";
     el.newPassword.classList.toggle("show");
   }
@@ -205,8 +187,6 @@ el.newPassword.addEventListener("keydown", async (event) => {
   const pwdHash = await createHash(newPassword);
   hpassStorage.setItem("pwdHash", pwdHash, `el.newPassword:`);
   PASSWORD = newPassword;
-  // sessionStorage.setItem("password", newPassword);
-  // change encryption from old to new password
   try {
     for (const key of CRYPTO.encryptedItems) {
       const fromStorage = localStorage.getItem(key);
@@ -235,33 +215,31 @@ document.addEventListener("click", (event) => {
 });
 
 el.closeHintDialog.addEventListener('click', () => {
-  // hintDialog.close();
   el.hintDialog.style.display = "none";
   el.frontContainer.style.display = "block";
 });
+
 el.openEditDialog.addEventListener('click', async () => {
   const opts = await storageGet({key: "options", pwd: PASSWORD});
   el.salt.value = opts.salt;
   el.pepper.value = opts.pepper;
   el.length.value = opts.length;
-  // editDialog.showModal();
   el.editDialog.style.display = "block";
 });
+
 el.closeEditDialog.addEventListener("click", () => {
   el.editDialog.style.display = "none";
-  // editDialog.close();
-  // hintDialog.showModal();
   el.hintDialog.style.display = "block";
 });
+
 el.openImportDialog.addEventListener('click', () => {
   el.importDialog.showModal();
 });
+
 el.closeImportDialog.addEventListener("click", () => {
   el.importDialog.close();
 });
-// el.openResetDialog.addEventListener('click', () => {
-//   el.resetDialog.showModal();
-// });
+
 el.closeResetDialog.addEventListener("click", () => {
   el.resetDialog.close();
 });
@@ -321,11 +299,9 @@ async function handleImport(event) {
                 imp[key] = await encryptText(PASSWORD, imp[key]);
                 localStorage.setItem(key, imp[key]);
               });
-              // Object.keys(imp).forEach(key => localStorage.setItem(key, imp[key]))
               localStorage.setItem("encrypted", true);
               setDisplayedOptions(imp.options);
               if (debug) alert(`INFO: handleImport: localStorage= ${JSON.stringify(localStorage)}`);
-              // alert(`Settings imported from: ${fileName}`);
           } catch (error) {
               console.error('Error parsing JSON file:', error);
               alert('Failed to import settings. Please ensure the file is a valid JSON.');
@@ -334,7 +310,6 @@ async function handleImport(event) {
       reader.readAsText(file);
       el.importDialog.close();
       el.importFileInput.value = "";
-      // await populateVisibleSettings();
       alert(`Settings imported from: ${fileName}`);
   } else {
       alert('No file selected.');
@@ -411,13 +386,10 @@ async function generateFun(event) {
 
 function showPopup(msg, timeOut, bkg = "lightgreen") {
   const popupStyles = {
-    // display: 'block',
     position: 'absolute',
     fontSize: '1.1rem',
     backgroundColor: bkg,
     border: '0.1px solid black',
-    // zIndex: 9999999,
-    // top: '10%',
     margin: '33% auto',
     width: '90%',
     height: '25%',
@@ -438,8 +410,6 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
   const popup = document.createElement("dialog");
   popup.id = "showPopup";
   const closeButton = document.createElement("button");
-  // popup.style = popupStyles;
-  // closeButton.style = buttonStyles;
   Object.assign(popup.style, popupStyles);
   Object.assign(closeButton.style, buttonStyles);
   popup.setAttribute('role', 'alert');
@@ -707,15 +677,12 @@ document.querySelectorAll('.export').forEach(function(element) {
 function handleExport(args = {}) {
   args = {fileName: "hpass-settings", encrypted: true, ...args};
   const keys = ["encrypted", "sites", "options", "pwdHash"];
-  const toExport = {}; // prepare localStorage copy for export
-  // Object.keys(localStorage).forEach ((key) => {toExport[key] = localStorage.getItem(key)});
+  const toExport = {};
   keys.forEach ((key) => {
     const x = localStorage.getItem(key);
     if (x !== null) toExport[key] = x;
   });
   toExport.encrypted = args.encrypted;
-
-  // console.log(`DEBUG: handleExport: toExport= ${JSON.stringify(toExport)}`);
 
   function finish() {
     const x = JSON.stringify(toExport, null, 2);
@@ -730,11 +697,6 @@ function handleExport(args = {}) {
   
   if (!args.encrypted) {
     if (!confirm("Plain text export!")) return;
-    // const sessionPassword = sessionStorage.getItem("password");
-    // if (PASSWORD !== sessionPassword) {
-    //   alert(`ERROR: edit: handleExport: PASSWORD !== sessionPassword`);
-    //   PASSWORD = sessionPassword;
-    // }
     const decryptionPromises = CRYPTO.encryptedItems.map(async (key) => {
       if (toExport[key] === undefined) return;
       toExport[key] = await decryptText(PASSWORD, toExport[key]);
@@ -749,7 +711,6 @@ function handleExport(args = {}) {
 }
 
 document.querySelectorAll(".share").forEach(function(element) {
-  // console.log("INFO: .share selected");
   element.addEventListener("click", async function (event) {
     console.log("INFO: .share clicked");
     const shareData = {
@@ -795,12 +756,7 @@ document.querySelectorAll(".reset").forEach(function(element) {
     msg = `${msg}\nPassword will be reset to default (empty string) value.`;
     msg = `${msg}\n\nClick OK to proceed.`
     if (!confirm(msg)) return;
-    // return;
     event.preventDefault();
-    // localStorage.clear();
-    // PASSWORD = '';
-    // const pwdHash = await createHash(PASSWORD);
-    // hpassStorage.setItem("pwdHash", pwdHash, `edit: reset: pwdHash= ${pwdHash}`)
     const opts = await setGenericOptions();
   });
 });
@@ -810,8 +766,7 @@ async function setGenericOptions() {
   if (debug) console.log("setGenericOptions: null options in localStorage!");
   let opts = {...globalDefaults};
   const charset = CHARS.digits + CHARS.lower + CHARS.upper;
-  opts.salt = get_random_string(DEFAULT_SALT_LENGTH, charset); //TODO:
-  // opts.salt = "DEBUG!!!"
+  opts.salt = get_random_string(DEFAULT_SALT_LENGTH, charset);
   if (debug) console.log("setGenericOptions: opts= ", opts);
   if (debug) console.log("setGenericOptions: CRYPTO.passwd= ", CRYPTO.passwd);
   if (debug) alert(`setGenericOptions: CRYPTO.passwd= ${CRYPTO.passwd}`);
@@ -820,9 +775,6 @@ async function setGenericOptions() {
   const pwdHash = await createHash(PASSWORD);
   localStorage.setItem("pwdHash", pwdHash);
   await storageSet({key: "options", value: opts, pwd: PASSWORD, debug: true})
-  // .then( () => {
-  //   sanityCheck({key: "options", value: opts, from: "setGenericOptions"});
-  // });
   localStorage.setItem("encrypted", true);
   if (debug) console.log("setGenericOptions: before createSplashScreen: opts= ", opts);
   el.edHint.value = '';
@@ -834,94 +786,13 @@ async function setGenericOptions() {
   return opts;
 };
 
-
-// async function _defunct_createSplashScreen(opts) {
-//   const debug = false;
-//   if (debug) console.log("createSplashScreen: at the START");
-//   if (debug) console.trace();
-//   PASSWORD = '';
-//   // sessionStorage.setItem("password", PASSWORD);
-//   const pwdHash = await createHash(PASSWORD);
-//   localStorage.setItem("pwdHash", pwdHash);
-//   const changeImg = `<img src="icons/change.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
-//   const helpImg = `<img src="icons/help.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
-//   const infoImg = `<img src="icons/info.svg" style="width: 1.2rem; height: 1.2rem; vertical-align: middle;"></img>`;
-//   let msg = `<br><br>
-//   <h3>New in ${el.version.innerHTML}:</h3>
-//   <ul>
-//     <li>Biometric authentication.
-//   </ul>
-//   <h3>To start using HPASS:</h3>
-//   <ol>
-//   <li>Close this menu.
-//   <li>Password is initially blank. This
-//   <a href="https://www.pcmag.com/how-to/tricks-for-remembering-strong-passwords">PC article</a>
-//   is a good starting guide how to create strong and memorable passwords.
-//   <li>Change (${changeImg}) Password.
-//   </ol>
-//   <hhhr style="color: black;">
-//   <div>
-//   <br>
-//   <p style="background-color: yellow;">Store Password in a safe location.</p>
-//   <br>
-//   All settings are stored encrypted on your local device using
-//   Password as the encryption key.
-
-//   </div>
-//   `;
-//   const container = document.createElement("dialog"); // container
-//   container.id = "splash-screen-container";
-//   // container.style.padding = "1rem";
-//   container.style.padding = "0"; // Reset padding
-//   container.style.margin = "0"; // Reset margin
-//   container.style.width = "auto";
-//   container.style.maxWidth = "100vw";
-//   container.style.position = "fixed";
-//   container.style.boxSizing = "border-box";
-//   container.style.overflow = "hidden";
-//   const content = document.createElement("div"); // content
-//   content.id = "splash-screen-content";
-//   content.style.padding = "2rem"; // Adjust padding as needed
-//   // content.style.width = "90%"; // Use 100% of the container's width
-//   // content.style.maxWidth = "600px"; // Limit content width
-//   // content.style.overflow = "hidden"; // Add scrollbars if content overflows
-//   content.style.boxSizing = "border-box";
-//   // content.className = "modal-content";
-//   content.innerHTML = msg;
-//   const closeButton = document.createElement('span');
-//   closeButton.className = 'close';
-//   closeButton.innerHTML = '&times;';
-//   closeButton.style.padding = "1rem 2rem 0 0";
-//   closeButton.addEventListener('click', function() {
-//     // container.style.display = "none";
-//     container.close()
-//     // window.location.href = 'help.html';
-//   });
-//   content.appendChild(closeButton);
-//   container.appendChild(content);
-//   // container.style.display = "block";
-//   document.body.appendChild(container);
-//   container.showModal();
-//   if (debug) console.log("createSplashScreen: at the end");
-//   if (debug) console.trace();
-// };
-
 document.querySelectorAll(".lock").forEach(function(element) {
-  // console.log("DEBUG: querySelectorAll(.lock");
   element.addEventListener("click", function (event) {
     const lockSound = document.getElementById("lockSound");
-    // console.log(".lock: el.masterPassword= ", el.masterPassword);
-    // console.log(".lock: el.frontContainer= ", el.frontContainer);
-    // console.log(".lock: lockSound= ", lockSound);
     if (el.masterPassword && el.frontContainer && lockSound) {
       el.masterPassword.value = "";
-      // el.frontContainer.style.display = "block";
-      // el.editDialog.close();
       el.editDialog.style.display = "none";
-      // el.hintDialog.close();
       el.hintDialog.style.display = "none";
-      // el.entryContainer.style.visibility = "visible";
-      // el.editContainer.style.visibility = "hidden";
       lockSound.currentTime = 0; // Reset audio to start
       lockSound.volume = 0.1;
       lockSound.play();
@@ -976,12 +847,9 @@ document.getElementById("authenticate").addEventListener("click", async () => {
     if (PASSWORD === null) {
       alert("Enter Password for extra security");
     } else {
-      // el.entryContainer.style.display = "none";
-      // el.hintDialog.showModal();
       el.frontContainer.style.display = "none";
       el.hintDialog.style.display = "block";
-      // window.sessionStorage.setItem("entryContainerHidden", true);
-      window.scrollTo(0, 0); // scroll window to the top!
+      window.scrollTo(0, 0);
       console.log(`authenticate: PASSWORD= ${PASSWORD}`);
     }
   } else {
@@ -991,10 +859,6 @@ document.getElementById("authenticate").addEventListener("click", async () => {
     cancel.addEventListener('click', () => {
       el.registerDialog.close(); 
     });
-    // alert('fingerprint authentication failed: try to register again');
-    // localStorage.removeItem("credential.id");
-    // const created = await register({userName: "hpass.app", displayName: "hpass"});
-    // console.log(`Credential: created from register()= ${created}`);
   }
 });
 
@@ -1003,26 +867,15 @@ function noIdlingHere() { // TODO: should this be activated?
   const oneMinute = 60000;
   const idleTime = debug ? 1e9 : 10 * oneMinute;
   function yourFunction() {
-      // alert(`Closing after 10 minutes of inactivity...`);
+      // alert(`Closing after ${idleTime/oneMinute} minutes of inactivity...`);
       const secretInputs = document.querySelectorAll('.secret');
       secretInputs.forEach((input) => {
         input.value = '';
-        // Remove associated storage (if applicable)
         localStorage.removeItem(input.name);
-        // sessionStorage.removeItem(input.name);
       });
-      // el.entryContainer.style.display = "block";
-      // el.hintDialog.close();
       el.frontContainer.style.display = "block";
       el.hintDialog.style.display = "none";
       el.editDialog.style.display = "none";
-      // el.editDialog.close();
-      // el.salt.value = ''; TODO: wipes clean input boxes, but...
-      // el.pepper.value = '';
-      // el.length.value = '';
-      // el.navMenu.classList.toggle("show");
-      // your function for too long inactivity goes here
-      // e.g. window.location.href = 'logout.php';
   }
   let t; // must be declared here
   function resetTimer() {
@@ -1035,51 +888,3 @@ function noIdlingHere() { // TODO: should this be activated?
   });
 };
 noIdlingHere();
-
-// Google ad section
-
-// document.querySelectorAll(".adContainer").forEach( element => {
-//   element.addEventListener('click', () => {
-//     (adsbygoogle = window.adsbygoogle || []).push({});
-//   });
-// })
-
-// document.querySelectorAll('dialog').forEach(dialog => {
-//   // Observe dialog close events
-//   dialog.addEventListener('close', () => {
-//     const adContainer = dialog.querySelector('.adContainer');
-//     adContainer.style.display = 'none'; // Reset container
-//   });
-
-//   // Handle dialog openings properly
-//   dialog.addEventListener('click', (e) => {
-//     if (!e.target.closest('.adContainer')) return;
-
-//     // Show dialog properly
-//     if (typeof dialog.showModal === 'function') {
-//       dialog.showModal(); // Use native dialog API
-//     } else {
-//       dialog.style.display = 'block';
-//     }
-
-//     // Double RAF pattern for layout stability
-//     requestAnimationFrame(() => {
-//       requestAnimationFrame(() => {
-//         const adContainer = dialog.querySelector('.adContainer');
-//         const insElement = adContainer.querySelector('.adsbygoogle');
-        
-//         // First load
-//         if (!insElement.dataset.adsbygoogleStatus) {
-//           adContainer.style.display = 'block';
-//           (adsbygoogle = window.adsbygoogle || []).push({});
-//         }
-//         // Refresh existing ad
-//         else if (insElement.dataset.adsbygoogleStatus === 'done') {
-//           adsbygoogle = window.adsbygoogle || [];
-//           adsbygoogle.requestNonPersonalizedAds = 1;
-//           adsbygoogle.push({});
-//         }
-//       });
-//     });
-//   });
-// });
