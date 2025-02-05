@@ -153,6 +153,8 @@ el.newPassword.addEventListener("keydown", async (event) => {
     el.newPassword.value = '';
     el.masterPassword.value = '';
     el.hintDialog.style.display = "block";
+    el.editDialog.style.display = "none";
+    el.frontContainer.style.display = "none";
     el.newPassword.classList.toggle("show");
   }
   const masterPassword = el.masterPassword.value;
@@ -215,6 +217,7 @@ document.addEventListener("click", (event) => {
 });
 
 el.closeHintDialog.addEventListener('click', () => {
+  el.editDialog.style.display = "none";
   el.hintDialog.style.display = "none";
   el.frontContainer.style.display = "block";
 });
@@ -225,10 +228,13 @@ el.openEditDialog.addEventListener('click', async () => {
   el.pepper.value = opts.pepper;
   el.length.value = opts.length;
   el.editDialog.style.display = "block";
+  el.hintDialog.style.display = "none";
+  el.frontContainer.style.display = "none";
 });
 
 el.closeEditDialog.addEventListener("click", () => {
   el.editDialog.style.display = "none";
+  el.frontContainer.style.display = "none";
   el.hintDialog.style.display = "block";
 });
 
@@ -433,7 +439,6 @@ function showPopup(msg, timeOut, bkg = "lightgreen") {
 function handleFeedback(event) {
   const debug = false;
   const button = event.currentTarget;
-  // console.log(`handleFeedback: button.id= ${button.id}`);
   if (navigator.vibrate) {   // haptic
       navigator.vibrate(50); // vibrate for 100ms
   }
@@ -471,9 +476,6 @@ async function saveOptions(args) {
   const stringEmpty = (x) => x === '';
   const objEmpty = (x) => Object.keys(x).length === 0;
   const objEqual = (x, y) => objEmpty(objDiff(x, y));
-  // let currentOpts = null;
-  // let updateCurrentOpts = () => currentOpts = {salt: el.salt.value, pepper: el.pepper.value, length: el.length.value};
-  // updateCurrentOpts();
   let hint = el.edHint.value;
   const storedOpts = await storageGet({key: "options", pwd: PASSWORD});
   if (storedOpts === null) {
@@ -569,7 +571,6 @@ async function saveOptions(args) {
   // "001": `Create New site-specific settings for >>${hint}<<`, // B
   if (state === "001") {
     sites[hint] = diff;
-    // msg = `state= ${state}\n${msg}\n`;
     msg = `${msg}\nSecret= ${currentOpts.salt}`;
     msg = `${msg}\nSpecial Character= ${currentOpts.pepper}`;
     msg = `${msg}\nLength= ${currentOpts.length}`;
@@ -615,7 +616,6 @@ async function saveOptions(args) {
   // "111": "Nothing new to save",                               // D
   //
   if (state === "011" || state === "110" || state === "111") {
-    // msg = `state= ${state}\n${msg}\n`;
     alert(msg);
     return;
   }

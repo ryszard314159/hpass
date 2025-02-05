@@ -60,12 +60,9 @@
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="css/pwa.css" />
     <link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />
-    <!-- <script defer type="module" src="core/crypto.js"></script> -->
-    <!-- <script defer type="module" src="core/lib.js"></script>  -->
     <script defer type="module" src="webauthn.js"></script>
     <script defer type="module" src="config.js"></script>
     <script defer type="module" src="app.js"></script>
-    <!-- <script defer type="module" src="sw.js"></script> -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946044372357745"
@@ -91,7 +88,6 @@
 
     <div id="frontContainer">
         <div id="frontBanner" class="topIcons">
-          <!-- class="btn" width="40" height="40" -->
           <div>
             <a href="help.html" target="_blank">
               <img id="help" class="btn" src="icons/help.svg" title="Help">
@@ -130,10 +126,8 @@
           </span>
         </form>
         <div class="fp">
-          <!-- <button id="register"> Register </button> -->
           <img id="authenticate" width="48" height="48" class="security"
               src="icons/fp.svg" alt="Fingerprint"/>
-          <!-- <button id="authenticate">Authenticate</button> -->
         </div>
         <dialog id="registerDialog">
           <h2 id="dialog-title">Passkey Registration</h2>
@@ -179,9 +173,8 @@
     <div id="hintDialog">
 
       <div id="hintIcons" class="topIcons">
-        <!-- class="btn" width="40" height="40" -->
           <div>
-            <img id="openEditDialog" class="btn" src="icons/gear.svg" alt="Gear symbol">
+            <img id="openEditDialog" class="btn" src="icons/gear.svg" alt="Gear symbol" title="Edit">
           </div>
           <div>
             <img class="btn share" src="icons/share.svg" title="Share">
@@ -194,7 +187,6 @@
       <div id="hintInputs" class="inputsContainer">
         <h4 id="hintTitle">Enter hint & Generate password</h4><br>
         <div id="pgHintContainer" class="container">
-          <!-- <img id="openEditDialog" class="" src="icons/gear.svg" alt="Gear symbol"> -->
           <img id="generateLeft" class="generate" src="icons/generate.svg" alt="Arrow to generate password">
           <input id="pgHint" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Enter Hint"/>
           <img id="generateRight" class="generate" src="icons/right-generate.svg" alt="Arrow to generate password">
@@ -376,7 +368,6 @@
       <div id="editIcons" class="topIcons">
         <div>
           <img id="closeEditDialog" class="btn back"  src="icons/cross.svg" title="Back">
-          <!-- <span id="closeEditDialog" class="btn back" width="80" height="80">&times;</span> -->
         </div>
         <div>
           <img id="openImportDialog" class="btn import" src="icons/import.svg" title="Import">
@@ -390,9 +381,6 @@
         <div>
           <img id="editShare" class="btn share" src="icons/share.svg" title="Share">
         </div>
-        <!-- <div> -->
-          <!-- <img id="lockEdit" class="btn lock" width="40" height="40" src="icons/lock.svg" title="Lock"/> -->
-        <!-- </div> -->
       </div>
 
       <div id="editInputs" class="inputsContainer">
@@ -415,7 +403,7 @@
       </div>
 
       <div id="editLegend" style="text-align: left;">
-        <p><!-- style="justify-content: center; text-align: left;"> -->
+        <p>
           <hr>
           <br>
 
@@ -424,7 +412,7 @@
             <strong>Hint</strong> field, populate 
             <strong>Secret</strong>, <strong>Special Character</strong>,
             and <strong>Length</strong> with desired values, and press save icon
-            <img class="icon" src="icons/save.svg"/>.
+            <img style="width: 1rem; height: 1rem;" src="icons/save.svg"/>.
           </p>
           <br>
           <p>
@@ -499,17 +487,18 @@
       Password as the encryption key.
     </dialog>
 
+    <!-- TODO: potential workaround for help.html UIX issues?
     <dialog id="helpDialog">
       <div id="helpBanner" class="topIcons" style="justify-content: left; margin-bottom: 3rem;">
         <img id="closeHelp" class="btn back" src="icons/cross.svg" title="Close Help">
       </div>
       <div id="helpText">
-        <!-- Help content will be dynamically loaded here -->
+        <!- Help content will be dynamically loaded here ->
       </div>
     </dialog>
+    -->
 
     <div id="adunit" class="adContainer">
-      <!-- <img width="200" height="200" src="icons/logo.svg"/> -->
       <ins
         class="adsbygoogle"
         style="display: block"
