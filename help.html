@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,38 +8,13 @@
     <link rel="stylesheet" href="css/pwa.css" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946044372357745"
      crossorigin="anonymous"></script>
-    <script>
-      // window.onload = function() {
-      //    window.scrollTo(0, 0);
-      //    const history = localStorage.getItem("history");
-      //    console.log(`help: history= ${history}`)
-      //    const topBanner = document.getElementById("topBanner");
-      //    const title = document.getElementById("title");
-      //   //  const topBannerHeight = topBanner.offsetHeight;
-      //    if (history !== null) {
-      //      topBanner.style.display = "none";
-      //      title.style.marginTop = "0";
-      //    } else {
-      //      localStorage.setItem("history", "loaded");
-      //      topBanner.style.display = "block";
-      //     //  title.style.marginTop = `${topBanner.offsetHeight}`;
-      //      title.style.marginTop = `4rem`;
-      //    }
-      // }
-      </script>
-    <script>
-      // document.getElementById("backButton").addEventListener("click", () => {
-      //   console.log("btn back clicked!");
-      //   // window.close();
-      // });
-    </script>
   </head>
     <!-- <body style="background-color: rgb(175, 231, 191);"> -->
     <body class="help">
 
     <div id="helpBanner" class="topIcons"
          style="justify-content: left; margin-bottom: 3rem;">
-      <img class="btn back" src="icons/back.svg" title="Back">
+      <img id="closeHelp" class="btn back" src="icons/cross.svg" title="Close Help">
            <script>
             document.querySelector(".btn.back").addEventListener("click", () => {
               window.close();
@@ -50,36 +24,41 @@
 
     <br><br>
     <div id="title">
-    <h1>Start using HPASS:</h1>
+    <h2>Basic usage:</h2>
     </div>
 
     <ol>
-      <li> Enter the <strong>Master Password</strong> (initially blank).
+      <li> Enter the <strong>Password</strong>,
+           or use biometric authentication
+           (<img src="icons/fp.svg" style="width:1rem; height:1rem;">), to open the app.
       <li> Enter password hint in the <strong>Enter Hint</strong> box.
-      <li> Press Enter key or click the right arrow
-           <img src="icons/generate.svg" style="width:2rem; height:0.8rem;"/>
-           button in the top corner to generate password.
+      <li> Press Enter key or click one of the arrows 
+           (<img id="generateLeft" src="icons/generate.svg" class="generate" style="width:1rem; height:0.8rem;"/> or
+           <img id="generateRight" src="icons/right-generate.svg" class="generate" style="width:1rem; height:0.8rem;"/>)
+           next to the <strong>Enter Hint</strong> box to generate password.
            It will be automatically copied to the clipboard.
-      <li> Paste the password where you need it.</li>
+      <li> Paste this <strong><em>generated password</em> </strong>
+           from the clipboard where needed.</li>
     </ol>
 
     <br>
     <p><strong>...or read on for more...</strong></p>
 
-    <h1>Installation and Settings</h1>
+    <h2>Installation and Settings</h2>
     When you first visit the <a href="https://hpass.app">HPASS site</a>,
-    <em>generic settings</em> are initialized to default values, encrypted (using Master Password as a key),
+    <em>generic settings</em> are initialized to default values,
+    encrypted using Password (a.k.a. Master Password a.k.a. HPASS Password) as a key,
     and saved locally on your device.
 
     <br><br>
     <ul class="">
       <li>
         <strong>Secret</strong> (🤫): is initialized to a random string, e.g.
-        "ypiGG8s1nUCNcv5l". Purpose of Secret is to generate unique passwords
+        "ypiG_8s1nUCNcv5l". Purpose of Secret is to generate unique passwords
         for each user. You can keep it as is,
         or change it to a longer string for enhanced security.
         You can generate random string using HPASS,
-        or online random string generators
+        or an online random string generator
         (e.g. <a href="https://www.random.org/strings">random.org/strings</a>).
         Alternatively, you can change it to a memorable customized value, but
         it would likely be less secure.
@@ -89,8 +68,9 @@
       <li><strong>Length</strong> (📏): 15</li>
     </ul>
     <br><br>
+    Default values for
     <strong>Special Character</strong> and
-    <strong>Length</strong> values are selected to satisfy most sites.
+    <strong>Length</strong> are selected to satisfy most sites.
     You may need to change them if some site enforces
     password requirements inconsistent with your generic values e.g. doesn't allow "_",
     requires a password shorter than 15 characters, etc.
@@ -112,7 +92,7 @@
 
     <h2>Multiple devices</h2>
 
-    To generate the same passwords, have the same settings on each device.
+    To generate the same passwords, you have to have the same settings on each device.
     To make synchronization easier, <em>settings</em> can be exported
     (<img src="icons/export.svg" class="hbtn"/>) - encrypted or plain text -
     from one device and imported
@@ -154,11 +134,14 @@
     determines the generated password i.e.
     the same values always generate the same password.
 
-    <h1>Icons</h1>
+    <h2>Icons</h2>
 
     <div class="grid">
       <div class="cell">
         <img class="icon" src="icons/generate.svg"/> Generate
+      </div>
+      <div class="cell">
+        <img class="icon" src="icons/right-generate.svg"/> Generate
       </div>
       <div class="cell">
         <img class="icon" src="icons/gear.svg"/> Edit
@@ -177,6 +160,9 @@
       </div>
       <div class="cell">
         <img class="icon" src="icons/info.svg"/> Info
+      </div>
+      <div class="cell">
+        <img class="icon" src="icons/fp.svg"/> Biometrics
       </div>
       <div class="cell">
         <img class="icon" src="icons/share.svg"/> Share
@@ -199,13 +185,56 @@
     </div>
 
     <a id="Contact"></a>
-    <h1>Contact</h1>
+    <h2>Contact</h2>
     <p>Email <strong>info@hpass.app</strong> to ask questions,
       suggest improvements, etc.
     </p>
-    <a id="FAQ"></a>
-    <h1>Frequently Asked Questions (FAQ)</h1>
-    <p>Nothing here yet...</p>
-  <!-- </div> -->
+
+    <!-- <h2>See also:</h2> 
+
+    Frequently Asked Questions
+    <a href="faq.html" target="_blank" rel="opener">FAQ</a> page. -->
+
+    <br><br>
+    <h2>Frequently Asked Questions</h2>
+
+    <button type="button" class="collapsible">
+      What to do if I need to change password for the site?
+    </button>
+
+    <div class="content">
+      <br><p>
+        One simple way to change password periodically, is
+        to add a counter to the <tt><strong>Special Character</strong></tt> field and save
+        new value as <em>site-specific setting</em>.
+        For example, you change "_" to "_1", next time to "_2", etc.
+        <br><br>
+        <strong>NOTE:</strong> NIST now recommends againts forced periodic password changes.
+        From
+        <a href="https://pages.nist.gov/800-63-4/sp800-63b.html">NIST SP800-63B</a>:
+        <em>
+        [...] Do not require that passwords be changed arbitrarily (e.g., periodically)
+        unless there is a user request or evidence of authenticator compromise [...]
+        </em>
+      </p><br>
+    </div>
+    <hr>
+
+    <script>
+      let coll = document.getElementsByClassName("collapsible");
+      let i;
+      for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+          this.classList.toggle("active");
+          let content = this.nextElementSibling;
+          if (content.style.display === "block") {
+            content.style.display = "none";
+          } else {
+            content.style.display = "block";
+          }
+        });
+      }
+    </script>
+   <br><br>
   </body>
 </html>

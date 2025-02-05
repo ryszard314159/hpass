@@ -9,11 +9,16 @@
   </head>
   <!-- <body style="text-align: left; background-color: wheat; top: 0;"> -->
   <body class="privacy">
-    <!-- <div class="center">
-      <a href="../index.html" class="banner">
-        <img class="btn" src="../icons/back.svg" />
-      </a>
-    </div> -->
+    <div id="privacyBanner" class="topIcons">
+      <!-- style="justify-content: left; margin-bottom: 3rem;">  -->
+      <img class="btn back" src="../icons/cross.svg" title="Back">
+        <script>
+         document.querySelector(".btn.back").addEventListener("click", () => {
+           window.close();
+         });
+       </script>
+    </div>
+    <br><br>
     <h1>HPASS Privacy Policy</h1>
 
     <p>Updated December 6, 2024</p>

@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <!-- Bidvertiser2086285 -->
   <!-- Some useful links:
     https://general.support.brightcove.com/developer/debugging-mobile-devices.html
@@ -6,6 +7,10 @@
     https://uxplanet.org/the-anatomy-of-input-field-c3ef863e01d7
   -->
   <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin="anonymous">
+    <link rel="preconnect" href="https://www.google.com" crossorigin="anonymous">
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous">
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
@@ -47,7 +52,6 @@
       }
     </script>
     <meta name="description" content="Hinted easy to use password generator" />
-    <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#db4938" />
@@ -56,17 +60,16 @@
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="css/pwa.css" />
     <link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />
-    <!-- <script defer type="module" src="core/crypto.js"></script> -->
-    <!-- <script defer type="module" src="core/lib.js"></script>  -->
+    <script defer type="module" src="webauthn.js"></script>
+    <script defer type="module" src="config.js"></script>
     <script defer type="module" src="app.js"></script>
-    <!-- <script defer type="module" src="sw.js"></script> -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9946044372357745"
       crossorigin="anonymous"
     ></script>
   </head>
-  <body class="index">
+  <body class="">
     <!-- Google Tag Manager (noscript) -->
     <noscript
       ><iframe
@@ -81,57 +84,112 @@
     <audio id="clickSound" src="click-sound.wav" preload="auto"></audio>
     <audio id="lockSound" src="door-close.mp3" preload="auto"></audio>
     
-    <div id="entryContainer">
-        <div id="topIcons1" class="topIcons"> 
-          <a href="help.html" target="_blank"><img id="help" class="btn" src="icons/help.svg" title="Help"></a>
-          <a href="info.html" target="_blank"><img id="info" class="btn" src="icons/info.svg" title="Info"></a>
-          <img class="btn email" src="icons/email.svg" title="Email Support">
-          <img class="btn share" src="icons/share.svg" title="Share">
-          <img class="btn change" src="icons/change.svg" title="Change Password">
-          <img class="btn reset" src="icons/reset.svg" title="Reset">
+    <body>
+
+    <div id="frontContainer">
+        <div id="frontBanner" class="topIcons">
+          <div>
+            <a href="help.html" target="_blank">
+              <img id="help" class="btn" src="icons/help.svg" title="Help">
+            </a>
+          </div>
+          <div>
+            <a href="info.html" target="_blank">
+              <img class="btn" src="icons/info.svg" title="Info">
+            </a>
+          </div>
+          <div>
+            <img class="btn email" src="icons/email.svg" title="Email Support">
+          </div>
+          <div>
+            <img class="btn share" src="icons/share.svg" title="Share">
+          </div>
+          <div>
+            <img class="btn change" src="icons/change.svg" title="Change Password">
+          </div>
+          <div>
+            <img class="btn reset" src="icons/reset.svg" title="Reset">
+          </div>
+          <div>
           <img class="btn install" src="icons/install.svg" title="Install">
-        </div>
-        <img id="logop" class="share" src="icons/logo.svg" />
-        <div id="masterPasswordDiv" class="password-container">
+          </div>
+      </div>
+      <img id="logop" width="100" height="100" class="share" src="icons/logo.svg" alt="HPASS Logo"/>
+      <!-- NOTE: need event.preventDefault(); in app.js code for id="masterPassword" -->
+
+      <div class="securityContainer">
+        <form id="masterPasswordDiv" class="password-container">
           <input id="masterPassword" type="password" autocomplete="off"
-                 enterkeyhint="Enter" placeholder="Master Password"/>
-          <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg"></span>
+                enterkeyhint="Enter" placeholder="Password"/>
+          <span><img id="eye-master" class="eye-img"
+                src="icons/eye-hide.svg" alt="Crossed Eye">
+          </span>
+        </form>
+        <div class="fp">
+          <img id="authenticate" width="48" height="48" class="security"
+              src="icons/fp.svg" alt="Fingerprint"/>
         </div>
-        <div id="newPasswordDiv" class="password-container">
+        <dialog id="registerDialog">
+          <h2 id="dialog-title">Passkey Registration</h2>
+          <div class="button-container">
+            <button id="register">Register</button>
+            <button id="cancel">Cancel</button>
+          </div>
+          <p>
+            <br>
+            This is a convenience feature that allows you to use biometric authentication,
+            in addition to a password, to access HPASS functionality.
+            It is implemented using the
+            <a href="https://en.wikipedia.org/wiki/WebAuthn">WebAuthn</a>
+            framework and has been tested on Chrome for desktop and Android (Pixel 6).
+            If it does not work on your device, you can continue using your HPASS password as before.
+          </p>
+        </dialog>
+        <form id="newPasswordDiv" class="password-container">
           <input id="newPassword" type="password" autocomplete="off"
-                 enterkeyhint="Enter" placeholder="New Password"/>
-          <span><img id="eye-new" class="eye-img" src="icons/eye-hide.svg"></span>
+                enterkeyhint="Enter" placeholder="New Password"/>
+          <span><img id="eye-new" class="eye-img"
+                src="icons/eye-hide.svg" alt="Crossed Eye">
+          </span>
+        </form>
+
+      </div>
+
+      <div id="versionContainer">
+        <div class="flex-item">
+          <p id="version" class="version">YYYY-MM-DD</p>
         </div>
-        <div id="versionContainer">
-          <!-- <div class="flex-item">
-            <img id="logo" loading="lazy" src="icons/logo.svg" />
-          </div> -->
-          <div class="flex-item">
-            <p id="version">YYYY-MM-DD</p>
-          </div>
-          <div class="flex-item">
-            <a href="privacy/index.html" target="_blank">Privacy</a>
-          </div>
-          <!-- <div class="flex-item">
-            <a href="help.html#FAQ">FAQ</a>
-          </div> -->
-          <div class="flex-item">
-            <!-- <a href="help.html#Contact">info@hpass.app</a> -->
-            <span class="email">info@hpass.app</span>
-          </div>
+        &bull;
+        <div class="flex-item">
+          <a href="privacy/index.html" target="_blank">Privacy</a>
         </div>
+        &bull;
+        <div class="flex-item">
+          <span class="email">info@hpass.app</span>
+        </div>
+      </div>
     </div>
 
-    <div id="enterContainer">
-      <div id="enterIcons" class="topIcons">
-          <img class="btn share" src="icons/share.svg" title="Share">
-          <img id="lockEntry" class="btn lock" src="icons/lock.svg" title="Lock"/>
+    <div id="hintDialog">
+
+      <div id="hintIcons" class="topIcons">
+          <div>
+            <img id="openEditDialog" class="btn" src="icons/gear.svg" alt="Gear symbol" title="Edit">
+          </div>
+          <div>
+            <img class="btn share" src="icons/share.svg" title="Share">
+          </div>
+          <div>
+            <img id="closeHintDialog" class="btn lock" src="icons/lock.svg" title="Lock"/>
+          </div>
       </div>
-      <div id="burnAndPeak" class="inputsContainer">
+
+      <div id="hintInputs" class="inputsContainer">
+        <h4 id="hintTitle">Enter hint & Generate password</h4><br>
         <div id="pgHintContainer" class="container">
-          <img id="gear" class="" src="icons/gear.svg">
+          <img id="generateLeft" class="generate" src="icons/generate.svg" alt="Arrow to generate password">
           <input id="pgHint" class="secret" autocomplete="off" enterkeyhint="Enter" placeholder="Enter Hint"/>
-          <img id="generate" class="" src="icons/generate.svg">
+          <img id="generateRight" class="generate" src="icons/right-generate.svg" alt="Arrow to generate password">
         </div>
 
         <div id="burnContainer" class="container" >
@@ -155,24 +213,178 @@
           still will be safe.  
         </div>
       </div>
+      <div id="hintLegend">
+        <hr>
+        <h2 style="text-align: center">
+          Why strong passwords are important?
+        </h2>
+        <p>
+          Using strong passwords is crucial for protecting your online
+          accounts and sensitive information. Strong passwords are difficult
+          for hackers to guess, reducing the risk of unauthorized access.
+          Strong passwords in conjuction with a tool which makes it easy to
+          generate them (like HPASS), and eliminates a need to remember
+          or store passwords, offer several advantages:
+        </p>
+        <ul>
+          <li>
+            <b>Security:</b> Strong password include a mix of letters,
+            numbers, and symbols, making them harder to crack through brute
+            force or dictionary attacks.
+          </li>
+          <li>
+            <strong>Privacy:</strong> Robust passwords safeguard your personal
+            and financial data, preventing identity theft and privacy
+            breaches.
+          </li>
+          <li>
+            <b>Account Protection:</b> Strong passwords help defend against
+            unauthorized access to your accounts, securing your emails, social
+            media, and online banking.
+          </li>
+          <li>
+            <b>Simplified Digital Life:</b> Easy to generate strong passwords
+            minimize "Forgot your password?" situations and the need of going
+            through the time consuming process of resetting password.
+          </li>
+        </ul>
+  
+        <h3>Passwords Do's:</h3>
+  
+        <ul>
+          <li>Use account specific passwords</li>
+          <li>
+            For all important accounts (email, financial sites, etc.) use
+            multi-factor authentication (MFA) whenever possible.
+          </li>
+          <li>
+            Use long (at least 12-15 characters), complex passwords. Longer is
+            always better, but some sites have a restriction of password
+            length. Default length 15 selected for HPASS seems to be a
+            reasonable compromise between security and convenience.
+          </li>
+        </ul>
+  
+        <h3>Passwords Don't</h3>
+  
+        <ul>
+          <li>Do not reuse the same password for multiple accounts</li>
+          <li>
+            Do not use easy patterns, dictionary words or easily guessable
+            personal data. Few examples of most commonly used (and hacked!)
+            passwords:
+            <tt
+              >123456, password, qwerty, 111111, abc123, password1, iloveyou,
+              1q2w3e4r</tt
+            >.
+          </li>
+          <li>
+            Never share your passwords with others, particularly as plain text
+            in email, etc.
+          </li>
+        </ul>
+  
+        <h3>But how?</h3>
+  
+        <p>
+          You may ask, but how possibly can I create, and remember long,
+          complex and site specific passwords for multiple - perhaps hundreds -
+          sites. As you may have guessed, our recommendation is to use HPASS
+          to simplify this aspect of your life :) - see more on how HPASS can
+          help, and why it might be better solution for you than password
+          manager, in <a href="info.html">Info section.</a> If you have
+          specific questions please do not hesitate to send email to
+          <strong><tt>info@hpass.app</tt></strong>.
+        </p>
+  
+        <h3>Password Generators vs. Managers</h3>
+  
+        <p>
+          One of the often recommended solutions is to use
+          <a href="https://en.wikipedia.org/wiki/Password_manager"
+            >Password Manager</a
+          >
+          [PM]. The advantage of PMs is that in addition to storing passwords
+          they allow to store any number of other data (credit card numbers,
+          PINs, social security numbers, etc) and some allow to share this
+          information with other users. While convenient, this type of
+          centralized storage attracts hackers with the prospect of
+          potentially stealing sensitive and valuable data for milions of
+          users and creates single point of failure.
+        </p>
+        <p>
+          Try HPASS. It is the single-minded and narrowly focused tool to help
+          with easy generation and use of strong, secure and site-specific
+          passwords. You can find more on how HPASS can help, and why you may
+          want to consider it, in
+          <a href="info.html">Info section.</a>
+        </p>
+  
+        <h3>Further reading</h3>
+  
+        <ol>
+          <li>
+            <a
+              href="https://www.darkreading.com/vulnerabilities-threats/how-password-managers-can-get-hacked"
+              >How Password Managers Can Get Hacked</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://fractionalciso.com/browser-password-managers-flawed-security-by-design"
+              >Browser password managers – flawed security, by design!</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://www.safetydetectives.com/blog/the-most-hacked-passwords-in-the-world/"
+              >20 Most Hacked Passwords in 2023: Is Yours Here?
+            </a>
+          </li>
+          <li>
+            <a href="https://proton.me/blog/how-long-should-my-password-be">
+              https://proton.me/blog/how-long-should-my-password-be</a>
+          </li>
+          <li>
+            <a
+              href="https://www.psmpartners.com/blog/nist-password-best-practices/"
+              >NIST Password Best Practices</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://cybernews.com/best-password-managers/are-password-managers-safe/"
+              >Are password managers safe to use in 2023?</a
+            >
+          </li>
+        </ol>
+        <br>
+        <hr>
+      </div>
     </div>
 
-    <hr>
-
-    <div id="editContainer" class="">
+    <div id="editDialog">
 
       <div id="editIcons" class="topIcons">
-        <img class="btn back" src="icons/back.svg" title="Back">
-        <img class="btn import" src="icons/import.svg" title="Import">
-        <img class="btn export" src="icons/export.svg" title="Export">
-        <img id="save" class="btn save" src="icons/save.svg" title="Save"/>
-        <img id="editShare" class="btn share" src="icons/share.svg" title="Share">
-        <img id="lockEdit" class="btn lock" src="icons/lock.svg" title="Lock"/>
+        <div>
+          <img id="closeEditDialog" class="btn back"  src="icons/cross.svg" title="Back">
+        </div>
+        <div>
+          <img id="openImportDialog" class="btn import" src="icons/import.svg" title="Import">
+        </div>
+        <div>
+          <img class="btn export" src="icons/export.svg" title="Export">
+        </div>
+        <div>
+          <img id="saveOptions" class="btn save" src="icons/save.svg" title="Save"/>
+        </div>
+        <div>
+          <img id="editShare" class="btn share" src="icons/share.svg" title="Share">
+        </div>
       </div>
 
-      <h3>Edit & Save Settings</h3>
-
-      <div id="inputsContainer" class="inputsContainer edit">
+      <div id="editInputs" class="inputsContainer">
+        <h4 id="editTitle">Edit & Save Settings</h4>
         <div id="edHintContainer" class="container">
           <input id="edHint" class="input" placeholder="Hint">
         </div>
@@ -188,193 +400,105 @@
           <button id="lengthButton" class="leading-icon">📏</button>
           <input id="length" class="input" placeholder="Length">
         </div>
+      </div>
 
-        <div id="editLegend">
-          <p><!-- style="justify-content: center; text-align: left;"> -->
-            <hr>
-            <br>
-            <ul>
-              <li><strong>Hint</strong>: leave it empty to change <em>generic settings</em>.
-                  You may need to create hint/site <em>specific settings</em>
-                  if a site does not allow <strong><tt>Special Character</tt></strong> in your
-                  <em>generic settings</em>, or demands longer/shorter password etc.
-                  In such a case, enter a <strong><tt>Hint</strong></tt>,
-                  modify <strong><tt>Special Character</tt></strong> and/or
-                  <tt><strong>Length</strong></tt>.
-  
-              </li>
-              <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
-              <li><strong>Special Character
-                  (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
-                  one or more !\"#$%&'()*+,-./:;<=>?@[ ]^_`{|}~</li>
-              <li><strong>Length (📏):</strong> longer is better,
-                          note however that a lot of sites have unreasonably short upper limit
-                          - 15 seems to be a reasonable balance between security and a need to create
-                          many <em>site-specific settings</em>.</li>
-            </ul>
+      <div id="editLegend" style="text-align: left;">
+        <p>
+          <hr>
+          <br>
+
+          <p>
+            To change <em>site settings</em> enter site hint in the 
+            <strong>Hint</strong> field, populate 
+            <strong>Secret</strong>, <strong>Special Character</strong>,
+            and <strong>Length</strong> with desired values, and press save icon
+            <img style="width: 1rem; height: 1rem;" src="icons/save.svg"/>.
           </p>
-          <br><hr><br>
-        </div>
+          <br>
+          <p>
+            Do the same to change <em>generic settings</em>,
+            but with empty <strong>Hint</strong> field. 
+          </p>
 
+          <br>
+          <ul>
+            <li><strong>Hint</strong>: keep it empty to change <em>generic settings</em>;
+              enter value to change <em>site settings</em>.
+
+            </li>
+            <li><strong>Secret (<span>🤫</span>):</strong> makes generated passwords unique for you.</li>
+            <li><strong>Special Character
+                (<span style="color: red;  line-height: 0;">&#x1F336</span>):</strong>
+                one or more !\"#$%&'()*+,-./:;<=>?@[ ]^_`{|}~</li>
+            <li><strong>Length (📏):</strong> longer is better,
+                        note however that a lot of sites have unreasonably short upper limit
+                        - 15 seems to be a reasonable balance between security and a need to create
+                        many <em>site-specific settings</em>.</li>
+          </ul>
+        </p>
+        <br><hr>
       </div>
 
     </div>
 
-    <div id="fileInputModal" class="modal">
-      <div class="modal-content">
-          <span class="close">&times;</span>
-          <p>Select a JSON file to import hpass settings:</p><br>
-          <input type="file" id="importFileInput" accept="application/json">
-      </div>
-    </div>
-
-    <div id="footer" style="width: 90%; margin: 5% 5% 5% 5%;">
-      <h2 style="text-align: center">
-        Why strong passwords are important?
-      </h2>
+    <dialog id="importDialog" class="">
+      <span id="closeImportDialog" class="close">&times;</span>
+      <br>
+        <input type="file" id="importFileInput" accept="application/json">
+        <br>
+      <form class="password-container" >
+        <span><img id="eye-master" class="eye-img" src="icons/eye-hide.svg" alt="Crossed Eye"></span>
+        <input type="password" id="importPassword" placeholder="File Password">
+      </form>
       <p>
-        Using strong passwords is crucial for protecting your online
-        accounts and sensitive information. Strong passwords are difficult
-        for hackers to guess, reducing the risk of unauthorized access.
-        Strong passwords in conjuction with a tool which makes it easy to
-        generate them (like HPASS), and eliminates a need to remember
-        or store passwords, offer several advantages:
+        Enter password used to encrypt the file with HPASS settings
+        in "File Password" field.
+        Leave it empty if the current Master Password is the same.
       </p>
+    </dialog>
+
+    <dialog id="resetDialog" class="">
+      <span id="closeResetDialog" class="close">&times;</span>
+      <h3>New in <span class="version">YYYY-MM-DD</span>:</h3>
       <ul>
-        <li>
-          <b>Security:</b> Strong password include a mix of letters,
-          numbers, and symbols, making them harder to crack through brute
-          force or dictionary attacks.
-        </li>
-        <li>
-          <strong>Privacy:</strong> Robust passwords safeguard your personal
-          and financial data, preventing identity theft and privacy
-          breaches.
-        </li>
-        <li>
-          <b>Account Protection:</b> Strong passwords help defend against
-          unauthorized access to your accounts, securing your emails, social
-          media, and online banking.
-        </li>
-        <li>
-          <b>Simplified Digital Life:</b> Easy to generate strong passwords
-          minimize "Forgot your password?" situations and the need of going
-          through the time consuming process of resetting password.
-        </li>
+        <li>Biometric authentication.
       </ul>
-
-      <h3>Passwords Do's:</h3>
-
-      <ul>
-        <li>Use account specific passwords</li>
-        <li>
-          For all important accounts (email, financial sites, etc.) use
-          multi-factor authentication (MFA) whenever possible.
-        </li>
-        <li>
-          Use long (at least 12-15 characters), complex passwords. Longer is
-          always better, but some sites have a restriction of password
-          length. Default length 15 selected for HPASS seems to be a
-          reasonable compromise between security and convenience.
-        </li>
-      </ul>
-
-      <h3>Passwords Don't</h3>
-
-      <ul>
-        <li>Do not reuse the same password for multiple accounts</li>
-        <li>
-          Do not use easy patterns, dictionary words or easily guessable
-          personal data. Few examples of most commonly used (and hacked!)
-          passwords:
-          <tt
-            >123456, password, qwerty, 111111, abc123, password1, iloveyou,
-            1q2w3e4r</tt
-          >.
-        </li>
-        <li>
-          Never share your passwords with others, particularly as plain text
-          in email, etc.
-        </li>
-      </ul>
-
-      <h3>But how?</h3>
-
-      <p>
-        You may ask, but how possibly can I create, and remember long,
-        complex and site specific passwords for multiple - perhaps hundreds -
-        sites. As you may have guessed, our recommendation is to use HPASS
-        to simplify this aspect of your life :) - see more on how HPASS can
-        help, and why it might be better solution for you than password
-        manager, in <a href="info.html">Info section.</a> If you have
-        specific questions please do not hesitate to send email to
-        <strong><tt>info@hpass.app</tt></strong>.
-      </p>
-
-      <h3>Password Generators vs. Managers</h3>
-
-      <p>
-        One of the often recommended solutions is to use
-        <a href="https://en.wikipedia.org/wiki/Password_manager"
-          >Password Manager</a
-        >
-        [PM]. The advantage of PMs is that in addition to storing passwords
-        they allow to store any number of other data (credit card numbers,
-        PINs, social security numbers, etc) and some allow to share this
-        information with other users. While convenient, this type of
-        centralized storage attracts hackers with the prospect of
-        potentially stealing sensitive and valuable data for milions of
-        users and creates single point of failure.
-      </p>
-      <p>
-        Try HPASS. It is the single-minded and narrowly focused tool to help
-        with easy generation and use of strong, secure and site-specific
-        passwords. You can find more on how HPASS can help, and why you may
-        want to consider it, in
-        <a href="info.html">Info section.</a>
-      </p>
-
-      <h3>Further reading</h3>
-
+      <h3>To start using HPASS:</h3>
       <ol>
-        <li>
-          <a
-            href="https://www.darkreading.com/vulnerabilities-threats/how-password-managers-can-get-hacked"
-            >How Password Managers Can Get Hacked</a
-          >
-        </li>
-        <li>
-          <a
-            href="https://fractionalciso.com/browser-password-managers-flawed-security-by-design"
-            >Browser password managers – flawed security, by design!</a
-          >
-        </li>
-        <li>
-          <a
-            href="https://www.safetydetectives.com/blog/the-most-hacked-passwords-in-the-world/"
-            >20 Most Hacked Passwords in 2023: Is Yours Here?
-          </a>
-        </li>
-        <li>
-          <a href="https://proton.me/blog/how-long-should-my-password-be">
-            https://proton.me/blog/how-long-should-my-password-be</a>
-        </li>
-        <li>
-          <a
-            href="https://www.psmpartners.com/blog/nist-password-best-practices/"
-            >NIST Password Best Practices</a
-          >
-        </li>
-        <li>
-          <a
-            href="https://cybernews.com/best-password-managers/are-password-managers-safe/"
-            >Are password managers safe to use in 2023?</a
-          >
-        </li>
+      <li>Close this menu. 
+      <li>Change (<img class="btn change" height="30" width="30" src="icons/change.svg">)
+          Password (it is initially blank).
+          This
+          <a href="https://www.pcmag.com/how-to/tricks-for-remembering-strong-passwords">PC article</a>
+          is a good starting guide how to create strong and memorable passwords.
+      <li>Consult Help (<img class="btn change" height="30" width="30" src="icons/help.svg">)
+          for detailed usage guidance.
       </ol>
-    </div>
-    <div style="margin-bottom: 32rem;"></div>
-    <div id="adunit">
+      <br>
+      <div style="background-color: yellow; text-align: center;">
+      <hr style="height: 0.1px; color: black;">
+        <br>
+        <h4>Store Password in a safe location.</h4>
+        <br>
+      <hr style="height: 0px; color: black;">
+      </div>
+      <br>
+      All settings are stored encrypted on your local device using
+      Password as the encryption key.
+    </dialog>
+
+    <!-- TODO: potential workaround for help.html UIX issues?
+    <dialog id="helpDialog">
+      <div id="helpBanner" class="topIcons" style="justify-content: left; margin-bottom: 3rem;">
+        <img id="closeHelp" class="btn back" src="icons/cross.svg" title="Close Help">
+      </div>
+      <div id="helpText">
+        <!- Help content will be dynamically loaded here ->
+      </div>
+    </dialog>
+    -->
+
+    <div id="adunit" class="adContainer">
       <ins
         class="adsbygoogle"
         style="display: block"
@@ -387,5 +511,8 @@
         (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
     </div>
+  
+    </body>
+
   </body>
 </html>

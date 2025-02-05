@@ -415,7 +415,8 @@ async function storageSet(args) {
   args = {key: null, value: null, pwd: null, encrypt: true, ...args};
   // args.pwd = sessionStorage.getItem("password");
   if (args.pwd === null) {
-    alert(`ERROR: storageSet: null password`);
+    // alert(`ERROR: storageSet: null password`);
+    alert(`Please enter Password`);
     throw new Error(`storageSet: null password`);
   }
   if (!CRYPTO.encryptedItems.includes(args.key)) {
@@ -454,7 +455,8 @@ async function storageGet(args) {
   args = {key: null, pwd: null, decrypt: true, ...args};
   // args.pwd = sessionStorage.getItem("password");
   if (args.pwd === null) {
-    alert("storageGet: no password!?");
+    // alert("storageGet: no password!?");
+    alert(`Please enter Password`);
     throw new Error("no password!?");
   }
   const debug = false;
@@ -513,10 +515,39 @@ async function storageGet(args) {
   return finalValue;
 };
 
+// FUTURE: use to get browser type to determine functionality...
+// function getBrowser() {
+//   const userAgent = navigator.userAgent;
+//   let browser = "Unknown";
+//   if (userAgent.indexOf("Chrome") > -1) {
+//     browser = "Chrome";
+//   } else if (userAgent.indexOf("Firefox") > -1) {
+//     browser = "Firefox";
+//   } else if (userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") === -1) {
+//     browser = "Safari";
+//   } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+//     browser = "Opera";
+//   } else if (userAgent.indexOf("Edge") > -1) {
+//     browser = "Edge";
+//   } else if (userAgent.indexOf("Trident") > -1) {
+//     browser = "Internet Explorer";
+//   }
+//   return browser;
+// }
 
-export {
-  CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff, rig, setsAreEqual, setsDiff
-};
+// FUTURE: check if this is a mobile platform
+// function isMobile() {
+//   // Check for mobile-specific features
+//   if (typeof window.orientation !== 'undefined' || navigator.maxTouchPoints > 0) {
+//     return true;
+//   }
+//   // Additional checks for mobile devices
+//   const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+//   return mobileRegex.test(navigator.userAgent);
+// }
+
+export { CHARS, MAXLENGTH, MINLENGTH, deepEqual, getPass, get_random_string, objDiff,
+         rig, setsAreEqual, setsDiff };
 export { storageGet, storageSet, cleanUp, CRYPTO, sanityCheck, isEmpty, isDeepEmpty };
 export { globalDefaults, updateLocalStorage, hpassStorage }
 // export { setGenericOptions, createSplashScreen }
