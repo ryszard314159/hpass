@@ -1,58 +1,20 @@
 "use strict";
-// Import Crypto-JS into your Service Worker
-// importScripts('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js');
 
-// Now you can use Crypto-JS within your Service Worker
-// console.log(CryptoJS); // Verify Crypto-JS is loaded
-
-// import { getPass } from "./core/lib.js";
-// const VERSION = "2024-04-12";
-// const VERSION = require('./manifest.json').VERSION;
-// import {VERSION} from './manifest.json';
-// console.log(`sw: VERSION= ${VERSION}`);
-
-// import { getVersion } from "./core/lib.js";
-
-// let VERSION = "2025-02-01";
-// function getVersion(json="manifest.json") {
-//   const v = (JSON.parse(fs.readFileSync(json, 'utf8'))).VERSION;
-//   return v;
-// }
 import { VERSION } from "./config.js";
-// const VERSION = "2025-02-01"
-
-// (async () => {
-//   const url = "manifest.json";
-//   try {
-//     const response = await fetch(url);
-//     const data = await response.json();
-//     VERSION = data.VERSION;
-//   } catch (error) {
-//     console.error("sw: install: Error fetching manifest.json:", error);
-//   }
-//   console.log(`sw: VERSION= ${VERSION} from url= ${url}`);
-// }) ();
-
 
 const appAssets = [
   "config.js",
   "index.html",
-  // "edit.html",
   "info.html",
   "help.html",
   "app.js",
-  // "edit.js",
   "core/lib.js",
   "core/storage.js",
   "settings.json",
   "css/pwa.css",
   "css/style.css",
-  // "icons/logo.256.png",
-  // "icons/logo.512.png",
-  // "icons/logo.1024.png",
   "icons/back.svg",
   "icons/change.svg",
-  // "icons/edit.svg", TODO: remove this line
   "icons/email.svg",
   "icons/generate.svg",
   "icons/right-generate.svg",
@@ -70,76 +32,85 @@ const appAssets = [
 ];
 
 self.addEventListener("install", (installEvent) => {
-  const debug = false;
-  //
-  // const response = await fetch('manifest.json');
-  // const data = await response.json();
-  // VERSION = data.VERSION;
-  // try {
-  //   const response = await fetch('manifest.json');
-  //   const data = await response.json();
-  //   VERSION = data.VERSION;
-  // } catch (error) {
-  //   console.error("sw: install: Error fetching manifest.json:", error);
-  //   VERSION = "sw: 2024-12-04";
-  // }
-  //
   const msg = { install: true };
   const installChannel = new BroadcastChannel("installChannel");
-  installChannel.postMessage(msg);
-  if (debug) {
-    console.log("sw: install: installChannel msg= ", msg);
-    console.log("sw: install: installEvent= ", installEvent);
-    console.log(`sw: install: open: static-VERSION= ${VERSION}`);
-  }
+  
   installEvent.waitUntil(
-    caches.open(`static-${VERSION}`).then((cache) => cache.addAll(appAssets))
+    Promise.all([
+      // Broadcast the installation message
+      installChannel.postMessage(msg),
+      
+      // Cache all app assets
+      caches.open(`static-${VERSION}`)
+        .then(cache => cache.addAll(appAssets))
+        .catch(error => {
+          console.error('Failed to cache assets:', error);
+          throw error; // Re-throw to indicate installation failure
+        }),
+      self.skipWaiting()
+    ])
+    .then(() => {
+      console.log('Installation completed successfully');
+    })
+    .catch(error => {
+      console.error('Installation failed:', error);
+      // Optionally, you could do additional error handling here
+    })
+    .finally(() => {
+      installChannel.close(); // Close the channel after use
+    })
   );
 });
 
-// clean old VERSION caches on activation
-self.addEventListener("activate", (e) => {
-  let cleaned = caches.keys().then((keys) => {
-    keys.forEach((key) => {
-      if (key !== `static-${VERSION}` && key.match("static-")) {
-        return caches.delete(key);
-      }
-    });
+self.addEventListener("activate", (event) => {
+  const cleaned = caches.keys().then((keys) => {
+    return Promise.all(
+      keys.map((key) => {
+        if (key !== `static-${VERSION}` && key.startsWith("static-")) {
+          return caches.delete(key); // Delete old cache
+        }
+      })
+    );
   });
-  e.waitUntil(cleaned);
-});
 
-// const staticCache = (req) => {
-//   return fetch(req).then((networkRes) => {
-//     if (networkRes.ok && networkRes.status !== 206) { // Add this check
-//       return caches.open(`static-${VERSION}`).then((cache) => {
-//         cache.put(req, networkRes.clone()); // Put a clone of the network response in the cache
-//         return networkRes; // Return the original network response
-//       });
-//     } else {
-//       return networkRes; // Return the original network response without caching
-//     }
-//   });
-// };
+  event.waitUntil(
+    Promise.all([
+      cleaned, // Clean up old caches
+      self.clients.claim() // Take control of all clients immediately
+    ])
+  );
+});
 
 async function staticCache(req) {
   try {
+    // Try fetching the resource from the network
     const networkRes = await fetch(req);
+    // If the response is valid and not a partial response (status !== 206), cache it
     if (networkRes.ok && networkRes.status !== 206) {
       const cache = await caches.open(`static-${VERSION}`);
       await cache.put(req, networkRes.clone()); // Cache the cloned response
-      return networkRes; // Return the original response
-    } else {
-      return networkRes; // Return the original response without caching
     }
+    // Return the network response (cached or not)
+    return networkRes;
   } catch (error) {
-    console.error('Fetch request failed:', error);
-    throw error; // Re-throw the error to handle it elsewhere if needed
+    console.warn('Fetch request failed, falling back to cache:', error);
+    // If the fetch fails (e.g., offline), try retrieving the resource from the cache
+    const cache = await caches.open(`static-${VERSION}`);
+    const cachedRes = await cache.match(req);
+    if (cachedRes) {
+      return cachedRes; // Return the cached response if available
+    }
+    // If no cached response is found, throw an error or handle it gracefully
+    return new Response('Offline and resource not found in cache', {
+      status: 503,
+      statusText: 'Service Unavailable',
+    });
   }
-};
+}
 
 self.addEventListener("fetch", (e) => {
-  if (e.request.url.match(location.origin)) {
+  // Only handle requests within the same origin as your app
+  if (e.request.url.startsWith(location.origin)) {
     e.respondWith(staticCache(e.request));
   }
 });
@@ -147,14 +118,6 @@ self.addEventListener("fetch", (e) => {
 self.addEventListener("load", (e) => {
   const debug = false;
   if (debug) console.log("sw: load event detected: e= ", e);
-});
-
-self.addEventListener("install", function (event) {
-  event.waitUntil(self.skipWaiting()); // Activate worker immediately
-});
-
-self.addEventListener("activate", function (event) {
-  event.waitUntil(self.clients.claim()); // Become available to all pages
 });
 
 // service-worker.js
@@ -183,18 +146,13 @@ self.addEventListener("message", (event) => {
 });
 
 let storedPassword = null;
-// console.log(`sw: initialized storedPassword= ${storedPassword}, now= ${Date.now()}`);
 self.addEventListener("message", (event) => {
   event.waitUntil((async () => {
-    // console.log(`sw: message: event= `, event);
     if (event.data && event.data.type === "store-password") {
         storedPassword = event.data.password;
         const tag = event.data.password;
-        // console.log(`sw: message: store: storedPassword= ${storedPassword}, tag= ${tag}`);
     } else if (event.data && event.data.type === "retrieve-password") {
         event.source.postMessage({type: "password", password: storedPassword});
-        // console.log(`sw: message: retrieve: storedPassword= ${storedPassword}`);
-        // storedPassword = null; // Clear after sending
     }
   })());
 });
