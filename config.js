@@ -1,4 +1,4 @@
-const VERSION = '2025-02-11';
+const VERSION = '2025-02-27';
 const DEFAULT_SALT_LENGTH = 16;
 export { VERSION };
 export { DEFAULT_SALT_LENGTH };
