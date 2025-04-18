@@ -386,7 +386,7 @@ async function generateFun(event) {
   args.verbose = true;
   args.length = Number(args.length);
   const passwd = getPass(args);
-  navigator.clipboard.writeText(passwd);
+  copyToClipboard(passwd);
   showPopup(`Generated password copied to clipboard:<br><br>${passwd}`, SHORTPOPUP);
 }
 
