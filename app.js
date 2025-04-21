@@ -731,22 +731,42 @@ document.querySelectorAll(".share").forEach(function(element) {
   });
 });
 
-async function copyToClipboard(string) {
+// button.addEventListener("click", () => {
+//   const textPromise = fetchData().then((text) => new Blob([text], { type: "text/plain" }));
+//   const item = new ClipboardItem({ "text/plain": textPromise });
+//   navigator.clipboard.write([item]).catch(handleError);
+// });
+
+// use navigator.clipboard.write instead of navigator.clipboard.writeText
+// in order to satisfy Safari...
+async function copyToClipboard(text) {
   try {
-    await navigator.clipboard.writeText(string);
-    return true;
-  } catch (err) {
-    console.error(err);
-    // manual copy fallback using prompt
-    const isMac = navigator.userAgent.toUpperCase().includes("MAC");
-    const copyHotkey = isMac ? "⌘C" : "CTRL+C";
-    const result = prompt(`Press ${copyHotkey} to copy:`, string);
-    if (!result) {
-      return false;
-    }
+    const type = 'text/plain';
+    const blob = new Blob([text], { type });
+    const data = [new ClipboardItem({ [type]: blob })];
+    await navigator.clipboard.write(data);
+    console.log('Data copied to clipboard');
+  } catch (error) {
+    console.error('Failed to copy data: ', error);
   }
-  return true;
 }
+
+// async function copyToClipboard(string) {
+//   try {
+//     await navigator.clipboard.writeText(string);
+//     return true;
+//   } catch (err) {
+//     console.error(err);
+//     // manual copy fallback using prompt
+//     const isMac = navigator.userAgent.toUpperCase().includes("MAC");
+//     const copyHotkey = isMac ? "⌘C" : "CTRL+C";
+//     const result = prompt(`Press ${copyHotkey} to copy:`, string);
+//     if (!result) {
+//       return false;
+//     }
+//   }
+//   return true;
+// }
 
 document.querySelectorAll(".reset").forEach(function(element) {
   element.addEventListener("click", async function (event) {
