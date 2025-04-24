@@ -739,12 +739,12 @@ document.querySelectorAll(".share").forEach(function(element) {
 
 // use navigator.clipboard.write instead of navigator.clipboard.writeText
 // in order to satisfy Safari...
-async function copyToClipboard(text) {
+function copyToClipboard(text) {
   try {
     const type = 'text/plain';
     const blob = new Blob([text], { type });
     const data = [new ClipboardItem({ [type]: blob })];
-    await navigator.clipboard.write(data);
+    navigator.clipboard.write(data);
     console.log('Data copied to clipboard');
   } catch (error) {
     console.error('Failed to copy data: ', error);
