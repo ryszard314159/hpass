@@ -16,6 +16,7 @@ function getPassword() {
   sessionStorage.getItem('PASSWORD');
 };
 
+const GLOBS = {};
 let PASSWORD = null;
 const SHORTPOPUP = 1e3; // short popup time
 const URL = "https://hpass.app";
@@ -127,6 +128,8 @@ el.masterPassword.addEventListener("keydown", async function(event) {
     const isCorrect = await verifyPassword(storedHash, pwd);
     if (isCorrect) {
       PASSWORD = pwd;
+      GLOBS.options = await storageGet({key: "options", pwd: PASSWORD});
+      GLOBS.sites = await storageGet({key: "sites", pwd: PASSWORD});
       el.frontContainer.style.display = "none";
       el.editDialog.style.display = "none";
       el.hintDialog.style.display = "block";
@@ -353,14 +356,16 @@ function togglePassword(element) {
   }
 }
 
-async function generateFun(event) {
+function generateFun(event) {
   const debug = false;
   event.preventDefault();
   if (debug) console.log("generateFun: event.preventDefault() added");
-  let opts = await storageGet({key: "options", pwd: PASSWORD});
+  let opts = GLOBS.options;
+  // let await_opts = await storageGet({key: "options", pwd: PASSWORD});
   const pgHint = el.pgHint.value;
   if (pgHint !== "undefined") {
-    const sites = await storageGet({key: "sites", pwd: PASSWORD});
+    const sites = GLOBS.sites;
+    // const await_sites = await storageGet({key: "sites", pwd: PASSWORD});
     if (sites !== null) {
       if (sites[pgHint] !== "undefined") {
         opts = {...opts, ...sites[pgHint]};

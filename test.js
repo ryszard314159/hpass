@@ -1,3 +1,5 @@
+// run: node test.js
+// you should get "tests PASSED!"
 "use strict";
 import { getPass, MAXLENGTH, MINLENGTH } from "./core/lib.js";
 
