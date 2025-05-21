@@ -391,7 +391,8 @@ function generateFun(event) {
   args.verbose = true;
   args.length = Number(args.length);
   const passwd = getPass(args);
-  copyToClipboard(passwd);
+  // copyToClipboard(passwd);
+  navigator.clipboard.writeText(passwd);
   showPopup(`Generated password copied to clipboard:<br><br>${passwd}`, SHORTPOPUP);
 }
 
@@ -724,7 +725,8 @@ document.querySelectorAll(".share").forEach(function(element) {
     \nVisit ${URL} to check it out!`,
     };
     if (!navigator.canShare) {
-      copyToClipboard(`${shareData.title}: ${shareData.text}`);
+      // copyToClipboard(`${shareData.title}: ${shareData.text}`);
+      await navigator.clipboard.writeText(`${shareData.title}: ${shareData.text}`);
       showPopup(`Message about HPASS copied to Clipboard - share it! `, 3 * SHORTPOPUP);
     } else {
       try {
