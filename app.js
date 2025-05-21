@@ -356,15 +356,15 @@ function togglePassword(element) {
   }
 }
 
-function generateFun(event) {
+function generateFun(event, opts, sites) {
   const debug = false;
   event.preventDefault();
   if (debug) console.log("generateFun: event.preventDefault() added");
-  let opts = GLOBS.options;
+  // let opts = GLOBS.options;
   // let await_opts = await storageGet({key: "options", pwd: PASSWORD});
   const pgHint = el.pgHint.value;
   if (pgHint !== "undefined") {
-    const sites = GLOBS.sites;
+    // const sites = GLOBS.sites;
     // const await_sites = await storageGet({key: "sites", pwd: PASSWORD});
     if (sites !== null) {
       if (sites[pgHint] !== "undefined") {
@@ -469,12 +469,12 @@ function handleFeedback(event) {
 
 el.generate.forEach((button) => {
   button.addEventListener("click", handleFeedback)
-  button.addEventListener("click", generateFun);
+  button.addEventListener("click", (event) => generateFun(event, GLOBS.options, GLOBS.sites));
 });
 
 el.pgHint.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
-    generateFun(event);
+    generateFun(event, GLOBS.options, GLOBS.sites);
   }
 });
 
