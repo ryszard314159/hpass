@@ -478,7 +478,8 @@ el.pgHint.addEventListener("keydown", (event) => {
   }
 });
 
-async function saveOptions(args) {
+async function saveOptions() {
+  const saved = {"sites": false, "options": false};
   const stringEmpty = (x) => x === '';
   const objEmpty = (x) => Object.keys(x).length === 0;
   const objEqual = (x, y) => objEmpty(objDiff(x, y));
@@ -507,7 +508,7 @@ async function saveOptions(args) {
     alert(`Length must be an integer in ${MINLENGTH}-${MAXLENGTH} range`);
     el.length.value = storedHintValues && storedHintValues.length
                       ? storedHintValues.length : storedOpts.length
-    return;
+    return saved;
   }
 
   const diff = objDiff(currentOpts, storedOpts);
@@ -547,7 +548,7 @@ async function saveOptions(args) {
     } else if (doNothing) {
       msg = `Nothing new for >>${hint}<<`;
       alert(msg);
-      return;
+      return saved;
     } else {
       // updateCurrentOpts();
       const rep = {...sites[hint], ...currentOpts};
@@ -570,8 +571,9 @@ async function saveOptions(args) {
       if (!objEmpty(sites)) {
         await storageSet({key: "sites", value: sites, pwd: PASSWORD});
       }
+      saved.sites = true;
     }
-    return;
+    return saved;
   }
   // "001": "Hint Field is NOT empty, current != stored, storedHint is undefined",
   // "001": `Create New site-specific settings for >>${hint}<<`, // B
@@ -584,12 +586,13 @@ async function saveOptions(args) {
     if (confirm(msg)) {
       await storageSet({key: "sites", value: sites, pwd: PASSWORD});
       alert("Saved!");
+      saved.sites = true;
     } else {
       el.salt.value = storedOpts.salt;
       el.pepper.value = storedOpts.pepper;
       el.length.value = storedOpts.length;      
     }
-    return;
+    return saved;
   }
   //
   // "010": "Hint Field is NOT empty, current == stored, storedHint is defined",
@@ -605,13 +608,14 @@ async function saveOptions(args) {
         await storageSet({key: "sites", value: sites, pwd: PASSWORD});
       }
       alert(`Generic settings restored for >>${hint}<<`);
+      saved.sites = true;
     } else {
       const x = {...currentOpts, ...sites[hint]};
       el.salt.value = x.salt;
       el.pepper.value = x.pepper;
       el.length.value = x.length;
     }
-    return;
+    return sites;
   }
   //
   // "011": "Hint Field is NOT empty, current == stored, storedHint is defined",
@@ -623,7 +627,7 @@ async function saveOptions(args) {
   //
   if (state === "011" || state === "110" || state === "111") {
     alert(msg);
-    return;
+    return saved;
   }
   //
   // D: New generic settings
@@ -634,7 +638,7 @@ async function saveOptions(args) {
     if (!validLength(currentOpts.length)) {
       const msg = "ERROR: invalid Length parameter\nMust be an integer in 4-128 range";
       alert(msg);
-      return;
+      return saved;
     }
     // msg = `state= ${state}\n${msg}\n`;
     msg = `${msg}\nSecret= ${currentOpts.salt}`;
@@ -643,16 +647,25 @@ async function saveOptions(args) {
     if (confirm(msg)) {
       await storageSet({key: "options", value: currentOpts, pwd: PASSWORD});
       alert("Saved!");
+      saved.options = true;
     } else {
       el.salt.value = storedOpts.salt;
       el.pepper.value = storedOpts.pepper;
       el.length.value = storedOpts.length;
     }
-    return;
+    return saved;
   }
 }
 
-el.saveOptions.addEventListener("click", saveOptions);
+async function saveAndSetOptions() {
+  console.log("before: GLOBS=", GLOBS);
+  const saved = await saveOptions();
+  if (saved.options) GLOBS.options = await storageGet({key: "options", pwd: PASSWORD});
+  if (saved.sites) GLOBS.sites = await storageGet({key: "sites", pwd: PASSWORD});
+  console.log("after: GLOBS=", GLOBS);
+}
+
+el.saveOptions.addEventListener("click", saveAndSetOptions);
 
 function validLength(x, minLen = MINLENGTH, maxLen = MAXLENGTH) {
   if (typeof(x) !== 'string') return false;
