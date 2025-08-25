@@ -10,6 +10,10 @@ https://www.sliderrevolution.com/resources/slide-menu/
   box-sizing: border-box;
 }
 
+iframe {
+  display: block;
+}
+
 
 html, body {
   font-family: Arial, Helvetica, sans-serif;
