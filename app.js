@@ -654,6 +654,7 @@ async function saveAndSetOptions() {
   GLOBS.options = await storageGet({key: "options", pwd: PASSWORD});
   GLOBS.sites = await storageGet({key: "sites", pwd: PASSWORD});
   console.log("after: GLOBS=", GLOBS);
+  window.location.reload()
 }
 
 el.saveOptions.addEventListener("click", saveAndSetOptions);
