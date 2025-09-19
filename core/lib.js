@@ -20,6 +20,8 @@
 
 // debugger;
 import { encryptText, decryptText } from "./crypto.js";
+const { default: crypto } = await import("node:crypto");
+const { v4: uuidv4, v5: uuidv5 } = await import("uuid");
 
 // length set to '15' to avoid '15' (string) vs 15 (int) confusion
 const globalDefaults = {salt: "Replace Me!", pepper: "_", length: '15'};
@@ -226,6 +228,18 @@ function shuffle_string(string, gint = rig(MP31, seed)) {
     [z[i], z[j]] = [z[j], z[i]];
   }
   return z.join("");
+}
+
+function isValidEmail(email) {
+  const emailRegex = /.+@.+\..+/;
+  return emailRegex.test(email);
+}
+
+function generateEmailUUID(email, args = {}) {
+  // const {NAMESPACE = 'a75c1574-eed8-48d3-83fb-6c25824405e9'} = args;
+  args = {NAMESPACE: 'a75c1574-eed8-48d3-83fb-6c25824405e9', ...args};
+  const normalizedEmail = email.toLowerCase().trim();
+  return uuidv5(normalizedEmail, args.NAMESPACE);
 }
 
 /**
