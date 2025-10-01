@@ -20,8 +20,8 @@
 
 // debugger;
 import { encryptText, decryptText } from "./crypto.js";
-const { default: crypto } = await import("node:crypto");
-const { v4: uuidv4, v5: uuidv5 } = await import("uuid");
+// const { default: crypto } = await import("node:crypto");
+// const { v4: uuidv4, v5: uuidv5 } = await import("uuid");
 
 // length set to '15' to avoid '15' (string) vs 15 (int) confusion
 const globalDefaults = {salt: "Replace Me!", pepper: "_", length: '15'};

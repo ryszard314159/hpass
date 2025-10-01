@@ -5,9 +5,12 @@
   "dependencies": {
     "chromedriver": "^129.0.1",
     "crypto-js": "^4.2.0",
+    "dotenv": "^17.2.2",
     "mongodb": "^6.20.0",
     "node-localstorage": "^3.0.5",
+    "nodemailer": "^7.0.6",
     "selenium-webdriver": "^4.25.0",
+    "uuid": "^13.0.0",
     "webcrypto": "^0.1.1",
     "webcrypto-shim": "^0.1.7"
   },
